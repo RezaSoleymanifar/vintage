@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from .sources import apewisdom, cboe, ecb, fred, french
+from .sources import apewisdom, cboe, cftc, ecb, fred, french, treasury
 
 # Field prefix -> source. This is the router.
 PREFIXES = {
@@ -22,6 +22,9 @@ PREFIXES = {
     "fx:": "ecb",
     "vol:": "cboe",
     "delisting:": "delistings",
+    "frame:": "frames",
+    "ust:": "treasury",
+    "cot:": "cftc",
     "index:": "prices",
     "filing:": "sec-edgar-filings",
     "us-gaap:": "sec-edgar-xbrl",
@@ -116,6 +119,28 @@ SOURCES = [
         "note": "The survivorship correction. Complete from April 2006, partial before.",
     },
     {
+        "source": "sec-xbrl-frames",
+        "covers": "one concept across every filer in one call — the cross-section",
+        "field_form": "frame:us-gaap/Assets/CY2023Q1I",
+        "point_in_time": "no — carries the accession but not its filing date",
+        "key_required": False,
+        "note": "6,289 filers in one 840KB request. Use fetch per entity when the date matters.",
+    },
+    {
+        "source": "us-treasury",
+        "covers": "par yield curve, 14 tenors from 1 month to 30 years",
+        "field_form": "ust:10y, ust:2y, ust:all",
+        "point_in_time": "yes — published daily and never revised",
+        "key_required": False,
+    },
+    {
+        "source": "cftc-cot",
+        "covers": "weekly futures positioning by trader class",
+        "field_form": "cot:noncommercial_net (needs an entity like SP500)",
+        "point_in_time": "yes — Tuesday positions, released Friday, lag preserved",
+        "key_required": False,
+    },
+    {
         "source": "fred",
         "covers": "800k macro series, with ALFRED first-release vintages",
         "field_form": "fred:CPIAUCSL",
@@ -167,7 +192,8 @@ INDICES = [
 
 
 def static_catalog() -> list[dict[str, Any]]:
-    return french.catalog() + apewisdom.catalog() + ecb.catalog() + cboe.catalog() + [
+    return (french.catalog() + apewisdom.catalog() + ecb.catalog()
+            + cboe.catalog() + treasury.catalog() + cftc.catalog()) + [
         {**item, "source": "yahoo-finance", "kind": "index"} for item in INDICES
     ] + [
         {**item, "source": "fred", "key_required": not fred.has_key()}

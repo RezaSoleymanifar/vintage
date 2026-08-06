@@ -17,8 +17,8 @@ from .engine import backtest as bt
 from .engine import benchmark as bm
 from .engine import honesty
 from .http import SourceError
-from .sources import (apewisdom, cboe, coinbase, delistings, ecb, edgar,
-                      finra, fred, french, openap, yahoo)
+from .sources import (apewisdom, cboe, cftc, coinbase, delistings, ecb, edgar,
+                      finra, frames, fred, french, openap, treasury, yahoo)
 
 mcp = MCPServer(
     "vintage",
@@ -38,7 +38,7 @@ mcp = MCPServer(
         "returns a deflated Sharpe that accounts for how many specs were tried "
         "this session. Report it. Never present a raw Sharpe alone."
     ),
-    version="0.7.1",
+    version="0.8.0",
 )
 
 # Backtests keep their return series here so the model does not have to carry
@@ -207,6 +207,27 @@ async def fetch(
     try:
         if source == "french":
             rows = await french.load(field.split(":", 1)[1])
+        elif source == "frames":
+            # frame:us-gaap/Assets/CY2023Q1I  — taxonomy/tag/period, unit optional
+            parts = field.split(":", 1)[1].split("/")
+            if len(parts) < 3:
+                return envelope.fail(
+                    "fetch", "frame fields look like frame:us-gaap/Assets/CY2023Q1I",
+                    did_you_mean=["frame:us-gaap/Assets/CY2023Q1I",
+                                  "frame:us-gaap/Revenues/CY2023"])
+            taxonomy, tag, period = parts[0], parts[1], parts[-1]
+            unit = parts[2] if len(parts) > 3 else "USD"
+            rows = await frames.cross_section(tag, period, taxonomy=taxonomy,
+                                              unit=unit, limit=limit)
+            warnings += frames.warnings_for(period, rows)
+        elif source == "treasury":
+            rows = await treasury.yields(field.split(":", 1)[1], start=start, end=end)
+        elif source == "cftc":
+            if not entity:
+                return envelope.fail("fetch", "cot fields need an `entity`, e.g. SP500",
+                                     did_you_mean=list(cftc.MARKETS))
+            rows = await cftc.positioning(entity, measure=field.split(":", 1)[1])
+            warnings += cftc.warnings_for()
         elif source == "delistings":
             # Bulk history: one scan of EDGAR's quarterly indexes, then cached.
             # `as_of` keeps its usual meaning here — delistings already public

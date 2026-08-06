@@ -3,7 +3,7 @@
   "name": "io.github.RezaSoleymanifar/vintage",
   "title": "Vintage",
   "description": "Free financial data from eleven sources behind six verbs, point-in-time where the source allows.",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "websiteUrl": "https://github.com/RezaSoleymanifar/vintage",
   "repository": {
     "url": "https://github.com/RezaSoleymanifar/vintage",
@@ -14,7 +14,7 @@
       "registryType": "pypi",
       "registryBaseUrl": "https://pypi.org",
       "identifier": "vintage-mcp",
-      "version": "0.7.1",
+      "version": "0.8.0",
       "transport": { "type": "stdio" },
       "environmentVariables": [
         {

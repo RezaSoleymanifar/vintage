@@ -35,8 +35,10 @@ import pandas as pd
 from . import envelope, registry
 from .engine import backtest as _bt
 from .engine import honesty as _honesty
-from .sources import (apewisdom, cboe, coinbase, delistings as _delistings,
-                      ecb, edgar, finra, fred, french, openap, yahoo)
+from .sources import (apewisdom, cboe, cftc, coinbase,
+                      delistings as _delistings, ecb, edgar, finra,
+                      frames as _frames, fred, french, openap,
+                      treasury as _treasury, yahoo)
 
 T = TypeVar("T")
 
@@ -45,6 +47,7 @@ __all__ = [
     "claim", "claims", "crypto", "short_volume", "sentiment",
     "resolve", "search", "sources", "signals", "backtest", "trials", "frame",
     "delistings", "survivorship_warning", "fx", "volatility", "index",
+    "cross_section", "treasury_yields", "positioning",
     "corporate_actions",
 ]
 
@@ -153,6 +156,30 @@ def panel(tickers: Iterable[str], *, field: str = "adjclose", start: str | None 
 def returns(prices_frame: pd.DataFrame, *, periods: int = 1) -> pd.DataFrame:
     """Simple returns. Here so a notebook does not reinvent it in cell three."""
     return prices_frame.pct_change(periods).dropna(how="all")
+
+
+def cross_section(tag: str, period: str, *, taxonomy: str = "us-gaap",
+                  unit: str = "USD", limit: int = 10_000) -> pd.DataFrame:
+    """One accounting concept for every filer in a period.
+
+    The shape a cross-sectional sort needs, in one request rather than 6,000.
+    Balance-sheet concepts need the instant period form, CY2023Q1I.
+    """
+    return frame(_run(_frames.cross_section(tag, period, taxonomy=taxonomy,
+                                            unit=unit, limit=limit)))
+
+
+def treasury_yields(tenor: str = "10y", *, start: str | None = None,
+                    end: str | None = None) -> pd.DataFrame:
+    """US Treasury par yields. Keyless, 14 tenors, never revised."""
+    return frame(_run(_treasury.yields(tenor, start=start, end=end)), value=tenor)
+
+
+def positioning(market: str = "SP500", *, measure: str = "noncommercial_net",
+                limit: int = 520) -> pd.DataFrame:
+    """CFTC Commitments of Traders. Tuesday positions, Friday release, lag kept."""
+    return frame(_run(cftc.positioning(market, measure=measure, limit=limit)),
+                 value=measure)
 
 
 def fx(pair: str = "EURUSD", *, start: str | None = None,
