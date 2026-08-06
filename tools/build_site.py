@@ -1689,7 +1689,8 @@ def build_badges() -> str:
         return f'<span class="badge">{icon(glyph, 21)}<b>{label}</b></span>'
 
     engine = "".join(pill(g, lab) for g, lab in ENGINE_BADGES)
-    return (f'<p class="blab eng">Vintage Engine</p>'
+    return (f'<p class="bline">A single MCP server for native quantitative research.</p>'
+            f'<p class="blab eng">Vintage API</p>'
             f'<div class="badges">{engine}</div>')
 
 
@@ -1783,6 +1784,8 @@ a:hover{text-decoration:underline}
 .tile b{color:var(--ink);font-size:clamp(13px,2vh,18px);line-height:1.1;font-weight:700}
 /* what the engine guarantees, one property per badge */
 .badges{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.bline{margin:0 0 9px;color:var(--ink);font-size:clamp(10.5px,1.45vh,13px);
+  line-height:1.45;font-weight:700}
 .blab{margin:0 0 6px;color:var(--green);font-size:clamp(9px,1.2vh,11px);
   letter-spacing:.16em;text-transform:uppercase;font-weight:700}
 .badge{display:flex;align-items:center;gap:9px;border:1px solid rgba(47,213,135,.28);
@@ -2051,7 +2054,7 @@ __ONECSS__
     </div>
 
     <p class="claim">Good financial data is already free. It&rsquo;s just scattered.
-    <span class="g">Vintage unifies the web&rsquo;s free financial data in a single MCP server.</span></p>
+    <span class="g">Vintage unifies the web&rsquo;s free financial data.</span></p>
 
     <div class="tiles">
       __TILES__
