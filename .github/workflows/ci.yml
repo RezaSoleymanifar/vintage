@@ -58,9 +58,9 @@ jobs:
 
       - name: Validate against the MCP registry schema
         run: |
-          npx --yes ajv-cli@5 validate \
-            -s <(curl -sS https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json) \
-            -d server.json --spec=draft7
+          curl -sSfL -o /tmp/server.schema.json \
+            https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json
+          npx --yes ajv-cli@5 validate -s /tmp/server.schema.json -d server.json --spec=draft7
         shell: bash
 
       - name: server.json version must match pyproject
