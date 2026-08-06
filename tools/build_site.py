@@ -233,89 +233,182 @@ STAGES = [
 VERB_NAMES = ["resolve", "discover", "fetch", "events", "backtest", "benchmark"]
 
 
+# The federation bar is drawn by both diagram 1 and diagram 2, at the same x and
+# the same width, so the second panel opens on the object the first one ended on.
+# That shared block is the whole reason the two read as one argument rather than
+# two unrelated pictures.
+COL_X = [20, 305, 590, 875]
+COL_W = 265
+BAR_X, BAR_W, BAR_H = 20, 1120, 92
+
+
+def vintage_bar(p: list[str], y: int, *, lede: str) -> None:
+    """Vintage itself: one block, four stages, identical on both panels."""
+    p.append(f'<rect class="d-pipe" x="{BAR_X}" y="{y}" width="{BAR_W}" '
+             f'height="{BAR_H}" rx="14"/>')
+    p.append(txt(BAR_X + 18, y + 24, "VINTAGE &middot; THE FEDERATION LAYER", "d-h g"))
+    p.append(txt(BAR_X + BAR_W - 18, y + 24, lede, "d-fn", "end"))
+    for i, (name, sub) in enumerate(BAR_STAGES):
+        cx = BAR_X + 18 + i * 274
+        p.append(card(cx, y + 34, 262, 46, "d-stage"))
+        p.append(f'<circle class="d-num" cx="{cx + 25}" cy="{y + 57}" r="11"/>')
+        p.append(txt(cx + 25, y + 61, str(i + 1), "d-numt", "middle"))
+        p.append(txt(cx + 44, y + 53, name, "d-sb"))
+        p.append(txt(cx + 44, y + 69, sub, "d-fn"))
+
+
+BAR_STAGES = [
+    ("resolve",           "one entity key, every source"),
+    ("normalize",         "one schema, one unit"),
+    ("stamp vintage",     "observed_at + known_at"),
+    ("index on known_at", "point-in-time by construction"),
+]
+
+
 def diagram_federation() -> str:
+    """Eighteen sources as a grid, in four families, trickling into Vintage.
+
+    The previous version put the sources in a narrow left rail and the pipeline
+    beside them, which made eighteen sources look like a list of four. A grid is
+    the honest shape for a breadth claim: you can count it.
+    """
     p: list[str] = []
     p.append('<svg class="dia" viewBox="0 0 1160 600" role="img" '
-             'aria-label="Scattered free data sources federated through Vintage into six verbs">')
+             'aria-label="Eighteen free data sources in four families - regulators, '
+             'central banks, markets and academia - all flowing down into Vintage, '
+             'which resolves, normalizes, stamps and indexes them">')
 
-    p.append(txt(20, 40, "THE WEB &middot; 18 FREE SOURCES", "d-h"))
-    p.append(txt(380, 44, "VINTAGE &middot; THE FEDERATION LAYER", "d-h g"))
-    p.append(txt(830, 44, "ONE INTERFACE", "d-h"))
+    p.append(txt(20, 30, "THE WEB &middot; 18 FREE SOURCES, FOUR FAMILIES", "d-h"))
+    p.append(txt(1140, 30, "every one of them public, and free, right now", "d-fn", "end"))
 
-    # ---- left: every source as a glyph, grouped by who publishes it
-    # Two columns per group. Eighteen orbs stacked in one column needed a
-    # canvas half again as tall, which broke the layout this page is built
-    # around: everything on one screen, nothing scrolls.
-    y = 66
-    group_mid: dict[str, float] = {}
+    # ---- the grid: one column per family, one card per source
     for gi, group in enumerate(GROUP_ORDER):
         members = [u for u in UNIVERSE if u[3] == group]
-        top = y
-        p.append(txt(20, y, group, "d-ct"))
-        y += 10
-        rows = (len(members) + 1) // 2
+        x = COL_X[gi]
+        p.append(f'<rect class="d-fam" x="{x}" y="44" width="{COL_W}" height="402" rx="12"/>')
+        p.append(txt(x + 14, 68, group, "d-ct"))
+        p.append(txt(x + COL_W - 14, 68, f"{len(members)}", "d-cnt", "end"))
+        p.append(txt(x + 14, 84, GROUP_GLOSS[group], "d-fn"))
+
         for j, (glyph, name, holds, _g) in enumerate(members):
-            col, row = j % 2, j // 2
-            cx = 22 + col * 168
-            cy = y + row * 34
-            p.append(f'<g class="d-orb" transform="translate({cx},{cy})" '
+            cy = 98 + j * 49
+            p.append(card(x + 10, cy, COL_W - 20, 44, "d-src"))
+            p.append(f'<g class="d-orb" transform="translate({x + 23},{cy + 14})" '
                      f'style="animation-delay:{(gi * 5 + j) * -0.37:.2f}s">'
-                     f'<circle class="d-orbring" cx="10" cy="10" r="11.5"/>'
-                     f'<g transform="translate(-2,-2)">{icon(glyph, 24)}</g></g>')
-            p.append(txt(cx + 28, cy + 9, name, "d-it"))
-            p.append(txt(cx + 28, cy + 21, holds, "d-fn"))
-        y += rows * 34 + 10
-        group_mid[group] = (top + y) / 2 - 8
+                     f'{icon(glyph, 16)}</g>')
+            p.append(txt(x + 48, cy + 19, name, "d-it"))
+            p.append(txt(x + 48, cy + 34, holds, "d-fn"))
 
-    # ---- middle: the pipeline
-    p.append('<rect class="d-pipe" x="380" y="70" width="380" height="490" rx="14"/>')
-    for i, (name, l1, l2) in enumerate(STAGES):
-        y = 96 + i * 96
-        p.append(card(400, y, 340, 84, "d-stage"))
-        p.append(f'<circle class="d-num" cx="428" cy="{y + 42}" r="14"/>')
-        p.append(txt(428, y + 46, str(i + 1), "d-numt", "middle"))
-        p.append(txt(456, y + 30, name, "d-st"))
-        p.append(txt(456, y + 52, l1, "d-ss"))
-        p.append(txt(456, y + 70, l2, "d-ss"))
-    p.append(txt(400, 500, "one schema &middot; one key &middot; two dates per row", "d-note"))
-    p.append(txt(400, 524, "nothing hosted &middot; nothing redistributed &middot; 16 of 18 need no key", "d-fn"))
-
-    # ---- wires in
-    for i, group in enumerate(GROUP_ORDER):
-        cy = group_mid[group]
-        ty = 138 + i * 96
-        d = f"M270 {cy:.0f} C322 {cy:.0f} 330 {ty} 380 {ty}"
+    # ---- four drops into the bar. Straight, and into the block as a whole:
+    # no family owns a stage, so no wire may appear to point at one.
+    for i in range(4):
+        cx = COL_X[i] + COL_W // 2
+        d = f"M{cx} 446 L{cx} 476"
         p.append(f'<path class="d-wire" d="{d}"/>')
         p.append(f'<path class="d-flow" style="animation-delay:{i * -0.4:.1f}s" d="{d}"/>')
+        p.append(f'<path class="d-arrow" d="M{cx - 6} 468 L{cx} 476 L{cx + 6} 468"/>')
 
-    # ---- right: the six verbs, then the client
-    p.append(card(830, 70, 310, 250, "d-box"))
-    p.append(txt(850, 98, "SIX VERBS", "d-ct"))
-    for i, v in enumerate(VERB_NAMES):
-        cx, cy = 850 + (i % 2) * 146, 114 + (i // 2) * 54
-        p.append(f'<rect class="d-verb" x="{cx}" y="{cy}" width="134" height="44" rx="9"/>')
-        p.append(txt(cx + 67, cy + 27, v, "d-vt", "middle"))
-    p.append(txt(850, 300, "source is a parameter, never a new tool", "d-fn"))
-
-    p.append(card(830, 350, 310, 210, "d-box"))
-    p.append(txt(850, 378, "YOUR AI CLIENT &middot; MCP", "d-ct"))
-    p.append('<rect class="d-bub" x="850" y="394" width="270" height="52" rx="10"/>')
-    p.append(txt(866, 416, "backtest 12-1 momentum on the", "d-it"))
-    p.append(txt(866, 434, "dow 30 since 2010", "d-it"))
-    p.append(txt(850, 476, "sharpe 2.14", "d-ok"))
-    p.append(txt(850, 500, "deflated 0.09 after 41 tries", "d-bad"))
-    p.append(txt(850, 526, "claude &middot; cursor &middot; chatgpt &middot; anything", "d-fn"))
-
-    for d, delay in [("M760 200 L830 195", 0.0), ("M985 320 L985 350", -0.8)]:
-        p.append(f'<path class="d-wire" d="{d}"/>')
-        p.append(f'<path class="d-flow" style="animation-delay:{delay}s" d="{d}"/>')
-    p.append('<path class="d-arrow" d="M978 344 L985 352 L992 344"/>')
+    vintage_bar(p, 476, lede="nothing hosted &middot; nothing redistributed &middot; "
+                            "16 of the 18 need no key")
 
     p.append("</svg>")
     return "\n      ".join(p)
 
 
-# -------------------------------------------------- diagram 2: point-in-time
+# ------------------------------------------------------ diagram 2: taxonomy
+
+# Eighteen wire formats reduce to twenty-three prefixes, and the prefix is the
+# whole addressing scheme: it is how `fetch` routes, how `discover` answers, and
+# the reason a new source adds no new tool. Grouped the same four ways the source
+# grid is grouped, so the eye carries the clustering across from the panel before.
+#   family -> [(prefix, what it answers)]
+TAXONOMY = [
+    ("PRICES &amp; MARKETS", [
+        ("price:",     "OHLCV, adjusted close"),
+        ("index:",     "market indices"),
+        ("crypto:",    "coin pairs, OHLCV"),
+        ("fx:",        "euro reference rates"),
+        ("vol:",       "VIX and the vol family"),
+    ]),
+    ("FILINGS", [
+        ("us-gaap:",   "any tagged concept"),
+        ("dei:",       "entity facts"),
+        ("ifrs-full:", "foreign filers"),
+        ("srt:",       "reporting taxonomy"),
+        ("invest:",    "investment taxonomy"),
+        ("filing:",    "8-K, 10-K, Form 4"),
+        ("frame:",     "one concept, all filers"),
+        ("13f:",       "institutional holdings"),
+        ("delisting:", "Form 25, every exit"),
+    ]),
+    ("MACRO &amp; RATES", [
+        ("fred:",      "800k series, vintages"),
+        ("bls:",       "CPI, payrolls, JOLTS"),
+        ("bea:",       "the national accounts"),
+        ("ust:",       "14-tenor yield curve"),
+        ("cot:",       "weekly positioning"),
+    ]),
+    ("RESEARCH &amp; CROWD", [
+        ("french:",    "Fama-French factors"),
+        ("openap:",    "331 published claims"),
+        ("short:",     "FINRA short volume"),
+        ("ape:",       "forum mention ranks"),
+    ]),
+]
+
+
+def diagram_taxonomy() -> str:
+    """The same Vintage block, opened out into the field taxonomy it produces."""
+    p: list[str] = []
+    p.append('<svg class="dia" viewBox="0 0 1160 600" role="img" '
+             'aria-label="Vintage distilling eighteen sources into twenty-three field '
+             'prefixes, grouped into prices, filings, macro and research, all reachable '
+             'through the same six verbs">')
+
+    # The panel opens on the block the previous panel closed on.
+    vintage_bar(p, 16, lede="the same block the last panel ended on")
+
+    p.append(txt(20, 132, "ONE TAXONOMY", "d-h g"))
+    p.append(txt(1140, 132, "23 PREFIXES", "d-h", "end"))
+
+    for i in range(4):
+        cx = COL_X[i] + COL_W // 2
+        d = f"M{cx} 108 L{cx} 160"
+        p.append(f'<path class="d-wire" d="{d}"/>')
+        p.append(f'<path class="d-flow" style="animation-delay:{i * -0.4:.1f}s" d="{d}"/>')
+        p.append(f'<path class="d-arrow" d="M{cx - 6} 152 L{cx} 160 L{cx + 6} 152"/>')
+
+    for gi, (family, prefixes) in enumerate(TAXONOMY):
+        x = COL_X[gi]
+        p.append(f'<rect class="d-fam" x="{x}" y="160" width="{COL_W}" height="316" rx="12"/>')
+        p.append(txt(x + 14, 184, family, "d-ct"))
+        p.append(txt(x + COL_W - 14, 184, f"{len(prefixes)}", "d-cnt", "end"))
+        for j, (prefix, answers) in enumerate(prefixes):
+            y = 194 + j * 31
+            p.append(f'<rect class="d-pill" x="{x + 10}" y="{y}" '
+                     f'width="{COL_W - 20}" height="27" rx="7"/>')
+            p.append(txt(x + 22, y + 18, prefix, "d-px"))
+            p.append(txt(x + COL_W - 22, y + 18, answers, "d-ans", "end"))
+
+    for i in range(4):
+        cx = COL_X[i] + COL_W // 2
+        d = f"M{cx} 476 L{cx} 500"
+        p.append(f'<path class="d-wire" d="{d}"/>')
+        p.append(f'<path class="d-flow" style="animation-delay:{i * -0.3:.1f}s" d="{d}"/>')
+
+    for i, verb in enumerate(VERB_NAMES):
+        x = 20 + i * 187
+        p.append(f'<rect class="d-verb" x="{x}" y="500" width="175" height="52" rx="10"/>')
+        p.append(txt(x + 87, 532, verb, "d-vt", "middle"))
+
+    p.append(txt(20, 578, "six verbs reach every prefix &middot; source is a parameter, never a "
+                          "new tool &middot; a bare field routes to EDGAR", "d-fn"))
+
+    p.append("</svg>")
+    return "\n      ".join(p)
+
+
+# -------------------------------------------------- diagram 3: point-in-time
 
 # The point-in-time idea told as a newsstand, because everyone already knows
 # how a newspaper works: you can read the ones printed on or before today, the
@@ -614,6 +707,79 @@ def build_clients() -> tuple[str, str]:
     return "\n          ".join(tabs), "\n        ".join(panes)
 
 
+# ----------------------------------------------------- installing it, played
+
+# Two clients that genuinely work today, each as a short loop. Claude web and
+# the iOS app are a third card rather than a third animation, because they only
+# accept a remote MCP server over HTTP and Vintage runs on your machine. Drawing
+# a connector flow that does not exist would be the one thing this site is about
+# not doing.
+
+INSTALL_LOOP = 15.0
+
+INSTALL_CODE: list = [
+    Typed(0.2, "claude mcp add vintage -s user -- uvx vintage-mcp",
+          prompt="$", prompt_class="p-shell", typing=2.8),
+    Out(3.7, "resolving vintage-mcp from PyPI", cls="dim"),
+    Out(4.7, "installed in 4.1s, nothing cloned", cls="dim"),
+    Out(6.0, "vintage connected", cls="ok"),
+    Out(7.0, cells=[("tools", "6"), ("sources", "18"), ("keys needed", "0")]),
+    Typed(8.8, "what were Apple's total assets in Jan 2020?", typing=2.6),
+    Out(12.2, "reading us-gaap:Assets as of 2020-01-01", cls="dim"),
+    Out(13.2, "$338.5B, filed 31 Oct 2019", cls="ok"),
+]
+
+INSTALL_DESKTOP: list = [
+    Out(0.1, "claude_desktop_config.json", cls="dim"),
+    Typed(0.5, '{ "mcpServers": { "vintage": {', prompt="", prompt_class="p-shell",
+          typing=1.7),
+    Typed(3.0, '    "command": "uvx", "args": ["vintage-mcp"] } } }', prompt="",
+          prompt_class="p-shell", typing=2.2),
+    Out(5.8, "saved", cls="dim"),
+    Out(6.8, "quit and reopen Claude Desktop", cls="dim"),
+    Out(8.6, "vintage connected", cls="ok"),
+    Out(9.6, cells=[("tools", "6"), ("sources", "18"), ("keys needed", "0")]),
+    Out(11.4, "the hammer icon in the composer now lists six verbs", cls="dim"),
+]
+
+# 20x20, same grid as the rest of the marks on this site.
+PHONE = ('<path d="M6.4 2.4h7.2a1.8 1.8 0 0 1 1.8 1.8v11.6a1.8 1.8 0 0 1-1.8 1.8H6.4'
+         'a1.8 1.8 0 0 1-1.8-1.8V4.2a1.8 1.8 0 0 1 1.8-1.8Z"/>'
+         '<path d="M8.6 4.6h2.8"/><path d="M10 15.2h0.01"/>')
+
+
+def build_install_reels() -> tuple[str, str]:
+    """Two playing terminals and one honest card, for the install section."""
+    code_rows, code_css = build_session(INSTALL_CODE, INSTALL_LOOP, "ic")
+    desk_rows, desk_css = build_session(INSTALL_DESKTOP, INSTALL_LOOP, "id")
+
+    def term(title: str, rows: str) -> str:
+        return (f'<div class="reel"><div class="term">'
+                f'<div class="bar"><span class="tdot"></span><span class="tdot"></span>'
+                f'<span class="tdot"></span><span class="who">{title}</span></div>'
+                f'<div class="screen">{rows}</div></div></div>')
+
+    phone = (
+        '<div class="reel later"><div class="term">'
+        '<div class="bar"><span class="tdot"></span><span class="tdot"></span>'
+        '<span class="tdot"></span><span class="who">claude web &middot; ios</span></div>'
+        '<div class="screen laterbody">'
+        '<svg viewBox="0 0 20 20" width="34" height="34" fill="none" stroke="currentColor" '
+        f'stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">{PHONE}</svg>'
+        '<p><b>Not yet, and the reason is the point.</b></p>'
+        '<p>Custom connectors there accept a remote MCP server over HTTP. Anthropic\'s '
+        'cloud calls it, which would mean <b>we</b> fetch from the SEC and Yahoo on your '
+        'behalf and hand you the result. That is redistribution, and it is what keeps '
+        '"free forever" honest that we do not.</p>'
+        '<p>Local first is the licence. A hosted endpoint is the paid tier, when it exists.</p>'
+        '</div></div></div>'
+    )
+
+    html_out = f'<div class="reels">{term("claude code", code_rows)}' \
+               f'{term("claude desktop &middot; config", desk_rows)}{phone}</div>'
+    return html_out, code_css + "\n" + desk_css
+
+
 # --------------------------------------------------------------------- page
 
 DEEP_PAGE = """<!doctype html>
@@ -726,6 +892,22 @@ h2{font-size:clamp(19px,3.4vw,26px);color:var(--ink);margin:0 0 8px;font-weight:
 .d-note{fill:var(--green);font-size:11.5px}
 .d-card{fill:rgba(255,255,255,.018);stroke:var(--line)}
 .d-box{fill:#0a111a;stroke:var(--line)}
+.d-fam{fill:rgba(255,255,255,.012);stroke:var(--line)}
+.d-src{fill:#0a111a;stroke:var(--line)}
+.d-cnt{fill:var(--green);font-size:13px;font-weight:700}
+.d-sb{fill:var(--green);font-size:13px;font-weight:700}
+.d-pill{fill:#0d1420;stroke:rgba(53,224,138,.22)}
+.d-ban{fill:#0a111a;stroke:var(--line)}
+.d-edgemark{opacity:.85}
+.d-edgemark.gov{fill:var(--green)}
+.d-edgemark.edu{fill:var(--blue)}
+.d-edgemark.third{fill:#3b5468}
+.d-bdg{font-size:10px;letter-spacing:.16em}
+.d-bdg.gov{fill:var(--green)}
+.d-bdg.edu{fill:var(--blue)}
+.d-bdg.third{fill:#6b8299}
+.d-px{fill:var(--green);font-size:12px;font-weight:700}
+.d-ans{fill:var(--dim);font-size:10.5px}
 .d-edge{fill:var(--green);opacity:.55}
 .d-pipe{fill:rgba(53,224,138,.05);stroke:rgba(53,224,138,.34)}
 .d-stage{fill:#0a111a;stroke:var(--line)}
@@ -849,6 +1031,22 @@ h2{font-size:clamp(19px,3.4vw,26px);color:var(--ink);margin:0 0 8px;font-weight:
 .paper.off b{color:var(--amber)}
 
 /* --------------------------------------------------------------- install */
+/* the install reels: two clients playing, one card explaining the third */
+.reels{display:grid;grid-template-columns:1.12fr 1.12fr 1fr;gap:14px;margin:0 0 26px}
+.reels .term{height:100%}
+.reels .screen{font-size:10.5px;padding:14px 15px;min-height:236px;overflow:hidden}
+.reel{min-width:0}
+.reel .row{padding:1.5px 0}
+.reel .kv .v{margin-right:11px}
+.reel .kv .k{margin-right:3px}
+.laterbody{color:var(--dim);font-size:11.5px;line-height:1.5;
+  display:flex;flex-direction:column;gap:9px}
+.laterbody svg{color:var(--green);opacity:.75}
+.laterbody p{margin:0}
+.laterbody b{color:var(--ink)}
+.reel.later .term{border-style:dashed}
+@media(max-width:960px){.reels{grid-template-columns:1fr}}
+
 .tabs{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
 .tab{font-family:var(--mono);font-size:13px;color:var(--dim);cursor:pointer;
   background:transparent;border:1px solid var(--line);border-radius:7px;padding:7px 13px}
@@ -1028,6 +1226,9 @@ __DIACSS__
 
   <section>
     <h2>Install</h2>
+    <p class="lede">One line in Claude Code, or four in a config file for Claude Desktop.
+    <span class="hl">Nothing to clone and no key to fetch first.</span></p>
+    __INSTALLREEL__
     <div class="tabs">
       __TABS__
     </div>
@@ -1085,34 +1286,60 @@ document.querySelectorAll('.copy').forEach(function (btn) {
 # Every number below came out of Vintage on 2026-08-06 and is reproducible with
 # the commands shown. The old script used an invented 2.14 Sharpe collapsing to
 # 0.09, which is a strange thing to fake on a site about not faking numbers.
-EXPERIMENT_LOOP = 22.0
+EXPERIMENT_LOOP = 27.0
 
+# One paper, taken all the way: claim, specification, implementation, backtest,
+# and the honesty report at the end. Every number came out of Vintage on
+# 2026-08-06 and is reproducible with the commands shown. The old script used an
+# invented 2.14 Sharpe collapsing to 0.09, which is a strange thing to fake on a
+# site about not faking numbers.
+#
+# The paper itself is picked from Alpha Archive, the companion project that reads
+# papers and records which ones free data can actually reproduce. That is a
+# separate repository, not a wired Vintage source, and the line below says so
+# rather than implying an integration that does not exist yet.
 EXPERIMENT: list = [
     Typed(0.2, "claude mcp add vintage -s user -- uvx vintage-mcp",
           prompt="$", prompt_class="p-shell", typing=1.5),
     Out(2.1, "connected · sec · fred · dartmouth · openap · coinbase · finra", cls="ok"),
 
-    Typed(3.0, "replicate jegadeesh-titman momentum on the dow since 2010", typing=1.8),
-    Out(5.2, "openap:Mom12m, the paper claimed 1.31%/month, t = 3.74, sample 1964-1989",
+    Typed(3.0, "take Jegadeesh-Titman (1993) and replicate it end to end", typing=1.9),
+
+    Out(5.3, "the claim", cls="rule"),
+    Out(5.7, "openap:Mom12m · Returns to Buying Winners and Selling Losers",
         cls="dim", indent=1),
-    Out(5.7, "reading 30 tickers, 4,113 sessions · panel indexed on known_at", cls="dim", indent=1),
-    Out(6.3, cells=[("annual return", "12.1%"), ("volatility", "19.4%"), ("max drawdown", "−29.5%")]),
-    Out(6.9, cells=[("sharpe", "0.688")], cls="big"),
-    Out(7.5, "WBA excluded, no price history. it delisted.", cls="kicker", indent=1),
-
-    Typed(8.6, "is it decaying?", typing=0.9),
-    Out(10.1, cells=[("first half", "0.883"), ("second half", "0.566")], cls="mid"),
-
-    Typed(11.2, "is it just market beta?", typing=1.1),
-    Out(13.0, cells=[("correlation with Mkt-RF", "0.74"), ("beta", "0.81"), ("R²", "0.56")],
+    Out(6.2, cells=[("paper claimed", "1.31%/mo"), ("t-stat", "3.74"), ("sample", "1964-1989")],
         indent=1),
-    Out(13.6, cells=[("alpha", "2.31%/yr")], cls="mid", indent=1),
-    Out(14.4, "mostly Mkt-RF, with something else on top.", cls="verdict", indent=1),
 
-    Out(15.4, "honesty report", cls="rule"),
-    Out(15.8, cells=[("specs tried this session", "1")], indent=1),
-    Out(16.3, "one spec, so nothing to deflate yet. ask twelve more and watch it fall.",
+    Out(7.2, "the implementation", cls="rule"),
+    Out(7.6, "rank on 12-1 total return · hold one month · long the top fifth",
+        cls="dim", indent=1),
+    Out(8.1, "resolve → 30 tickers · fetch → 4,113 sessions · panel indexed on known_at",
+        cls="dim", indent=1),
+    Out(8.6, "WBA excluded, no price history. it delisted. that is survivorship, in miniature.",
         cls="kicker", indent=1),
+
+    Out(9.7, "the backtest · dow 30 since 2010", cls="rule"),
+    Out(10.1, cells=[("annual return", "12.1%"), ("volatility", "19.4%"),
+                     ("max drawdown", "−29.5%")]),
+    Out(10.7, cells=[("sharpe", "0.688")], cls="big"),
+
+    Typed(11.8, "is it decaying?", typing=0.9),
+    Out(13.4, cells=[("first half", "0.883"), ("second half", "0.566")], cls="mid"),
+
+    Typed(14.5, "is it just market beta?", typing=1.1),
+    Out(16.3, cells=[("correlation with Mkt-RF", "0.74"), ("beta", "0.81"), ("R²", "0.56")],
+        indent=1),
+    Out(16.9, cells=[("alpha", "2.31%/yr")], cls="mid", indent=1),
+    Out(17.7, "mostly Mkt-RF, with something else on top.", cls="verdict", indent=1),
+
+    Out(18.8, "the honesty report", cls="rule"),
+    Out(19.2, cells=[("specs tried this session", "1")], indent=1),
+    Out(19.7, "one spec, so nothing to deflate yet. ask twelve more and watch it fall.",
+        cls="kicker", indent=1),
+
+    Out(20.9, "claim → spec → implementation → backtest → honesty. one prompt, no downloads.",
+        cls="verdict"),
 ]
 
 
@@ -1166,33 +1393,78 @@ def build_session(script: list, loop: float, prefix: str) -> tuple[str, str]:
 
 # ------------------------------------------------- diagram: what you get
 
+# The five numbers, then every source as a banner with its span in words.
+# This was a bar chart against a 1926-to-today axis, which spent most of its ink
+# encoding one number per row as a length the reader then had to decode back into
+# a year. The year was already written at the end of the row. Only the years are
+# kept, and the reader is trusted to know that 1926 is before 1962.
+COVERAGE_STATS = [
+    ("100",     "years, Jul 1926 on"),
+    ("18",      "free sources"),
+    ("23",      "field prefixes"),
+    ("331",     "published claims"),
+    ("800k+",   "macro series"),
+]
+
+# (name, standing badge, the span, in words). Every span here is either measured
+# from the source or quoted from its own documentation. Nothing is estimated: a
+# source whose start date Vintage cannot establish says what it does instead.
+COVERAGE_BANNERS = [
+    ("SEC EDGAR XBRL",     "gov",   "2009 &rarr; today"),
+    ("SEC filings stream", "gov",   "1993 &rarr; today"),
+    ("SEC Form 13F",       "gov",   "by quarter, filed 45 days late"),
+    ("SEC Form 25",        "gov",   "2003 &rarr; today"),
+    ("SEC XBRL frames",    "gov",   "any quarter, all filers at once"),
+    ("FINRA short volume", "gov",   "2009 &rarr; today"),
+    ("CFTC positioning",   "gov",   "2016 &rarr; today"),
+    ("FRED",               "gov",   "1947 &rarr; today"),
+    ("ALFRED vintages",    "gov",   "1996 &rarr; today"),
+    ("US Treasury",        "gov",   "1990 &rarr; today"),
+    ("ECB reference rates", "gov",  "1999 &rarr; today"),
+    ("BLS",                "gov",   "3 years on the keyless tier"),
+    ("BEA",                "gov",   "the current estimate only"),
+    ("CBOE volatility",    "gov",   "1990 &rarr; today"),
+    ("Ken French Library", "edu",   "Jul 1926 &rarr; today"),
+    ("Open Source AP",     "edu",   "1926 &rarr; 2023"),
+    ("Coinbase Exchange",  "third", "2015 &rarr; today"),
+    ("Yahoo Finance",      "third", "1962 &rarr; today"),
+    ("ApeWisdom",          "third", "live only, no history"),
+]
+
+BADGE_WORD = {"gov": "PRIMARY", "edu": "ACADEMIC", "third": "THIRD PARTY"}
+
+
 def diagram_coverage() -> str:
-    """A century of coverage, and the six verbs that reach all of it."""
+    """A century of coverage, said in words and banners rather than bars."""
     p: list[str] = []
     p.append('<svg class="dia" viewBox="0 0 1160 600" role="img" '
-             'aria-label="Coverage of each source from 1926 to today, and the six verbs">')
+             'aria-label="A hundred years of coverage across nineteen datasets, each '
+             'with the years it spans and whether it comes from the primary publisher">')
 
-    p.append(txt(40, 40, "A CENTURY OF COVERAGE", "d-h g"))
-    p.append(txt(300, 70, "1926", "d-fn"))
-    p.append(txt(1000, 70, "today", "d-fn", "end"))
-    p.append('<line class="d-axis" x1="300" y1="78" x2="1000" y2="78"/>')
+    p.append(txt(20, 30, "A CENTURY OF COVERAGE", "d-h g"))
+    p.append(txt(1140, 30, "each span measured from the source, never estimated", "d-fn", "end"))
 
-    for i, (name, badge, span, a, b) in enumerate(SOURCES):
-        y = 100 + i * 33
-        p.append(txt(40, y + 11, name, "d-it"))
-        p.append(f'<rect class="d-track" x="300" y="{y}" width="700" height="13" rx="6"/>')
-        x = 300 + a / 100 * 700
-        w = max((b - a) / 100 * 700, 9)
-        p.append(f'<rect class="tlb {badge}" x="{x:.0f}" y="{y}" width="{w:.0f}" height="13" rx="6"/>')
-        p.append(txt(1150, y + 11, span, "d-fn", "end"))
+    for i, (big, label) in enumerate(COVERAGE_STATS):
+        x = 20 + i * 226
+        p.append(card(x, 44, 212, 84, "d-box"))
+        p.append(txt(x + 106, 92, big, "d-big ok", "middle"))
+        p.append(txt(x + 106, 114, label, "d-fn", "middle"))
 
-    p.append(txt(40, 470, "SIX VERBS REACH ALL OF IT", "d-h g"))
-    for i, v in enumerate(VERB_NAMES):
-        x = 40 + i * 184
-        p.append(f'<rect class="d-verb" x="{x}" y="492" width="170" height="54" rx="10"/>')
-        p.append(txt(x + 85, 524, v, "d-vt", "middle"))
-    p.append(txt(40, 578, "source is a parameter, never a new tool, twenty more sources adds zero verbs",
-                 "d-fn"))
+    half = (len(COVERAGE_BANNERS) + 1) // 2
+    for i, (name, badge, span) in enumerate(COVERAGE_BANNERS):
+        col, row = i // half, i % half
+        x = 20 + col * 570
+        y = 154 + row * 36
+        p.append(f'<rect class="d-ban" x="{x}" y="{y}" width="550" height="30" rx="8"/>')
+        p.append(f'<rect class="d-edgemark {badge}" x="{x}" y="{y}" width="4" height="30"/>')
+        p.append(txt(x + 18, y + 20, name, "d-it"))
+        p.append(txt(x + 250, y + 20, BADGE_WORD[badge], f"d-bdg {badge}"))
+        p.append(txt(x + 536, y + 20, span, "d-fn", "end"))
+
+    p.append(txt(20, 560, "Primary means the institution that receives or computes the number, "
+                          "not a reseller of it.", "d-fn"))
+    p.append(txt(20, 582, "Six verbs reach all of it &middot; source is a parameter, never a "
+                          "new tool &middot; twenty more sources adds zero verbs", "d-note"))
 
     p.append("</svg>")
     return ("\n      ").join(p)
@@ -1280,9 +1552,12 @@ FACTS = {
     "__F5__": [("ledger", "it counts how many times you asked"),
                ("fall", "the Sharpe is deflated for that count"),
                ("shield", "published methods, cited on the page")],
-    "__F4__": [("ledger", "41 specs counted this session"),
-               ("fall", "Sharpe 2.14 deflates to 0.09"),
-               ("prompt", "every number reproducible")],
+    "__F4__": [("prompt", "one prompt, claim to verdict"),
+               ("ledger", "every spec counted this session"),
+               ("shield", "every number on this screen reproducible")],
+    "__F6__": [("funnel", "eighteen sources, one grammar"),
+               ("prompt", "23 prefixes, six verbs"),
+               ("stack", "a new source adds no new tool")],
 }
 
 
@@ -1505,6 +1780,22 @@ a:hover{text-decoration:underline}
 .d-note{fill:var(--green);font-size:11.5px}
 .d-card{fill:rgba(255,255,255,.018);stroke:var(--line)}
 .d-box{fill:#070b11;stroke:var(--line)}
+.d-fam{fill:rgba(255,255,255,.012);stroke:var(--line)}
+.d-src{fill:#070b11;stroke:var(--line)}
+.d-cnt{fill:var(--green);font-size:13px;font-weight:700}
+.d-sb{fill:var(--green);font-size:13px;font-weight:700}
+.d-pill{fill:#0c121c;stroke:rgba(47,213,135,.22)}
+.d-px{fill:var(--green);font-size:12px;font-weight:700}
+.d-ans{fill:var(--dim);font-size:10.5px}
+.d-ban{fill:#070b11;stroke:var(--line)}
+.d-edgemark{opacity:.85}
+.d-edgemark.gov{fill:var(--green)}
+.d-edgemark.edu{fill:var(--blue)}
+.d-edgemark.third{fill:#3b5468}
+.d-bdg{font-size:10px;letter-spacing:.16em}
+.d-bdg.gov{fill:var(--green)}
+.d-bdg.edu{fill:var(--blue)}
+.d-bdg.third{fill:#6b8299}
 .d-edge{fill:var(--green);opacity:.55}
 .d-pipe{fill:rgba(47,213,135,.05);stroke:rgba(47,213,135,.32)}
 .d-stage{fill:#070b11;stroke:var(--line)}
@@ -1538,6 +1829,14 @@ a:hover{text-decoration:underline}
 .pit-wall{animation:sweep 11s linear infinite}
 @keyframes sweep{to{transform:translateX(920px)}}
 .d-track{fill:#0e1723}
+.d-fill{fill:var(--green)}
+.d-fill.amber{fill:var(--amber)}
+.d-fill.bad{fill:var(--red)}
+.d-spec{fill:var(--green);opacity:.9}
+.d-big{font-size:26px;font-weight:700;fill:var(--ink)}
+.d-big.ok{fill:var(--green)}
+.d-big.bad{fill:var(--red)}
+.d-mid{font-size:20px;font-weight:700;fill:var(--amber)}
 .tlb.gov{fill:var(--green)}
 .tlb.edu{fill:var(--blue)}
 .tlb.third{fill:#38536a}
@@ -1602,17 +1901,10 @@ __ONECSS__
         __DIA1__
       </section>
 
-      <section class="panel" data-dwell="14">
-        <h2 class="ptitle">And a backtester that argues with you.</h2>
-        __F5__
-        <div class="split">
-          <div class="splitdia">__DIA4__</div>
-          <div class="methods">
-            __METHODS__
-            <p class="mnote">Nothing to install past the one line on the left. The engine
-            runs on the same six verbs, over the panel the federation already built.</p>
-          </div>
-        </div>
+      <section class="panel" data-dwell="12">
+        <h2 class="ptitle">Then distilled into one grammar you can hold in your head.</h2>
+        __F6__
+        __DIA5__
       </section>
 
       <section class="panel" data-dwell="10">
@@ -1627,7 +1919,20 @@ __ONECSS__
         __DIA3__
       </section>
 
-      <section class="panel" data-dwell="23">
+      <section class="panel" data-dwell="14">
+        <h2 class="ptitle">And a backtester that argues with you.</h2>
+        __F5__
+        <div class="split">
+          <div class="splitdia">__DIA4__</div>
+          <div class="methods">
+            __METHODS__
+            <p class="mnote">Nothing to install past the one line on the left. The engine
+            runs on the same six verbs, over the panel the federation already built.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" data-dwell="28">
         <h2 class="ptitle">Does Jegadeesh-Titman momentum still work?</h2>
         __F4__
         <div class="term">
@@ -1649,7 +1954,8 @@ __ONECSS__
 (function () {
   var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
   var chipbar = document.getElementById('chips');
-  var titles = ['What it is', 'The engine', 'What you get', 'Point-in-time', 'The experiment'];
+  var titles = ['What it is', 'The taxonomy', 'What you get', 'Point-in-time',
+                'The engine', 'The experiment'];
   var timer, at = 0;
 
   var chips = titles.map(function (t, i) {
@@ -1745,16 +2051,19 @@ def main() -> None:
     rows, anim = build_terminal()
     exp_rows, exp_anim = build_session(EXPERIMENT, EXPERIMENT_LOOP, "x")
     tabs, panes = build_clients()
+    install_html, install_css = build_install_reels()
 
     # Diagrams are built before the pages are assembled: each one appends its own
     # keyframes to DIA_CSS as a side effect, so both pages need the same block.
     dia1, dia2, dia3 = diagram_federation(), diagram_pit(), diagram_honesty()
+    taxo = diagram_taxonomy()
     cover = diagram_coverage()
     diacss = "\n".join(DIA_CSS)
 
     # index.html, one screen, never scrolls, panels advance on a timer.
     one = (
         ONE_PAGE.replace("__DIA1__", dia1)
+        .replace("__DIA5__", taxo)
         .replace("__DIA2__", cover)
         .replace("__DIA3__", dia2)
         .replace("__EXPROWS__", exp_rows)
@@ -1773,10 +2082,11 @@ def main() -> None:
         .replace("__DIA1__", dia1)
         .replace("__DIA2__", dia2)
         .replace("__DIA3__", dia3)
-        .replace("__DIACSS__", diacss)
+        .replace("__DIACSS__", diacss + "\n" + install_css)
         .replace("__FORUMS__", build_forums())
         .replace("__TIMELINE__", build_timeline())
         .replace("__DRIFT__", build_drift())
+        .replace("__INSTALLREEL__", install_html)
         .replace("__TABS__", tabs)
         .replace("__PANES__", panes)
         .replace("__ANIM__", anim)

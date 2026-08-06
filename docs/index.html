@@ -177,6 +177,22 @@ a:hover{text-decoration:underline}
 .d-note{fill:var(--green);font-size:11.5px}
 .d-card{fill:rgba(255,255,255,.018);stroke:var(--line)}
 .d-box{fill:#070b11;stroke:var(--line)}
+.d-fam{fill:rgba(255,255,255,.012);stroke:var(--line)}
+.d-src{fill:#070b11;stroke:var(--line)}
+.d-cnt{fill:var(--green);font-size:13px;font-weight:700}
+.d-sb{fill:var(--green);font-size:13px;font-weight:700}
+.d-pill{fill:#0c121c;stroke:rgba(47,213,135,.22)}
+.d-px{fill:var(--green);font-size:12px;font-weight:700}
+.d-ans{fill:var(--dim);font-size:10.5px}
+.d-ban{fill:#070b11;stroke:var(--line)}
+.d-edgemark{opacity:.85}
+.d-edgemark.gov{fill:var(--green)}
+.d-edgemark.edu{fill:var(--blue)}
+.d-edgemark.third{fill:#3b5468}
+.d-bdg{font-size:10px;letter-spacing:.16em}
+.d-bdg.gov{fill:var(--green)}
+.d-bdg.edu{fill:var(--blue)}
+.d-bdg.third{fill:#6b8299}
 .d-edge{fill:var(--green);opacity:.55}
 .d-pipe{fill:rgba(47,213,135,.05);stroke:rgba(47,213,135,.32)}
 .d-stage{fill:#070b11;stroke:var(--line)}
@@ -210,6 +226,14 @@ a:hover{text-decoration:underline}
 .pit-wall{animation:sweep 11s linear infinite}
 @keyframes sweep{to{transform:translateX(920px)}}
 .d-track{fill:#0e1723}
+.d-fill{fill:var(--green)}
+.d-fill.amber{fill:var(--amber)}
+.d-fill.bad{fill:var(--red)}
+.d-spec{fill:var(--green);opacity:.9}
+.d-big{font-size:26px;font-weight:700;fill:var(--ink)}
+.d-big.ok{fill:var(--green)}
+.d-big.bad{fill:var(--red)}
+.d-mid{font-size:20px;font-weight:700;fill:var(--amber)}
 .tlb.gov{fill:var(--green)}
 .tlb.edu{fill:var(--blue)}
 .tlb.third{fill:#38536a}
@@ -330,56 +354,68 @@ a:hover{text-decoration:underline}
 .defbar{animation:defgrow 9.0s linear infinite}
 @keyframes defnum{0%,69.60%{opacity:0.0}70.00%,100%{opacity:1}}
 .defnum{animation:defnum 9.0s linear infinite}
-@keyframes ax0{0%,0.682%{opacity:0}0.909%,100%{opacity:1}}
-@keyframes wx0{0%,0.909%{width:0}7.727%,100%{width:49ch}}
-@keyframes cx0{0%,0.682%{visibility:hidden}0.909%,12.955%{visibility:visible}13.182%,100%{visibility:hidden}}
-.rx0{animation:ax0 22.0s infinite}
-.tx0{animation:wx0 22.0s steps(49,end) infinite}
-.kx0{animation:cx0 22.0s infinite,blink .9s steps(2,end) infinite}
-@keyframes ax1{0%,9.318%{opacity:0;transform:translateY(3px)}10.364%,100%{opacity:1;transform:none}}
-.rx1{animation:ax1 22.0s infinite}
-@keyframes ax2{0%,13.409%{opacity:0}13.636%,100%{opacity:1}}
-@keyframes wx2{0%,13.636%{width:0}21.818%,100%{width:57ch}}
-@keyframes cx2{0%,13.409%{visibility:hidden}13.636%,38.409%{visibility:visible}38.636%,100%{visibility:hidden}}
-.rx2{animation:ax2 22.0s infinite}
-.tx2{animation:wx2 22.0s steps(57,end) infinite}
-.kx2{animation:cx2 22.0s infinite,blink .9s steps(2,end) infinite}
-@keyframes ax3{0%,23.409%{opacity:0;transform:translateY(3px)}24.455%,100%{opacity:1;transform:none}}
-.rx3{animation:ax3 22.0s infinite}
-@keyframes ax4{0%,25.682%{opacity:0;transform:translateY(3px)}26.727%,100%{opacity:1;transform:none}}
-.rx4{animation:ax4 22.0s infinite}
-@keyframes ax5{0%,28.409%{opacity:0;transform:translateY(3px)}29.455%,100%{opacity:1;transform:none}}
-.rx5{animation:ax5 22.0s infinite}
-@keyframes ax6{0%,31.136%{opacity:0;transform:translateY(3px)}32.182%,100%{opacity:1;transform:none}}
-.rx6{animation:ax6 22.0s infinite}
-@keyframes ax7{0%,33.864%{opacity:0;transform:translateY(3px)}34.909%,100%{opacity:1;transform:none}}
-.rx7{animation:ax7 22.0s infinite}
-@keyframes ax8{0%,38.864%{opacity:0}39.091%,100%{opacity:1}}
-@keyframes wx8{0%,39.091%{width:0}43.182%,100%{width:15ch}}
-@keyframes cx8{0%,38.864%{visibility:hidden}39.091%,50.227%{visibility:visible}50.455%,100%{visibility:hidden}}
-.rx8{animation:ax8 22.0s infinite}
-.tx8{animation:wx8 22.0s steps(15,end) infinite}
-.kx8{animation:cx8 22.0s infinite,blink .9s steps(2,end) infinite}
-@keyframes ax9{0%,45.682%{opacity:0;transform:translateY(3px)}46.727%,100%{opacity:1;transform:none}}
-.rx9{animation:ax9 22.0s infinite}
-@keyframes ax10{0%,50.682%{opacity:0}50.909%,100%{opacity:1}}
-@keyframes wx10{0%,50.909%{width:0}55.909%,100%{width:23ch}}
-@keyframes cx10{0%,50.682%{visibility:hidden}50.909%,97.500%{visibility:visible}97.727%,100%{visibility:hidden}}
-.rx10{animation:ax10 22.0s infinite}
-.tx10{animation:wx10 22.0s steps(23,end) infinite}
-.kx10{animation:cx10 22.0s infinite,blink .9s steps(2,end) infinite}
-@keyframes ax11{0%,58.864%{opacity:0;transform:translateY(3px)}59.909%,100%{opacity:1;transform:none}}
-.rx11{animation:ax11 22.0s infinite}
-@keyframes ax12{0%,61.591%{opacity:0;transform:translateY(3px)}62.636%,100%{opacity:1;transform:none}}
-.rx12{animation:ax12 22.0s infinite}
-@keyframes ax13{0%,65.227%{opacity:0;transform:translateY(3px)}66.273%,100%{opacity:1;transform:none}}
-.rx13{animation:ax13 22.0s infinite}
-@keyframes ax14{0%,69.773%{opacity:0;transform:translateY(3px)}70.818%,100%{opacity:1;transform:none}}
-.rx14{animation:ax14 22.0s infinite}
-@keyframes ax15{0%,71.591%{opacity:0;transform:translateY(3px)}72.636%,100%{opacity:1;transform:none}}
-.rx15{animation:ax15 22.0s infinite}
-@keyframes ax16{0%,73.864%{opacity:0;transform:translateY(3px)}74.909%,100%{opacity:1;transform:none}}
-.rx16{animation:ax16 22.0s infinite}
+@keyframes ax0{0%,0.556%{opacity:0}0.741%,100%{opacity:1}}
+@keyframes wx0{0%,0.741%{width:0}6.296%,100%{width:49ch}}
+@keyframes cx0{0%,0.556%{visibility:hidden}0.741%,10.556%{visibility:visible}10.741%,100%{visibility:hidden}}
+.rx0{animation:ax0 27.0s infinite}
+.tx0{animation:wx0 27.0s steps(49,end) infinite}
+.kx0{animation:cx0 27.0s infinite,blink .9s steps(2,end) infinite}
+@keyframes ax1{0%,7.593%{opacity:0;transform:translateY(3px)}8.444%,100%{opacity:1;transform:none}}
+.rx1{animation:ax1 27.0s infinite}
+@keyframes ax2{0%,10.926%{opacity:0}11.111%,100%{opacity:1}}
+@keyframes wx2{0%,11.111%{width:0}18.148%,100%{width:56ch}}
+@keyframes cx2{0%,10.926%{visibility:hidden}11.111%,43.148%{visibility:visible}43.333%,100%{visibility:hidden}}
+.rx2{animation:ax2 27.0s infinite}
+.tx2{animation:wx2 27.0s steps(56,end) infinite}
+.kx2{animation:cx2 27.0s infinite,blink .9s steps(2,end) infinite}
+@keyframes ax3{0%,19.444%{opacity:0;transform:translateY(3px)}20.296%,100%{opacity:1;transform:none}}
+.rx3{animation:ax3 27.0s infinite}
+@keyframes ax4{0%,20.926%{opacity:0;transform:translateY(3px)}21.778%,100%{opacity:1;transform:none}}
+.rx4{animation:ax4 27.0s infinite}
+@keyframes ax5{0%,22.778%{opacity:0;transform:translateY(3px)}23.630%,100%{opacity:1;transform:none}}
+.rx5{animation:ax5 27.0s infinite}
+@keyframes ax6{0%,26.481%{opacity:0;transform:translateY(3px)}27.333%,100%{opacity:1;transform:none}}
+.rx6{animation:ax6 27.0s infinite}
+@keyframes ax7{0%,27.963%{opacity:0;transform:translateY(3px)}28.815%,100%{opacity:1;transform:none}}
+.rx7{animation:ax7 27.0s infinite}
+@keyframes ax8{0%,29.815%{opacity:0;transform:translateY(3px)}30.667%,100%{opacity:1;transform:none}}
+.rx8{animation:ax8 27.0s infinite}
+@keyframes ax9{0%,31.667%{opacity:0;transform:translateY(3px)}32.519%,100%{opacity:1;transform:none}}
+.rx9{animation:ax9 27.0s infinite}
+@keyframes ax10{0%,35.741%{opacity:0;transform:translateY(3px)}36.593%,100%{opacity:1;transform:none}}
+.rx10{animation:ax10 27.0s infinite}
+@keyframes ax11{0%,37.222%{opacity:0;transform:translateY(3px)}38.074%,100%{opacity:1;transform:none}}
+.rx11{animation:ax11 27.0s infinite}
+@keyframes ax12{0%,39.444%{opacity:0;transform:translateY(3px)}40.296%,100%{opacity:1;transform:none}}
+.rx12{animation:ax12 27.0s infinite}
+@keyframes ax13{0%,43.519%{opacity:0}43.704%,100%{opacity:1}}
+@keyframes wx13{0%,43.704%{width:0}47.037%,100%{width:15ch}}
+@keyframes cx13{0%,43.519%{visibility:hidden}43.704%,53.148%{visibility:visible}53.333%,100%{visibility:hidden}}
+.rx13{animation:ax13 27.0s infinite}
+.tx13{animation:wx13 27.0s steps(15,end) infinite}
+.kx13{animation:cx13 27.0s infinite,blink .9s steps(2,end) infinite}
+@keyframes ax14{0%,49.444%{opacity:0;transform:translateY(3px)}50.296%,100%{opacity:1;transform:none}}
+.rx14{animation:ax14 27.0s infinite}
+@keyframes ax15{0%,53.519%{opacity:0}53.704%,100%{opacity:1}}
+@keyframes wx15{0%,53.704%{width:0}57.778%,100%{width:23ch}}
+@keyframes cx15{0%,53.519%{visibility:hidden}53.704%,97.963%{visibility:visible}98.148%,100%{visibility:hidden}}
+.rx15{animation:ax15 27.0s infinite}
+.tx15{animation:wx15 27.0s steps(23,end) infinite}
+.kx15{animation:cx15 27.0s infinite,blink .9s steps(2,end) infinite}
+@keyframes ax16{0%,60.185%{opacity:0;transform:translateY(3px)}61.037%,100%{opacity:1;transform:none}}
+.rx16{animation:ax16 27.0s infinite}
+@keyframes ax17{0%,62.407%{opacity:0;transform:translateY(3px)}63.259%,100%{opacity:1;transform:none}}
+.rx17{animation:ax17 27.0s infinite}
+@keyframes ax18{0%,65.370%{opacity:0;transform:translateY(3px)}66.222%,100%{opacity:1;transform:none}}
+.rx18{animation:ax18 27.0s infinite}
+@keyframes ax19{0%,69.444%{opacity:0;transform:translateY(3px)}70.296%,100%{opacity:1;transform:none}}
+.rx19{animation:ax19 27.0s infinite}
+@keyframes ax20{0%,70.926%{opacity:0;transform:translateY(3px)}71.778%,100%{opacity:1;transform:none}}
+.rx20{animation:ax20 27.0s infinite}
+@keyframes ax21{0%,72.778%{opacity:0;transform:translateY(3px)}73.630%,100%{opacity:1;transform:none}}
+.rx21{animation:ax21 27.0s infinite}
+@keyframes ax22{0%,77.222%{opacity:0;transform:translateY(3px)}78.074%,100%{opacity:1;transform:none}}
+.rx22{animation:ax22 27.0s infinite}
 </style>
 </head>
 <body>
@@ -428,278 +464,399 @@ a:hover{text-decoration:underline}
       <section class="panel is-on" data-dwell="10">
         <h2 class="ptitle">The good data is already free. It is just scattered.</h2>
         <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5h17"/><path d="M12 3 3.5 7.5h17Z"/><path d="M6.5 10.5v7"/><path d="M11 10.5v7"/><path d="M15.5 10.5v7"/><path d="M20 10.5v7"/></svg>regulators and central banks</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5 2.5 8 12 12.5 21.5 8Z"/><path d="M6.5 10.2v5.3c0 1.9 2.5 3.2 5.5 3.2s5.5-1.3 5.5-3.2v-5.3"/><path d="M21.5 8v5"/></svg>universities, not resellers</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 4.5h17l-6.6 7.8v6.4l-3.8 2.3v-8.7Z"/></svg>one schema out</span></div>
-        <svg class="dia" viewBox="0 0 1160 600" role="img" aria-label="Scattered free data sources federated through Vintage into six verbs">
-      <text class="d-h" x="20" y="40">THE WEB &middot; 18 FREE SOURCES</text>
-      <text class="d-h g" x="380" y="44">VINTAGE &middot; THE FEDERATION LAYER</text>
-      <text class="d-h" x="830" y="44">ONE INTERFACE</text>
-      <text class="d-ct" x="20" y="66">REGULATORS</text>
-      <g class="d-orb" transform="translate(22,76)" style="animation-delay:-0.00s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5h17"/><path d="M12 3 3.5 7.5h17Z"/><path d="M6.5 10.5v7"/><path d="M11 10.5v7"/><path d="M15.5 10.5v7"/><path d="M20 10.5v7"/></svg></g></g>
-      <text class="d-it" x="50" y="85">SEC XBRL</text>
-      <text class="d-fn" x="50" y="97">every tagged concept</text>
-      <g class="d-orb" transform="translate(190,76)" style="animation-delay:-0.37s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="2.2"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h4.5"/></svg></g></g>
-      <text class="d-it" x="218" y="85">SEC filings</text>
-      <text class="d-fn" x="218" y="97">8-K, 10-K, Form 4</text>
-      <g class="d-orb" transform="translate(22,110)" style="animation-delay:-0.74s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 7.5 12 12l9-4.5Z"/><path d="M3 12.5 12 17l9-4.5"/><path d="M3 17 12 21.5 21 17"/></svg></g></g>
-      <text class="d-it" x="50" y="119">SEC 13F</text>
-      <text class="d-fn" x="50" y="131">institutional holdings</text>
-      <g class="d-orb" transform="translate(190,110)" style="animation-delay:-1.11s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5 12 14l3.5-3.5L21 16"/><path d="M21 11v5h-5"/></svg></g></g>
-      <text class="d-it" x="218" y="119">SEC Form 25</text>
-      <text class="d-fn" x="218" y="131">36,830 delistings</text>
-      <g class="d-orb" transform="translate(22,144)" style="animation-delay:-1.48s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.5" cy="7" r="1.8"/><circle cx="12" cy="4.8" r="1.8"/><circle cx="18.5" cy="8.5" r="1.8"/><circle cx="7" cy="16.5" r="1.8"/><circle cx="16" cy="18" r="1.8"/><circle cx="11.5" cy="11.5" r="1.8"/></svg></g></g>
-      <text class="d-it" x="50" y="153">XBRL frames</text>
-      <text class="d-fn" x="50" y="165">6,289 filers at once</text>
-      <g class="d-orb" transform="translate(190,144)" style="animation-delay:-1.85s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.3 2.9 7.6 7 9.5 4.1-1.9 7-5.2 7-9.5V6Z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg></g></g>
-      <text class="d-it" x="218" y="153">FINRA</text>
-      <text class="d-fn" x="218" y="165">daily short volume</text>
-      <g class="d-orb" transform="translate(22,178)" style="animation-delay:-2.22s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v17"/><path d="M4 7.5h5"/><path d="M4 12h5"/><path d="M4 16.5h5"/><path d="M15.5 9.5h4.5"/><path d="M15.5 14.5h4.5"/></svg></g></g>
-      <text class="d-it" x="50" y="187">CFTC</text>
-      <text class="d-fn" x="50" y="199">weekly positioning</text>
-      <text class="d-ct" x="20" y="222">CENTRAL BANKS</text>
-      <g class="d-orb" transform="translate(22,232)" style="animation-delay:-1.85s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v10"/><path d="M14.6 9.2A2.8 2.8 0 0 0 12 8c-1.7 0-2.8.9-2.8 2s1 1.8 2.8 2 2.8.8 2.8 2-1.1 2-2.8 2a2.8 2.8 0 0 1-2.6-1.2"/></svg></g></g>
-      <text class="d-it" x="50" y="241">FRED</text>
-      <text class="d-fn" x="50" y="253">800k series, vintages</text>
-      <g class="d-orb" transform="translate(190,232)" style="animation-delay:-2.22s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20V4"/><path d="M3 20h18"/><path d="M6 15.5 10 10l3.5 3.5L20 6"/></svg></g></g>
-      <text class="d-it" x="218" y="241">US Treasury</text>
-      <text class="d-fn" x="218" y="253">14-tenor yield curve</text>
-      <g class="d-orb" transform="translate(22,266)" style="animation-delay:-2.59s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M11 14.5h2"/></svg></g></g>
-      <text class="d-it" x="50" y="275">ECB</text>
-      <text class="d-fn" x="50" y="287">FX rates since 1999</text>
-      <g class="d-orb" transform="translate(190,266)" style="animation-delay:-2.96s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.4l3.4 2"/></svg></g></g>
-      <text class="d-it" x="218" y="275">BLS</text>
-      <text class="d-fn" x="218" y="287">CPI, payrolls, JOLTS</text>
-      <g class="d-orb" transform="translate(22,300)" style="animation-delay:-3.33s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 4.5h17l-6.6 7.8v6.4l-3.8 2.3v-8.7Z"/></svg></g></g>
-      <text class="d-it" x="50" y="309">BEA</text>
-      <text class="d-fn" x="50" y="321">the national accounts</text>
-      <text class="d-ct" x="20" y="344">MARKETS</text>
-      <g class="d-orb" transform="translate(22,354)" style="animation-delay:-3.70s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M6.5 9.5 9.5 12l-3 2.5"/><path d="M12.5 15h5"/></svg></g></g>
-      <text class="d-it" x="50" y="363">Yahoo</text>
-      <text class="d-fn" x="50" y="375">daily OHLCV, decades</text>
-      <g class="d-orb" transform="translate(190,354)" style="animation-delay:-4.07s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 3v6.2L4.7 17.4A2 2 0 0 0 6.4 20.5h11.2a2 2 0 0 0 1.7-3.1L14.5 9.2V3"/><path d="M8.5 3h7"/><path d="M7.4 14h9.2"/></svg></g></g>
-      <text class="d-it" x="218" y="363">CBOE</text>
-      <text class="d-fn" x="218" y="375">VIX and the vol family</text>
-      <g class="d-orb" transform="translate(22,388)" style="animation-delay:-4.44s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v11"/><path d="M8 11l4 3.5 4-3.5"/><path d="M4.5 18.5h15"/></svg></g></g>
-      <text class="d-it" x="50" y="397">Coinbase</text>
-      <text class="d-fn" x="50" y="409">crypto, never restated</text>
-      <text class="d-ct" x="20" y="432">ACADEMIA</text>
-      <g class="d-orb" transform="translate(22,442)" style="animation-delay:-5.55s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5 2.5 8 12 12.5 21.5 8Z"/><path d="M6.5 10.2v5.3c0 1.9 2.5 3.2 5.5 3.2s5.5-1.3 5.5-3.2v-5.3"/><path d="M21.5 8v5"/></svg></g></g>
-      <text class="d-it" x="50" y="451">Ken French</text>
-      <text class="d-fn" x="50" y="463">factors from July 1926</text>
-      <g class="d-orb" transform="translate(190,442)" style="animation-delay:-5.92s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8 18.5 16 5.5"/></svg></g></g>
-      <text class="d-it" x="218" y="451">Open Source AP</text>
-      <text class="d-fn" x="218" y="463">331 published claims</text>
-      <g class="d-orb" transform="translate(22,476)" style="animation-delay:-6.29s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5a2 2 0 0 1-2 2H8l-4.5 4V5.5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2Z"/><path d="M8 8.5h8"/><path d="M8 12h5"/></svg></g></g>
-      <text class="d-it" x="50" y="485">ApeWisdom</text>
-      <text class="d-fn" x="50" y="497">forum mention ranks</text>
-      <rect class="d-pipe" x="380" y="70" width="380" height="490" rx="14"/>
-      <rect class="d-stage" x="400" y="96" width="340" height="84" rx="11"/>
-      <circle class="d-num" cx="428" cy="138" r="14"/>
-      <text class="d-numt" x="428" y="142" text-anchor="middle">1</text>
-      <text class="d-st" x="456" y="126">resolve</text>
-      <text class="d-ss" x="456" y="148">AAPL &middot; 0000320193 &middot; &ldquo;Apple Inc&rdquo;</text>
-      <text class="d-ss" x="456" y="166">&rarr; one entity key every source accepts</text>
-      <rect class="d-stage" x="400" y="192" width="340" height="84" rx="11"/>
-      <circle class="d-num" cx="428" cy="234" r="14"/>
-      <text class="d-numt" x="428" y="238" text-anchor="middle">2</text>
-      <text class="d-st" x="456" y="222">normalize</text>
-      <text class="d-ss" x="456" y="244">four wire formats, ten field vocabularies</text>
-      <text class="d-ss" x="456" y="262">&rarr; one schema, one unit convention</text>
-      <rect class="d-stage" x="400" y="288" width="340" height="84" rx="11"/>
-      <circle class="d-num" cx="428" cy="330" r="14"/>
-      <text class="d-numt" x="428" y="334" text-anchor="middle">3</text>
-      <text class="d-st" x="456" y="318">stamp vintage</text>
-      <text class="d-ss" x="456" y="340">every row gets observed_at + known_at</text>
-      <text class="d-ss" x="456" y="358">no honest date &rarr; flagged UNKNOWN_VINTAGE</text>
-      <rect class="d-stage" x="400" y="384" width="340" height="84" rx="11"/>
-      <circle class="d-num" cx="428" cy="426" r="14"/>
-      <text class="d-numt" x="428" y="430" text-anchor="middle">4</text>
-      <text class="d-st" x="456" y="414">index on known_at</text>
-      <text class="d-ss" x="456" y="436">the panel is point-in-time by construction</text>
-      <text class="d-ss" x="456" y="454">there is no flag that turns this off</text>
-      <text class="d-note" x="400" y="500">one schema &middot; one key &middot; two dates per row</text>
-      <text class="d-fn" x="400" y="524">nothing hosted &middot; nothing redistributed &middot; 16 of 18 need no key</text>
-      <path class="d-wire" d="M270 136 C322 136 330 138 380 138"/>
-      <path class="d-flow" style="animation-delay:-0.0s" d="M270 136 C322 136 330 138 380 138"/>
-      <path class="d-wire" d="M270 275 C322 275 330 234 380 234"/>
-      <path class="d-flow" style="animation-delay:-0.4s" d="M270 275 C322 275 330 234 380 234"/>
-      <path class="d-wire" d="M270 380 C322 380 330 330 380 330"/>
-      <path class="d-flow" style="animation-delay:-0.8s" d="M270 380 C322 380 330 330 380 330"/>
-      <path class="d-wire" d="M270 468 C322 468 330 426 380 426"/>
-      <path class="d-flow" style="animation-delay:-1.2s" d="M270 468 C322 468 330 426 380 426"/>
-      <rect class="d-box" x="830" y="70" width="310" height="250" rx="11"/>
-      <text class="d-ct" x="850" y="98">SIX VERBS</text>
-      <rect class="d-verb" x="850" y="114" width="134" height="44" rx="9"/>
-      <text class="d-vt" x="917" y="141" text-anchor="middle">resolve</text>
-      <rect class="d-verb" x="996" y="114" width="134" height="44" rx="9"/>
-      <text class="d-vt" x="1063" y="141" text-anchor="middle">discover</text>
-      <rect class="d-verb" x="850" y="168" width="134" height="44" rx="9"/>
-      <text class="d-vt" x="917" y="195" text-anchor="middle">fetch</text>
-      <rect class="d-verb" x="996" y="168" width="134" height="44" rx="9"/>
-      <text class="d-vt" x="1063" y="195" text-anchor="middle">events</text>
-      <rect class="d-verb" x="850" y="222" width="134" height="44" rx="9"/>
-      <text class="d-vt" x="917" y="249" text-anchor="middle">backtest</text>
-      <rect class="d-verb" x="996" y="222" width="134" height="44" rx="9"/>
-      <text class="d-vt" x="1063" y="249" text-anchor="middle">benchmark</text>
-      <text class="d-fn" x="850" y="300">source is a parameter, never a new tool</text>
-      <rect class="d-box" x="830" y="350" width="310" height="210" rx="11"/>
-      <text class="d-ct" x="850" y="378">YOUR AI CLIENT &middot; MCP</text>
-      <rect class="d-bub" x="850" y="394" width="270" height="52" rx="10"/>
-      <text class="d-it" x="866" y="416">backtest 12-1 momentum on the</text>
-      <text class="d-it" x="866" y="434">dow 30 since 2010</text>
-      <text class="d-ok" x="850" y="476">sharpe 2.14</text>
-      <text class="d-bad" x="850" y="500">deflated 0.09 after 41 tries</text>
-      <text class="d-fn" x="850" y="526">claude &middot; cursor &middot; chatgpt &middot; anything</text>
-      <path class="d-wire" d="M760 200 L830 195"/>
-      <path class="d-flow" style="animation-delay:0.0s" d="M760 200 L830 195"/>
-      <path class="d-wire" d="M985 320 L985 350"/>
-      <path class="d-flow" style="animation-delay:-0.8s" d="M985 320 L985 350"/>
-      <path class="d-arrow" d="M978 344 L985 352 L992 344"/>
+        <svg class="dia" viewBox="0 0 1160 600" role="img" aria-label="Eighteen free data sources in four families - regulators, central banks, markets and academia - all flowing down into Vintage, which resolves, normalizes, stamps and indexes them">
+      <text class="d-h" x="20" y="30">THE WEB &middot; 18 FREE SOURCES, FOUR FAMILIES</text>
+      <text class="d-fn" x="1140" y="30" text-anchor="end">every one of them public, and free, right now</text>
+      <rect class="d-fam" x="20" y="44" width="265" height="402" rx="12"/>
+      <text class="d-ct" x="34" y="68">REGULATORS</text>
+      <text class="d-cnt" x="271" y="68" text-anchor="end">7</text>
+      <text class="d-fn" x="34" y="84">what filers are compelled to disclose</text>
+      <rect class="d-src" x="30" y="98" width="245" height="44" rx="11"/>
+      <g class="d-orb" transform="translate(43,112)" style="animation-delay:-0.00s"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5h17"/><path d="M12 3 3.5 7.5h17Z"/><path d="M6.5 10.5v7"/><path d="M11 10.5v7"/><path d="M15.5 10.5v7"/><path d="M20 10.5v7"/></svg></g>
+      <text class="d-it" x="68" y="117">SEC XBRL</text>
+      <text class="d-fn" x="68" y="132">every tagged concept</text>
+      <rect class="d-src" x="30" y="147" width="245" height="44" rx="11"/>
+      <g class="d-orb" transform="translate(43,161)" style="animation-delay:-0.37s"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="2.2"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h4.5"/></svg></g>
+      <text class="d-it" x="68" y="166">SEC filings</text>
+      <text class="d-fn" x="68" y="181">8-K, 10-K, Form 4</text>
+      <rect class="d-src" x="30" y="196" width="245" height="44" rx="11"/>
+      <g class="d-orb" transform="translate(43,210)" style="animation-delay:-0.74s"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 7.5 12 12l9-4.5Z"/><path d="M3 12.5 12 17l9-4.5"/><path d="M3 17 12 21.5 21 17"/></svg></g>
+      <text class="d-it" x="68" y="215">SEC 13F</text>
+      <text class="d-fn" x="68" y="230">institutional holdings</text>
+      <rect class="d-src" x="30" y="245" width="245" height="44" rx="11"/>
+      <g class="d-orb" transform="translate(43,259)" style="animation-delay:-1.11s"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5 12 14l3.5-3.5L21 16"/><path d="M21 11v5h-5"/></svg></g>
+      <text class="d-it" x="68" y="264">SEC Form 25</text>
+      <text class="d-fn" x="68" y="279">36,830 delistings</text>
+      <rect class="d-src" x="30" y="294" width="245" height="44" rx="11"/>
+      <g class="d-orb" transform="translate(43,308)" style="animation-delay:-1.48s"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.5" cy="7" r="1.8"/><circle cx="12" cy="4.8" r="1.8"/><circle cx="18.5" cy="8.5" r="1.8"/><circle cx="7" cy="16.5" r="1.8"/><circle cx="16" cy="18" r="1.8"/><circle cx="11.5" cy="11.5" r="1.8"/></svg></g>
+      <text class="d-it" x="68" y="313">XBRL frames</text>
+      <text class="d-fn" x="68" y="328">6,289 filers at once</text>
+      <rect class="d-src" x="30" y="343" width="245" height="44" rx="11"/>
+      <g class="d-orb" transform="translate(43,357)" style="animation-delay:-1.85s"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.3 2.9 7.6 7 9.5 4.1-1.9 7-5.2 7-9.5V6Z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg></g>
+      <text class="d-it" x="68" y="362">FINRA</text>
+      <text class="d-fn" x="68" y="377">daily short volume</text>
+      <rect class="d-src" x="30" y="392" width="245" height="44" rx="11"/>
+      <g class="d-orb" transform="translate(43,406)" style="animation-delay:-2.22s"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v17"/><path d="M4 7.5h5"/><path d="M4 12h5"/><path d="M4 16.5h5"/><path d="M15.5 9.5h4.5"/><path d="M15.5 14.5h4.5"/></svg></g>
+      <text class="d-it" x="68" y="411">CFTC</text>
+      <text class="d-fn" x="68" y="426">weekly positioning</text>
+      <rect class="d-fam" x="305" y="44" width="265" height="402" rx="12"/>
+      <text class="d-ct" x="319" y="68">CENTRAL BANKS</text>
+      <text class="d-cnt" x="556" y="68" text-anchor="end">5</text>
+      <text class="d-fn" x="319" y="84">what the state measures about itself</text>
+      <rect class="d-src" x="315" y="98" width="245" height="44" rx="11"/>
+      <g class="d-orb" transform="translate(328,112)" style="animation-delay:-1.85s"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v10"/><path d="M14.6 9.2A2.8 2.8 0 0 0 12 8c-1.7 0-2.8.9-2.8 2s1 1.8 2.8 2 2.8.8 2.8 2-1.1 2-2.8 2a2.8 2.8 0 0 1-2.6-1.2"/></svg></g>
+      <text class="d-it" x="353" y="117">FRED</text>
+      <text class="d-fn" x="353" y="132">800k series, vintages</text>
+      <rect class="d-src" x="315" y="147" width="245" height="44" rx="11"/>
+      <g class="d-orb" transform="translate(328,161)" style="animation-delay:-2.22s"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20V4"/><path d="M3 20h18"/><path d="M6 15.5 10 10l3.5 3.5L20 6"/></svg></g>
+      <text class="d-it" x="353" y="166">US Treasury</text>
+      <text class="d-fn" x="353" y="181">14-tenor yield curve</text>
+      <rect class="d-src" x="315" y="196" width="245" height="44" rx="11"/>
+      <g class="d-orb" transform="translate(328,210)" style="animation-delay:-2.59s"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M11 14.5h2"/></svg></g>
+      <text class="d-it" x="353" y="215">ECB</text>
+      <text class="d-fn" x="353" y="230">FX rates since 1999</text>
+      <rect class="d-src" x="315" y="245" width="245" height="44" rx="11"/>
+      <g class="d-orb" transform="translate(328,259)" style="animation-delay:-2.96s"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.4l3.4 2"/></svg></g>
+      <text class="d-it" x="353" y="264">BLS</text>
+      <text class="d-fn" x="353" y="279">CPI, payrolls, JOLTS</text>
+      <rect class="d-src" x="315" y="294" width="245" height="44" rx="11"/>
+      <g class="d-orb" transform="translate(328,308)" style="animation-delay:-3.33s"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 4.5h17l-6.6 7.8v6.4l-3.8 2.3v-8.7Z"/></svg></g>
+      <text class="d-it" x="353" y="313">BEA</text>
+      <text class="d-fn" x="353" y="328">the national accounts</text>
+      <rect class="d-fam" x="590" y="44" width="265" height="402" rx="12"/>
+      <text class="d-ct" x="604" y="68">MARKETS</text>
+      <text class="d-cnt" x="841" y="68" text-anchor="end">3</text>
+      <text class="d-fn" x="604" y="84">what changed hands, and at what price</text>
+      <rect class="d-src" x="600" y="98" width="245" height="44" rx="11"/>
+      <g class="d-orb" transform="translate(613,112)" style="animation-delay:-3.70s"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M6.5 9.5 9.5 12l-3 2.5"/><path d="M12.5 15h5"/></svg></g>
+      <text class="d-it" x="638" y="117">Yahoo</text>
+      <text class="d-fn" x="638" y="132">daily OHLCV, decades</text>
+      <rect class="d-src" x="600" y="147" width="245" height="44" rx="11"/>
+      <g class="d-orb" transform="translate(613,161)" style="animation-delay:-4.07s"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 3v6.2L4.7 17.4A2 2 0 0 0 6.4 20.5h11.2a2 2 0 0 0 1.7-3.1L14.5 9.2V3"/><path d="M8.5 3h7"/><path d="M7.4 14h9.2"/></svg></g>
+      <text class="d-it" x="638" y="166">CBOE</text>
+      <text class="d-fn" x="638" y="181">VIX and the vol family</text>
+      <rect class="d-src" x="600" y="196" width="245" height="44" rx="11"/>
+      <g class="d-orb" transform="translate(613,210)" style="animation-delay:-4.44s"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v11"/><path d="M8 11l4 3.5 4-3.5"/><path d="M4.5 18.5h15"/></svg></g>
+      <text class="d-it" x="638" y="215">Coinbase</text>
+      <text class="d-fn" x="638" y="230">crypto, never restated</text>
+      <rect class="d-fam" x="875" y="44" width="265" height="402" rx="12"/>
+      <text class="d-ct" x="889" y="68">ACADEMIA</text>
+      <text class="d-cnt" x="1126" y="68" text-anchor="end">3</text>
+      <text class="d-fn" x="889" y="84">what has been published, and claimed</text>
+      <rect class="d-src" x="885" y="98" width="245" height="44" rx="11"/>
+      <g class="d-orb" transform="translate(898,112)" style="animation-delay:-5.55s"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5 2.5 8 12 12.5 21.5 8Z"/><path d="M6.5 10.2v5.3c0 1.9 2.5 3.2 5.5 3.2s5.5-1.3 5.5-3.2v-5.3"/><path d="M21.5 8v5"/></svg></g>
+      <text class="d-it" x="923" y="117">Ken French</text>
+      <text class="d-fn" x="923" y="132">factors from July 1926</text>
+      <rect class="d-src" x="885" y="147" width="245" height="44" rx="11"/>
+      <g class="d-orb" transform="translate(898,161)" style="animation-delay:-5.92s"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8 18.5 16 5.5"/></svg></g>
+      <text class="d-it" x="923" y="166">Open Source AP</text>
+      <text class="d-fn" x="923" y="181">331 published claims</text>
+      <rect class="d-src" x="885" y="196" width="245" height="44" rx="11"/>
+      <g class="d-orb" transform="translate(898,210)" style="animation-delay:-6.29s"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5a2 2 0 0 1-2 2H8l-4.5 4V5.5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2Z"/><path d="M8 8.5h8"/><path d="M8 12h5"/></svg></g>
+      <text class="d-it" x="923" y="215">ApeWisdom</text>
+      <text class="d-fn" x="923" y="230">forum mention ranks</text>
+      <path class="d-wire" d="M152 446 L152 476"/>
+      <path class="d-flow" style="animation-delay:-0.0s" d="M152 446 L152 476"/>
+      <path class="d-arrow" d="M146 468 L152 476 L158 468"/>
+      <path class="d-wire" d="M437 446 L437 476"/>
+      <path class="d-flow" style="animation-delay:-0.4s" d="M437 446 L437 476"/>
+      <path class="d-arrow" d="M431 468 L437 476 L443 468"/>
+      <path class="d-wire" d="M722 446 L722 476"/>
+      <path class="d-flow" style="animation-delay:-0.8s" d="M722 446 L722 476"/>
+      <path class="d-arrow" d="M716 468 L722 476 L728 468"/>
+      <path class="d-wire" d="M1007 446 L1007 476"/>
+      <path class="d-flow" style="animation-delay:-1.2s" d="M1007 446 L1007 476"/>
+      <path class="d-arrow" d="M1001 468 L1007 476 L1013 468"/>
+      <rect class="d-pipe" x="20" y="476" width="1120" height="92" rx="14"/>
+      <text class="d-h g" x="38" y="500">VINTAGE &middot; THE FEDERATION LAYER</text>
+      <text class="d-fn" x="1122" y="500" text-anchor="end">nothing hosted &middot; nothing redistributed &middot; 16 of the 18 need no key</text>
+      <rect class="d-stage" x="38" y="510" width="262" height="46" rx="11"/>
+      <circle class="d-num" cx="63" cy="533" r="11"/>
+      <text class="d-numt" x="63" y="537" text-anchor="middle">1</text>
+      <text class="d-sb" x="82" y="529">resolve</text>
+      <text class="d-fn" x="82" y="545">one entity key, every source</text>
+      <rect class="d-stage" x="312" y="510" width="262" height="46" rx="11"/>
+      <circle class="d-num" cx="337" cy="533" r="11"/>
+      <text class="d-numt" x="337" y="537" text-anchor="middle">2</text>
+      <text class="d-sb" x="356" y="529">normalize</text>
+      <text class="d-fn" x="356" y="545">one schema, one unit</text>
+      <rect class="d-stage" x="586" y="510" width="262" height="46" rx="11"/>
+      <circle class="d-num" cx="611" cy="533" r="11"/>
+      <text class="d-numt" x="611" y="537" text-anchor="middle">3</text>
+      <text class="d-sb" x="630" y="529">stamp vintage</text>
+      <text class="d-fn" x="630" y="545">observed_at + known_at</text>
+      <rect class="d-stage" x="860" y="510" width="262" height="46" rx="11"/>
+      <circle class="d-num" cx="885" cy="533" r="11"/>
+      <text class="d-numt" x="885" y="537" text-anchor="middle">4</text>
+      <text class="d-sb" x="904" y="529">index on known_at</text>
+      <text class="d-fn" x="904" y="545">point-in-time by construction</text>
       </svg>
       </section>
 
-      <section class="panel" data-dwell="14">
-        <h2 class="ptitle">And a backtester that argues with you.</h2>
-        <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="2.2"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h4.5"/></svg>it counts how many times you asked</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5 12 14l3.5-3.5L21 16"/><path d="M21 11v5h-5"/></svg>the Sharpe is deflated for that count</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.3 2.9 7.6 7 9.5 4.1-1.9 7-5.2 7-9.5V6Z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg>published methods, cited on the page</span></div>
-        <div class="split">
-          <div class="splitdia"><svg class="dia" viewBox="0 0 1160 300" role="img" aria-label="41 specs feeding a trial ledger, collapsing a Sharpe of 2.14 to 0.09">
-      <rect class="d-box" x="20" y="50" width="330" height="210" rx="11"/>
-      <text class="d-ct" x="40" y="78">ONE RESEARCH SESSION</text>
-      <rect class="d-spec sp0" x="40" y="110" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp1" x="69" y="110" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp2" x="98" y="110" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp3" x="127" y="110" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp4" x="156" y="110" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp5" x="185" y="110" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp6" x="214" y="110" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp7" x="243" y="110" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp8" x="272" y="110" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp9" x="301" y="110" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp10" x="40" y="139" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp11" x="69" y="139" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp12" x="98" y="139" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp13" x="127" y="139" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp14" x="156" y="139" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp15" x="185" y="139" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp16" x="214" y="139" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp17" x="243" y="139" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp18" x="272" y="139" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp19" x="301" y="139" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp20" x="40" y="168" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp21" x="69" y="168" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp22" x="98" y="168" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp23" x="127" y="168" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp24" x="156" y="168" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp25" x="185" y="168" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp26" x="214" y="168" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp27" x="243" y="168" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp28" x="272" y="168" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp29" x="301" y="168" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp30" x="40" y="197" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp31" x="69" y="197" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp32" x="98" y="197" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp33" x="127" y="197" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp34" x="156" y="197" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp35" x="185" y="197" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp36" x="214" y="197" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp37" x="243" y="197" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp38" x="272" y="197" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp39" x="301" y="197" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp40" x="40" y="226" width="22" height="22" rx="4"/>
-      <text class="d-fn" x="40" y="96">41 ideas tried, every one counted</text>
-      <rect class="d-stage" x="410" y="80" width="250" height="150" rx="11"/>
-      <text class="d-ct" x="430" y="108">TRIAL LEDGER</text>
-      <text class="d-big" x="430" y="150">n = 41</text>
-      <rect class="d-track" x="430" y="172" width="210" height="9" rx="5"/>
-      <rect class="d-fill ledbar" x="430" y="172" height="9" rx="5"/>
-      <text class="d-fn" x="430" y="206">kept per session, automatically</text>
-      <path class="d-wire" d="M350 155 L410 155"/>
-      <path class="d-flow" style="animation-delay:0.0s" d="M350 155 L410 155"/>
-      <path class="d-wire" d="M660 155 L720 155"/>
-      <path class="d-flow" style="animation-delay:-0.5s" d="M660 155 L720 155"/>
-      <rect class="d-box" x="720" y="50" width="420" height="210" rx="11"/>
-      <text class="d-ct" x="740" y="78">DEFLATED SHARPE &middot; BAILEY &amp; L&Oacute;PEZ DE PRADO (2014)</text>
-      <text class="d-big ok" x="740" y="122">2.14</text>
-      <rect class="d-track" x="812" y="110" width="308" height="12" rx="6"/>
-      <rect class="d-fill" x="812" y="110" width="287" height="12" rx="6"/>
-      <text class="d-fn" x="740" y="142">what your backtest reported</text>
-      <text class="d-mid" x="740" y="186">2.29</text>
-      <rect class="d-track" x="812" y="176" width="308" height="10" rx="5"/>
-      <rect class="d-fill amber" x="812" y="176" width="308" height="10" rx="5"/>
-      <text class="d-fn" x="740" y="204">what pure luck would have produced</text>
-      <g class="defnum"><text class="d-big bad" x="740" y="244">0.09</text></g>
-      <rect class="d-track" x="812" y="234" width="308" height="12" rx="6"/>
-      <rect class="d-fill bad defbar" x="812" y="234" height="12" rx="6"/>
-      <g class="defnum"><text class="d-fn" x="880" y="244">what is left once the 41 tries are priced in</text></g>
-      </svg></div>
-          <div class="methods">
-            <div class="mhead"><span class="on">in the code</span><span class="off">named, not yet built</span></div><div class="method on"><b>Point-in-time panel indexed on known_at</b><span>structural, no flag disables it</span></div><div class="method on"><b>Costs charged on turnover</b><span>there is no zero-cost mode</span></div><div class="method on"><b>Deflated Sharpe Ratio</b><span>Bailey &amp; L&oacute;pez de Prado, 2014</span></div><div class="method on"><b>Session trial ledger</b><span>every spec you tried, priced into the result</span></div><div class="method off"><b>Probability of Backtest Overfitting</b><span>Bailey, Borwein, L&oacute;pez de Prado &amp; Zhu, 2017</span></div><div class="method off"><b>Purged k-fold with embargo</b><span>Advances in Financial Machine Learning, ch. 7</span></div><div class="method off"><b>Minimum Backtest Length</b><span>Bailey, Borwein, L&oacute;pez de Prado &amp; Zhu, 2014</span></div><div class="method off"><b>Newey-West, square-root impact</b><span>Newey &amp; West 1987; Almgren 2005</span></div>
-            <p class="mnote">Nothing to install past the one line on the left. The engine
-            runs on the same six verbs, over the panel the federation already built.</p>
-          </div>
-        </div>
+      <section class="panel" data-dwell="12">
+        <h2 class="ptitle">Then distilled into one grammar you can hold in your head.</h2>
+        <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 4.5h17l-6.6 7.8v6.4l-3.8 2.3v-8.7Z"/></svg>eighteen sources, one grammar</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M6.5 9.5 9.5 12l-3 2.5"/><path d="M12.5 15h5"/></svg>23 prefixes, six verbs</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 7.5 12 12l9-4.5Z"/><path d="M3 12.5 12 17l9-4.5"/><path d="M3 17 12 21.5 21 17"/></svg>a new source adds no new tool</span></div>
+        <svg class="dia" viewBox="0 0 1160 600" role="img" aria-label="Vintage distilling eighteen sources into twenty-three field prefixes, grouped into prices, filings, macro and research, all reachable through the same six verbs">
+      <rect class="d-pipe" x="20" y="16" width="1120" height="92" rx="14"/>
+      <text class="d-h g" x="38" y="40">VINTAGE &middot; THE FEDERATION LAYER</text>
+      <text class="d-fn" x="1122" y="40" text-anchor="end">the same block the last panel ended on</text>
+      <rect class="d-stage" x="38" y="50" width="262" height="46" rx="11"/>
+      <circle class="d-num" cx="63" cy="73" r="11"/>
+      <text class="d-numt" x="63" y="77" text-anchor="middle">1</text>
+      <text class="d-sb" x="82" y="69">resolve</text>
+      <text class="d-fn" x="82" y="85">one entity key, every source</text>
+      <rect class="d-stage" x="312" y="50" width="262" height="46" rx="11"/>
+      <circle class="d-num" cx="337" cy="73" r="11"/>
+      <text class="d-numt" x="337" y="77" text-anchor="middle">2</text>
+      <text class="d-sb" x="356" y="69">normalize</text>
+      <text class="d-fn" x="356" y="85">one schema, one unit</text>
+      <rect class="d-stage" x="586" y="50" width="262" height="46" rx="11"/>
+      <circle class="d-num" cx="611" cy="73" r="11"/>
+      <text class="d-numt" x="611" y="77" text-anchor="middle">3</text>
+      <text class="d-sb" x="630" y="69">stamp vintage</text>
+      <text class="d-fn" x="630" y="85">observed_at + known_at</text>
+      <rect class="d-stage" x="860" y="50" width="262" height="46" rx="11"/>
+      <circle class="d-num" cx="885" cy="73" r="11"/>
+      <text class="d-numt" x="885" y="77" text-anchor="middle">4</text>
+      <text class="d-sb" x="904" y="69">index on known_at</text>
+      <text class="d-fn" x="904" y="85">point-in-time by construction</text>
+      <text class="d-h g" x="20" y="132">ONE TAXONOMY</text>
+      <text class="d-h" x="1140" y="132" text-anchor="end">23 PREFIXES</text>
+      <path class="d-wire" d="M152 108 L152 160"/>
+      <path class="d-flow" style="animation-delay:-0.0s" d="M152 108 L152 160"/>
+      <path class="d-arrow" d="M146 152 L152 160 L158 152"/>
+      <path class="d-wire" d="M437 108 L437 160"/>
+      <path class="d-flow" style="animation-delay:-0.4s" d="M437 108 L437 160"/>
+      <path class="d-arrow" d="M431 152 L437 160 L443 152"/>
+      <path class="d-wire" d="M722 108 L722 160"/>
+      <path class="d-flow" style="animation-delay:-0.8s" d="M722 108 L722 160"/>
+      <path class="d-arrow" d="M716 152 L722 160 L728 152"/>
+      <path class="d-wire" d="M1007 108 L1007 160"/>
+      <path class="d-flow" style="animation-delay:-1.2s" d="M1007 108 L1007 160"/>
+      <path class="d-arrow" d="M1001 152 L1007 160 L1013 152"/>
+      <rect class="d-fam" x="20" y="160" width="265" height="316" rx="12"/>
+      <text class="d-ct" x="34" y="184">PRICES &amp; MARKETS</text>
+      <text class="d-cnt" x="271" y="184" text-anchor="end">5</text>
+      <rect class="d-pill" x="30" y="194" width="245" height="27" rx="7"/>
+      <text class="d-px" x="42" y="212">price:</text>
+      <text class="d-ans" x="263" y="212" text-anchor="end">OHLCV, adjusted close</text>
+      <rect class="d-pill" x="30" y="225" width="245" height="27" rx="7"/>
+      <text class="d-px" x="42" y="243">index:</text>
+      <text class="d-ans" x="263" y="243" text-anchor="end">market indices</text>
+      <rect class="d-pill" x="30" y="256" width="245" height="27" rx="7"/>
+      <text class="d-px" x="42" y="274">crypto:</text>
+      <text class="d-ans" x="263" y="274" text-anchor="end">coin pairs, OHLCV</text>
+      <rect class="d-pill" x="30" y="287" width="245" height="27" rx="7"/>
+      <text class="d-px" x="42" y="305">fx:</text>
+      <text class="d-ans" x="263" y="305" text-anchor="end">euro reference rates</text>
+      <rect class="d-pill" x="30" y="318" width="245" height="27" rx="7"/>
+      <text class="d-px" x="42" y="336">vol:</text>
+      <text class="d-ans" x="263" y="336" text-anchor="end">VIX and the vol family</text>
+      <rect class="d-fam" x="305" y="160" width="265" height="316" rx="12"/>
+      <text class="d-ct" x="319" y="184">FILINGS</text>
+      <text class="d-cnt" x="556" y="184" text-anchor="end">9</text>
+      <rect class="d-pill" x="315" y="194" width="245" height="27" rx="7"/>
+      <text class="d-px" x="327" y="212">us-gaap:</text>
+      <text class="d-ans" x="548" y="212" text-anchor="end">any tagged concept</text>
+      <rect class="d-pill" x="315" y="225" width="245" height="27" rx="7"/>
+      <text class="d-px" x="327" y="243">dei:</text>
+      <text class="d-ans" x="548" y="243" text-anchor="end">entity facts</text>
+      <rect class="d-pill" x="315" y="256" width="245" height="27" rx="7"/>
+      <text class="d-px" x="327" y="274">ifrs-full:</text>
+      <text class="d-ans" x="548" y="274" text-anchor="end">foreign filers</text>
+      <rect class="d-pill" x="315" y="287" width="245" height="27" rx="7"/>
+      <text class="d-px" x="327" y="305">srt:</text>
+      <text class="d-ans" x="548" y="305" text-anchor="end">reporting taxonomy</text>
+      <rect class="d-pill" x="315" y="318" width="245" height="27" rx="7"/>
+      <text class="d-px" x="327" y="336">invest:</text>
+      <text class="d-ans" x="548" y="336" text-anchor="end">investment taxonomy</text>
+      <rect class="d-pill" x="315" y="349" width="245" height="27" rx="7"/>
+      <text class="d-px" x="327" y="367">filing:</text>
+      <text class="d-ans" x="548" y="367" text-anchor="end">8-K, 10-K, Form 4</text>
+      <rect class="d-pill" x="315" y="380" width="245" height="27" rx="7"/>
+      <text class="d-px" x="327" y="398">frame:</text>
+      <text class="d-ans" x="548" y="398" text-anchor="end">one concept, all filers</text>
+      <rect class="d-pill" x="315" y="411" width="245" height="27" rx="7"/>
+      <text class="d-px" x="327" y="429">13f:</text>
+      <text class="d-ans" x="548" y="429" text-anchor="end">institutional holdings</text>
+      <rect class="d-pill" x="315" y="442" width="245" height="27" rx="7"/>
+      <text class="d-px" x="327" y="460">delisting:</text>
+      <text class="d-ans" x="548" y="460" text-anchor="end">Form 25, every exit</text>
+      <rect class="d-fam" x="590" y="160" width="265" height="316" rx="12"/>
+      <text class="d-ct" x="604" y="184">MACRO &amp; RATES</text>
+      <text class="d-cnt" x="841" y="184" text-anchor="end">5</text>
+      <rect class="d-pill" x="600" y="194" width="245" height="27" rx="7"/>
+      <text class="d-px" x="612" y="212">fred:</text>
+      <text class="d-ans" x="833" y="212" text-anchor="end">800k series, vintages</text>
+      <rect class="d-pill" x="600" y="225" width="245" height="27" rx="7"/>
+      <text class="d-px" x="612" y="243">bls:</text>
+      <text class="d-ans" x="833" y="243" text-anchor="end">CPI, payrolls, JOLTS</text>
+      <rect class="d-pill" x="600" y="256" width="245" height="27" rx="7"/>
+      <text class="d-px" x="612" y="274">bea:</text>
+      <text class="d-ans" x="833" y="274" text-anchor="end">the national accounts</text>
+      <rect class="d-pill" x="600" y="287" width="245" height="27" rx="7"/>
+      <text class="d-px" x="612" y="305">ust:</text>
+      <text class="d-ans" x="833" y="305" text-anchor="end">14-tenor yield curve</text>
+      <rect class="d-pill" x="600" y="318" width="245" height="27" rx="7"/>
+      <text class="d-px" x="612" y="336">cot:</text>
+      <text class="d-ans" x="833" y="336" text-anchor="end">weekly positioning</text>
+      <rect class="d-fam" x="875" y="160" width="265" height="316" rx="12"/>
+      <text class="d-ct" x="889" y="184">RESEARCH &amp; CROWD</text>
+      <text class="d-cnt" x="1126" y="184" text-anchor="end">4</text>
+      <rect class="d-pill" x="885" y="194" width="245" height="27" rx="7"/>
+      <text class="d-px" x="897" y="212">french:</text>
+      <text class="d-ans" x="1118" y="212" text-anchor="end">Fama-French factors</text>
+      <rect class="d-pill" x="885" y="225" width="245" height="27" rx="7"/>
+      <text class="d-px" x="897" y="243">openap:</text>
+      <text class="d-ans" x="1118" y="243" text-anchor="end">331 published claims</text>
+      <rect class="d-pill" x="885" y="256" width="245" height="27" rx="7"/>
+      <text class="d-px" x="897" y="274">short:</text>
+      <text class="d-ans" x="1118" y="274" text-anchor="end">FINRA short volume</text>
+      <rect class="d-pill" x="885" y="287" width="245" height="27" rx="7"/>
+      <text class="d-px" x="897" y="305">ape:</text>
+      <text class="d-ans" x="1118" y="305" text-anchor="end">forum mention ranks</text>
+      <path class="d-wire" d="M152 476 L152 500"/>
+      <path class="d-flow" style="animation-delay:-0.0s" d="M152 476 L152 500"/>
+      <path class="d-wire" d="M437 476 L437 500"/>
+      <path class="d-flow" style="animation-delay:-0.3s" d="M437 476 L437 500"/>
+      <path class="d-wire" d="M722 476 L722 500"/>
+      <path class="d-flow" style="animation-delay:-0.6s" d="M722 476 L722 500"/>
+      <path class="d-wire" d="M1007 476 L1007 500"/>
+      <path class="d-flow" style="animation-delay:-0.9s" d="M1007 476 L1007 500"/>
+      <rect class="d-verb" x="20" y="500" width="175" height="52" rx="10"/>
+      <text class="d-vt" x="107" y="532" text-anchor="middle">resolve</text>
+      <rect class="d-verb" x="207" y="500" width="175" height="52" rx="10"/>
+      <text class="d-vt" x="294" y="532" text-anchor="middle">discover</text>
+      <rect class="d-verb" x="394" y="500" width="175" height="52" rx="10"/>
+      <text class="d-vt" x="481" y="532" text-anchor="middle">fetch</text>
+      <rect class="d-verb" x="581" y="500" width="175" height="52" rx="10"/>
+      <text class="d-vt" x="668" y="532" text-anchor="middle">events</text>
+      <rect class="d-verb" x="768" y="500" width="175" height="52" rx="10"/>
+      <text class="d-vt" x="855" y="532" text-anchor="middle">backtest</text>
+      <rect class="d-verb" x="955" y="500" width="175" height="52" rx="10"/>
+      <text class="d-vt" x="1042" y="532" text-anchor="middle">benchmark</text>
+      <text class="d-fn" x="20" y="578">six verbs reach every prefix &middot; source is a parameter, never a new tool &middot; a bare field routes to EDGAR</text>
+      </svg>
       </section>
 
       <section class="panel" data-dwell="10">
         <h2 class="ptitle">A century of history, and six verbs that reach all of it.</h2>
         <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M11 14.5h2"/></svg>July 1926 to this morning</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M6.5 9.5 9.5 12l-3 2.5"/><path d="M12.5 15h5"/></svg>a source is a parameter</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 7.5 12 12l9-4.5Z"/><path d="M3 12.5 12 17l9-4.5"/><path d="M3 17 12 21.5 21 17"/></svg>more sources, same six verbs</span></div>
-        <svg class="dia" viewBox="0 0 1160 600" role="img" aria-label="Coverage of each source from 1926 to today, and the six verbs">
-      <text class="d-h g" x="40" y="40">A CENTURY OF COVERAGE</text>
-      <text class="d-fn" x="300" y="70">1926</text>
-      <text class="d-fn" x="1000" y="70" text-anchor="end">today</text>
-      <line class="d-axis" x1="300" y1="78" x2="1000" y2="78"/>
-      <text class="d-it" x="40" y="111">SEC EDGAR XBRL</text>
-      <rect class="d-track" x="300" y="100" width="700" height="13" rx="6"/>
-      <rect class="tlb gov" x="881" y="100" width="119" height="13" rx="6"/>
-      <text class="d-fn" x="1150" y="111" text-anchor="end">2009 → today</text>
-      <text class="d-it" x="40" y="144">SEC filings stream</text>
-      <rect class="d-track" x="300" y="133" width="700" height="13" rx="6"/>
-      <rect class="tlb gov" x="769" y="133" width="231" height="13" rx="6"/>
-      <text class="d-fn" x="1150" y="144" text-anchor="end">1993 → today</text>
-      <text class="d-it" x="40" y="177">FRED</text>
-      <rect class="d-track" x="300" y="166" width="700" height="13" rx="6"/>
-      <rect class="tlb gov" x="447" y="166" width="553" height="13" rx="6"/>
-      <text class="d-fn" x="1150" y="177" text-anchor="end">1947 → today</text>
-      <text class="d-it" x="40" y="210">ALFRED vintages</text>
-      <rect class="d-track" x="300" y="199" width="700" height="13" rx="6"/>
-      <rect class="tlb gov" x="790" y="199" width="210" height="13" rx="6"/>
-      <text class="d-fn" x="1150" y="210" text-anchor="end">1996 → today</text>
-      <text class="d-it" x="40" y="243">Ken French Library</text>
-      <rect class="d-track" x="300" y="232" width="700" height="13" rx="6"/>
-      <rect class="tlb edu" x="300" y="232" width="700" height="13" rx="6"/>
-      <text class="d-fn" x="1150" y="243" text-anchor="end">Jul 1926 → today</text>
-      <text class="d-it" x="40" y="276">Open Source Asset Pricing</text>
-      <rect class="d-track" x="300" y="265" width="700" height="13" rx="6"/>
-      <rect class="tlb edu" x="300" y="265" width="679" height="13" rx="6"/>
-      <text class="d-fn" x="1150" y="276" text-anchor="end">1926 → 2023</text>
-      <text class="d-it" x="40" y="309">FINRA short volume</text>
-      <rect class="d-track" x="300" y="298" width="700" height="13" rx="6"/>
-      <rect class="tlb gov" x="881" y="298" width="119" height="13" rx="6"/>
-      <text class="d-fn" x="1150" y="309" text-anchor="end">2009 → today</text>
-      <text class="d-it" x="40" y="342">Coinbase Exchange</text>
-      <rect class="d-track" x="300" y="331" width="700" height="13" rx="6"/>
-      <rect class="tlb third" x="923" y="331" width="77" height="13" rx="6"/>
-      <text class="d-fn" x="1150" y="342" text-anchor="end">2015 → today</text>
-      <text class="d-it" x="40" y="375">Yahoo Finance</text>
-      <rect class="d-track" x="300" y="364" width="700" height="13" rx="6"/>
-      <rect class="tlb third" x="552" y="364" width="448" height="13" rx="6"/>
-      <text class="d-fn" x="1150" y="375" text-anchor="end">1962 → today</text>
-      <text class="d-it" x="40" y="408">ApeWisdom</text>
-      <rect class="d-track" x="300" y="397" width="700" height="13" rx="6"/>
-      <rect class="tlb third" x="993" y="397" width="9" height="13" rx="6"/>
-      <text class="d-fn" x="1150" y="408" text-anchor="end">live only, no history</text>
-      <text class="d-h g" x="40" y="470">SIX VERBS REACH ALL OF IT</text>
-      <rect class="d-verb" x="40" y="492" width="170" height="54" rx="10"/>
-      <text class="d-vt" x="125" y="524" text-anchor="middle">resolve</text>
-      <rect class="d-verb" x="224" y="492" width="170" height="54" rx="10"/>
-      <text class="d-vt" x="309" y="524" text-anchor="middle">discover</text>
-      <rect class="d-verb" x="408" y="492" width="170" height="54" rx="10"/>
-      <text class="d-vt" x="493" y="524" text-anchor="middle">fetch</text>
-      <rect class="d-verb" x="592" y="492" width="170" height="54" rx="10"/>
-      <text class="d-vt" x="677" y="524" text-anchor="middle">events</text>
-      <rect class="d-verb" x="776" y="492" width="170" height="54" rx="10"/>
-      <text class="d-vt" x="861" y="524" text-anchor="middle">backtest</text>
-      <rect class="d-verb" x="960" y="492" width="170" height="54" rx="10"/>
-      <text class="d-vt" x="1045" y="524" text-anchor="middle">benchmark</text>
-      <text class="d-fn" x="40" y="578">source is a parameter, never a new tool, twenty more sources adds zero verbs</text>
+        <svg class="dia" viewBox="0 0 1160 600" role="img" aria-label="A hundred years of coverage across nineteen datasets, each with the years it spans and whether it comes from the primary publisher">
+      <text class="d-h g" x="20" y="30">A CENTURY OF COVERAGE</text>
+      <text class="d-fn" x="1140" y="30" text-anchor="end">each span measured from the source, never estimated</text>
+      <rect class="d-box" x="20" y="44" width="212" height="84" rx="11"/>
+      <text class="d-big ok" x="126" y="92" text-anchor="middle">100</text>
+      <text class="d-fn" x="126" y="114" text-anchor="middle">years, Jul 1926 on</text>
+      <rect class="d-box" x="246" y="44" width="212" height="84" rx="11"/>
+      <text class="d-big ok" x="352" y="92" text-anchor="middle">18</text>
+      <text class="d-fn" x="352" y="114" text-anchor="middle">free sources</text>
+      <rect class="d-box" x="472" y="44" width="212" height="84" rx="11"/>
+      <text class="d-big ok" x="578" y="92" text-anchor="middle">23</text>
+      <text class="d-fn" x="578" y="114" text-anchor="middle">field prefixes</text>
+      <rect class="d-box" x="698" y="44" width="212" height="84" rx="11"/>
+      <text class="d-big ok" x="804" y="92" text-anchor="middle">331</text>
+      <text class="d-fn" x="804" y="114" text-anchor="middle">published claims</text>
+      <rect class="d-box" x="924" y="44" width="212" height="84" rx="11"/>
+      <text class="d-big ok" x="1030" y="92" text-anchor="middle">800k+</text>
+      <text class="d-fn" x="1030" y="114" text-anchor="middle">macro series</text>
+      <rect class="d-ban" x="20" y="154" width="550" height="30" rx="8"/>
+      <rect class="d-edgemark gov" x="20" y="154" width="4" height="30"/>
+      <text class="d-it" x="38" y="174">SEC EDGAR XBRL</text>
+      <text class="d-bdg gov" x="270" y="174">PRIMARY</text>
+      <text class="d-fn" x="556" y="174" text-anchor="end">2009 &rarr; today</text>
+      <rect class="d-ban" x="20" y="190" width="550" height="30" rx="8"/>
+      <rect class="d-edgemark gov" x="20" y="190" width="4" height="30"/>
+      <text class="d-it" x="38" y="210">SEC filings stream</text>
+      <text class="d-bdg gov" x="270" y="210">PRIMARY</text>
+      <text class="d-fn" x="556" y="210" text-anchor="end">1993 &rarr; today</text>
+      <rect class="d-ban" x="20" y="226" width="550" height="30" rx="8"/>
+      <rect class="d-edgemark gov" x="20" y="226" width="4" height="30"/>
+      <text class="d-it" x="38" y="246">SEC Form 13F</text>
+      <text class="d-bdg gov" x="270" y="246">PRIMARY</text>
+      <text class="d-fn" x="556" y="246" text-anchor="end">by quarter, filed 45 days late</text>
+      <rect class="d-ban" x="20" y="262" width="550" height="30" rx="8"/>
+      <rect class="d-edgemark gov" x="20" y="262" width="4" height="30"/>
+      <text class="d-it" x="38" y="282">SEC Form 25</text>
+      <text class="d-bdg gov" x="270" y="282">PRIMARY</text>
+      <text class="d-fn" x="556" y="282" text-anchor="end">2003 &rarr; today</text>
+      <rect class="d-ban" x="20" y="298" width="550" height="30" rx="8"/>
+      <rect class="d-edgemark gov" x="20" y="298" width="4" height="30"/>
+      <text class="d-it" x="38" y="318">SEC XBRL frames</text>
+      <text class="d-bdg gov" x="270" y="318">PRIMARY</text>
+      <text class="d-fn" x="556" y="318" text-anchor="end">any quarter, all filers at once</text>
+      <rect class="d-ban" x="20" y="334" width="550" height="30" rx="8"/>
+      <rect class="d-edgemark gov" x="20" y="334" width="4" height="30"/>
+      <text class="d-it" x="38" y="354">FINRA short volume</text>
+      <text class="d-bdg gov" x="270" y="354">PRIMARY</text>
+      <text class="d-fn" x="556" y="354" text-anchor="end">2009 &rarr; today</text>
+      <rect class="d-ban" x="20" y="370" width="550" height="30" rx="8"/>
+      <rect class="d-edgemark gov" x="20" y="370" width="4" height="30"/>
+      <text class="d-it" x="38" y="390">CFTC positioning</text>
+      <text class="d-bdg gov" x="270" y="390">PRIMARY</text>
+      <text class="d-fn" x="556" y="390" text-anchor="end">2016 &rarr; today</text>
+      <rect class="d-ban" x="20" y="406" width="550" height="30" rx="8"/>
+      <rect class="d-edgemark gov" x="20" y="406" width="4" height="30"/>
+      <text class="d-it" x="38" y="426">FRED</text>
+      <text class="d-bdg gov" x="270" y="426">PRIMARY</text>
+      <text class="d-fn" x="556" y="426" text-anchor="end">1947 &rarr; today</text>
+      <rect class="d-ban" x="20" y="442" width="550" height="30" rx="8"/>
+      <rect class="d-edgemark gov" x="20" y="442" width="4" height="30"/>
+      <text class="d-it" x="38" y="462">ALFRED vintages</text>
+      <text class="d-bdg gov" x="270" y="462">PRIMARY</text>
+      <text class="d-fn" x="556" y="462" text-anchor="end">1996 &rarr; today</text>
+      <rect class="d-ban" x="20" y="478" width="550" height="30" rx="8"/>
+      <rect class="d-edgemark gov" x="20" y="478" width="4" height="30"/>
+      <text class="d-it" x="38" y="498">US Treasury</text>
+      <text class="d-bdg gov" x="270" y="498">PRIMARY</text>
+      <text class="d-fn" x="556" y="498" text-anchor="end">1990 &rarr; today</text>
+      <rect class="d-ban" x="590" y="154" width="550" height="30" rx="8"/>
+      <rect class="d-edgemark gov" x="590" y="154" width="4" height="30"/>
+      <text class="d-it" x="608" y="174">ECB reference rates</text>
+      <text class="d-bdg gov" x="840" y="174">PRIMARY</text>
+      <text class="d-fn" x="1126" y="174" text-anchor="end">1999 &rarr; today</text>
+      <rect class="d-ban" x="590" y="190" width="550" height="30" rx="8"/>
+      <rect class="d-edgemark gov" x="590" y="190" width="4" height="30"/>
+      <text class="d-it" x="608" y="210">BLS</text>
+      <text class="d-bdg gov" x="840" y="210">PRIMARY</text>
+      <text class="d-fn" x="1126" y="210" text-anchor="end">3 years on the keyless tier</text>
+      <rect class="d-ban" x="590" y="226" width="550" height="30" rx="8"/>
+      <rect class="d-edgemark gov" x="590" y="226" width="4" height="30"/>
+      <text class="d-it" x="608" y="246">BEA</text>
+      <text class="d-bdg gov" x="840" y="246">PRIMARY</text>
+      <text class="d-fn" x="1126" y="246" text-anchor="end">the current estimate only</text>
+      <rect class="d-ban" x="590" y="262" width="550" height="30" rx="8"/>
+      <rect class="d-edgemark gov" x="590" y="262" width="4" height="30"/>
+      <text class="d-it" x="608" y="282">CBOE volatility</text>
+      <text class="d-bdg gov" x="840" y="282">PRIMARY</text>
+      <text class="d-fn" x="1126" y="282" text-anchor="end">1990 &rarr; today</text>
+      <rect class="d-ban" x="590" y="298" width="550" height="30" rx="8"/>
+      <rect class="d-edgemark edu" x="590" y="298" width="4" height="30"/>
+      <text class="d-it" x="608" y="318">Ken French Library</text>
+      <text class="d-bdg edu" x="840" y="318">ACADEMIC</text>
+      <text class="d-fn" x="1126" y="318" text-anchor="end">Jul 1926 &rarr; today</text>
+      <rect class="d-ban" x="590" y="334" width="550" height="30" rx="8"/>
+      <rect class="d-edgemark edu" x="590" y="334" width="4" height="30"/>
+      <text class="d-it" x="608" y="354">Open Source AP</text>
+      <text class="d-bdg edu" x="840" y="354">ACADEMIC</text>
+      <text class="d-fn" x="1126" y="354" text-anchor="end">1926 &rarr; 2023</text>
+      <rect class="d-ban" x="590" y="370" width="550" height="30" rx="8"/>
+      <rect class="d-edgemark third" x="590" y="370" width="4" height="30"/>
+      <text class="d-it" x="608" y="390">Coinbase Exchange</text>
+      <text class="d-bdg third" x="840" y="390">THIRD PARTY</text>
+      <text class="d-fn" x="1126" y="390" text-anchor="end">2015 &rarr; today</text>
+      <rect class="d-ban" x="590" y="406" width="550" height="30" rx="8"/>
+      <rect class="d-edgemark third" x="590" y="406" width="4" height="30"/>
+      <text class="d-it" x="608" y="426">Yahoo Finance</text>
+      <text class="d-bdg third" x="840" y="426">THIRD PARTY</text>
+      <text class="d-fn" x="1126" y="426" text-anchor="end">1962 &rarr; today</text>
+      <rect class="d-ban" x="590" y="442" width="550" height="30" rx="8"/>
+      <rect class="d-edgemark third" x="590" y="442" width="4" height="30"/>
+      <text class="d-it" x="608" y="462">ApeWisdom</text>
+      <text class="d-bdg third" x="840" y="462">THIRD PARTY</text>
+      <text class="d-fn" x="1126" y="462" text-anchor="end">live only, no history</text>
+      <text class="d-fn" x="20" y="560">Primary means the institution that receives or computes the number, not a reseller of it.</text>
+      <text class="d-note" x="20" y="582">Six verbs reach all of it &middot; source is a parameter, never a new tool &middot; twenty more sources adds zero verbs</text>
       </svg>
       </section>
 
@@ -788,9 +945,91 @@ a:hover{text-decoration:underline}
       </svg>
       </section>
 
-      <section class="panel" data-dwell="23">
+      <section class="panel" data-dwell="14">
+        <h2 class="ptitle">And a backtester that argues with you.</h2>
+        <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="2.2"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h4.5"/></svg>it counts how many times you asked</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5 12 14l3.5-3.5L21 16"/><path d="M21 11v5h-5"/></svg>the Sharpe is deflated for that count</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.3 2.9 7.6 7 9.5 4.1-1.9 7-5.2 7-9.5V6Z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg>published methods, cited on the page</span></div>
+        <div class="split">
+          <div class="splitdia"><svg class="dia" viewBox="0 0 1160 300" role="img" aria-label="41 specs feeding a trial ledger, collapsing a Sharpe of 2.14 to 0.09">
+      <rect class="d-box" x="20" y="50" width="330" height="210" rx="11"/>
+      <text class="d-ct" x="40" y="78">ONE RESEARCH SESSION</text>
+      <rect class="d-spec sp0" x="40" y="110" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp1" x="69" y="110" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp2" x="98" y="110" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp3" x="127" y="110" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp4" x="156" y="110" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp5" x="185" y="110" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp6" x="214" y="110" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp7" x="243" y="110" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp8" x="272" y="110" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp9" x="301" y="110" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp10" x="40" y="139" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp11" x="69" y="139" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp12" x="98" y="139" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp13" x="127" y="139" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp14" x="156" y="139" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp15" x="185" y="139" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp16" x="214" y="139" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp17" x="243" y="139" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp18" x="272" y="139" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp19" x="301" y="139" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp20" x="40" y="168" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp21" x="69" y="168" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp22" x="98" y="168" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp23" x="127" y="168" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp24" x="156" y="168" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp25" x="185" y="168" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp26" x="214" y="168" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp27" x="243" y="168" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp28" x="272" y="168" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp29" x="301" y="168" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp30" x="40" y="197" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp31" x="69" y="197" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp32" x="98" y="197" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp33" x="127" y="197" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp34" x="156" y="197" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp35" x="185" y="197" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp36" x="214" y="197" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp37" x="243" y="197" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp38" x="272" y="197" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp39" x="301" y="197" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp40" x="40" y="226" width="22" height="22" rx="4"/>
+      <text class="d-fn" x="40" y="96">41 ideas tried, every one counted</text>
+      <rect class="d-stage" x="410" y="80" width="250" height="150" rx="11"/>
+      <text class="d-ct" x="430" y="108">TRIAL LEDGER</text>
+      <text class="d-big" x="430" y="150">n = 41</text>
+      <rect class="d-track" x="430" y="172" width="210" height="9" rx="5"/>
+      <rect class="d-fill ledbar" x="430" y="172" height="9" rx="5"/>
+      <text class="d-fn" x="430" y="206">kept per session, automatically</text>
+      <path class="d-wire" d="M350 155 L410 155"/>
+      <path class="d-flow" style="animation-delay:0.0s" d="M350 155 L410 155"/>
+      <path class="d-wire" d="M660 155 L720 155"/>
+      <path class="d-flow" style="animation-delay:-0.5s" d="M660 155 L720 155"/>
+      <rect class="d-box" x="720" y="50" width="420" height="210" rx="11"/>
+      <text class="d-ct" x="740" y="78">DEFLATED SHARPE &middot; BAILEY &amp; L&Oacute;PEZ DE PRADO (2014)</text>
+      <text class="d-big ok" x="740" y="122">2.14</text>
+      <rect class="d-track" x="812" y="110" width="308" height="12" rx="6"/>
+      <rect class="d-fill" x="812" y="110" width="287" height="12" rx="6"/>
+      <text class="d-fn" x="740" y="142">what your backtest reported</text>
+      <text class="d-mid" x="740" y="186">2.29</text>
+      <rect class="d-track" x="812" y="176" width="308" height="10" rx="5"/>
+      <rect class="d-fill amber" x="812" y="176" width="308" height="10" rx="5"/>
+      <text class="d-fn" x="740" y="204">what pure luck would have produced</text>
+      <g class="defnum"><text class="d-big bad" x="740" y="244">0.09</text></g>
+      <rect class="d-track" x="812" y="234" width="308" height="12" rx="6"/>
+      <rect class="d-fill bad defbar" x="812" y="234" height="12" rx="6"/>
+      <g class="defnum"><text class="d-fn" x="880" y="244">what is left once the 41 tries are priced in</text></g>
+      </svg></div>
+          <div class="methods">
+            <div class="mhead"><span class="on">in the code</span><span class="off">named, not yet built</span></div><div class="method on"><b>Point-in-time panel indexed on known_at</b><span>structural, no flag disables it</span></div><div class="method on"><b>Costs charged on turnover</b><span>there is no zero-cost mode</span></div><div class="method on"><b>Deflated Sharpe Ratio</b><span>Bailey &amp; L&oacute;pez de Prado, 2014</span></div><div class="method on"><b>Session trial ledger</b><span>every spec you tried, priced into the result</span></div><div class="method off"><b>Probability of Backtest Overfitting</b><span>Bailey, Borwein, L&oacute;pez de Prado &amp; Zhu, 2017</span></div><div class="method off"><b>Purged k-fold with embargo</b><span>Advances in Financial Machine Learning, ch. 7</span></div><div class="method off"><b>Minimum Backtest Length</b><span>Bailey, Borwein, L&oacute;pez de Prado &amp; Zhu, 2014</span></div><div class="method off"><b>Newey-West, square-root impact</b><span>Newey &amp; West 1987; Almgren 2005</span></div>
+            <p class="mnote">Nothing to install past the one line on the left. The engine
+            runs on the same six verbs, over the panel the federation already built.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" data-dwell="28">
         <h2 class="ptitle">Does Jegadeesh-Titman momentum still work?</h2>
-        <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="2.2"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h4.5"/></svg>41 specs counted this session</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5 12 14l3.5-3.5L21 16"/><path d="M21 11v5h-5"/></svg>Sharpe 2.14 deflates to 0.09</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M6.5 9.5 9.5 12l-3 2.5"/><path d="M12.5 15h5"/></svg>every number reproducible</span></div>
+        <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M6.5 9.5 9.5 12l-3 2.5"/><path d="M12.5 15h5"/></svg>one prompt, claim to verdict</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="2.2"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h4.5"/></svg>every spec counted this session</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.3 2.9 7.6 7 9.5 4.1-1.9 7-5.2 7-9.5V6Z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg>every number on this screen reproducible</span></div>
         <div class="term">
           <div class="bar">
             <span class="tdot"></span><span class="tdot"></span><span class="tdot"></span>
@@ -799,21 +1038,27 @@ a:hover{text-decoration:underline}
           <div class="screen">
         <div class="row rx0"><span class="prompt p-shell">$</span><span class="typed tx0">claude mcp add vintage -s user -- uvx vintage-mcp</span><span class="caret kx0"></span></div>
         <div class="row rx1 ok"><b>✓</b>connected · sec · fred · dartmouth · openap · coinbase · finra</div>
-        <div class="row rx2"><span class="prompt p-user">❯</span><span class="typed tx2">replicate jegadeesh-titman momentum on the dow since 2010</span><span class="caret kx2"></span></div>
-        <div class="row rx3 dim in1">openap:Mom12m, the paper claimed 1.31%/month, t = 3.74, sample 1964-1989</div>
-        <div class="row rx4 dim in1">reading 30 tickers, 4,113 sessions · panel indexed on known_at</div>
-        <div class="row rx5 kv"><span class="k">annual return</span><span class="v">12.1%</span><span class="k">volatility</span><span class="v">19.4%</span><span class="k">max drawdown</span><span class="v">−29.5%</span></div>
-        <div class="row rx6 big kv"><span class="k">sharpe</span><span class="v">0.688</span></div>
-        <div class="row rx7 kicker in1">WBA excluded, no price history. it delisted.</div>
-        <div class="row rx8"><span class="prompt p-user">❯</span><span class="typed tx8">is it decaying?</span><span class="caret kx8"></span></div>
-        <div class="row rx9 mid kv"><span class="k">first half</span><span class="v">0.883</span><span class="k">second half</span><span class="v">0.566</span></div>
-        <div class="row rx10"><span class="prompt p-user">❯</span><span class="typed tx10">is it just market beta?</span><span class="caret kx10"></span></div>
-        <div class="row rx11 in1 kv"><span class="k">correlation with Mkt-RF</span><span class="v">0.74</span><span class="k">beta</span><span class="v">0.81</span><span class="k">R²</span><span class="v">0.56</span></div>
-        <div class="row rx12 mid in1 kv"><span class="k">alpha</span><span class="v">2.31%/yr</span></div>
-        <div class="row rx13 verdict in1">mostly Mkt-RF, with something else on top.</div>
-        <div class="row rx14 rule"><i></i>honesty report<i></i></div>
-        <div class="row rx15 in1 kv"><span class="k">specs tried this session</span><span class="v">1</span></div>
-        <div class="row rx16 kicker in1">one spec, so nothing to deflate yet. ask twelve more and watch it fall.</div>
+        <div class="row rx2"><span class="prompt p-user">❯</span><span class="typed tx2">take Jegadeesh-Titman (1993) and replicate it end to end</span><span class="caret kx2"></span></div>
+        <div class="row rx3 rule"><i></i>the claim<i></i></div>
+        <div class="row rx4 dim in1">openap:Mom12m · Returns to Buying Winners and Selling Losers</div>
+        <div class="row rx5 in1 kv"><span class="k">paper claimed</span><span class="v">1.31%/mo</span><span class="k">t-stat</span><span class="v">3.74</span><span class="k">sample</span><span class="v">1964-1989</span></div>
+        <div class="row rx6 rule"><i></i>the implementation<i></i></div>
+        <div class="row rx7 dim in1">rank on 12-1 total return · hold one month · long the top fifth</div>
+        <div class="row rx8 dim in1">resolve → 30 tickers · fetch → 4,113 sessions · panel indexed on known_at</div>
+        <div class="row rx9 kicker in1">WBA excluded, no price history. it delisted. that is survivorship, in miniature.</div>
+        <div class="row rx10 rule"><i></i>the backtest · dow 30 since 2010<i></i></div>
+        <div class="row rx11 kv"><span class="k">annual return</span><span class="v">12.1%</span><span class="k">volatility</span><span class="v">19.4%</span><span class="k">max drawdown</span><span class="v">−29.5%</span></div>
+        <div class="row rx12 big kv"><span class="k">sharpe</span><span class="v">0.688</span></div>
+        <div class="row rx13"><span class="prompt p-user">❯</span><span class="typed tx13">is it decaying?</span><span class="caret kx13"></span></div>
+        <div class="row rx14 mid kv"><span class="k">first half</span><span class="v">0.883</span><span class="k">second half</span><span class="v">0.566</span></div>
+        <div class="row rx15"><span class="prompt p-user">❯</span><span class="typed tx15">is it just market beta?</span><span class="caret kx15"></span></div>
+        <div class="row rx16 in1 kv"><span class="k">correlation with Mkt-RF</span><span class="v">0.74</span><span class="k">beta</span><span class="v">0.81</span><span class="k">R²</span><span class="v">0.56</span></div>
+        <div class="row rx17 mid in1 kv"><span class="k">alpha</span><span class="v">2.31%/yr</span></div>
+        <div class="row rx18 verdict in1">mostly Mkt-RF, with something else on top.</div>
+        <div class="row rx19 rule"><i></i>the honesty report<i></i></div>
+        <div class="row rx20 in1 kv"><span class="k">specs tried this session</span><span class="v">1</span></div>
+        <div class="row rx21 kicker in1">one spec, so nothing to deflate yet. ask twelve more and watch it fall.</div>
+        <div class="row rx22 verdict">claim → spec → implementation → backtest → honesty. one prompt, no downloads.</div>
           </div>
         </div>
       </section>
@@ -826,7 +1071,8 @@ a:hover{text-decoration:underline}
 (function () {
   var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
   var chipbar = document.getElementById('chips');
-  var titles = ['What it is', 'The engine', 'What you get', 'Point-in-time', 'The experiment'];
+  var titles = ['What it is', 'The taxonomy', 'What you get', 'Point-in-time',
+                'The engine', 'The experiment'];
   var timer, at = 0;
 
   var chips = titles.map(function (t, i) {
