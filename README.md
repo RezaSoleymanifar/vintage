@@ -260,7 +260,7 @@ It is the one third-party source here, and the weakest link: an undocumented end
 
 It is mitigated rather than hidden. Vintage fetches per user and redistributes nothing, every price row is flagged as retroactively adjusted, and the price layer is a single adapter, so a keyed alternative (Tiingo, Alpaca) can slot in behind the same `price:` prefix without touching anything else. Stooq was the intended spine — friendlier terms — but it now gates programmatic access behind a JavaScript check. That adapter stays in case the check lifts.
 
-See [`PRINCIPLES.md`](PRINCIPLES.md) for the rules that decide arguments, [`COVERAGE.md`](COVERAGE.md) for what is wired up today, [`DATA_SOURCES.md`](DATA_SOURCES.md) for the wider free-data landscape, and [`DESIGN.md`](DESIGN.md) for the architecture.
+See [`PRINCIPLES.md`](PRINCIPLES.md) for the rules that decide arguments, [`COVERAGE.md`](COVERAGE.md) for what is wired up today, [`DATA_SOURCES.md`](DATA_SOURCES.md) for the wider free-data landscape, [`DESIGN.md`](DESIGN.md) for the architecture, and [`INTEGRATIONS.md`](INTEGRATIONS.md) for the engines Vintage should feed next — LEAN and Alpaca, both open for contribution.
 
 ## Cache
 
