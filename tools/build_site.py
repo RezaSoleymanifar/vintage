@@ -24,8 +24,11 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src"))
 
 import showcase
+from vintage import registry  # noqa: E402
 from dataclasses import dataclass, field
 
 # --------------------------------------------------------------- the script
@@ -1593,6 +1596,23 @@ GLYPHS = {
     "ledger":   '<rect x="4" y="3.5" width="16" height="17" rx="2.2"/><path d="M8 8h8"/>'
                 '<path d="M8 12h8"/><path d="M8 16h4.5"/>',
     "fall":     '<path d="M3 5.5 12 14l3.5-3.5L21 16"/><path d="M21 11v5h-5"/>',
+    "bank":     '<path d="M2.5 8.5 12 3.2l9.5 5.3"/><path d="M2.8 20.5h18.4"/>'
+                '<path d="M5.6 10.8v8"/><path d="M9.8 10.8v8"/><path d="M14.2 10.8v8"/>'
+                '<path d="M18.4 10.8v8"/>',
+    "curve":    '<path d="M3.5 20.5V3.2"/><path d="M3.5 20.5h17"/>'
+                '<path d="M4.6 17.4c4.6-7.6 9.4-9.8 15.2-10.6"/>',
+    "euro":     '<circle cx="12" cy="12" r="8.5"/>'
+                '<path d="M15.8 8.6a4.6 4.6 0 0 0-7.2 3.2 4.6 4.6 0 0 0 7.2 3.4"/>'
+                '<path d="M6.8 11h6"/><path d="M6.8 13.4h6"/>',
+    "vol":      '<path d="M3.2 20.4h17.6"/><path d="M3.6 14.6 7 7.4l3.6 9.6 3.6-11.8 3.2 7.2 2.6 2.8"/>',
+    "short":    '<path d="M3.4 20.6h17.2"/><path d="M6 7.6v13"/><path d="M11 11v9.6"/>'
+                '<path d="M16 14.6v6"/><path d="M17.2 5.2h3.4v3.4"/>',
+    "scales":   '<path d="M12 3.6v16.6"/><path d="M5.8 20.6h12.4"/><path d="M4 8.2h16"/>'
+                '<path d="M7.6 8.2 4.2 14.6h6.8Z"/><path d="M16.4 8.2 13 14.6h6.8Z"/>',
+    "book":     '<path d="M12 6.4C10.1 4.8 7.6 4 4.4 4v13.2c3.2 0 5.7.8 7.6 2.4 1.9-1.6 4.4-2.4 7.6-2.4V4c-3.2 0-5.7.8-7.6 2.4Z"/>'
+                '<path d="M12 6.4v13.2"/>',
+    "delist":   '<path d="M4.5 2.6h8.2l4.4 4.4v14.4H4.5Z"/><path d="M12.7 2.6v4.4h4.4"/>'
+                '<path d="M8.2 12.4l5.6 5.6"/><path d="M13.8 12.4l-5.6 5.6"/>',
     "coin":     '<circle cx="12" cy="12" r="8.5"/><path d="M12 7v10"/>'
                 '<path d="M14.6 9.2A2.8 2.8 0 0 0 12 8c-1.7 0-2.8.9-2.8 2s1 1.8 2.8 2 2.8.8 2.8 2'
                 '-1.1 2-2.8 2a2.8 2.8 0 0 1-2.6-1.2"/>',
@@ -1651,6 +1671,61 @@ FACTS = {
                 ("zero", "no account, no key, no card"),
                 ("stack", "same server behind every client")],
 }
+
+
+# What kind of data it is, in the words a desk would use, each tied to the
+# prefixes that actually serve it. `check_badges` fails the build if one of
+# them stops existing, so the rail cannot advertise a category the code dropped.
+DATA_BADGES = [
+    ("series", "prices", ("price:", "index:")),
+    ("coin", "crypto", ("crypto:",)),
+    ("stack", "filings", ("filing:", "dei:")),
+    ("gov", "fundamentals", ("us-gaap:", "ifrs-full:", "frame:", "srt:")),
+    ("bank", "macro", ("fred:", "bls:", "bea:")),
+    ("curve", "yields", ("ust:",)),
+    ("euro", "FX", ("fx:",)),
+    ("vol", "volatility", ("vol:",)),
+    ("book", "factors", ("french:", "openap:")),
+    ("short", "short volume", ("short:",)),
+    ("scales", "positioning", ("cot:", "13f:")),
+    ("delist", "delistings", ("delisting:",)),
+    ("ask", "forum sentiment", ("ape:",)),
+]
+
+# The half a quant checks before trusting a number. Worded as what the code
+# does, which is why survivorship says warned rather than solved.
+ENGINE_BADGES = [
+    ("wall", "point-in-time panel"),
+    ("calendar", "restatements kept"),
+    ("shield", "survivorship warned"),
+    ("coin", "costs on turnover"),
+    ("fall", "deflated Sharpe"),
+    ("ledger", "trial ledger"),
+]
+
+
+def check_badges() -> None:
+    """A category may only be claimed if a prefix behind it still exists."""
+    live = set(registry.PREFIXES)
+    for _, label, prefixes in DATA_BADGES:
+        missing = [p for p in prefixes if p not in live]
+        if missing:
+            raise SystemExit(f"badge '{label}' names prefixes the registry dropped: {missing}")
+
+
+def build_badges() -> str:
+    check_badges()
+
+    def pill(glyph: str, label: str, kind: str) -> str:
+        return f'<span class="badge {kind}">{icon(glyph, 12)}{label}</span>'
+
+    data = "".join(pill(g, lab, "data") for g, lab, _ in DATA_BADGES)
+    engine = "".join(pill(g, lab, "eng") for g, lab in ENGINE_BADGES)
+    return (f'<div class="badges"><p class="blab">the data</p>{data}</div>'
+            f'<div class="badges"><p class="blab eng">the backtester</p>{engine}'
+            f'<p class="bfoot">Deflated Sharpe and the trial ledger after '
+            f'L&oacute;pez de Prado. Every run says which checks are in the code '
+            f'and which are only cited.</p></div>')
 
 
 def build_tiles() -> str:
@@ -1741,6 +1816,22 @@ a:hover{text-decoration:underline}
   justify-items:center;gap:2px;text-align:center}
 .tile .ic{color:var(--green);opacity:.85}
 .tile b{color:var(--ink);font-size:clamp(13px,2vh,18px);line-height:1.1;font-weight:700}
+/* what kind of data, and what the backtester checks */
+.badges{display:flex;flex-wrap:wrap;gap:5px 6px;align-items:center}
+.blab{width:100%;margin:0;color:var(--dim);font-size:clamp(8px,1.05vh,9.5px);
+  letter-spacing:.16em;text-transform:uppercase}
+.blab.eng{color:var(--green)}
+.badge{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);
+  border-radius:99px;padding:3px 9px;font-size:clamp(8.5px,1.15vh,10.5px);
+  color:var(--dim);line-height:1.2;white-space:nowrap}
+.badge .ic{opacity:.8;flex:none}
+.badge.data{color:#a9c0cf}
+.badge.data .ic{color:var(--blue,#7fb3ff)}
+.badge.eng{color:var(--ink);border-color:rgba(47,213,135,.34)}
+.badge.eng .ic{color:var(--green)}
+.bfoot{width:100%;margin:2px 0 0;color:var(--dim);line-height:1.45;
+  font-size:clamp(8.5px,1.1vh,10px)}
+
 .tile span{color:var(--dim);font-size:clamp(8.5px,1.15vh,10.5px);line-height:1.25;
   letter-spacing:.04em}
 
@@ -1998,15 +2089,16 @@ __ONECSS__
   <aside class="rail">
     <div>
       <h1 class="brand">VINTAGE</h1>
-      <p class="tag">Free market research terminal</p>
     </div>
 
-    <p class="claim">Good market data is already free. It&rsquo;s just scattered.
-    <span class="g">Vintage unifies free market data in a single MCP server.</span></p>
+    <p class="claim">Good financial data is already free. It&rsquo;s just scattered.
+    <span class="g">Vintage unifies the web&rsquo;s free financial data in a single MCP server.</span></p>
 
     <div class="tiles">
       __TILES__
     </div>
+
+    __BADGES__
 
     <div class="cmd"><code>claude mcp add vintage -s user -- uvx vintage-mcp</code><button class="copy" aria-label="Copy">copy</button></div>
 
@@ -2281,6 +2373,7 @@ def main() -> None:
         .replace("__PANES__", panes)
         .replace("__METHODS__", build_methods())
         .replace("__TILES__", build_tiles())
+        .replace("__BADGES__", build_badges())
         .replace("__ONECSS__", diacss + "\n" + exp_anim + "\n" + anim)
     )
     for key in FACTS:
