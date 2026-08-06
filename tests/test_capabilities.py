@@ -82,6 +82,31 @@ def test_payload_is_self_describing():
     )
 
 
+@pytest.mark.parametrize(
+    "query,expected_prefix",
+    [
+        ("holdings", "13f:"),
+        ("short volume", "short:"),
+        ("published anomalies", "openap:"),
+        ("delisting", "delisting:"),
+        ("forum mention", "ape:"),
+        ("fundamentals", "us-gaap:"),
+    ],
+)
+def test_discover_can_reach_a_prefix_by_what_it_answers(query, expected_prefix):
+    """The prefixes used to be invisible to search — you had to know the name."""
+    hits = registry.search_static(query, limit=8)
+    assert any(h["field"].startswith(expected_prefix) for h in hits), (
+        f"{query!r} found {[h['field'] for h in hits]}"
+    )
+
+
+def test_prefix_rows_never_shadow_a_named_catalog_entry():
+    named = {i["field"] for i in registry.static_catalog() if i.get("kind") != "prefix"}
+    prefixes = [i for i in registry.static_catalog() if i.get("kind") == "prefix"]
+    assert not (named & {p["field"] for p in prefixes})
+
+
 def test_payload_serializes():
     """It travels as JSON over the wire, so it has to survive the trip."""
     blob = json.loads(server.capabilities_resource())

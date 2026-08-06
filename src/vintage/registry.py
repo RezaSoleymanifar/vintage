@@ -416,15 +416,43 @@ INDICES = [
 ]
 
 
+def capability_catalog() -> list[dict[str, Any]]:
+    """The capability map, in the shape `discover` searches.
+
+    Without this, asking `discover` for "holdings" or "short interest" finds
+    nothing unless some source happened to spell it that way in a label — the
+    prefixes themselves were invisible to search even though they are the
+    thing the caller needs.
+    """
+    return [
+        {
+            "field": cap["example"]["args"]["field"],
+            "label": cap["answers"],
+            "source": cap["source"],
+            "kind": "prefix",
+            "prefix": cap["prefix"],
+            "verb": cap["verb"],
+            "needs_entity": cap["needs_entity"],
+            "entity_example": cap["entity_example"],
+            "key_required": cap["key_required"],
+        }
+        for cap in capabilities()
+    ]
+
+
 def static_catalog() -> list[dict[str, Any]]:
-    return (french.catalog() + apewisdom.catalog() + ecb.catalog()
-            + cboe.catalog() + treasury.catalog() + cftc.catalog()
-            + thirteenf.catalog() + bls.catalog() + bea.catalog()) + [
+    items = (french.catalog() + apewisdom.catalog() + ecb.catalog()
+             + cboe.catalog() + treasury.catalog() + cftc.catalog()
+             + thirteenf.catalog() + bls.catalog() + bea.catalog()) + [
         {**item, "source": "yahoo-finance", "kind": "index"} for item in INDICES
     ] + [
         {**item, "source": "fred", "key_required": not fred.has_key()}
         for item in CURATED
     ]
+    # Prefix rows go last and only where a source has not already named the
+    # field, so a specific catalog entry always outranks the generic example.
+    seen = {i.get("field") for i in items}
+    return items + [c for c in capability_catalog() if c["field"] not in seen]
 
 
 def search_static(query: str, limit: int = 25) -> list[dict[str, Any]]:
