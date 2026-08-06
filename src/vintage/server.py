@@ -17,8 +17,9 @@ from .engine import backtest as bt
 from .engine import benchmark as bm
 from .engine import honesty
 from .http import SourceError
-from .sources import (apewisdom, cboe, cftc, coinbase, delistings, ecb, edgar,
-                      finra, frames, fred, french, openap, treasury, yahoo)
+from .sources import (apewisdom, bea, bls, cboe, cftc, coinbase, delistings,
+                      ecb, edgar, finra, frames, fred, french, openap,
+                      thirteenf, treasury, yahoo)
 
 mcp = MCPServer(
     "vintage",
@@ -38,7 +39,7 @@ mcp = MCPServer(
         "returns a deflated Sharpe that accounts for how many specs were tried "
         "this session. Report it. Never present a raw Sharpe alone."
     ),
-    version="0.8.0",
+    version="0.9.0",
 )
 
 # Backtests keep their return series here so the model does not have to carry
@@ -186,6 +187,7 @@ async def fetch(
     end: str | None = None,
     as_of: str | None = None,
     form: str | None = None,
+    quarter: str | None = None,
     limit: int = 400,
 ) -> str:
     """Fetch any field from any source, as point-in-time rows.
@@ -193,12 +195,14 @@ async def fetch(
     Field forms: "us-gaap:Assets" (needs entity), "price:close" (needs
     entity), "fred:CPIAUCSL", "french:ff3", "openap:Mom12m" (or "openap:*"
     for all 331 published claims), "crypto:close" (needs an entity like
-    BTC-USD), "short:short_ratio" (needs an entity), "ape:all-stocks".
-    Run discover first if unsure.
+    BTC-USD), "short:short_ratio" (needs an entity), "ape:all-stocks",
+    "13f:value" (needs a manager like BERKSHIRE), "bls:CUUR0000SA0",
+    "bea:T10101". Run discover first if unsure.
 
     `as_of` is the point-in-time switch: it drops every row that was not
     public on that date, so you see what a researcher on that day saw,
-    restatements and all.
+    restatements and all. `quarter` picks a reporting period for 13F
+    holdings ("2024-12-31" or "2024"); without it you get the latest.
     """
     source = registry.route(field)
     rows: list[dict[str, Any]] = []
@@ -228,6 +232,25 @@ async def fetch(
                                      did_you_mean=list(cftc.MARKETS))
             rows = await cftc.positioning(entity, measure=field.split(":", 1)[1])
             warnings += cftc.warnings_for()
+        elif source == "thirteenf":
+            if not entity:
+                return envelope.fail(
+                    "fetch", "13f fields need an `entity` — a manager, not a stock. "
+                             "Try BERKSHIRE, or any name EDGAR knows.",
+                    did_you_mean=sorted(thirteenf.MANAGERS))
+            # A 13F describes one quarter, not a span, so `quarter` selects and
+            # start/end are left alone.
+            rows = await thirteenf.holdings(
+                entity, field=field.split(":", 1)[1],
+                quarter=quarter, as_of=as_of, limit=limit)
+            warnings += thirteenf.warnings_for(rows, as_of)
+        elif source == "bls":
+            rows = await bls.series(field.split(":", 1)[1], start=start, end=end)
+            warnings += bls.warnings_for(field, rows)
+        elif source == "bea":
+            spec = field.split(":", 1)[1]
+            rows = await bea.table(spec)
+            warnings += bea.warnings_for(spec, rows)
         elif source == "delistings":
             # Bulk history: one scan of EDGAR's quarterly indexes, then cached.
             # `as_of` keeps its usual meaning here — delistings already public

@@ -215,13 +215,13 @@ Citations are references, not endorsements — none of these authors is affiliat
 <tr>
 <td align="center"><b>100</b><br><sub>years, July 1926 to this morning</sub></td>
 <td align="center"><b>331</b><br><sub>published anomalies, with claims</sub></td>
-<td align="center"><b>9</b><br><sub>sources, six verbs</sub></td>
+<td align="center"><b>18</b><br><sub>sources, six verbs</sub></td>
 <td align="center"><b>10,398</b><br><sub>ticker-mapped US filers</sub></td>
 <td align="center"><b>800k+</b><br><sub>macro series with vintages</sub></td>
 </tr>
 </table>
 
-**A century of market history, nine sources, zero API keys.** The Fama-French factors start in July 1926 and the SEC filing stream runs to this morning — Vintage covers both ends from the same six verbs.
+**A century of market history, eighteen sources, and sixteen of them need no key at all.** The Fama-French factors start in July 1926 and the SEC filing stream runs to this morning — Vintage covers both ends from the same six verbs.
 
 **Most of these are the primary source** — not a reseller, not a scraper. The filings come from the regulator that receives them, the macro series from the central bank that publishes them, and the factors from the university that computes them.
 
@@ -232,6 +232,15 @@ Citations are references, not endorsements — none of these authors is affiliat
 | **FRED / ALFRED** | Primary · central bank | Federal Reserve Bank of St. Louis. ALFRED keeps first releases, so you can ask what CPI looked like *that morning*. | free | ✅ first-release vintages |
 | **Ken French Data Library** | Primary · academic | Dartmouth. FF3, FF5, momentum, daily FF3, 49 industry portfolios — from where the authors publish them. | none | ❌ rebuilt each release |
 | **Open Source Asset Pricing** | Primary · academic | Chen & Zimmermann. 331 published predictors with claimed return, t-stat, sample window and an implementable definition. `openap:Mom12m` returns Jegadeesh-Titman's 1.31%/mo, t=3.74. | none | ✅ claims dated to publication year |
+| **SEC Form 13F** | Primary · US regulator | Institutional equity holdings for every manager over $100m. Quarter end and filing date are up to 45 days apart and both are kept, so `as_of` returns the book that was actually public. | none | ✅ quarter end vs filing date |
+| **SEC Form 25** | Primary · US regulator | Every delisting on record — 36,830 filings across 11,614 companies. The correction for a universe built from names that still exist. | none | ✅ filing dates, never revised |
+| **SEC XBRL frames** | Primary · US regulator | One concept across every filer in a single call. 6,289 companies in 840 KB — the shape a cross-sectional sort needs. | none | ❌ carries the accession, not its date |
+| **US Treasury** | Primary · US government | The par yield curve, 14 tenors from one month to thirty years, published each business day. | none | ✅ never revised |
+| **CFTC** | Primary · US regulator | Commitments of Traders. Tuesday's positioning by trader class, released the following Friday, and the lag is preserved. | none | ✅ lag preserved in `known_at` |
+| **Bureau of Labor Statistics** | Primary · US agency | CPI down to item strata, payrolls, JOLTS, wages, productivity. Any series id, not a curated shortlist. | optional | ❌ ships no release date |
+| **Bureau of Economic Analysis** | Primary · US agency | The national accounts. One call returns every line of a NIPA table rather than one series at a time. | free | ❌ current estimate only |
+| **European Central Bank** | Primary · central bank | Daily FX reference rates since 1999, plus any cross derived from two euro legs and labelled as derived. | none | ✅ published once, never revised |
+| **CBOE** | Primary · exchange | VIX and the whole volatility family — term structure, VVIX, SKEW — back to 1990. | none | ✅ index levels are not revised |
 | **FINRA** | Primary · US regulator | Daily short sale volume per symbol, published after each close and never revised. Short *volume*, not short interest. | none | ✅ never revised |
 | **Coinbase Exchange** | Exchange | Crypto OHLCV, every listed pair. | none | ✅ trade prints are never restated |
 | **ApeWisdom** | Community | Forum mention ranks across ~15 subreddits. No history upstream — rows are stamped when Vintage fetched them. | none | ⏩ forward only, from the day you record |

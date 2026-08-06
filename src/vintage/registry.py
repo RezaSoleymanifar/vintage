@@ -8,7 +8,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from .sources import apewisdom, cboe, cftc, ecb, fred, french, treasury
+from .sources import (apewisdom, bea, bls, cboe, cftc, ecb, fred, french,
+                      thirteenf, treasury)
 
 # Field prefix -> source. This is the router.
 PREFIXES = {
@@ -25,6 +26,9 @@ PREFIXES = {
     "frame:": "frames",
     "ust:": "treasury",
     "cot:": "cftc",
+    "13f:": "thirteenf",
+    "bls:": "bls",
+    "bea:": "bea",
     "index:": "prices",
     "filing:": "sec-edgar-filings",
     "us-gaap:": "sec-edgar-xbrl",
@@ -141,6 +145,30 @@ SOURCES = [
         "key_required": False,
     },
     {
+        "source": "sec-form-13f",
+        "covers": "institutional equity holdings for every manager over $100m",
+        "field_form": "13f:value, 13f:shares (needs an entity like BERKSHIRE)",
+        "point_in_time": "yes — quarter end and filing date, up to 45 days apart",
+        "key_required": False,
+        "note": "Long US equity only. Values normalised across the 2023 thousands-to-dollars change.",
+    },
+    {
+        "source": "bls",
+        "covers": "CPI to item level, payrolls, JOLTS, wages, productivity",
+        "field_form": "bls:CUUR0000SA0",
+        "point_in_time": "no — BLS ships no release date with the value",
+        "key_required": False,
+        "note": "Keyless tier is 25 queries a day. Use fred: when the vintage matters.",
+    },
+    {
+        "source": "bea",
+        "covers": "the national accounts — every line of a NIPA table at once",
+        "field_form": "bea:T10101",
+        "point_in_time": "no — current estimate only, never the first print",
+        "key_required": True,
+        "note": "GDP is revised at least three times. ALFRED via fred: has the vintages.",
+    },
+    {
         "source": "fred",
         "covers": "800k macro series, with ALFRED first-release vintages",
         "field_form": "fred:CPIAUCSL",
@@ -193,7 +221,8 @@ INDICES = [
 
 def static_catalog() -> list[dict[str, Any]]:
     return (french.catalog() + apewisdom.catalog() + ecb.catalog()
-            + cboe.catalog() + treasury.catalog() + cftc.catalog()) + [
+            + cboe.catalog() + treasury.catalog() + cftc.catalog()
+            + thirteenf.catalog() + bls.catalog() + bea.catalog()) + [
         {**item, "source": "yahoo-finance", "kind": "index"} for item in INDICES
     ] + [
         {**item, "source": "fred", "key_required": not fred.has_key()}

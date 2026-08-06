@@ -91,6 +91,35 @@ async def get_json(url: str, *, tier: str = "daily", headers: dict | None = None
     return payload
 
 
+async def post_json(url: str, body: dict, *, tier: str = "daily",
+                    headers: dict | None = None) -> Any:
+    """POST a JSON body and cache on the body as well as the URL.
+
+    Only used where an API takes its parameters no other way — BLS ignores
+    query strings on its GET route and silently returns the default window,
+    which is a worse failure than an error.
+    """
+    import json as _json
+
+    signature = url + "|" + _json.dumps(body, sort_keys=True)
+    cached = cache.get(signature, tier=tier)
+    if cached is not None:
+        return cached
+
+    host = httpx.URL(url).host
+    await _throttle(host)
+
+    merged = {"User-Agent": user_agent(), "Content-Type": "application/json"}
+    merged.update(headers or {})
+    async with httpx.AsyncClient(timeout=90.0, follow_redirects=True) as client:
+        response = await client.post(url, json=body, headers=merged)
+
+    _raise_for(response, url)
+    payload = response.json()
+    cache.put(signature, payload)
+    return payload
+
+
 def _raise_for(response: httpx.Response, url: str) -> None:
     if response.status_code == 404:
         raise SourceError(f"Nothing at {url}")

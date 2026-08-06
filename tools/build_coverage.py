@@ -20,7 +20,8 @@ from vintage import registry  # noqa: E402
 NL = chr(10)
 BLANK = ""
 from vintage.engine import backtest as bt  # noqa: E402
-from vintage.sources import apewisdom, cboe, coinbase, ecb, finra, french  # noqa: E402
+from vintage.sources import (apewisdom, bea, bls, cboe, coinbase, ecb, finra,  # noqa: E402
+                             french, thirteenf)
 
 HEADER = """# Coverage
 
@@ -232,6 +233,72 @@ def delistings_table() -> str:
 
 
 
+def holdings_table() -> str:
+    rows = [
+        "## Institutional holdings" + BLANK,
+        "SEC Form 13F. Every manager running over $100m in US equities files a holdings "
+        "table within 45 days of each quarter end, and that 45-day gap is the point: the "
+        "positions are dated to the quarter, the document is dated to the day it was "
+        "accepted, and `as_of` returns the filing that actually existed on a given day."
+        + BLANK,
+        "| Field | Returns |", "|---|---|",
+        "| `13f:value` | position market value in USD |",
+        "| `13f:shares` | position size in shares |", "",
+        "Three things this handles that a naive parse does not. Filings from January 2023 "
+        "report market value in dollars and everything before reports thousands, with "
+        "nothing in the document saying which, so a series across the boundary jumps by "
+        "1,000x. A manager with sub-advisers files one line per manager per security, so "
+        "the lines have to be summed rather than counted. And an amendment comes in two "
+        "kinds: RESTATED replaces the table, NEW HOLDINGS lists only additions, so "
+        "treating the second as the quarter turns an eleven-name book into one position."
+        + BLANK,
+        f"{len(thirteenf.MANAGERS)} managers have shortcuts; any other filer is found by "
+        "name through EDGAR." + BLANK,
+        "| Shortcut | Filer |", "|---|---|",
+    ]
+    for key, (cik, name) in thirteenf.MANAGERS.items():
+        rows.append("| `" + key + "` | " + name + " (CIK " + cik + ") |")
+    rows.append("")
+    rows.append("13F covers long US equity, ADRs, convertibles and listed options only. "
+                "Shorts, cash, bonds, commodities and foreign listings are never in it, "
+                "so this is one side of a book and never the book." + BLANK)
+    return NL.join(rows) + NL
+
+
+def macro_table() -> str:
+    rows = [
+        "## Macro beyond FRED" + BLANK,
+        "Two statistical agencies served directly. Both are breadth rather than vintage: "
+        "neither ships a release date with the value, so their rows carry no `known_at` "
+        "and say so. When the backtest needs the number that was actually published at "
+        "the time, `fred:` with ALFRED vintages is the free answer and these are not."
+        + BLANK,
+        "### Bureau of Labor Statistics (" + str(len(bls.CURATED)) + " shortcuts, no key)"
+        + BLANK,
+        "CPI down to item strata, payrolls, JOLTS, wages, productivity. Any BLS series id "
+        "works, not just these. Keyless requests are capped at 25 a day and "
+        + str(bls.SPAN_KEYLESS) + " years per call; a free key raises that to 500 and "
+        + str(bls.SPAN_KEYED) + "." + BLANK,
+        "| Field | Series |", "|---|---|",
+    ]
+    for item in bls.CURATED:
+        rows.append("| `" + item["field"] + "` | " + item["label"] + " |")
+    rows += [
+        "",
+        "### Bureau of Economic Analysis (" + str(len(bea.TABLES))
+        + " tables, free key)" + BLANK,
+        "One call returns every line of a NIPA table rather than one series, which is the "
+        "shape a GDP decomposition needs. GDP is published as an advance estimate, revised "
+        "twice within three months, then again at every annual and benchmark revision — "
+        "this endpoint serves only the current estimate." + BLANK,
+        "| Field | Table |", "|---|---|",
+    ]
+    for table, (_, label) in bea.TABLES.items():
+        rows.append("| `bea:" + table + "` | " + label + " |")
+    rows.append("")
+    return NL.join(rows) + NL
+
+
 def signals_table() -> str:
     rows = [f"## Backtest signals ({len(bt.SIGNALS)} built in)\n",
             "| Signal | Definition |", "|---|---|"]
@@ -274,6 +341,8 @@ def main() -> None:
         + vol_table()
         + index_table()
         + delistings_table()
+        + holdings_table()
+        + macro_table()
         + crypto_table()
         + short_table()
         + sentiment_table()

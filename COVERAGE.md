@@ -39,6 +39,9 @@ Source is a parameter, never a separate tool.
 | **sec-xbrl-frames** | one concept across every filer in one call — the cross-section 6,289 filers in one 840KB request. Use fetch per entity when the date matters. | `frame:us-gaap/Assets/CY2023Q1I` | no — carries the accession but not its filing date | none |
 | **us-treasury** | par yield curve, 14 tenors from 1 month to 30 years | `ust:10y, ust:2y, ust:all` | yes — published daily and never revised | none |
 | **cftc-cot** | weekly futures positioning by trader class | `cot:noncommercial_net (needs an entity like SP500)` | yes — Tuesday positions, released Friday, lag preserved | none |
+| **sec-form-13f** | institutional equity holdings for every manager over $100m Long US equity only. Values normalised across the 2023 thousands-to-dollars change. | `13f:value, 13f:shares (needs an entity like BERKSHIRE)` | yes — quarter end and filing date, up to 45 days apart | none |
+| **bls** | CPI to item level, payrolls, JOLTS, wages, productivity Keyless tier is 25 queries a day. Use fred: when the vintage matters. | `bls:CUUR0000SA0` | no — BLS ships no release date with the value | none |
+| **bea** | the national accounts — every line of a NIPA table at once GDP is revised at least three times. ALFRED via fred: has the vintages. | `bea:T10101` | no — current estimate only, never the first print | free key |
 | **fred** | 800k macro series, with ALFRED first-release vintages | `fred:CPIAUCSL` | yes — real-time vintages | free key |
 
 ## Field prefixes
@@ -60,6 +63,9 @@ How a field name routes to a source.
 | `frame:` | frames | — |
 | `ust:` | treasury | — |
 | `cot:` | cftc | — |
+| `13f:` | thirteenf | — |
+| `bls:` | bls | — |
+| `bea:` | bea | — |
 | `index:` | prices | — |
 | `filing:` | sec-edgar-filings | yes |
 | `us-gaap:` | sec-edgar-xbrl | yes |
@@ -156,6 +162,84 @@ SEC Form 25 filings: 36,830 covering 11,614 companies, 2003 to 2026, each with a
 | `delisting:form25` | every delisting on record, dated |
 
 Electronic Form 25 filing became mandatory in April 2006, and the counts show the step: about 450 a year through 2005, 1,421 in 2006, then 1,300 to 2,300 a year. Complete from 2006, partial before, and the response says which.
+## Institutional holdings
+SEC Form 13F. Every manager running over $100m in US equities files a holdings table within 45 days of each quarter end, and that 45-day gap is the point: the positions are dated to the quarter, the document is dated to the day it was accepted, and `as_of` returns the filing that actually existed on a given day.
+| Field | Returns |
+|---|---|
+| `13f:value` | position market value in USD |
+| `13f:shares` | position size in shares |
+
+Three things this handles that a naive parse does not. Filings from January 2023 report market value in dollars and everything before reports thousands, with nothing in the document saying which, so a series across the boundary jumps by 1,000x. A manager with sub-advisers files one line per manager per security, so the lines have to be summed rather than counted. And an amendment comes in two kinds: RESTATED replaces the table, NEW HOLDINGS lists only additions, so treating the second as the quarter turns an eleven-name book into one position.
+25 managers have shortcuts; any other filer is found by name through EDGAR.
+| Shortcut | Filer |
+|---|---|
+| `BERKSHIRE` | Berkshire Hathaway Inc (CIK 0001067983) |
+| `BRIDGEWATER` | Bridgewater Associates, LP (CIK 0001350694) |
+| `RENAISSANCE` | Renaissance Technologies LLC (CIK 0001037389) |
+| `CITADEL` | Citadel Advisors LLC (CIK 0001423053) |
+| `TWOSIGMA` | Two Sigma Investments, LP (CIK 0001179392) |
+| `MILLENNIUM` | Millennium Management LLC (CIK 0001273087) |
+| `AQR` | AQR Capital Management LLC (CIK 0001167557) |
+| `BAUPOST` | Baupost Group LLC/MA (CIK 0001061768) |
+| `PERSHING` | Pershing Square Capital Management, L.P. (CIK 0001336528) |
+| `TIGERGLOBAL` | Tiger Global Management LLC (CIK 0001167483) |
+| `SOROS` | Soros Fund Management LLC (CIK 0001029160) |
+| `DESHAW` | D. E. Shaw & Co, L.P. (CIK 0001009268) |
+| `ELLIOTT` | Elliott Investment Management L.P. (CIK 0001791786) |
+| `APPALOOSA` | Appaloosa LP (CIK 0001656456) |
+| `LONEPINE` | Lone Pine Capital LLC (CIK 0001061165) |
+| `COATUE` | Coatue Management LLC (CIK 0001135730) |
+| `VIKING` | Viking Global Investors LP (CIK 0001103804) |
+| `DUQUESNE` | Duquesne Family Office LLC (CIK 0001536411) |
+| `GREENLIGHT` | Greenlight Capital Inc (CIK 0001079114) |
+| `THIRDPOINT` | Third Point LLC (CIK 0001040273) |
+| `SCION` | Scion Asset Management, LLC (CIK 0001649339) |
+| `ARK` | ARK Investment Management LLC (CIK 0001697748) |
+| `HIMALAYA` | Himalaya Capital Management LLC (CIK 0001709323) |
+| `MARSHALLWACE` | Marshall Wace, LLP (CIK 0001318757) |
+| `MANGROUP` | Man Group plc (CIK 0001637460) |
+
+13F covers long US equity, ADRs, convertibles and listed options only. Shorts, cash, bonds, commodities and foreign listings are never in it, so this is one side of a book and never the book.
+## Macro beyond FRED
+Two statistical agencies served directly. Both are breadth rather than vintage: neither ships a release date with the value, so their rows carry no `known_at` and say so. When the backtest needs the number that was actually published at the time, `fred:` with ALFRED vintages is the free answer and these are not.
+### Bureau of Labor Statistics (17 shortcuts, no key)
+CPI down to item strata, payrolls, JOLTS, wages, productivity. Any BLS series id works, not just these. Keyless requests are capped at 25 a day and 10 years per call; a free key raises that to 500 and 20.
+| Field | Series |
+|---|---|
+| `bls:CUUR0000SA0` | CPI-U, all items, not seasonally adjusted |
+| `bls:CUSR0000SA0` | CPI-U, all items, seasonally adjusted |
+| `bls:CUSR0000SA0L1E` | Core CPI, less food and energy |
+| `bls:CUUR0000SAF1` | CPI, food |
+| `bls:CUUR0000SAH1` | CPI, shelter |
+| `bls:CUUR0000SETB01` | CPI, gasoline (all types) |
+| `bls:WPUFD4` | PPI, final demand |
+| `bls:LNS14000000` | Unemployment rate, 16 and over |
+| `bls:LNS11300000` | Labor force participation rate |
+| `bls:LNS12300060` | Employment-population ratio, 25-54 |
+| `bls:CES0000000001` | Total nonfarm payrolls |
+| `bls:CES0500000003` | Average hourly earnings, private |
+| `bls:CES0500000002` | Average weekly hours, private |
+| `bls:JTS000000000000000JOL` | Job openings, total nonfarm (JOLTS) |
+| `bls:JTS000000000000000QUR` | Quits rate, total nonfarm (JOLTS) |
+| `bls:PRS85006092` | Nonfarm labor productivity, percent change |
+| `bls:CIU1010000000000A` | Employment cost index, compensation |
+
+### Bureau of Economic Analysis (11 tables, free key)
+One call returns every line of a NIPA table rather than one series, which is the shape a GDP decomposition needs. GDP is published as an advance estimate, revised twice within three months, then again at every annual and benchmark revision — this endpoint serves only the current estimate.
+| Field | Table |
+|---|---|
+| `bea:T10101` | Real GDP, percent change from preceding period |
+| `bea:T10102` | Contributions to percent change in real GDP |
+| `bea:T10105` | GDP in current dollars, by component |
+| `bea:T10106` | Real GDP in chained dollars, by component |
+| `bea:T10104` | GDP price indexes, by component |
+| `bea:T20100` | Personal income and its disposition |
+| `bea:T20600` | Personal income and outlays, monthly |
+| `bea:T20804` | Real PCE price index, by type of product |
+| `bea:T50100` | Saving and investment |
+| `bea:T30100` | Government current receipts and expenditures |
+| `bea:T40100` | Foreign transactions |
+
 ## Crypto
 
 Coinbase Exchange, no key. A trade print is never restated, so these rows are *more* honestly point-in-time than equity adjusted closes. Survivorship runs the other way: dead tokens are absent entirely, which is a worse bias than equities, not a milder one.

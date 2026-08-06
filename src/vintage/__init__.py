@@ -8,7 +8,7 @@ Every function is documented in `vintage.sdk`. The MCP server lives in
 `vintage.server` and exposes the same data behind six verbs.
 """
 
-__version__ = "0.8.0"
+__version__ = "0.9.0"
 
 from .sdk import (  # noqa: F401
     backtest,
