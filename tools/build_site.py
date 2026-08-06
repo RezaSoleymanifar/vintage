@@ -418,7 +418,7 @@ SOURCES = [
     ("FINRA short volume", "gov", "2009 → today", 83, 100),
     ("Coinbase Exchange", "third", "2015 → today", 89, 100),
     ("Yahoo Finance", "third", "1962 → today", 36, 100),
-    ("ApeWisdom", "third", "records from today", 99, 100),
+    ("ApeWisdom", "third", "live only, no history", 99, 100),
 ]
 
 
