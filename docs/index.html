@@ -4,98 +4,123 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vintage — the free market research terminal</title>
-<meta name="description" content="Vintage federates the free, point-in-time financial data of the web: eighteen primary sources — SEC EDGAR and Form 13F, FRED, US Treasury, BLS, BEA, ECB, CFTC, CBOE, Ken French and more — behind one interface and six verbs. You only ever see what was public that day. No API keys, no cost.">
-
+<meta name="description" content="Vintage federates the free, point-in-time financial data of the web. Nine primary sources, one interface, six verbs, $0.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Vintage — the free market research terminal">
-<meta property="og:description" content="Vintage federates the free, point-in-time financial data of the web. Eighteen primary sources, one interface, six verbs, $0.">
+<meta property="og:description" content="Vintage federates the free, point-in-time financial data of the web. Nine primary sources, one interface, six verbs, $0.">
 <meta property="og:url" content="https://rezasoleymanifar.github.io/vintage/">
 <meta property="og:image" content="https://rezasoleymanifar.github.io/vintage/og.png">
 <meta name="twitter:card" content="summary_large_image">
-
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230b0f16'/><path d='M6 22 L13 12 L19 18 L26 8' stroke='%2335e08a' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
-
 <style>
 :root{
-  --bg:#0b0f16; --panel:#0d1420; --line:#1f2b3a; --grid:#161f2c;
-  --ink:#e8f1ec; --dim:#5f7a8c; --green:#35e08a; --red:#ff6b5e; --amber:#ffc46b;
-  --blue:#7fb3ff;
+  --bg:#080b11; --panel:#0c121c; --line:#1c2735; --ink:#e9f1ee; --dim:#657f92;
+  --green:#2fd587; --red:#ff6b5e; --amber:#f2c076; --blue:#7fb3ff;
   --mono:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
 }
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
+html,body{height:100%}
 body{
-  margin:0; background:var(--bg); color:var(--ink);
-  font-family:var(--mono); font-size:16px; line-height:1.55;
-  background-image:linear-gradient(var(--grid) 1px,transparent 1px);
-  background-size:100% 60px;
+  margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);overflow:hidden;
+  background-image:radial-gradient(ellipse 90% 60% at 78% 0%,rgba(47,213,135,.07),transparent 70%);
 }
-.wrap{max-width:1060px;margin:0 auto;padding:0 20px}
 a{color:var(--green);text-decoration:none}
 a:hover{text-decoration:underline}
 
-/* ------------------------------------------------------------------ hero */
-header{padding:54px 0 8px}
-.eyebrow{color:var(--dim);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;margin:0 0 16px}
-h1{font-size:clamp(38px,8vw,74px);font-weight:700;letter-spacing:.16em;margin:0 0 10px;line-height:1}
-.sub{
-  color:var(--green);letter-spacing:.2em;font-size:clamp(11px,2.6vw,16px);margin:0;
-  text-transform:uppercase;font-weight:700;
+.shell{height:100dvh;display:grid;grid-template-columns:1fr}
+@media(min-width:1040px) and (min-height:640px){
+  .shell{grid-template-columns:minmax(360px,31%) 1fr}
 }
-.claim{
-  font-size:clamp(21px,4.2vw,33px);line-height:1.3;margin:30px 0 0;max-width:18em;font-weight:700;
+
+/* ------------------------------------------------------------- left rail */
+.rail{
+  padding:clamp(20px,3.4vh,44px) clamp(20px,2.6vw,40px);
+  display:flex;flex-direction:column;gap:clamp(12px,2.2vh,26px);
+  border-right:1px solid var(--line);min-width:0;
 }
+.brand{font-size:clamp(26px,4.4vh,44px);font-weight:700;letter-spacing:.17em;margin:0;line-height:1}
+.tag{color:var(--green);letter-spacing:.19em;text-transform:uppercase;font-weight:700;
+  font-size:clamp(9px,1.35vh,12px);margin:6px 0 0}
+.claim{font-size:clamp(14px,2.15vh,20px);line-height:1.4;margin:0;font-weight:700}
 .claim .g{color:var(--green)}
-.gloss{
-  margin:16px 0 0;padding:14px 16px;border-left:2px solid var(--green);
-  background:linear-gradient(90deg,rgba(53,224,138,.06),transparent);
-  font-size:clamp(14px,2.7vw,17px);line-height:1.55;max-width:34em;
-}
-.gloss b{color:var(--green)}
-.pitch{font-size:clamp(13.5px,2.5vw,15.5px);line-height:1.6;margin:18px 0 0;max-width:36em;color:var(--dim)}
-.pitch b{color:var(--ink);font-weight:700}
+.sub{color:var(--dim);font-size:clamp(11px,1.55vh,13.5px);line-height:1.55;margin:0}
 
-/* The architecture diagram is a wide SVG. On a phone it scrolls sideways
-   rather than shrinking to unreadable, which is what the source labels need. */
-.arch{margin:30px 0 0;padding:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.arch img{display:block;width:100%;min-width:820px;height:auto;
-  border:1px solid var(--line);border-radius:10px;background:var(--bg)}
-.arch figcaption{color:var(--dim);font-size:11px;letter-spacing:.06em;
-  margin-top:10px;min-width:820px}
-@media (max-width:700px){
-  .arch img,.arch figcaption{min-width:760px}
-}
-.cta{margin:26px 0 0;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
-.ctanote{margin:0;color:var(--dim);font-size:12.5px}
+.start{margin:0;padding:0;list-style:none;display:grid;gap:clamp(7px,1.2vh,13px)}
+.start li{display:grid;grid-template-columns:22px 1fr;gap:11px;align-items:start}
+.start b{width:22px;height:22px;border-radius:50%;border:1px solid rgba(47,213,135,.45);
+  color:var(--green);font-size:11px;display:grid;place-items:center;font-weight:700}
+.start span{font-size:clamp(11px,1.5vh,13.5px);line-height:1.45;color:var(--dim)}
+.start span i{font-style:normal;color:var(--ink);font-weight:700}
 
-.stats{
-  display:grid;grid-template-columns:repeat(2,1fr);gap:1px;margin:30px 0 0;
-  background:var(--line);border:1px solid var(--line);border-radius:11px;overflow:hidden;
-}
-@media(min-width:760px){.stats{grid-template-columns:repeat(6,1fr)}}
-.stats div{background:var(--panel);padding:16px 12px;text-align:center}
-.stats b{display:block;color:var(--green);font-size:clamp(20px,3.6vw,26px)}
-.stats span{display:block;color:var(--dim);font-size:11px;letter-spacing:.06em;margin-top:5px;line-height:1.35}
+.cmd{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:9px;
+  padding:11px 13px 11px 13px;color:var(--green);line-height:1.6;
+  font-size:clamp(9.5px,1.3vh,12.5px);word-break:break-word}
+.cmd code{display:block;padding-right:56px}
+.copy{position:absolute;top:7px;right:7px;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.09em;color:var(--dim);background:#070b11;border:1px solid var(--line);
+  border-radius:6px;padding:4px 9px;cursor:pointer}
+.copy:hover{color:var(--green);border-color:var(--green)}
+.copy.done{color:var(--bg);background:var(--green);border-color:var(--green)}
+.rail .foot{margin-top:auto;display:flex;flex-wrap:wrap;gap:12px;font-size:11px;color:var(--dim)}
 
-/* ---------------------------------------------------------------- section */
-section{padding:56px 0 0}
-h2{font-size:clamp(19px,3.4vw,26px);color:var(--ink);margin:0 0 8px;font-weight:700}
-.lede{color:var(--dim);font-size:14px;line-height:1.6;margin:0 0 20px;max-width:56em}
-.lede .hl{color:var(--ink);font-weight:700}
-.after{color:var(--dim);font-size:12.5px;margin:14px 0 0;line-height:1.6}
+/* ----------------------------------------------------------------- stage */
+.stage{position:relative;display:flex;flex-direction:column;min-width:0;min-height:0;
+  padding:clamp(16px,2.6vh,30px) clamp(16px,2.2vw,34px)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:clamp(10px,1.6vh,18px);flex:none}
+.chip{font-family:var(--mono);font-size:clamp(9px,1.28vh,11.5px);letter-spacing:.11em;
+  text-transform:uppercase;color:var(--dim);background:transparent;cursor:pointer;
+  border:1px solid var(--line);border-radius:99px;padding:6px 13px;position:relative;overflow:hidden}
+.chip:hover{color:var(--ink)}
+.chip.is-on{color:var(--ink);border-color:rgba(47,213,135,.5)}
+.chip.is-on::after{content:"";position:absolute;left:0;bottom:0;height:2px;background:var(--green);
+  width:100%;transform-origin:left;animation:tick var(--dwell,9s) linear forwards}
+@keyframes tick{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 
-/* --------------------------------------------------------------- diagrams */
-.dwrap{
-  border:1px solid var(--line);border-radius:14px;background:var(--panel);
-  padding:10px;overflow-x:auto;overflow-y:hidden;
-}
-.dwrap::-webkit-scrollbar{height:7px}
-.dwrap::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
-.dia{display:block;width:100%;height:auto;min-width:940px}
+.panels{position:relative;flex:1;min-height:0}
+.panel{position:absolute;inset:0;opacity:0;visibility:hidden;
+  transition:opacity .45s ease;display:flex;flex-direction:column;min-height:0}
+.panel.is-on{opacity:1;visibility:visible}
+.ptitle{font-size:clamp(13px,1.95vh,18px);font-weight:700;margin:0 0 4px}
+.pnote{color:var(--dim);font-size:clamp(10px,1.4vh,12.5px);line-height:1.5;
+  margin:0 0 clamp(8px,1.3vh,14px);max-width:70em}
+.pnote b{color:var(--ink)}
+.dia{flex:1;min-height:0;width:100%;height:100%}
 .dia text{font-family:var(--mono)}
-.swipe{display:none;color:var(--dim);font-size:11px;margin:8px 0 0}
-@media(max-width:980px){.swipe{display:block}}
 
+/* the terminal panel */
+.term{flex:0 1 auto;min-height:0;max-height:100%;background:var(--panel);
+  border:1px solid var(--line);border-radius:11px;
+  overflow:hidden;display:flex;flex-direction:column;
+  box-shadow:0 26px 70px -40px rgba(47,213,135,.4)}
+.bar{display:flex;align-items:center;gap:7px;padding:9px 13px;border-bottom:1px solid var(--line);
+  background:#070b11;flex:none}
+.tdot{width:9px;height:9px;border-radius:50%;background:#1e2b3a;opacity:1}
+.bar .who{margin-left:7px;color:var(--dim);font-size:11px;letter-spacing:.1em}
+.screen{padding:clamp(12px,2vh,22px);font-size:clamp(9px,1.85vh,17px);
+  flex:0 1 auto;min-height:0;overflow:hidden}
+.row{display:flex;align-items:baseline;flex-wrap:wrap;gap:0 7px;padding:1px 0;opacity:0}
+.in1{padding-left:1.5em}
+.prompt{font-weight:700}
+.p-shell{color:var(--dim)}
+.p-user{color:var(--green)}
+.typed{display:inline-block;overflow:hidden;white-space:nowrap;vertical-align:bottom;width:0}
+.caret{display:inline-block;width:.55em;height:1em;background:var(--green);
+  vertical-align:text-bottom;visibility:hidden}
+@keyframes blink{0%{opacity:1}50%{opacity:0}}
+.dim{color:var(--dim)}
+.ok{color:var(--green)}
+.ok b{margin-right:6px}
+.kv .k{color:var(--dim)}
+.kv .v{color:var(--ink);font-weight:700;margin-right:17px}
+.kv.big .v{color:var(--green);font-size:1.45em}
+.kv.mid .v{color:var(--ink)}
+.verdict{color:var(--amber);font-weight:700}
+.kicker{color:var(--dim)}
+.rule{color:var(--dim);letter-spacing:.2em;font-size:.8em;margin-top:9px;
+  text-transform:uppercase;gap:11px}
+.rule i{flex:1;height:1px;background:var(--line);min-width:12px}
+
+/* diagram vocabulary */
 .d-h{fill:var(--dim);font-size:11px;letter-spacing:.2em}
 .d-h.g{fill:var(--green)}
 .d-ct{fill:var(--dim);font-size:10.5px;letter-spacing:.18em}
@@ -103,151 +128,59 @@ h2{font-size:clamp(19px,3.4vw,26px);color:var(--ink);margin:0 0 8px;font-weight:
 .d-fn{fill:var(--dim);font-size:10.5px}
 .d-note{fill:var(--green);font-size:11.5px}
 .d-card{fill:rgba(255,255,255,.018);stroke:var(--line)}
-.d-box{fill:#0a111a;stroke:var(--line)}
+.d-box{fill:#070b11;stroke:var(--line)}
 .d-edge{fill:var(--green);opacity:.55}
-.d-pipe{fill:rgba(53,224,138,.05);stroke:rgba(53,224,138,.34)}
-.d-stage{fill:#0a111a;stroke:var(--line)}
+.d-pipe{fill:rgba(47,213,135,.05);stroke:rgba(47,213,135,.32)}
+.d-stage{fill:#070b11;stroke:var(--line)}
 .d-num{fill:none;stroke:var(--green);stroke-width:1.3}
 .d-numt{fill:var(--green);font-size:11.5px}
 .d-st{fill:var(--green);font-size:14.5px;font-weight:700}
 .d-ss{fill:var(--dim);font-size:11px}
-.d-verb{fill:#0d1420;stroke:rgba(53,224,138,.32)}
-.d-vt{fill:var(--green);font-size:12.5px}
-.d-bub{fill:#0d1420;stroke:var(--line)}
+.d-verb{fill:#0c121c;stroke:rgba(47,213,135,.3)}
+.d-vt{fill:var(--green);font-size:13px}
+.d-bub{fill:#0c121c;stroke:var(--line)}
 .d-ok{fill:var(--green);font-size:13px;font-weight:700}
 .d-bad{fill:var(--red);font-size:13px;font-weight:700}
-.d-wire{stroke:#243447;stroke-width:1.6;fill:none}
+.d-wire{stroke:#21303f;stroke-width:1.6;fill:none}
 .d-flow{stroke:var(--green);stroke-width:1.7;fill:none;stroke-dasharray:5 13;
   stroke-linecap:round;animation:flow 1.5s linear infinite}
 @keyframes flow{to{stroke-dashoffset:-36}}
 .d-arrow{fill:none;stroke:var(--green);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-
-.d-axis{stroke:var(--line);stroke-width:1.5}
-.d-tick{stroke:var(--line);stroke-width:1.5}
+.d-axis,.d-tick{stroke:var(--line);stroke-width:1.5}
 .d-future{fill:rgba(255,107,94,.055)}
 .d-wallline{stroke:var(--red);stroke-width:1.6;stroke-dasharray:5 5}
 .d-walltag{fill:var(--red)}
-.d-walltxt{fill:#0b0f16;font-size:11px;font-weight:700}
-.d-ev{fill:#0a111a;stroke:rgba(53,224,138,.34)}
+.d-walltxt{fill:#080b11;font-size:11px;font-weight:700}
+.d-ev{fill:#070b11;stroke:rgba(47,213,135,.34)}
 .d-evt{fill:var(--ink);font-size:12.5px;font-weight:700}
 .d-evdot{fill:var(--green)}
-.d-stem{stroke:#243447;stroke-width:1.3;stroke-dasharray:3 4}
+.d-stem{stroke:#21303f;stroke-width:1.3;stroke-dasharray:3 4}
 .d-lag{stroke:var(--red);stroke-width:1.6;stroke-dasharray:4 4}
 .d-lagt{fill:var(--red);font-size:10.5px}
-.d-row{fill:#0d1420;stroke:var(--line)}
-.d-row.warn{stroke:rgba(255,196,107,.5)}
+.d-row{fill:#0c121c;stroke:var(--line)}
+.d-row.warn{stroke:rgba(242,192,118,.5)}
 .pit-wall{animation:sweep 11s linear infinite}
 @keyframes sweep{to{transform:translateX(920px)}}
-
-.d-spec{fill:var(--green);opacity:.9}
-.d-track{fill:#101927}
-.d-fill{fill:var(--green)}
-.d-fill.amber{fill:var(--amber)}
-.d-fill.bad{fill:var(--red)}
-.d-big{font-size:26px;font-weight:700;fill:var(--ink)}
-.d-big.ok{fill:var(--green)}
-.d-big.bad{fill:var(--red)}
-.d-mid{font-size:20px;font-weight:700;fill:var(--amber)}
+.d-track{fill:#0e1723}
+.tlb.gov{fill:var(--green)}
+.tlb.edu{fill:var(--blue)}
+.tlb.third{fill:#38536a}
 
 @media (prefers-reduced-motion:reduce){
-  .dia *{animation:none!important;transform:none!important;opacity:1!important}
-  .d-future,.pit-wall{display:none}
-  .defbar{width:12px}.ledbar{width:210px}
-}
-
-/* -------------------------------------------------------------- timeline */
-.tl{margin-top:18px;border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:18px 16px 14px}
-.tl-head{display:flex;justify-content:space-between;color:var(--dim);font-size:10.5px;
-  letter-spacing:.18em;text-transform:uppercase;margin-bottom:14px}
-.tl-row{display:grid;grid-template-columns:1fr;gap:3px;margin-bottom:11px}
-@media(min-width:700px){.tl-row{grid-template-columns:15em 1fr 9em;gap:12px;align-items:center;margin-bottom:7px}}
-.tl-name{font-size:12.5px;color:var(--ink)}
-.tl-track{position:relative;display:block;height:9px;border-radius:5px;background:#101927;overflow:hidden}
-.tl-bar{position:absolute;top:0;height:9px;border-radius:5px;display:block}
-.tl-bar.gov{background:var(--green)}
-.tl-bar.edu{background:var(--blue)}
-.tl-bar.third{background:#3b5468}
-.tl-span{font-size:11px;color:var(--dim)}
-@media(min-width:700px){.tl-span{text-align:right}}
-
-/* --------------------------------------------------------------- terminal */
-.term{
-  margin:0; background:var(--panel); border:1px solid var(--line);
-  border-radius:12px; overflow:hidden; box-shadow:0 22px 60px -30px rgba(53,224,138,.3);
-}
-.bar{display:flex;align-items:center;gap:8px;padding:11px 15px;
-  border-bottom:1px solid var(--line);background:#0a111a}
-.tdot{width:11px;height:11px;border-radius:50%;background:#22303f;opacity:1}
-.bar .who{margin-left:8px;color:var(--dim);font-size:12.5px;letter-spacing:.1em}
-.screen{padding:18px 18px 22px;font-size:clamp(11.5px,2.3vw,14.5px);min-height:330px}
-
-.row{display:flex;align-items:baseline;flex-wrap:wrap;gap:0 8px;padding:1.5px 0;opacity:0}
-.in1{padding-left:1.6em}
-.prompt{font-weight:700}
-.p-shell{color:var(--dim)}
-.p-user{color:var(--green)}
-.typed{display:inline-block;overflow:hidden;white-space:nowrap;vertical-align:bottom;width:0}
-.caret{display:inline-block;width:.58em;height:1.05em;background:var(--green);
-  vertical-align:text-bottom;visibility:hidden}
-@keyframes blink{0%{opacity:1}50%{opacity:0}}
-
-.dim{color:var(--dim)}
-.ok{color:var(--green)}
-.ok b{margin-right:7px}
-.kv .k{color:var(--dim)}
-.kv .v{color:var(--ink);font-weight:700;margin-right:20px}
-.kv.big .v{color:var(--green);font-size:1.5em}
-.kv.mid .v{color:var(--ink)}
-.kv.bad .v{color:var(--red);font-size:1.25em}
-.verdict{color:var(--red)}
-.kicker{color:var(--amber)}
-.rule{color:var(--dim);letter-spacing:.22em;font-size:.82em;margin-top:14px;
-  text-transform:uppercase;gap:12px}
-.rule i{flex:1;height:1px;background:var(--line);min-width:14px}
-
-@media (prefers-reduced-motion:reduce){
-  .row{opacity:1!important;animation:none!important;transform:none!important}
-  .typed{width:auto!important;animation:none!important}
+  .dia *,.row,.typed,.chip.is-on::after{animation:none!important;opacity:1!important}
+  .typed{width:auto!important}
   .caret{display:none}
+  .d-future,.pit-wall{display:none}
 }
 
-/* ------------------------------------------------------------- chip rows */
-.drifts{display:grid;grid-template-columns:1fr;gap:9px;margin-top:16px}
-@media(min-width:600px){.drifts{grid-template-columns:repeat(2,1fr)}}
-@media(min-width:940px){.drifts{grid-template-columns:repeat(3,1fr)}}
-.drift{display:block;border-left:2px solid var(--amber);padding:2px 0 2px 11px}
-.drift b{display:block;font-size:12.5px}
-.drift i{display:block;font-style:normal;color:var(--dim);font-size:11.5px;margin-top:1px}
-
-.papers{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
-.paper{border:1px solid var(--line);border-radius:7px;padding:7px 11px;font-size:11.5px;color:var(--dim)}
-.paper b{color:var(--ink);font-weight:700}
-.paper.on{border-color:rgba(53,224,138,.4);background:rgba(53,224,138,.07)}
-.paper.on b{color:var(--green)}
-.paper.off b{color:var(--amber)}
-
-/* --------------------------------------------------------------- install */
-.tabs{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
-.tab{font-family:var(--mono);font-size:13px;color:var(--dim);cursor:pointer;
-  background:transparent;border:1px solid var(--line);border-radius:7px;padding:7px 13px}
-.tab:hover{color:var(--ink)}
-.tab.is-on{color:var(--bg);background:var(--green);border-color:var(--green);font-weight:700}
-.pane{display:none}
-.pane.is-on{display:block}
-.note{color:var(--dim);font-size:14px;margin:0 0 11px}
-.note code{color:var(--ink)}
-pre{position:relative;margin:0;background:var(--panel);border:1px solid var(--line);
-  border-radius:10px;padding:15px 74px 15px 16px;overflow-x:auto;
-  font-size:13.5px;line-height:1.65;color:var(--green)}
-pre.one{flex:1 1 30em;padding:14px 74px 14px 16px;font-size:clamp(11.5px,2.2vw,13.5px)}
-.copy{position:absolute;top:10px;right:10px;font-family:var(--mono);font-size:11.5px;
-  letter-spacing:.1em;color:var(--dim);background:#0a111a;border:1px solid var(--line);
-  border-radius:6px;padding:5px 10px;cursor:pointer}
-.copy:hover{color:var(--green);border-color:var(--green)}
-.copy.done{color:var(--bg);background:var(--green);border-color:var(--green)}
-
-footer{padding:56px 0 70px;color:var(--dim);font-size:12.5px}
-footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:14px;font-size:13.5px}
+/* a phone or a short window cannot be one screen — let those scroll */
+@media(max-width:1039px),(max-height:639px){
+  body{overflow:auto}
+  .shell{height:auto}
+  .rail{border-right:0;border-bottom:1px solid var(--line)}
+  .stage{min-height:88vh}
+  .panels{min-height:70vh}
+}
 @keyframes pev0{0%,20.60%{opacity:0.14}21.00%,100%{opacity:1}}
 .pe0{animation:pev0 11.0s linear infinite}
 @keyframes pev1{0%,38.00%{opacity:0.14}38.40%,100%{opacity:1}}
@@ -348,73 +281,98 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:14px;font-size:
 .defbar{animation:defgrow 9.0s linear infinite}
 @keyframes defnum{0%,69.60%{opacity:0.0}70.00%,100%{opacity:1}}
 .defnum{animation:defnum 9.0s linear infinite}
-
-.forum{width:100%;border-collapse:collapse;margin:22px 0 0;font-size:14px}
-.forum th{color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
-  font-weight:400;text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
-.forum td{padding:10px;border-bottom:1px solid var(--line);color:var(--ink)}
-.forum td.rk{color:var(--dim);width:2em}
-.forum td.tk{font-weight:700;letter-spacing:.04em}
-.forum td.nm{color:var(--dim)}
-.forum .n{text-align:right;font-variant-numeric:tabular-nums}
-.forum th.n{text-align:right}
-.forum .up{color:var(--green)}
-.forum .down{color:var(--red)}
-.forum .flat,.forum .dimc{color:var(--dim)}
-.stamp{color:var(--dim);font-size:12.5px;margin:12px 0 0}
+@keyframes ax0{0%,0.682%{opacity:0}0.909%,100%{opacity:1}}
+@keyframes wx0{0%,0.909%{width:0}7.727%,100%{width:49ch}}
+@keyframes cx0{0%,0.682%{visibility:hidden}0.909%,12.955%{visibility:visible}13.182%,100%{visibility:hidden}}
+.rx0{animation:ax0 22.0s infinite}
+.tx0{animation:wx0 22.0s steps(49,end) infinite}
+.kx0{animation:cx0 22.0s infinite,blink .9s steps(2,end) infinite}
+@keyframes ax1{0%,9.318%{opacity:0;transform:translateY(3px)}10.364%,100%{opacity:1;transform:none}}
+.rx1{animation:ax1 22.0s infinite}
+@keyframes ax2{0%,13.409%{opacity:0}13.636%,100%{opacity:1}}
+@keyframes wx2{0%,13.636%{width:0}21.818%,100%{width:57ch}}
+@keyframes cx2{0%,13.409%{visibility:hidden}13.636%,38.409%{visibility:visible}38.636%,100%{visibility:hidden}}
+.rx2{animation:ax2 22.0s infinite}
+.tx2{animation:wx2 22.0s steps(57,end) infinite}
+.kx2{animation:cx2 22.0s infinite,blink .9s steps(2,end) infinite}
+@keyframes ax3{0%,23.409%{opacity:0;transform:translateY(3px)}24.455%,100%{opacity:1;transform:none}}
+.rx3{animation:ax3 22.0s infinite}
+@keyframes ax4{0%,25.682%{opacity:0;transform:translateY(3px)}26.727%,100%{opacity:1;transform:none}}
+.rx4{animation:ax4 22.0s infinite}
+@keyframes ax5{0%,28.409%{opacity:0;transform:translateY(3px)}29.455%,100%{opacity:1;transform:none}}
+.rx5{animation:ax5 22.0s infinite}
+@keyframes ax6{0%,31.136%{opacity:0;transform:translateY(3px)}32.182%,100%{opacity:1;transform:none}}
+.rx6{animation:ax6 22.0s infinite}
+@keyframes ax7{0%,33.864%{opacity:0;transform:translateY(3px)}34.909%,100%{opacity:1;transform:none}}
+.rx7{animation:ax7 22.0s infinite}
+@keyframes ax8{0%,38.864%{opacity:0}39.091%,100%{opacity:1}}
+@keyframes wx8{0%,39.091%{width:0}43.182%,100%{width:15ch}}
+@keyframes cx8{0%,38.864%{visibility:hidden}39.091%,50.227%{visibility:visible}50.455%,100%{visibility:hidden}}
+.rx8{animation:ax8 22.0s infinite}
+.tx8{animation:wx8 22.0s steps(15,end) infinite}
+.kx8{animation:cx8 22.0s infinite,blink .9s steps(2,end) infinite}
+@keyframes ax9{0%,45.682%{opacity:0;transform:translateY(3px)}46.727%,100%{opacity:1;transform:none}}
+.rx9{animation:ax9 22.0s infinite}
+@keyframes ax10{0%,50.682%{opacity:0}50.909%,100%{opacity:1}}
+@keyframes wx10{0%,50.909%{width:0}55.909%,100%{width:23ch}}
+@keyframes cx10{0%,50.682%{visibility:hidden}50.909%,97.500%{visibility:visible}97.727%,100%{visibility:hidden}}
+.rx10{animation:ax10 22.0s infinite}
+.tx10{animation:wx10 22.0s steps(23,end) infinite}
+.kx10{animation:cx10 22.0s infinite,blink .9s steps(2,end) infinite}
+@keyframes ax11{0%,58.864%{opacity:0;transform:translateY(3px)}59.909%,100%{opacity:1;transform:none}}
+.rx11{animation:ax11 22.0s infinite}
+@keyframes ax12{0%,61.591%{opacity:0;transform:translateY(3px)}62.636%,100%{opacity:1;transform:none}}
+.rx12{animation:ax12 22.0s infinite}
+@keyframes ax13{0%,65.227%{opacity:0;transform:translateY(3px)}66.273%,100%{opacity:1;transform:none}}
+.rx13{animation:ax13 22.0s infinite}
+@keyframes ax14{0%,69.773%{opacity:0;transform:translateY(3px)}70.818%,100%{opacity:1;transform:none}}
+.rx14{animation:ax14 22.0s infinite}
+@keyframes ax15{0%,71.591%{opacity:0;transform:translateY(3px)}72.636%,100%{opacity:1;transform:none}}
+.rx15{animation:ax15 22.0s infinite}
+@keyframes ax16{0%,73.864%{opacity:0;transform:translateY(3px)}74.909%,100%{opacity:1;transform:none}}
+.rx16{animation:ax16 22.0s infinite}
 </style>
 </head>
 <body>
+<div class="shell">
 
-<div class="wrap">
-
-  <header>
-    <p class="eyebrow">MCP server &middot; open source &middot; no API keys</p>
-    <h1>VINTAGE</h1>
-    <p class="sub">Free market research terminal</p>
+  <aside class="rail">
+    <div>
+      <h1 class="brand">VINTAGE</h1>
+      <p class="tag">Free market research terminal</p>
+    </div>
 
     <p class="claim">Vintage <span class="g">federates the free, point-in-time financial data of
     the web</span>.</p>
-    <p class="gloss"><b>Point-in-time</b> means you only ever see what the world could actually see
-    that day. No number that was revised, restated or listed years later leaks backwards into a test
-    of the past.</p>
-    <p class="pitch">There is no free lunch in market data — the real terminals cost more than a car.
-    But most of what they sell is <b>already public and already free</b>, just scattered across a
-    dozen government, university and exchange sites in ten incompatible formats, none of them
-    keeping track of when anything became known.
-    <b>Vintage is the closest thing to a free terminal</b>: one pipeline, one schema, one interface.</p>
+    <p class="sub">Nine primary sources &mdash; the SEC, the St.&nbsp;Louis Fed, Dartmouth &mdash;
+    behind one interface. You only ever see what was public on the day you are asking about.</p>
 
-    <figure class="arch">
-      <img src="architecture.svg" width="1280" height="700" alt="Eighteen free
-      financial data sources &mdash; SEC EDGAR, Form 13F, FRED, ECB, US Treasury, BLS, BEA,
-      CFTC, CBOE, FINRA, Coinbase, Ken French and more &mdash; federated behind one interface,
-      every row carrying both the date it describes and the date it became public">
-      <figcaption>Eighteen sources scattered across the internet, one interface,
-      every value dated twice.</figcaption>
-    </figure>
+    <ol class="start">
+      <li><b>1</b><span><i>Add it.</i> One command, nothing to clone.</span></li>
+      <li><b>2</b><span><i>Ask in plain English.</i> No field names, no keys, no account.</span></li>
+      <li><b>3</b><span><i>Read the honesty report</i> before you believe any Sharpe.</span></li>
+    </ol>
 
-    <div class="cta">
-      <pre class="one"><code>claude mcp add vintage -s user -- uvx vintage-mcp</code><button class="copy" aria-label="Copy">copy</button></pre>
-      <p class="ctanote">Free forever &middot; no key &middot; no account</p>
+    <div class="cmd"><code>claude mcp add vintage -s user -- uvx vintage-mcp</code><button class="copy" aria-label="Copy">copy</button></div>
+
+    <div class="foot">
+      <a href="https://github.com/RezaSoleymanifar/vintage">GitHub</a>
+      <a href="https://pypi.org/project/vintage-mcp/">PyPI</a>
+      <a href="deep.html">The long version</a>
+      <a href="reel.html">Demo reel</a>
+      <span>MIT &middot; $0 &middot; no keys</span>
     </div>
+  </aside>
 
-    <div class="stats">
-      <div><b>$0</b><span>total cost</span></div>
-      <div><b>100</b><span>years of history</span></div>
-      <div><b>18</b><span>primary sources</span></div>
-      <div><b>6</b><span>verbs, that's the API</span></div>
-      <div><b>800k+</b><span>macro series</span></div>
-      <div><b>331</b><span>published anomalies</span></div>
-    </div>
-  </header>
+  <main class="stage">
+    <div class="chips" id="chips"></div>
+    <div class="panels" id="panels">
 
-  <section>
-    <h2>How the federation works</h2>
-    <p class="lede">Filings from the regulator that receives them, macro from the central bank that
-    publishes it, factors from the university that computes them &mdash; then four stages that make
-    them one dataset. <span class="hl">Vintage hosts none of it.</span></p>
-    <div class="dwrap">
-      <svg class="dia" viewBox="0 0 1160 600" role="img" aria-label="Scattered free data sources federated through Vintage into six verbs">
+      <section class="panel is-on" data-dwell="10">
+        <h2 class="ptitle">The good data is already free &mdash; it is just scattered.</h2>
+        <p class="pnote">Government, university and exchange sites, ten incompatible formats, none of
+        them tracking when anything became known. <b>Vintage makes them one dataset.</b></p>
+        <svg class="dia" viewBox="0 0 1160 600" role="img" aria-label="Scattered free data sources federated through Vintage into six verbs">
       <text class="d-h" x="20" y="44">THE WEB &middot; FREE, PUBLIC, SCATTERED</text>
       <text class="d-h g" x="380" y="44">VINTAGE &middot; THE FEDERATION LAYER</text>
       <text class="d-h" x="830" y="44">ONE INTERFACE</text>
@@ -508,34 +466,79 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:14px;font-size:
       <path class="d-flow" style="animation-delay:-0.8s" d="M985 320 L985 350"/>
       <path class="d-arrow" d="M978 344 L985 352 L992 344"/>
       </svg>
-    </div>
-    <p class="swipe">&larr; swipe the diagram sideways</p>
+      </section>
 
-    <div class="tl">
-      <div class="tl-head"><span>1926</span><span>what that federation covers</span><span>today</span></div>
-      <div class="tl-row"><span class="tl-name">SEC EDGAR XBRL</span><span class="tl-track"><i class="tl-bar gov" style="left:83%;width:17.0%"></i></span><span class="tl-span">2009 → today</span></div>
-        <div class="tl-row"><span class="tl-name">SEC filings stream</span><span class="tl-track"><i class="tl-bar gov" style="left:67%;width:33.0%"></i></span><span class="tl-span">1993 → today</span></div>
-        <div class="tl-row"><span class="tl-name">FRED</span><span class="tl-track"><i class="tl-bar gov" style="left:21%;width:79.0%"></i></span><span class="tl-span">1947 → today</span></div>
-        <div class="tl-row"><span class="tl-name">ALFRED vintages</span><span class="tl-track"><i class="tl-bar gov" style="left:70%;width:30.0%"></i></span><span class="tl-span">1996 → today</span></div>
-        <div class="tl-row"><span class="tl-name">Ken French Library</span><span class="tl-track"><i class="tl-bar edu" style="left:0%;width:100.0%"></i></span><span class="tl-span">Jul 1926 → today</span></div>
-        <div class="tl-row"><span class="tl-name">Open Source Asset Pricing</span><span class="tl-track"><i class="tl-bar edu" style="left:0%;width:97.0%"></i></span><span class="tl-span">1926 → 2023</span></div>
-        <div class="tl-row"><span class="tl-name">FINRA short volume</span><span class="tl-track"><i class="tl-bar gov" style="left:83%;width:17.0%"></i></span><span class="tl-span">2009 → today</span></div>
-        <div class="tl-row"><span class="tl-name">Coinbase Exchange</span><span class="tl-track"><i class="tl-bar third" style="left:89%;width:11.0%"></i></span><span class="tl-span">2015 → today</span></div>
-        <div class="tl-row"><span class="tl-name">Yahoo Finance</span><span class="tl-track"><i class="tl-bar third" style="left:36%;width:64.0%"></i></span><span class="tl-span">1962 → today</span></div>
-        <div class="tl-row"><span class="tl-name">ApeWisdom</span><span class="tl-track"><i class="tl-bar third" style="left:99%;width:1.2%"></i></span><span class="tl-span">live only, no history</span></div>
-    </div>
-    <p class="after"><a href="https://github.com/RezaSoleymanifar/vintage/blob/main/COVERAGE.md">The
-    full field-by-field catalogue</a> is generated from the registry, so it cannot drift from the code.</p>
-  </section>
+      <section class="panel" data-dwell="10">
+        <h2 class="ptitle">A century of history, and six verbs that reach all of it.</h2>
+        <p class="pnote">July 1926 to this morning. <b>Source is a parameter, never a new tool</b>
+        &mdash; twenty more sources would still be six verbs.</p>
+        <svg class="dia" viewBox="0 0 1160 600" role="img" aria-label="Coverage of each source from 1926 to today, and the six verbs">
+      <text class="d-h g" x="40" y="40">A CENTURY OF COVERAGE</text>
+      <text class="d-fn" x="300" y="70">1926</text>
+      <text class="d-fn" x="1000" y="70" text-anchor="end">today</text>
+      <line class="d-axis" x1="300" y1="78" x2="1000" y2="78"/>
+      <text class="d-it" x="40" y="111">SEC EDGAR XBRL</text>
+      <rect class="d-track" x="300" y="100" width="700" height="13" rx="6"/>
+      <rect class="tlb gov" x="881" y="100" width="119" height="13" rx="6"/>
+      <text class="d-fn" x="1150" y="111" text-anchor="end">2009 → today</text>
+      <text class="d-it" x="40" y="144">SEC filings stream</text>
+      <rect class="d-track" x="300" y="133" width="700" height="13" rx="6"/>
+      <rect class="tlb gov" x="769" y="133" width="231" height="13" rx="6"/>
+      <text class="d-fn" x="1150" y="144" text-anchor="end">1993 → today</text>
+      <text class="d-it" x="40" y="177">FRED</text>
+      <rect class="d-track" x="300" y="166" width="700" height="13" rx="6"/>
+      <rect class="tlb gov" x="447" y="166" width="553" height="13" rx="6"/>
+      <text class="d-fn" x="1150" y="177" text-anchor="end">1947 → today</text>
+      <text class="d-it" x="40" y="210">ALFRED vintages</text>
+      <rect class="d-track" x="300" y="199" width="700" height="13" rx="6"/>
+      <rect class="tlb gov" x="790" y="199" width="210" height="13" rx="6"/>
+      <text class="d-fn" x="1150" y="210" text-anchor="end">1996 → today</text>
+      <text class="d-it" x="40" y="243">Ken French Library</text>
+      <rect class="d-track" x="300" y="232" width="700" height="13" rx="6"/>
+      <rect class="tlb edu" x="300" y="232" width="700" height="13" rx="6"/>
+      <text class="d-fn" x="1150" y="243" text-anchor="end">Jul 1926 → today</text>
+      <text class="d-it" x="40" y="276">Open Source Asset Pricing</text>
+      <rect class="d-track" x="300" y="265" width="700" height="13" rx="6"/>
+      <rect class="tlb edu" x="300" y="265" width="679" height="13" rx="6"/>
+      <text class="d-fn" x="1150" y="276" text-anchor="end">1926 → 2023</text>
+      <text class="d-it" x="40" y="309">FINRA short volume</text>
+      <rect class="d-track" x="300" y="298" width="700" height="13" rx="6"/>
+      <rect class="tlb gov" x="881" y="298" width="119" height="13" rx="6"/>
+      <text class="d-fn" x="1150" y="309" text-anchor="end">2009 → today</text>
+      <text class="d-it" x="40" y="342">Coinbase Exchange</text>
+      <rect class="d-track" x="300" y="331" width="700" height="13" rx="6"/>
+      <rect class="tlb third" x="923" y="331" width="77" height="13" rx="6"/>
+      <text class="d-fn" x="1150" y="342" text-anchor="end">2015 → today</text>
+      <text class="d-it" x="40" y="375">Yahoo Finance</text>
+      <rect class="d-track" x="300" y="364" width="700" height="13" rx="6"/>
+      <rect class="tlb third" x="552" y="364" width="448" height="13" rx="6"/>
+      <text class="d-fn" x="1150" y="375" text-anchor="end">1962 → today</text>
+      <text class="d-it" x="40" y="408">ApeWisdom</text>
+      <rect class="d-track" x="300" y="397" width="700" height="13" rx="6"/>
+      <rect class="tlb third" x="993" y="397" width="9" height="13" rx="6"/>
+      <text class="d-fn" x="1150" y="408" text-anchor="end">live only, no history</text>
+      <text class="d-h g" x="40" y="470">SIX VERBS REACH ALL OF IT</text>
+      <rect class="d-verb" x="40" y="492" width="170" height="54" rx="10"/>
+      <text class="d-vt" x="125" y="524" text-anchor="middle">resolve</text>
+      <rect class="d-verb" x="224" y="492" width="170" height="54" rx="10"/>
+      <text class="d-vt" x="309" y="524" text-anchor="middle">discover</text>
+      <rect class="d-verb" x="408" y="492" width="170" height="54" rx="10"/>
+      <text class="d-vt" x="493" y="524" text-anchor="middle">fetch</text>
+      <rect class="d-verb" x="592" y="492" width="170" height="54" rx="10"/>
+      <text class="d-vt" x="677" y="524" text-anchor="middle">events</text>
+      <rect class="d-verb" x="776" y="492" width="170" height="54" rx="10"/>
+      <text class="d-vt" x="861" y="524" text-anchor="middle">backtest</text>
+      <rect class="d-verb" x="960" y="492" width="170" height="54" rx="10"/>
+      <text class="d-vt" x="1045" y="524" text-anchor="middle">benchmark</text>
+      <text class="d-fn" x="40" y="578">source is a parameter, never a new tool — twenty more sources adds zero verbs</text>
+      </svg>
+      </section>
 
-  <section>
-    <h2>Point-in-time, in one picture</h2>
-    <p class="lede">Gluing ten APIs together is a weekend. Keeping them
-    <span class="hl">honest about time</span> is the whole job. Watch the day-marker sweep forward:
-    a fact only enters your backtest once it was genuinely public, and a correction adds a row
-    instead of erasing one.</p>
-    <div class="dwrap">
-      <svg class="dia" viewBox="0 0 1160 440" role="img" aria-label="An as-of wall sweeping a timeline, revealing filings only once they were public">
+      <section class="panel" data-dwell="12">
+        <h2 class="ptitle">Point-in-time, in one picture.</h2>
+        <p class="pnote">Watch the day-marker sweep. A fact enters your backtest only once it was
+        genuinely public, and <b>a correction adds a row instead of erasing one</b>.</p>
+        <svg class="dia" viewBox="0 0 1160 440" role="img" aria-label="An as-of wall sweeping a timeline, revealing filings only once they were public">
       <defs><clipPath id="plot"><rect x="118" y="60" width="964" height="230"/></clipPath></defs>
       <text class="d-h" x="20" y="40">TIME &rarr;</text>
       <text class="d-fn" x="1082" y="326" text-anchor="end">the day you are pretending it is</text>
@@ -592,272 +595,98 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:14px;font-size:
       <text class="d-fn" x="798" y="400">filed 30 Oct 2020 &mdash; row 1 stays</text>
       </g>
       </svg>
-    </div>
-    <p class="swipe">&larr; swipe the diagram sideways</p>
-    <div class="drifts">
-      <span class="drift"><b>Lag</b><i>true in December, published in February</i></span>
-        <span class="drift"><b>Restatement</b><i>the company changes last year's number</i></span>
-        <span class="drift"><b>Revision</b><i>the government keeps fixing old figures</i></span>
-        <span class="drift"><b>Survivorship</b><i>dead companies quietly disappear</i></span>
-        <span class="drift"><b>Membership</b><i>today's S&amp;P 500 is not 2005's list</i></span>
-        <span class="drift"><b>Adjustment</b><i>splits rewrite every price before them</i></span>
-    </div>
-    <p class="after">Six ways yesterday's data quietly changed underneath you. Sources that cannot
-    supply an honest <code>known_at</code> are flagged <code>UNKNOWN_VINTAGE</code> rather than given
-    a made-up date.</p>
-  </section>
+      </section>
 
-  <section>
-    <h2>And it counts how many times you asked</h2>
-    <p class="lede">Free data plus a fast backtester is a machine for fooling yourself. Vintage keeps
-    a ledger of every idea you tried this session and prices it into the result.</p>
-    <div class="dwrap">
-      <svg class="dia" viewBox="0 0 1160 300" role="img" aria-label="41 specs feeding a trial ledger, collapsing a Sharpe of 2.14 to 0.09">
-      <rect class="d-box" x="20" y="50" width="330" height="210" rx="11"/>
-      <text class="d-ct" x="40" y="78">ONE RESEARCH SESSION</text>
-      <rect class="d-spec sp0" x="40" y="110" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp1" x="69" y="110" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp2" x="98" y="110" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp3" x="127" y="110" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp4" x="156" y="110" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp5" x="185" y="110" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp6" x="214" y="110" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp7" x="243" y="110" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp8" x="272" y="110" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp9" x="301" y="110" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp10" x="40" y="139" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp11" x="69" y="139" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp12" x="98" y="139" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp13" x="127" y="139" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp14" x="156" y="139" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp15" x="185" y="139" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp16" x="214" y="139" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp17" x="243" y="139" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp18" x="272" y="139" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp19" x="301" y="139" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp20" x="40" y="168" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp21" x="69" y="168" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp22" x="98" y="168" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp23" x="127" y="168" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp24" x="156" y="168" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp25" x="185" y="168" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp26" x="214" y="168" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp27" x="243" y="168" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp28" x="272" y="168" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp29" x="301" y="168" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp30" x="40" y="197" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp31" x="69" y="197" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp32" x="98" y="197" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp33" x="127" y="197" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp34" x="156" y="197" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp35" x="185" y="197" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp36" x="214" y="197" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp37" x="243" y="197" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp38" x="272" y="197" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp39" x="301" y="197" width="22" height="22" rx="4"/>
-      <rect class="d-spec sp40" x="40" y="226" width="22" height="22" rx="4"/>
-      <text class="d-fn" x="40" y="96">41 ideas tried &mdash; every one counted</text>
-      <rect class="d-stage" x="410" y="80" width="250" height="150" rx="11"/>
-      <text class="d-ct" x="430" y="108">TRIAL LEDGER</text>
-      <text class="d-big" x="430" y="150">n = 41</text>
-      <rect class="d-track" x="430" y="172" width="210" height="9" rx="5"/>
-      <rect class="d-fill ledbar" x="430" y="172" height="9" rx="5"/>
-      <text class="d-fn" x="430" y="206">kept per session, automatically</text>
-      <path class="d-wire" d="M350 155 L410 155"/>
-      <path class="d-flow" style="animation-delay:0.0s" d="M350 155 L410 155"/>
-      <path class="d-wire" d="M660 155 L720 155"/>
-      <path class="d-flow" style="animation-delay:-0.5s" d="M660 155 L720 155"/>
-      <rect class="d-box" x="720" y="50" width="420" height="210" rx="11"/>
-      <text class="d-ct" x="740" y="78">DEFLATED SHARPE &middot; BAILEY &amp; L&Oacute;PEZ DE PRADO (2014)</text>
-      <text class="d-big ok" x="740" y="122">2.14</text>
-      <rect class="d-track" x="812" y="110" width="308" height="12" rx="6"/>
-      <rect class="d-fill" x="812" y="110" width="287" height="12" rx="6"/>
-      <text class="d-fn" x="740" y="142">what your backtest reported</text>
-      <text class="d-mid" x="740" y="186">2.29</text>
-      <rect class="d-track" x="812" y="176" width="308" height="10" rx="5"/>
-      <rect class="d-fill amber" x="812" y="176" width="308" height="10" rx="5"/>
-      <text class="d-fn" x="740" y="204">what pure luck would have produced</text>
-      <g class="defnum"><text class="d-big bad" x="740" y="244">0.09</text></g>
-      <rect class="d-track" x="812" y="234" width="308" height="12" rx="6"/>
-      <rect class="d-fill bad defbar" x="812" y="234" height="12" rx="6"/>
-      <g class="defnum"><text class="d-fn" x="880" y="244">what is left once the 41 tries are priced in</text></g>
-      </svg>
-    </div>
-    <p class="swipe">&larr; swipe the diagram sideways</p>
-    <div class="papers">
-      <span class="paper on"><b>shipped</b> · point-in-time panel</span>
-      <span class="paper on"><b>shipped</b> · costs on turnover</span>
-      <span class="paper on"><b>shipped</b> · deflated Sharpe</span>
-      <span class="paper on"><b>shipped</b> · session trial ledger</span>
-      <span class="paper off"><b>planned</b> · PBO via CSCV</span>
-      <span class="paper off"><b>planned</b> · purged k-fold + embargo</span>
-      <span class="paper off"><b>planned</b> · minimum backtest length</span>
-      <span class="paper off"><b>planned</b> · Newey–West</span>
-      <span class="paper off"><b>planned</b> · square-root impact</span>
-    </div>
-    <p class="after">Execution realism is a different problem, already solved by
-    <a href="https://www.quantconnect.com/lean">LEAN</a> and
-    <a href="https://nautilustrader.io/">Nautilus Trader</a> — Vintage runs before that, where most
-    ideas should die. Citations are references, not endorsements; anything marked planned is not in
-    the code yet, and the <code>backtest</code> response says so at runtime.</p>
-  </section>
+      <section class="panel" data-dwell="23">
+        <h2 class="ptitle">A real experiment: does Jegadeesh-Titman momentum still work?</h2>
+        <p class="pnote">Every number below came out of Vintage and is reproducible with these
+        commands. <b>Nothing here is illustrative.</b></p>
+        <div class="term">
+          <div class="bar">
+            <span class="tdot"></span><span class="tdot"></span><span class="tdot"></span>
+            <span class="who">claude &mdash; vintage</span>
+          </div>
+          <div class="screen">
+        <div class="row rx0"><span class="prompt p-shell">$</span><span class="typed tx0">claude mcp add vintage -s user -- uvx vintage-mcp</span><span class="caret kx0"></span></div>
+        <div class="row rx1 ok"><b>✓</b>connected · sec · fred · dartmouth · openap · coinbase · finra</div>
+        <div class="row rx2"><span class="prompt p-user">❯</span><span class="typed tx2">replicate jegadeesh-titman momentum on the dow since 2010</span><span class="caret kx2"></span></div>
+        <div class="row rx3 dim in1">openap:Mom12m — the paper claimed 1.31%/month, t = 3.74, sample 1964–1989</div>
+        <div class="row rx4 dim in1">reading 30 tickers, 4,113 sessions · panel indexed on known_at</div>
+        <div class="row rx5 kv"><span class="k">annual return</span><span class="v">12.1%</span><span class="k">volatility</span><span class="v">19.4%</span><span class="k">max drawdown</span><span class="v">−29.5%</span></div>
+        <div class="row rx6 big kv"><span class="k">sharpe</span><span class="v">0.688</span></div>
+        <div class="row rx7 kicker in1">WBA excluded — no price history. it delisted.</div>
+        <div class="row rx8"><span class="prompt p-user">❯</span><span class="typed tx8">is it decaying?</span><span class="caret kx8"></span></div>
+        <div class="row rx9 mid kv"><span class="k">first half</span><span class="v">0.883</span><span class="k">second half</span><span class="v">0.566</span></div>
+        <div class="row rx10"><span class="prompt p-user">❯</span><span class="typed tx10">is it just market beta?</span><span class="caret kx10"></span></div>
+        <div class="row rx11 in1 kv"><span class="k">correlation with Mkt-RF</span><span class="v">0.74</span><span class="k">beta</span><span class="v">0.81</span><span class="k">R²</span><span class="v">0.56</span></div>
+        <div class="row rx12 mid in1 kv"><span class="k">alpha</span><span class="v">2.31%/yr</span></div>
+        <div class="row rx13 verdict in1">mostly Mkt-RF, with something else on top.</div>
+        <div class="row rx14 rule"><i></i>honesty report<i></i></div>
+        <div class="row rx15 in1 kv"><span class="k">specs tried this session</span><span class="v">1</span></div>
+        <div class="row rx16 kicker in1">one spec, so nothing to deflate yet. ask twelve more and watch it fall.</div>
+          </div>
+        </div>
+      </section>
 
-  <section>
-    <h2>What it feels like</h2>
-    <div class="term">
-      <div class="bar">
-        <span class="tdot"></span><span class="tdot"></span><span class="tdot"></span>
-        <span class="who">claude — vintage</span>
-      </div>
-      <div class="screen">
-        <div class="row r0"><span class="prompt p-shell">$</span><span class="typed t0">claude mcp add vintage -s user -- uvx vintage-mcp</span><span class="caret k0"></span></div>
-        <div class="row r1 ok"><b>✓</b>connected · sec · fred · dartmouth · openap · coinbase · finra</div>
-        <div class="row r2"><span class="prompt p-user">❯</span><span class="typed t2">backtest 12-1 momentum on the dow 30 since 2010</span><span class="caret k2"></span></div>
-        <div class="row r3 dim in1">reading 30 tickers from yahoo-finance, 3,914 sessions</div>
-        <div class="row r4 dim in1">panel indexed on known_at — lookahead structurally impossible</div>
-        <div class="row r5 kv"><span class="k">annualized return</span><span class="v">14.8%</span><span class="k">volatility</span><span class="v">17.1%</span><span class="k">turnover cost</span><span class="v">−40 bps/yr</span></div>
-        <div class="row r6 big kv"><span class="k">sharpe</span><span class="v">2.14</span></div>
-        <div class="row r7"><span class="prompt p-user">❯</span><span class="typed t7">try short-term reversal instead</span><span class="caret k7"></span></div>
-        <div class="row r8 mid kv"><span class="k">sharpe</span><span class="v">1.87</span></div>
-        <div class="row r9"><span class="prompt p-user">❯</span><span class="typed t9">and low volatility</span><span class="caret k9"></span></div>
-        <div class="row r10 mid kv"><span class="k">sharpe</span><span class="v">2.31</span></div>
-        <div class="row r11 rule"><i></i>honesty report<i></i></div>
-        <div class="row r12 in1 kv"><span class="k">specs tried this session</span><span class="v">41</span></div>
-        <div class="row r13 in1 kv"><span class="k">sharpe noise would produce</span><span class="v">2.29</span></div>
-        <div class="row r14 bad in1 kv"><span class="k">deflated sharpe probability</span><span class="v">0.09</span></div>
-        <div class="row r15 verdict in1">after 41 trials, a sharpe this high is what noise produces.</div>
-        <div class="row r16 kicker in1">the terminal you pay for does not tell you this.</div>
-      </div>
     </div>
-    <p class="after">Four more questions answered end to end on the <a href="reel.html">demo reel</a>.</p>
-  </section>
-
-  <section>
-    <h2>What the forums are saying, right now</h2>
-    <p class="lede">Fetched while this page was built. ApeWisdom ranks mention counts across roughly
-    fifteen stock and crypto subreddits, and it publishes <span class="hl">only the present</span>
-    &mdash; there is no history endpoint, and nobody can sell you last Tuesday's ranking honestly,
-    because anyone claiming years of it re-scored old posts with today's model.</p>
-    <table class="forum"><thead><tr><th></th><th>ticker</th><th>name</th><th class="n">mentions</th><th class="n">24h change</th><th class="n">upvotes</th></tr></thead><tbody><tr><td class="rk">1</td><td class="tk">SNDK</td><td class="nm">Sandisk</td><td class="n">988</td><td class="n up">+646</td><td class="n dimc">4,676</td></tr><tr><td class="rk">2</td><td class="tk">SPY</td><td class="nm">SPDR S&amp;P 500 ETF Trust</td><td class="n">509</td><td class="n down">-359</td><td class="n dimc">1,295</td></tr><tr><td class="rk">3</td><td class="tk">SPCX</td><td class="nm">SpaceX</td><td class="n">475</td><td class="n down">-215</td><td class="n dimc">1,643</td></tr><tr><td class="rk">4</td><td class="tk">MU</td><td class="nm">Micron Technology</td><td class="n">320</td><td class="n up">+4</td><td class="n dimc">1,142</td></tr><tr><td class="rk">5</td><td class="tk">WDC</td><td class="nm">Western Digital</td><td class="n">220</td><td class="n up">+198</td><td class="n dimc">579</td></tr><tr><td class="rk">6</td><td class="tk">HTZ</td><td class="nm">Hertz</td><td class="n">186</td><td class="n up">+182</td><td class="n dimc">645</td></tr><tr><td class="rk">7</td><td class="tk">QQQ</td><td class="nm">Invesco QQQ ETF</td><td class="n">182</td><td class="n up">+25</td><td class="n dimc">960</td></tr><tr><td class="rk">8</td><td class="tk">NVDA</td><td class="nm">NVIDIA</td><td class="n">176</td><td class="n down">-142</td><td class="n dimc">547</td></tr></tbody></table><p class="stamp">read from ApeWisdom at 2026-08-06 18:21 UTC &middot; <code>known_at</code> is that moment, not the moment the posts were written</p>
-    <p class="after">This is why the row is stamped rather than dated. Backtestable history starts the
-    day you begin recording, which is the only version that survives contact with a
-    <code>known_at</code> index.</p>
-  </section>
-
-  <section>
-    <h2>Install</h2>
-    <div class="tabs">
-      <button class="tab is-on" data-pane="claude-code">Claude Code</button>
-          <button class="tab" data-pane="claude-desktop">Claude Desktop</button>
-          <button class="tab" data-pane="cursor">Cursor</button>
-          <button class="tab" data-pane="chatgpt">ChatGPT</button>
-    </div>
-    <div class="pane is-on" id="claude-code"><p class="note">One command. Nothing to clone.</p><pre><code>claude mcp add vintage -s user -- uvx vintage-mcp</code><button class="copy" aria-label="Copy">copy</button></pre></div>
-        <div class="pane" id="claude-desktop"><p class="note">Add to <code>claude_desktop_config.json</code>, then restart the app.</p><pre><code>{
-  &quot;mcpServers&quot;: {
-    &quot;vintage&quot;: {
-      &quot;command&quot;: &quot;uvx&quot;,
-      &quot;args&quot;: [&quot;vintage-mcp&quot;]
-    }
-  }
-}</code><button class="copy" aria-label="Copy">copy</button></pre></div>
-        <div class="pane" id="cursor"><p class="note">Add to <code>~/.cursor/mcp.json</code>.</p><pre><code>{
-  &quot;mcpServers&quot;: {
-    &quot;vintage&quot;: {
-      &quot;command&quot;: &quot;uvx&quot;,
-      &quot;args&quot;: [&quot;vintage-mcp&quot;]
-    }
-  }
-}</code><button class="copy" aria-label="Copy">copy</button></pre></div>
-        <div class="pane" id="chatgpt"><p class="note">Settings → Connectors → Developer mode. Needs a hosted URL — run <code>vintage</code> behind HTTPS and point the connector at it.</p><pre><code>uvx vintage-mcp --transport streamable-http --port 8000</code><button class="copy" aria-label="Copy">copy</button></pre></div>
-    <p class="after">Needs <a href="https://docs.astral.sh/uv/getting-started/installation/">uv</a>.
-    Prefer pip? <code>pip install vintage-mcp</code>, then use <code>vintage</code> as the command.
-    No API keys required for anything above.</p>
-  </section>
-
-  <footer>
-    <div class="links">
-      <a href="https://github.com/RezaSoleymanifar/vintage">GitHub</a>
-      <a href="https://pypi.org/project/vintage-mcp/">PyPI</a>
-      <a href="https://github.com/RezaSoleymanifar/vintage/blob/main/COVERAGE.md">Full data catalogue</a>
-      <a href="https://github.com/RezaSoleymanifar/vintage/blob/main/DATA_SOURCES.md">Data landscape</a>
-      <a href="https://github.com/RezaSoleymanifar/vintage/blob/main/DESIGN.md">Design</a>
-    </div>
-    <p>MIT licensed. Vintage redistributes no data — SEC EDGAR, FRED, Yahoo Finance and the
-    Ken French library each keep their own terms. Counts current as of August 2026.
-    Nothing here is investment advice.</p>
-  </footer>
-
+  </main>
 </div>
 
-<style>@keyframes a0{0%,1.316%{opacity:0}1.579%,100%{opacity:1}}
-@keyframes w0{0%,1.579%{width:0}11.053%,100%{width:49ch}}
-@keyframes c0{0%,1.316%{visibility:hidden}1.579%,18.158%{visibility:visible}18.421%,100%{visibility:hidden}}
-.r0{animation:a0 19.0s infinite}
-.t0{animation:w0 19.0s steps(49,end) infinite}
-.k0{animation:c0 19.0s infinite,blink .9s steps(2,end) infinite}
-@keyframes a1{0%,12.895%{opacity:0;transform:translateY(3px)}14.105%,100%{opacity:1;transform:none}}
-.r1{animation:a1 19.0s infinite}
-@keyframes a2{0%,18.684%{opacity:0}18.947%,100%{opacity:1}}
-@keyframes w2{0%,18.947%{width:0}27.895%,100%{width:47ch}}
-@keyframes c2{0%,18.684%{visibility:hidden}18.947%,42.368%{visibility:visible}42.632%,100%{visibility:hidden}}
-.r2{animation:a2 19.0s infinite}
-.t2{animation:w2 19.0s steps(47,end) infinite}
-.k2{animation:c2 19.0s infinite,blink .9s steps(2,end) infinite}
-@keyframes a3{0%,29.737%{opacity:0;transform:translateY(3px)}30.947%,100%{opacity:1;transform:none}}
-.r3{animation:a3 19.0s infinite}
-@keyframes a4{0%,31.842%{opacity:0;transform:translateY(3px)}33.053%,100%{opacity:1;transform:none}}
-.r4{animation:a4 19.0s infinite}
-@keyframes a5{0%,34.474%{opacity:0;transform:translateY(3px)}35.684%,100%{opacity:1;transform:none}}
-.r5{animation:a5 19.0s infinite}
-@keyframes a6{0%,37.632%{opacity:0;transform:translateY(3px)}38.842%,100%{opacity:1;transform:none}}
-.r6{animation:a6 19.0s infinite}
-@keyframes a7{0%,42.895%{opacity:0}43.158%,100%{opacity:1}}
-@keyframes w7{0%,43.158%{width:0}50.000%,100%{width:31ch}}
-@keyframes c7{0%,42.895%{visibility:hidden}43.158%,55.526%{visibility:visible}55.789%,100%{visibility:hidden}}
-.r7{animation:a7 19.0s infinite}
-.t7{animation:w7 19.0s steps(31,end) infinite}
-.k7{animation:c7 19.0s infinite,blink .9s steps(2,end) infinite}
-@keyframes a8{0%,51.842%{opacity:0;transform:translateY(3px)}53.053%,100%{opacity:1;transform:none}}
-.r8{animation:a8 19.0s infinite}
-@keyframes a9{0%,56.053%{opacity:0}56.316%,100%{opacity:1}}
-@keyframes w9{0%,56.316%{width:0}62.105%,100%{width:18ch}}
-@keyframes c9{0%,56.053%{visibility:hidden}56.316%,97.105%{visibility:visible}97.368%,100%{visibility:hidden}}
-.r9{animation:a9 19.0s infinite}
-.t9{animation:w9 19.0s steps(18,end) infinite}
-.k9{animation:c9 19.0s infinite,blink .9s steps(2,end) infinite}
-@keyframes a10{0%,63.421%{opacity:0;transform:translateY(3px)}64.632%,100%{opacity:1;transform:none}}
-.r10{animation:a10 19.0s infinite}
-@keyframes a11{0%,68.158%{opacity:0;transform:translateY(3px)}69.368%,100%{opacity:1;transform:none}}
-.r11{animation:a11 19.0s infinite}
-@keyframes a12{0%,69.737%{opacity:0;transform:translateY(3px)}70.947%,100%{opacity:1;transform:none}}
-.r12{animation:a12 19.0s infinite}
-@keyframes a13{0%,71.842%{opacity:0;transform:translateY(3px)}73.053%,100%{opacity:1;transform:none}}
-.r13{animation:a13 19.0s infinite}
-@keyframes a14{0%,73.947%{opacity:0;transform:translateY(3px)}75.158%,100%{opacity:1;transform:none}}
-.r14{animation:a14 19.0s infinite}
-@keyframes a15{0%,77.632%{opacity:0;transform:translateY(3px)}78.842%,100%{opacity:1;transform:none}}
-.r15{animation:a15 19.0s infinite}
-@keyframes a16{0%,81.842%{opacity:0;transform:translateY(3px)}83.053%,100%{opacity:1;transform:none}}
-.r16{animation:a16 19.0s infinite}</style>
-
 <script>
-document.querySelectorAll('.tab').forEach(function (tab) {
-  tab.addEventListener('click', function () {
-    document.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('is-on'); });
-    document.querySelectorAll('.pane').forEach(function (p) { p.classList.remove('is-on'); });
-    tab.classList.add('is-on');
-    document.getElementById(tab.dataset.pane).classList.add('is-on');
+(function () {
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+  var chipbar = document.getElementById('chips');
+  var titles = ['What it is', 'What you get', 'Point-in-time', 'The experiment'];
+  var timer, at = 0;
+
+  var chips = titles.map(function (t, i) {
+    var b = document.createElement('button');
+    b.className = 'chip';
+    b.textContent = t;
+    b.addEventListener('click', function () { show(i); });
+    chipbar.appendChild(b);
+    return b;
   });
-});
+
+  // Restart the panel's animations, so a diagram is never joined mid-sweep.
+  function replay(panel) {
+    var nodes = panel.querySelectorAll('.row, .typed, .caret, .d-flow, .pit-wall');
+    Array.prototype.forEach.call(nodes, function (el) {
+      var keep = el.style.animation;
+      el.style.animation = 'none';
+      void el.offsetWidth;
+      el.style.animation = keep;
+    });
+  }
+
+  function show(i) {
+    at = i;
+    panels.forEach(function (p, n) { p.classList.toggle('is-on', n === i); });
+    var dwell = (parseFloat(panels[i].dataset.dwell) || 9) * 1000;
+    chips.forEach(function (c) {
+      c.classList.remove('is-on');
+      c.style.removeProperty('--dwell');
+    });
+    chips[i].style.setProperty('--dwell', (dwell / 1000) + 's');
+    chips[i].classList.add('is-on');
+    replay(panels[i]);
+    clearTimeout(timer);
+    timer = setTimeout(function () { show((at + 1) % panels.length); }, dwell);
+  }
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    chips[0].classList.add('is-on');
+  } else {
+    show(0);
+  }
+})();
 
 document.querySelectorAll('.copy').forEach(function (btn) {
   btn.addEventListener('click', function () {
-    var code = btn.parentElement.querySelector('code').innerText;
-    navigator.clipboard.writeText(code).then(function () {
+    navigator.clipboard.writeText(btn.parentElement.querySelector('code').innerText).then(function () {
       btn.textContent = 'copied';
       btn.classList.add('done');
-      setTimeout(function () { btn.textContent = 'copy'; btn.classList.remove('done'); }, 1600);
+      setTimeout(function () { btn.textContent = 'copy'; btn.classList.remove('done'); }, 1500);
     });
   });
 });

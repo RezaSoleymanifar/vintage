@@ -553,12 +553,12 @@ def build_clients() -> tuple[str, str]:
 
 # --------------------------------------------------------------------- page
 
-PAGE = """<!doctype html>
+DEEP_PAGE = """<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vintage — the free market research terminal</title>
+<title>Vintage — the long version</title>
 <meta name="description" content="Vintage federates the free, point-in-time financial data of the web: eighteen primary sources — SEC EDGAR and Form 13F, FRED, US Treasury, BLS, BEA, ECB, CFTC, CBOE, Ken French and more — behind one interface and six verbs. You only ever see what was public that day. No API keys, no cost.">
 
 <meta property="og:type" content="website">
@@ -1005,6 +1005,450 @@ document.querySelectorAll('.copy').forEach(function (btn) {
 </html>
 """
 
+
+# ------------------------------------------------- the experiment, for real
+
+# Every number below came out of Vintage on 2026-08-06 and is reproducible with
+# the commands shown. The old script used an invented 2.14 Sharpe collapsing to
+# 0.09, which is a strange thing to fake on a site about not faking numbers.
+EXPERIMENT_LOOP = 22.0
+
+EXPERIMENT: list = [
+    Typed(0.2, "claude mcp add vintage -s user -- uvx vintage-mcp",
+          prompt="$", prompt_class="p-shell", typing=1.5),
+    Out(2.1, "connected · sec · fred · dartmouth · openap · coinbase · finra", cls="ok"),
+
+    Typed(3.0, "replicate jegadeesh-titman momentum on the dow since 2010", typing=1.8),
+    Out(5.2, "openap:Mom12m — the paper claimed 1.31%/month, t = 3.74, sample 1964–1989",
+        cls="dim", indent=1),
+    Out(5.7, "reading 30 tickers, 4,113 sessions · panel indexed on known_at", cls="dim", indent=1),
+    Out(6.3, cells=[("annual return", "12.1%"), ("volatility", "19.4%"), ("max drawdown", "−29.5%")]),
+    Out(6.9, cells=[("sharpe", "0.688")], cls="big"),
+    Out(7.5, "WBA excluded — no price history. it delisted.", cls="kicker", indent=1),
+
+    Typed(8.6, "is it decaying?", typing=0.9),
+    Out(10.1, cells=[("first half", "0.883"), ("second half", "0.566")], cls="mid"),
+
+    Typed(11.2, "is it just market beta?", typing=1.1),
+    Out(13.0, cells=[("correlation with Mkt-RF", "0.74"), ("beta", "0.81"), ("R²", "0.56")],
+        indent=1),
+    Out(13.6, cells=[("alpha", "2.31%/yr")], cls="mid", indent=1),
+    Out(14.4, "mostly Mkt-RF, with something else on top.", cls="verdict", indent=1),
+
+    Out(15.4, "honesty report", cls="rule"),
+    Out(15.8, cells=[("specs tried this session", "1")], indent=1),
+    Out(16.3, "one spec, so nothing to deflate yet. ask twelve more and watch it fall.",
+        cls="kicker", indent=1),
+]
+
+
+def build_session(script: list, loop: float, prefix: str) -> tuple[str, str]:
+    """The keyframe terminal, but reusable — `prefix` keeps two of them apart."""
+    rows: list[str] = []
+    css: list[str] = []
+    typed_times = [e.at for e in script if isinstance(e, Typed)]
+
+    def at(t: float) -> float:
+        return max(0.0, min(100.0, t / loop * 100.0))
+
+    for i, ev in enumerate(script):
+        k = f"{prefix}{i}"
+        if isinstance(ev, Typed):
+            n = len(ev.text)
+            nxt = next((t for t in typed_times if t > ev.at), loop - 0.4)
+            css.append(f"@keyframes a{k}{{0%,{at(ev.at - 0.05):.3f}%{{opacity:0}}"
+                       f"{at(ev.at):.3f}%,100%{{opacity:1}}}}")
+            css.append(f"@keyframes w{k}{{0%,{at(ev.at):.3f}%{{width:0}}"
+                       f"{at(ev.at + ev.typing):.3f}%,100%{{width:{n}ch}}}}")
+            css.append(f"@keyframes c{k}{{0%,{at(ev.at - 0.05):.3f}%{{visibility:hidden}}"
+                       f"{at(ev.at):.3f}%,{at(nxt - 0.15):.3f}%{{visibility:visible}}"
+                       f"{at(nxt - 0.1):.3f}%,100%{{visibility:hidden}}}}")
+            css.append(f".r{k}{{animation:a{k} {loop}s infinite}}")
+            css.append(f".t{k}{{animation:w{k} {loop}s steps({n},end) infinite}}")
+            css.append(f".k{k}{{animation:c{k} {loop}s infinite,blink .9s steps(2,end) infinite}}")
+            rows.append(f'<div class="row r{k}">'
+                        f'<span class="prompt {ev.prompt_class}">{ev.prompt}</span>'
+                        f'<span class="typed t{k}">{html.escape(ev.text)}</span>'
+                        f'<span class="caret k{k}"></span></div>')
+        else:
+            css.append(f"@keyframes a{k}{{0%,{at(ev.at - 0.05):.3f}%{{opacity:0;transform:translateY(3px)}}"
+                       f"{at(ev.at + 0.18):.3f}%,100%{{opacity:1;transform:none}}}}")
+            css.append(f".r{k}{{animation:a{k} {loop}s infinite}}")
+            classes = " ".join(c for c in ["row", f"r{k}", ev.cls,
+                                           f"in{ev.indent}" if ev.indent else ""] if c)
+            if ev.cells:
+                inner = "".join(f'<span class="k">{html.escape(a)}</span>'
+                                f'<span class="v">{html.escape(b)}</span>' for a, b in ev.cells)
+                rows.append(f'<div class="{classes} kv">{inner}</div>')
+            elif ev.cls == "rule":
+                rows.append(f'<div class="{classes}"><i></i>{html.escape(ev.text)}<i></i></div>')
+            elif ev.cls == "ok":
+                rows.append(f'<div class="{classes}"><b>✓</b>{html.escape(ev.text)}</div>')
+            else:
+                rows.append(f'<div class="{classes}">{html.escape(ev.text)}</div>')
+
+    return ("\n        ").join(rows), ("\n").join(css)
+
+
+# ------------------------------------------------- diagram: what you get
+
+def diagram_coverage() -> str:
+    """A century of coverage, and the six verbs that reach all of it."""
+    p: list[str] = []
+    p.append('<svg class="dia" viewBox="0 0 1160 600" role="img" '
+             'aria-label="Coverage of each source from 1926 to today, and the six verbs">')
+
+    p.append(txt(40, 40, "A CENTURY OF COVERAGE", "d-h g"))
+    p.append(txt(300, 70, "1926", "d-fn"))
+    p.append(txt(1000, 70, "today", "d-fn", "end"))
+    p.append('<line class="d-axis" x1="300" y1="78" x2="1000" y2="78"/>')
+
+    for i, (name, badge, span, a, b) in enumerate(SOURCES):
+        y = 100 + i * 33
+        p.append(txt(40, y + 11, name, "d-it"))
+        p.append(f'<rect class="d-track" x="300" y="{y}" width="700" height="13" rx="6"/>')
+        x = 300 + a / 100 * 700
+        w = max((b - a) / 100 * 700, 9)
+        p.append(f'<rect class="tlb {badge}" x="{x:.0f}" y="{y}" width="{w:.0f}" height="13" rx="6"/>')
+        p.append(txt(1150, y + 11, span, "d-fn", "end"))
+
+    p.append(txt(40, 470, "SIX VERBS REACH ALL OF IT", "d-h g"))
+    for i, v in enumerate(VERB_NAMES):
+        x = 40 + i * 184
+        p.append(f'<rect class="d-verb" x="{x}" y="492" width="170" height="54" rx="10"/>')
+        p.append(txt(x + 85, 524, v, "d-vt", "middle"))
+    p.append(txt(40, 578, "source is a parameter, never a new tool — twenty more sources adds zero verbs",
+                 "d-fn"))
+
+    p.append("</svg>")
+    return ("\n      ").join(p)
+
+
+ONE_PAGE = """<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vintage — the free market research terminal</title>
+<meta name="description" content="Vintage federates the free, point-in-time financial data of the web. Nine primary sources, one interface, six verbs, $0.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Vintage — the free market research terminal">
+<meta property="og:description" content="Vintage federates the free, point-in-time financial data of the web. Nine primary sources, one interface, six verbs, $0.">
+<meta property="og:url" content="https://rezasoleymanifar.github.io/vintage/">
+<meta property="og:image" content="https://rezasoleymanifar.github.io/vintage/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230b0f16'/><path d='M6 22 L13 12 L19 18 L26 8' stroke='%2335e08a' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<style>
+:root{
+  --bg:#080b11; --panel:#0c121c; --line:#1c2735; --ink:#e9f1ee; --dim:#657f92;
+  --green:#2fd587; --red:#ff6b5e; --amber:#f2c076; --blue:#7fb3ff;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);overflow:hidden;
+  background-image:radial-gradient(ellipse 90% 60% at 78% 0%,rgba(47,213,135,.07),transparent 70%);
+}
+a{color:var(--green);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.shell{height:100dvh;display:grid;grid-template-columns:1fr}
+@media(min-width:1040px) and (min-height:640px){
+  .shell{grid-template-columns:minmax(360px,31%) 1fr}
+}
+
+/* ------------------------------------------------------------- left rail */
+.rail{
+  padding:clamp(20px,3.4vh,44px) clamp(20px,2.6vw,40px);
+  display:flex;flex-direction:column;gap:clamp(12px,2.2vh,26px);
+  border-right:1px solid var(--line);min-width:0;
+}
+.brand{font-size:clamp(26px,4.4vh,44px);font-weight:700;letter-spacing:.17em;margin:0;line-height:1}
+.tag{color:var(--green);letter-spacing:.19em;text-transform:uppercase;font-weight:700;
+  font-size:clamp(9px,1.35vh,12px);margin:6px 0 0}
+.claim{font-size:clamp(14px,2.15vh,20px);line-height:1.4;margin:0;font-weight:700}
+.claim .g{color:var(--green)}
+.sub{color:var(--dim);font-size:clamp(11px,1.55vh,13.5px);line-height:1.55;margin:0}
+
+.start{margin:0;padding:0;list-style:none;display:grid;gap:clamp(7px,1.2vh,13px)}
+.start li{display:grid;grid-template-columns:22px 1fr;gap:11px;align-items:start}
+.start b{width:22px;height:22px;border-radius:50%;border:1px solid rgba(47,213,135,.45);
+  color:var(--green);font-size:11px;display:grid;place-items:center;font-weight:700}
+.start span{font-size:clamp(11px,1.5vh,13.5px);line-height:1.45;color:var(--dim)}
+.start span i{font-style:normal;color:var(--ink);font-weight:700}
+
+.cmd{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:9px;
+  padding:11px 13px 11px 13px;color:var(--green);line-height:1.6;
+  font-size:clamp(9.5px,1.3vh,12.5px);word-break:break-word}
+.cmd code{display:block;padding-right:56px}
+.copy{position:absolute;top:7px;right:7px;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.09em;color:var(--dim);background:#070b11;border:1px solid var(--line);
+  border-radius:6px;padding:4px 9px;cursor:pointer}
+.copy:hover{color:var(--green);border-color:var(--green)}
+.copy.done{color:var(--bg);background:var(--green);border-color:var(--green)}
+.rail .foot{margin-top:auto;display:flex;flex-wrap:wrap;gap:12px;font-size:11px;color:var(--dim)}
+
+/* ----------------------------------------------------------------- stage */
+.stage{position:relative;display:flex;flex-direction:column;min-width:0;min-height:0;
+  padding:clamp(16px,2.6vh,30px) clamp(16px,2.2vw,34px)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:clamp(10px,1.6vh,18px);flex:none}
+.chip{font-family:var(--mono);font-size:clamp(9px,1.28vh,11.5px);letter-spacing:.11em;
+  text-transform:uppercase;color:var(--dim);background:transparent;cursor:pointer;
+  border:1px solid var(--line);border-radius:99px;padding:6px 13px;position:relative;overflow:hidden}
+.chip:hover{color:var(--ink)}
+.chip.is-on{color:var(--ink);border-color:rgba(47,213,135,.5)}
+.chip.is-on::after{content:"";position:absolute;left:0;bottom:0;height:2px;background:var(--green);
+  width:100%;transform-origin:left;animation:tick var(--dwell,9s) linear forwards}
+@keyframes tick{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+.panels{position:relative;flex:1;min-height:0}
+.panel{position:absolute;inset:0;opacity:0;visibility:hidden;
+  transition:opacity .45s ease;display:flex;flex-direction:column;min-height:0}
+.panel.is-on{opacity:1;visibility:visible}
+.ptitle{font-size:clamp(13px,1.95vh,18px);font-weight:700;margin:0 0 4px}
+.pnote{color:var(--dim);font-size:clamp(10px,1.4vh,12.5px);line-height:1.5;
+  margin:0 0 clamp(8px,1.3vh,14px);max-width:70em}
+.pnote b{color:var(--ink)}
+.dia{flex:1;min-height:0;width:100%;height:100%}
+.dia text{font-family:var(--mono)}
+
+/* the terminal panel */
+.term{flex:0 1 auto;min-height:0;max-height:100%;background:var(--panel);
+  border:1px solid var(--line);border-radius:11px;
+  overflow:hidden;display:flex;flex-direction:column;
+  box-shadow:0 26px 70px -40px rgba(47,213,135,.4)}
+.bar{display:flex;align-items:center;gap:7px;padding:9px 13px;border-bottom:1px solid var(--line);
+  background:#070b11;flex:none}
+.tdot{width:9px;height:9px;border-radius:50%;background:#1e2b3a;opacity:1}
+.bar .who{margin-left:7px;color:var(--dim);font-size:11px;letter-spacing:.1em}
+.screen{padding:clamp(12px,2vh,22px);font-size:clamp(9px,1.85vh,17px);
+  flex:0 1 auto;min-height:0;overflow:hidden}
+.row{display:flex;align-items:baseline;flex-wrap:wrap;gap:0 7px;padding:1px 0;opacity:0}
+.in1{padding-left:1.5em}
+.prompt{font-weight:700}
+.p-shell{color:var(--dim)}
+.p-user{color:var(--green)}
+.typed{display:inline-block;overflow:hidden;white-space:nowrap;vertical-align:bottom;width:0}
+.caret{display:inline-block;width:.55em;height:1em;background:var(--green);
+  vertical-align:text-bottom;visibility:hidden}
+@keyframes blink{0%{opacity:1}50%{opacity:0}}
+.dim{color:var(--dim)}
+.ok{color:var(--green)}
+.ok b{margin-right:6px}
+.kv .k{color:var(--dim)}
+.kv .v{color:var(--ink);font-weight:700;margin-right:17px}
+.kv.big .v{color:var(--green);font-size:1.45em}
+.kv.mid .v{color:var(--ink)}
+.verdict{color:var(--amber);font-weight:700}
+.kicker{color:var(--dim)}
+.rule{color:var(--dim);letter-spacing:.2em;font-size:.8em;margin-top:9px;
+  text-transform:uppercase;gap:11px}
+.rule i{flex:1;height:1px;background:var(--line);min-width:12px}
+
+/* diagram vocabulary */
+.d-h{fill:var(--dim);font-size:11px;letter-spacing:.2em}
+.d-h.g{fill:var(--green)}
+.d-ct{fill:var(--dim);font-size:10.5px;letter-spacing:.18em}
+.d-it{fill:var(--ink);font-size:12.5px}
+.d-fn{fill:var(--dim);font-size:10.5px}
+.d-note{fill:var(--green);font-size:11.5px}
+.d-card{fill:rgba(255,255,255,.018);stroke:var(--line)}
+.d-box{fill:#070b11;stroke:var(--line)}
+.d-edge{fill:var(--green);opacity:.55}
+.d-pipe{fill:rgba(47,213,135,.05);stroke:rgba(47,213,135,.32)}
+.d-stage{fill:#070b11;stroke:var(--line)}
+.d-num{fill:none;stroke:var(--green);stroke-width:1.3}
+.d-numt{fill:var(--green);font-size:11.5px}
+.d-st{fill:var(--green);font-size:14.5px;font-weight:700}
+.d-ss{fill:var(--dim);font-size:11px}
+.d-verb{fill:#0c121c;stroke:rgba(47,213,135,.3)}
+.d-vt{fill:var(--green);font-size:13px}
+.d-bub{fill:#0c121c;stroke:var(--line)}
+.d-ok{fill:var(--green);font-size:13px;font-weight:700}
+.d-bad{fill:var(--red);font-size:13px;font-weight:700}
+.d-wire{stroke:#21303f;stroke-width:1.6;fill:none}
+.d-flow{stroke:var(--green);stroke-width:1.7;fill:none;stroke-dasharray:5 13;
+  stroke-linecap:round;animation:flow 1.5s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-36}}
+.d-arrow{fill:none;stroke:var(--green);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.d-axis,.d-tick{stroke:var(--line);stroke-width:1.5}
+.d-future{fill:rgba(255,107,94,.055)}
+.d-wallline{stroke:var(--red);stroke-width:1.6;stroke-dasharray:5 5}
+.d-walltag{fill:var(--red)}
+.d-walltxt{fill:#080b11;font-size:11px;font-weight:700}
+.d-ev{fill:#070b11;stroke:rgba(47,213,135,.34)}
+.d-evt{fill:var(--ink);font-size:12.5px;font-weight:700}
+.d-evdot{fill:var(--green)}
+.d-stem{stroke:#21303f;stroke-width:1.3;stroke-dasharray:3 4}
+.d-lag{stroke:var(--red);stroke-width:1.6;stroke-dasharray:4 4}
+.d-lagt{fill:var(--red);font-size:10.5px}
+.d-row{fill:#0c121c;stroke:var(--line)}
+.d-row.warn{stroke:rgba(242,192,118,.5)}
+.pit-wall{animation:sweep 11s linear infinite}
+@keyframes sweep{to{transform:translateX(920px)}}
+.d-track{fill:#0e1723}
+.tlb.gov{fill:var(--green)}
+.tlb.edu{fill:var(--blue)}
+.tlb.third{fill:#38536a}
+
+@media (prefers-reduced-motion:reduce){
+  .dia *,.row,.typed,.chip.is-on::after{animation:none!important;opacity:1!important}
+  .typed{width:auto!important}
+  .caret{display:none}
+  .d-future,.pit-wall{display:none}
+}
+
+/* a phone or a short window cannot be one screen — let those scroll */
+@media(max-width:1039px),(max-height:639px){
+  body{overflow:auto}
+  .shell{height:auto}
+  .rail{border-right:0;border-bottom:1px solid var(--line)}
+  .stage{min-height:88vh}
+  .panels{min-height:70vh}
+}
+__ONECSS__
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <aside class="rail">
+    <div>
+      <h1 class="brand">VINTAGE</h1>
+      <p class="tag">Free market research terminal</p>
+    </div>
+
+    <p class="claim">Vintage <span class="g">federates the free, point-in-time financial data of
+    the web</span>.</p>
+    <p class="sub">Nine primary sources &mdash; the SEC, the St.&nbsp;Louis Fed, Dartmouth &mdash;
+    behind one interface. You only ever see what was public on the day you are asking about.</p>
+
+    <ol class="start">
+      <li><b>1</b><span><i>Add it.</i> One command, nothing to clone.</span></li>
+      <li><b>2</b><span><i>Ask in plain English.</i> No field names, no keys, no account.</span></li>
+      <li><b>3</b><span><i>Read the honesty report</i> before you believe any Sharpe.</span></li>
+    </ol>
+
+    <div class="cmd"><code>claude mcp add vintage -s user -- uvx vintage-mcp</code><button class="copy" aria-label="Copy">copy</button></div>
+
+    <div class="foot">
+      <a href="https://github.com/RezaSoleymanifar/vintage">GitHub</a>
+      <a href="https://pypi.org/project/vintage-mcp/">PyPI</a>
+      <a href="deep.html">The long version</a>
+      <a href="reel.html">Demo reel</a>
+      <span>MIT &middot; $0 &middot; no keys</span>
+    </div>
+  </aside>
+
+  <main class="stage">
+    <div class="chips" id="chips"></div>
+    <div class="panels" id="panels">
+
+      <section class="panel is-on" data-dwell="10">
+        <h2 class="ptitle">The good data is already free &mdash; it is just scattered.</h2>
+        <p class="pnote">Government, university and exchange sites, ten incompatible formats, none of
+        them tracking when anything became known. <b>Vintage makes them one dataset.</b></p>
+        __DIA1__
+      </section>
+
+      <section class="panel" data-dwell="10">
+        <h2 class="ptitle">A century of history, and six verbs that reach all of it.</h2>
+        <p class="pnote">July 1926 to this morning. <b>Source is a parameter, never a new tool</b>
+        &mdash; twenty more sources would still be six verbs.</p>
+        __DIA2__
+      </section>
+
+      <section class="panel" data-dwell="12">
+        <h2 class="ptitle">Point-in-time, in one picture.</h2>
+        <p class="pnote">Watch the day-marker sweep. A fact enters your backtest only once it was
+        genuinely public, and <b>a correction adds a row instead of erasing one</b>.</p>
+        __DIA3__
+      </section>
+
+      <section class="panel" data-dwell="23">
+        <h2 class="ptitle">A real experiment: does Jegadeesh-Titman momentum still work?</h2>
+        <p class="pnote">Every number below came out of Vintage and is reproducible with these
+        commands. <b>Nothing here is illustrative.</b></p>
+        <div class="term">
+          <div class="bar">
+            <span class="tdot"></span><span class="tdot"></span><span class="tdot"></span>
+            <span class="who">claude &mdash; vintage</span>
+          </div>
+          <div class="screen">
+        __EXPROWS__
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script>
+(function () {
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+  var chipbar = document.getElementById('chips');
+  var titles = ['What it is', 'What you get', 'Point-in-time', 'The experiment'];
+  var timer, at = 0;
+
+  var chips = titles.map(function (t, i) {
+    var b = document.createElement('button');
+    b.className = 'chip';
+    b.textContent = t;
+    b.addEventListener('click', function () { show(i); });
+    chipbar.appendChild(b);
+    return b;
+  });
+
+  // Restart the panel's animations, so a diagram is never joined mid-sweep.
+  function replay(panel) {
+    var nodes = panel.querySelectorAll('.row, .typed, .caret, .d-flow, .pit-wall');
+    Array.prototype.forEach.call(nodes, function (el) {
+      var keep = el.style.animation;
+      el.style.animation = 'none';
+      void el.offsetWidth;
+      el.style.animation = keep;
+    });
+  }
+
+  function show(i) {
+    at = i;
+    panels.forEach(function (p, n) { p.classList.toggle('is-on', n === i); });
+    var dwell = (parseFloat(panels[i].dataset.dwell) || 9) * 1000;
+    chips.forEach(function (c) {
+      c.classList.remove('is-on');
+      c.style.removeProperty('--dwell');
+    });
+    chips[i].style.setProperty('--dwell', (dwell / 1000) + 's');
+    chips[i].classList.add('is-on');
+    replay(panels[i]);
+    clearTimeout(timer);
+    timer = setTimeout(function () { show((at + 1) % panels.length); }, dwell);
+  }
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    chips[0].classList.add('is-on');
+  } else {
+    show(0);
+  }
+})();
+
+document.querySelectorAll('.copy').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    navigator.clipboard.writeText(btn.parentElement.querySelector('code').innerText).then(function () {
+      btn.textContent = 'copied';
+      btn.classList.add('done');
+      setTimeout(function () { btn.textContent = 'copy'; btn.classList.remove('done'); }, 1500);
+    });
+  });
+});
+</script>
+</body>
+</html>
+"""
+
+
 REEL_PAGE = """<!doctype html>
 <html lang="en">
 <head>
@@ -1039,20 +1483,33 @@ __REELCSS__
 
 def main() -> None:
     rows, anim = build_terminal()
+    exp_rows, exp_anim = build_session(EXPERIMENT, EXPERIMENT_LOOP, "x")
     tabs, panes = build_clients()
 
-    # Diagrams are built before the page is assembled: each one appends its own
-    # keyframes to DIA_CSS as a side effect.
+    # Diagrams are built before the pages are assembled: each one appends its own
+    # keyframes to DIA_CSS as a side effect, so both pages need the same block.
     dia1, dia2, dia3 = diagram_federation(), diagram_pit(), diagram_honesty()
+    cover = diagram_coverage()
+    diacss = "\n".join(DIA_CSS)
 
-    page = (
-        PAGE.replace("__ROWS__", rows)
+    # index.html — one screen, never scrolls, panels advance on a timer.
+    one = (
+        ONE_PAGE.replace("__DIA1__", dia1)
+        .replace("__DIA2__", cover)
+        .replace("__DIA3__", dia2)
+        .replace("__EXPROWS__", exp_rows)
+        .replace("__ONECSS__", diacss + "\n" + exp_anim)
+    )
+
+    # deep.html — the long scrolling argument, for people who want it.
+    deep = (
+        DEEP_PAGE.replace("__ROWS__", rows)
         .replace("__DIA1__", dia1)
         .replace("__DIA2__", dia2)
         .replace("__DIA3__", dia3)
-        .replace("__DIACSS__", "\n".join(DIA_CSS))
+        .replace("__DIACSS__", diacss)
         .replace("__FORUMS__", build_forums())
-                .replace("__TIMELINE__", build_timeline())
+        .replace("__TIMELINE__", build_timeline())
         .replace("__DRIFT__", build_drift())
         .replace("__TABS__", tabs)
         .replace("__PANES__", panes)
@@ -1067,7 +1524,7 @@ def main() -> None:
 
     root = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "docs")
     os.makedirs(root, exist_ok=True)
-    for name, body in (("index.html", page), ("reel.html", reel)):
+    for name, body in (("index.html", one), ("deep.html", deep), ("reel.html", reel)):
         with open(os.path.join(root, name), "w", encoding="utf-8", newline="\n") as fh:
             fh.write(body)
         print(f"wrote {os.path.join(root, name)} ({len(body):,} bytes)")
