@@ -128,6 +128,12 @@ pre{
 .card h3{margin:0 0 7px;font-size:14px;color:var(--green);letter-spacing:.08em}
 .card p{margin:0;color:var(--dim);font-size:14px;line-height:1.6}
 .card .val{color:var(--ink)}
+.six{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:640px){.six{grid-template-columns:1fr 1fr}}
+@media(min-width:920px){.six{grid-template-columns:1fr 1fr 1fr}}
+.six .card h3{font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+.six .card p{font-size:13.5px}
+.hl{color:var(--ink);font-weight:700}
 
 table{width:100%;border-collapse:collapse;margin-top:16px;font-size:13.5px}
 th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line)}
@@ -226,6 +232,21 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:16px}
     <p class="after">The backtest panel is indexed on <code>known_at</code>, so any slice of it is
     automatically point-in-time. There is no flag to turn that off. Sources that cannot supply an
     honest <code>known_at</code> are flagged <code>UNKNOWN_VINTAGE</code> rather than given a made-up date.</p>
+  </section>
+
+  <section>
+    <h2>Six ways yesterday's data quietly changed</h2>
+    <div class="six">
+      <div class="card"><h3>Lag</h3><p>The number is true in December. It gets published in February.</p></div>
+      <div class="card"><h3>Restatement</h3><p>The company says "oops, wrong" and changes last year's number.</p></div>
+      <div class="card"><h3>Revision</h3><p>The government keeps fixing old jobs and inflation figures, for years.</p></div>
+      <div class="card"><h3>Survivorship</h3><p>Dead companies get deleted. Only the winners are still listed.</p></div>
+      <div class="card"><h3>Membership</h3><p>Today's S&amp;P 500 list is not the list from 2005.</p></div>
+      <div class="card"><h3>Price adjustment</h3><p>Splits and dividends silently rewrite every price before them.</p></div>
+    </div>
+    <p class="after">All six say the same thing: <span class="hl">the data you have today is not what
+    people saw back then</span>. Point-in-time means showing only what was already public that day —
+    and Vintage enforces it in the panel index rather than trusting you to remember.</p>
   </section>
 
   <section>

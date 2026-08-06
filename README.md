@@ -106,6 +106,17 @@ A backtest may only use rows whose `known_at` precedes the trade date. That is s
 
 Sources that cannot supply an honest `known_at` are flagged `UNKNOWN_VINTAGE` rather than given a fabricated date.
 
+### Six ways yesterday's data quietly changed
+
+- **Lag** — the number is true in December, published in February.
+- **Restatement** — the company says "oops, wrong" and changes last year's figure.
+- **Revision** — the government keeps fixing old jobs and inflation numbers, for years.
+- **Survivorship** — dead companies get deleted; only the winners are still listed.
+- **Membership** — today's S&P 500 list is not the list from 2005.
+- **Price adjustment** — splits and dividends silently rewrite every price before them.
+
+All six say the same thing: the data you have today is not what people saw back then.
+
 ## Six verbs
 
 Source is a parameter, never a separate tool. Twenty more sources adds zero tools.
@@ -155,10 +166,20 @@ Gzipped JSON in `~/.cache/vintage`, tiered by how mutable the data is: closed pe
 
 Stated plainly, because the alternative is shipping a bad substitute:
 
+Data:
+
 - **Survivorship** — universes are current-listing only. Form 25 delistings are the next build and the backtester warns until then.
 - **Analyst estimates** — no free source exists.
 - **Historical options chains** — paid everywhere.
 - **Point-in-time index membership** — licensed by S&P and MSCI.
+
+Engine — the backtester is vectorized and cross-sectional, which is a rung below an event-driven simulator:
+
+- **No purging or embargo** — overlapping label windows can leak across a train/test split ([López de Prado, AFML](https://www.wiley.com/en-us/Advances+in+Financial+Machine+Learning-p-9781119482086) ch. 7). Deflation catches selection bias, not leakage.
+- **No market impact** — costs are a flat charge on turnover, so large-notional results are optimistic.
+- **No PBO** — deflated Sharpe covers multiple testing; the Probability of Backtest Overfitting via combinatorially symmetric cross-validation would be the stronger test.
+- **Trial count resets each session** — ask forty things today and forty tomorrow, and tomorrow starts from zero.
+- **Sharpe is per observation, not annualized** — that is the frequency the deflation is defined at, and the response says so.
 
 ## Development
 
