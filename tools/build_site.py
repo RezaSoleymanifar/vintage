@@ -2101,7 +2101,7 @@ __ONECSS__
       <section class="panel arch is-on" data-dwell="14">
         <h2 class="ptitle">The whole thing, on one page.</h2>
         __FMAP__
-        <div class="archwrap"><img src="__ARCHSRC__" width="1280" height="930"
+        <div class="archwrap"><img src="__ARCHSRC__" width="1280" height="1030"
           alt="Eighteen free financial data sources: SEC EDGAR, Form 13F, FRED, ECB,
           US Treasury, BLS, BEA, CFTC, CBOE, FINRA, Coinbase, Ken French and more,
           federated behind one interface, every row carrying both the date it

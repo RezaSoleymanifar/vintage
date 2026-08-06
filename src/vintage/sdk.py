@@ -38,6 +38,7 @@ from .engine import honesty as _honesty
 from .sources import (apewisdom, cboe, cftc, coinbase,
                       delistings as _delistings, ecb, edgar, finra,
                       frames as _frames, fred, french, openap,
+                      sector as _sector,
                       treasury as _treasury, yahoo)
 
 T = TypeVar("T")
@@ -47,6 +48,7 @@ __all__ = [
     "claim", "claims", "crypto", "short_volume", "sentiment",
     "resolve", "search", "sources", "signals", "backtest", "trials", "frame",
     "delistings", "survivorship_warning", "fx", "volatility", "index",
+    "sectors",
     "cross_section", "treasury_yields", "positioning",
     "corporate_actions",
 ]
@@ -167,6 +169,24 @@ def cross_section(tag: str, period: str, *, taxonomy: str = "us-gaap",
     """
     return frame(_run(_frames.cross_section(tag, period, taxonomy=taxonomy,
                                             unit=unit, limit=limit)))
+
+
+
+def sectors(entities: Iterable[str]) -> pd.DataFrame:
+    """The industry label per name, for neutralizing a cross-section.
+
+    One row per entity with its SIC code, the SEC's description of it, and the
+    coarser division most neutralizations actually group on. Names that cannot
+    be resolved come back with a null rather than being dropped, so a missing
+    label is visible instead of quietly shrinking the universe.
+
+    EDGAR publishes the current classification with no history, so every row is
+    UNKNOWN_VINTAGE. Group today's cross-section with it; do not backdate it.
+    """
+    rows = _run(_sector.classifications(list(entities)))
+    return pd.DataFrame(rows)[
+        ["entity", "ticker", "name", "sic", "sic_description", "division", "vintage"]
+    ] if rows else pd.DataFrame()
 
 
 def treasury_yields(tenor: str = "10y", *, start: str | None = None,

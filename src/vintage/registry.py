@@ -10,7 +10,7 @@ import os
 from typing import Any
 
 from .sources import (apewisdom, bea, bls, cboe, cftc, ecb, fred, french,
-                      thirteenf, treasury)
+                      sector, thirteenf, treasury)
 
 # Field prefix -> source. This is the router.
 PREFIXES = {
@@ -27,6 +27,7 @@ PREFIXES = {
     "frame:": "frames",
     "ust:": "treasury",
     "cot:": "cftc",
+    "sector:": "sector",
     "13f:": "thirteenf",
     "bls:": "bls",
     "bea:": "bea",
@@ -139,6 +140,15 @@ SOURCES = [
         "key_required": False,
     },
     {
+        "source": "sec-edgar-sic",
+        "covers": "the industry a filer files under: SIC code, SEC description, division",
+        "field_form": "sector:sic, sector:name (needs an entity)",
+        "point_in_time": "no, EDGAR states the current code with no date of change",
+        "key_required": False,
+        "note": "The label a cross-sectional neutralizer needs. Current only, so "
+                "group today's cross-section with it rather than backdating it.",
+    },
+    {
         "source": "cftc-cot",
         "covers": "weekly futures positioning by trader class",
         "field_form": "cot:noncommercial_net (needs an entity like SP500)",
@@ -209,7 +219,7 @@ def route(field: str) -> str | None:
 FETCH_ADAPTERS = {
     "sec-edgar-xbrl", "prices", "fred", "french", "openap", "apewisdom",
     "crypto", "finra", "ecb", "cboe", "delistings", "frames", "treasury",
-    "cftc", "thirteenf", "bls", "bea",
+    "cftc", "thirteenf", "bls", "bea", "sector",
 }
 
 # route() returns the adapter that answers; SOURCES names the publisher. They
@@ -231,6 +241,7 @@ ADAPTER_SOURCE = {
     "frames": "sec-xbrl-frames",
     "treasury": "us-treasury",
     "cftc": "cftc-cot",
+    "sector": "sec-edgar-sic",
     "thirteenf": "sec-form-13f",
     "bls": "bls",
     "bea": "bea",
@@ -288,6 +299,10 @@ PREFIX_SPECS: dict[str, dict[str, Any]] = {
     "crypto:": dict(verb="fetch", answers="crypto OHLCV from Coinbase",
                     needs_entity=True, entity_example="BTC-USD",
                     example_field="crypto:close", as_of="enforced"),
+    "sector:": dict(verb="fetch",
+                    answers="the industry a company files under, SIC code and description",
+                    needs_entity=True, entity_example="AAPL",
+                    example_field="sector:sic", as_of="none"),
     "short:": dict(verb="fetch", answers="daily short volume and short ratio",
                    needs_entity=True, entity_example="AAPL",
                    example_field="short:short_ratio", as_of="enforced"),

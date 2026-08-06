@@ -186,6 +186,7 @@ v.claims(price_only=True)                     # the 56 replicable with free data
 # crowd and flow
 v.short_volume("AAPL")                        # FINRA daily short volume
 v.sentiment("wallstreetbets")
+v.sectors(["AAPL", "JPM", "XOM"])              # SIC label per name, for neutralizing
 
 # discovery, and the engine
 v.search("inflation expectations"); v.sources(); v.signals()
@@ -306,6 +307,7 @@ Citations are references, not endorsements. None of these authors is affiliated 
 | **SEC Form 25** | Primary · US regulator | Every delisting on record, 36,830 filings across 11,614 companies. The correction for a universe built from names that still exist. | none | yes, filing dates, never revised |
 | **SEC XBRL frames** | Primary · US regulator | One concept across every filer in a single call. 6,289 companies in 840 KB. The shape a cross-sectional sort needs. | none | no, carries the accession, not its date |
 | **US Treasury** | Primary · US government | The par yield curve, 14 tenors from one month to thirty years, published each business day. | none | yes, never revised |
+| **SEC industry classification** | Primary · US regulator | The SIC code a filer files under, the SEC's description of it, and the coarser division. The label a cross-sectional neutralizer needs. | none | no, current classification only |
 | **CFTC** | Primary · US regulator | Commitments of Traders. Tuesday's positioning by trader class, released the following Friday, and the lag is preserved. | none | yes, lag preserved in `known_at` |
 | **Bureau of Labor Statistics** | Primary · US agency | CPI down to item strata, payrolls, JOLTS, wages, productivity. Any series id, not a curated shortlist. | optional | no, ships no release date |
 | **Bureau of Economic Analysis** | Primary · US agency | The national accounts. One call returns every line of a NIPA table rather than one series at a time. | free | no, current estimate only |

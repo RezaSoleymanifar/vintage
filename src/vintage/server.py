@@ -20,7 +20,7 @@ from .engine import honesty
 from .http import SourceError
 from .sources import (apewisdom, bea, bls, cboe, cftc, coinbase, delistings,
                       ecb, edgar, finra, frames, fred, french, openap,
-                      thirteenf, treasury, yahoo)
+                      sector, thirteenf, treasury, yahoo)
 
 mcp = MCPServer(
     "vintage",
@@ -318,6 +318,15 @@ async def fetch(
             warnings += frames.warnings_for(period, rows)
         elif source == "treasury":
             rows = await treasury.yields(field.split(":", 1)[1], start=start, end=end)
+        elif source == "sector":
+            if not entity:
+                return _needs_entity(field, hint=["AAPL", "JPM", "XOM"])
+            rows = await sector.classification(entity, field)
+            warnings.append(
+                "EDGAR states the current classification only, with no record of "
+                "when it changed, so every row is UNKNOWN_VINTAGE. Group today's "
+                "cross-section with it; do not backdate it."
+            )
         elif source == "cftc":
             if not entity:
                 return _needs_entity(field, hint=list(cftc.MARKETS))

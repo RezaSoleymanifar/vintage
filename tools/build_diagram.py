@@ -20,13 +20,26 @@ sys.path.insert(0, os.path.join(
 
 from vintage import registry  # noqa: E402
 
-W, H = 1280, 930
+# Inside the slide the map is scaled to fit a 930x759 box, and at these
+# proportions it is the WIDTH that binds, not the height. That fixes how the type
+# has to be sized: a label lands on screen at its size times 930/W, so widening
+# the canvas makes every label smaller, and the only way to grow the type is to
+# grow it faster than W.
+#
+# An earlier pass widened W to 1460 to buy room for the right-hand column and
+# undid its own type increase doing it. W is therefore held at 1280 and the
+# columns were re-spaced within it instead.
+#
+# At W=1280 the scale is 0.727, so the sizes below land at:
+#   left  source name   16   -> 11.6px   (was 14 -> 10.2px, +15%)
+#   right envelope row  14.5 -> 10.5px   (was 11 ->  8.0px, +30%)
+W, H = 1280, 1030
 
 # Panel metrics, kept together because the vertical layout is derived from them
 # and the lanes have to fit between the header and footer rules.
-ROW_H = 46
-PANEL_HEAD = 64
-LANE_GAP = 14
+ROW_H = 32
+PANEL_HEAD = 50
+LANE_GAP = 10
 TOP_RULE, BOTTOM_RULE = 72, H - 44
 
 BG = "#0b0f16"
@@ -48,7 +61,7 @@ LANES = [
         "icon": "doc",
         "accent": GREEN,
         "sources": ["sec-edgar-xbrl", "sec-edgar-filings", "sec-form-13f",
-                    "sec-form-25", "sec-xbrl-frames"],
+                    "sec-form-25", "sec-xbrl-frames", "sec-edgar-sic"],
     },
     {
         "title": "MARKET SUPERVISORS",
@@ -90,6 +103,7 @@ SHORT = {
     "sec-form-13f": ("SEC Form 13F", "institutional holdings"),
     "sec-form-25": ("SEC Form 25", "every delisting on record"),
     "sec-xbrl-frames": ("SEC frames", "one concept, all filers"),
+    "sec-edgar-sic": ("SEC SIC", "the industry a filer files under"),
     "finra-short-volume": ("FINRA", "daily short volume"),
     "cftc-cot": ("CFTC", "weekly futures positioning"),
     "fred": ("FRED / ALFRED", "macro, with vintages"),
@@ -119,6 +133,8 @@ SOURCE_ICONS = {
                     "M12.4 10.6l-4.8 4.8"),
     "sec-xbrl-frames": ("M2.8 2.8h14.4v14.4H2.8Z", "M2.8 7.6h14.4", "M2.8 12.4h14.4",
                         "M7.6 2.8v14.4", "M12.4 2.8v14.4"),
+    "sec-edgar-sic": ("M10.6 2.8H17v6.4l-7.8 7.8a1.6 1.6 0 0 1-2.3 0l-4.1-4.1"
+                      "a1.6 1.6 0 0 1 0-2.3Z", "M13.8 6h.01"),
     "finra-short-volume": ("M3 17.2h14", "M5.2 6.4v10.8", "M9.4 9.4v7.8",
                            "M13.6 12.4v4.8", "M14.4 4.4h3v3"),
     "cftc-cot": ("M10 3.2v13.8", "M4.8 17h10.4", "M3.4 6.8h13.2",
@@ -263,39 +279,39 @@ def lane_panel(lane: dict, x: float, y: float, w: float, index: int) -> tuple[st
         f'stroke="{LINE}"/>',
         f'<rect x="{x}" y="{y}" width="3" height="{h}" rx="1.5" fill="{accent}" '
         f'opacity="0.55"/>',
-        icon(lane["icon"], x + 16, y + 16, accent, index * 0.5, 1.6),
-        text(x + 60, y + 28, lane["title"], size=16, fill=INK, weight=700, spacing="0.08em"),
-        text(x + 60, y + 47, lane["note"], size=13, fill=DIM, spacing="0.05em"),
+        # Left column: every size up 15%, and the row pitch with it, because two
+        # lines at 16 and 14 will not sit inside the old 30px row.
+        icon(lane["icon"], x + 15, y + 14, accent, index * 0.5, 1.5),
+        text(x + 52, y + 26, lane["title"], size=15.5, fill=INK, weight=700, spacing="0.1em"),
+        text(x + 52, y + 43, lane["note"], size=12.5, fill=DIM, spacing="0.06em"),
     ]
     for i, name in enumerate(rows):
-        row_y = y + PANEL_HEAD + 16 + i * ROW_H
+        row_y = y + PANEL_HEAD + 15 + i * ROW_H
         who, what = SHORT[name]
-        parts.append(icon(name, x + 16, row_y - 22, accent,
-                          (index * 5 + i) * 0.31, 1.75, SOURCE_ICONS))
-        parts.append(text(x + 68, row_y - 3, who, size=17, fill=INK, weight=700))
-        parts.append(text(x + 68, row_y + 16, what, size=13.5, fill="#8ea6b8"))
+        parts.append(icon(name, x + 14, row_y - 18, accent,
+                          (index * 5 + i) * 0.31, 1.58, SOURCE_ICONS))
+        parts.append(text(x + 56, row_y - 2, who, size=16, fill=INK, weight=700))
+        parts.append(text(x + 56, row_y + 14, what, size=14, fill="#8ea6b8"))
     return "".join(parts), h
 
 
 def build() -> str:
     check_lanes()
 
-    # Two columns of lanes rather than one. Eighteen rows in a single stack
-    # forces the type down to the size it was; side by side, each row can be
-    # read at a glance when the whole map is scaled into a slide.
-    lane_w = 300
-    col_x = (36, 36 + lane_w + 18)
-    core_x, core_w = 700, 196
-    right_x, right_w = 934, 310
+    lane_x, lane_w = 36, 310
+    core_x, core_w = 420, 214
+    right_x, right_w = 690, 554
 
-    columns = [[LANES[0], LANES[1]], [LANES[2], LANES[3], LANES[4]]]
-    for col in columns:
-        block = sum(lane_height(l) for l in col) + LANE_GAP * (len(col) - 1)
-        if block > BOTTOM_RULE - TOP_RULE:
-            raise SystemExit(
-                f"A lane column needs {block:.0f}px but only "
-                f"{BOTTOM_RULE - TOP_RULE:.0f}px exist. Raise H or trim ROW_H."
-            )
+    # Lay the lanes out down the left edge, centred in the space between the
+    # two rules rather than in the canvas, so nothing rides over the header.
+    heights = [lane_height(lane) for lane in LANES]
+    block = sum(heights) + LANE_GAP * (len(LANES) - 1)
+    top = TOP_RULE + (BOTTOM_RULE - TOP_RULE - block) / 2
+    if top < TOP_RULE + 8:
+        raise SystemExit(
+            f"The lanes need {block:.0f}px but only "
+            f"{BOTTOM_RULE - TOP_RULE:.0f}px exist. Raise H or trim ROW_H."
+        )
 
     body: list[str] = []
     wires: list[str] = []
@@ -303,31 +319,19 @@ def build() -> str:
 
     core_y = H / 2 + 6
     core_h = 178
-
-    index = 0
-    for ci, col in enumerate(columns):
-        block = sum(lane_height(l) for l in col) + LANE_GAP * (len(col) - 1)
-        y = TOP_RULE + (BOTTOM_RULE - TOP_RULE - block) / 2
-        for lane in col:
-            panel, h = lane_panel(lane, col_x[ci], y, lane_w, index)
-            body.append(panel)
-            # Only the right-hand column wires into the core; the left column
-            # feeds through it, which is what the arrangement already implies.
-            if ci == 1:
-                target = core_y - 46 + (col.index(lane) * 92 / max(len(col) - 1, 1))
-                pid = f"w{index}"
-                wires.append(
-                    f'<path id="{pid}" d="{curve(col_x[ci] + lane_w, y + h / 2, core_x, target)}" '
-                    f'fill="none" stroke="{lane["accent"]}" stroke-width="1.1" opacity="0.22"/>'
-                )
-                lights.append(packets(pid, 3, 3.4 + index * 0.28, lane["accent"]))
-            else:
-                d = (f"M{col_x[ci] + lane_w} {y + h / 2:.0f} "
-                     f"L{col_x[1] - 9} {y + h / 2:.0f}")
-                wires.append(f'<path d="{d}" fill="none" stroke="{lane["accent"]}" '
-                             f'stroke-width="1.1" opacity="0.18"/>')
-            y += h + LANE_GAP
-            index += 1
+    y = top
+    for i, lane in enumerate(LANES):
+        panel, h = lane_panel(lane, lane_x, y, lane_w, i)
+        body.append(panel)
+        # Fan into the core, spread across its left edge.
+        target = core_y - 46 + (i * 92 / (len(LANES) - 1))
+        pid = f"w{i}"
+        wires.append(
+            f'<path id="{pid}" d="{curve(lane_x + lane_w, y + h / 2, core_x, target)}" '
+            f'fill="none" stroke="{lane["accent"]}" stroke-width="1.1" opacity="0.22"/>'
+        )
+        lights.append(packets(pid, 3, 3.4 + i * 0.28, lane["accent"]))
+        y += h + LANE_GAP
 
     # ------------------------------------------------------------------ core
     cx, cy = core_x, core_y - core_h / 2
@@ -341,9 +345,9 @@ def build() -> str:
         f'<rect x="{cx}" y="{cy}" width="{core_w}" height="{core_h}" rx="12" '
         f'fill="url(#core)" stroke="{GREEN}" stroke-opacity="0.45"/>'
     )
-    body.append(text(cx + core_w / 2, cy + 42, "VINTAGE", size=26, fill=INK,
+    body.append(text(cx + core_w / 2, cy + 42, "VINTAGE", size=27, fill=INK,
                      weight=700, anchor="middle", spacing="0.2em"))
-    body.append(text(cx + core_w / 2, cy + 61, "one interface", size=12, fill=DIM,
+    body.append(text(cx + core_w / 2, cy + 61, "one interface", size=10, fill=DIM,
                      anchor="middle", spacing="0.16em"))
     body.append(f'<line x1="{cx + 26}" y1="{cy + 78}" x2="{cx + core_w - 26}" '
                 f'y2="{cy + 78}" stroke="{LINE}"/>')
@@ -355,9 +359,10 @@ def build() -> str:
             f'values="0.2;1;0.2" dur="2.4s" begin="{i * 0.8}s" '
             f'repeatCount="indefinite"/></circle>'
         )
-        body.append(text(cx + 40, cy + 97 + i * 22, step, size=13, fill="#a9c0cf"))
+        body.append(text(cx + 42, cy + 97 + i * 22, step, size=11, fill="#a9c0cf"))
 
-    # A plate behind the caption, because the wires pass through this band.
+    # A plate behind the caption, because the wires pass through this band and
+    # were being read as strikethrough on the words.
     body.append(f'<rect x="{cx - 62}" y="{cy + core_h + 20}" width="{core_w + 124}" '
                 f'height="40" rx="8" fill="{BG}" opacity="0.92"/>')
     body.append(text(cx + core_w / 2, cy + core_h + 36,
@@ -369,7 +374,9 @@ def build() -> str:
 
     # ------------------------------------------------------------- the output
     # Three stacked panels, spread evenly between the same two rules.
-    env_h, verb_h, out_h = 166, 104, 100
+    # Right column: every size up 30%. The panels and the column gained height
+    # and width to match, which is what the wider canvas above was bought for.
+    env_h, verb_h, out_h = 210, 128, 122
     spare = (BOTTOM_RULE - TOP_RULE) - (env_h + verb_h + out_h)
     step = spare / 4
     env_y = TOP_RULE + step
@@ -380,62 +387,62 @@ def build() -> str:
         f'<rect x="{right_x}" y="{env_y}" width="{right_w}" height="{env_h}" rx="10" '
         f'fill="{PANEL}" stroke="{LINE}"/>'
     )
-    body.append(text(right_x + 18, env_y + 26, "EVERY ROW CARRIES TWO DATES",
+    body.append(text(right_x + 22, env_y + 32, "EVERY ROW CARRIES TWO DATES",
                      size=13, fill=INK, weight=700, spacing="0.1em"))
-    body.append(text(right_x + 18, env_y + 46, "observed_at", size=9.5, fill=DIM,
+    body.append(text(right_x + 22, env_y + 58, "observed_at", size=12.5, fill=DIM,
                      spacing="0.06em"))
-    body.append(text(right_x + 18 + 112, env_y + 46, "known_at", size=9.5,
+    body.append(text(right_x + 22 + 146, env_y + 58, "known_at", size=12.5,
                      fill=GREEN, spacing="0.06em"))
-    body.append(text(right_x + 18 + 206, env_y + 46, "field", size=9.5, fill=DIM,
+    body.append(text(right_x + 22 + 268, env_y + 58, "field", size=12.5, fill=DIM,
                      spacing="0.06em"))
     for i, (field, observed, known) in enumerate(ENVELOPE):
-        row_y = env_y + 70 + i * 28
+        row_y = env_y + 90 + i * 36
         body.append(
-            f'<rect x="{right_x + 12}" y="{row_y - 14}" width="{right_w - 24}" '
-            f'height="24" rx="5" fill="{GREEN}" opacity="0">'
+            f'<rect x="{right_x + 14}" y="{row_y - 18}" width="{right_w - 28}" '
+            f'height="31" rx="5" fill="{GREEN}" opacity="0">'
             f'<animate attributeName="opacity" values="0;0.07;0" dur="4.8s" '
             f'begin="{i * 1.6}s" repeatCount="indefinite"/></rect>'
         )
-        body.append(text(right_x + 18, row_y, observed, size=13, fill="#a9c0cf"))
-        body.append(text(right_x + 18 + 106, row_y, known, size=13, fill=GREEN))
-        body.append(text(right_x + 18 + 200, row_y, field, size=11, fill=DIM))
-    body.append(text(right_x + 18, env_y + 152,
+        body.append(text(right_x + 22, row_y, observed, size=14.5, fill="#a9c0cf"))
+        body.append(text(right_x + 22 + 146, row_y, known, size=14.5, fill=GREEN))
+        body.append(text(right_x + 22 + 268, row_y, field, size=12.5, fill=DIM))
+    body.append(text(right_x + 22, env_y + 194,
                      "a backtest never sees a row before known_at",
-                     size=9.5, fill=AMBER, opacity="0.85"))
+                     size=12.5, fill=AMBER, opacity="0.85"))
 
     body.append(
         f'<rect x="{right_x}" y="{verb_y}" width="{right_w}" height="{verb_h}" rx="10" '
         f'fill="{PANEL}" stroke="{LINE}"/>'
     )
-    body.append(text(right_x + 18, verb_y + 26, "SIX VERBS, NOT EIGHTEEN TOOLS",
+    body.append(text(right_x + 22, verb_y + 32, "SIX VERBS, NOT EIGHTEEN TOOLS",
                      size=13, fill=INK, weight=700, spacing="0.1em"))
     for i, verb in enumerate(VERBS):
         col, row = i % 3, i // 3
-        vx = right_x + 18 + col * 108
-        vy = verb_y + 46 + row * 30
+        vx = right_x + 22 + col * 136
+        vy = verb_y + 52 + row * 38
         body.append(
-            f'<rect x="{vx}" y="{vy}" width="98" height="22" rx="5" fill="#0b111b" '
+            f'<rect x="{vx}" y="{vy}" width="126" height="29" rx="5" fill="#0b111b" '
             f'stroke="{LINE}"/>'
         )
-        body.append(text(vx + 49, vy + 15, verb, size=13, fill=GREEN,
+        body.append(text(vx + 63, vy + 20, verb, size=13.5, fill=GREEN,
                          anchor="middle"))
 
     body.append(
         f'<rect x="{right_x}" y="{out_y}" width="{right_w}" height="{out_h}" rx="10" '
         f'fill="{PANEL}" stroke="{LINE}"/>'
     )
-    body.append(text(right_x + 18, out_y + 26, "WHEREVER YOU WORK", size=13,
+    body.append(text(right_x + 22, out_y + 32, "WHEREVER YOU WORK", size=13,
                      fill=INK, weight=700, spacing="0.1em"))
     for i, client in enumerate(CLIENTS):
         col, row = i % 2, i // 2
-        vx = right_x + 18 + col * 158
-        vy = out_y + 42 + row * 26
+        vx = right_x + 22 + col * 200
+        vy = out_y + 54 + row * 34
         body.append(
-            f'<circle cx="{vx + 5}" cy="{vy + 7}" r="2.4" fill="{BLUE}" '
+            f'<circle cx="{vx + 6}" cy="{vy + 9}" r="3.1" fill="{BLUE}" '
             f'opacity="0.4"><animate attributeName="opacity" values="0.2;1;0.2" '
             f'dur="3s" begin="{i * 0.7}s" repeatCount="indefinite"/></circle>'
         )
-        body.append(text(vx + 16, vy + 11, client, size=13, fill="#a9c0cf"))
+        body.append(text(vx + 20, vy + 14, client, size=13.5, fill="#a9c0cf"))
 
     # Core out to each right-hand panel.
     for i, panel_mid in enumerate([env_y + env_h / 2, verb_y + verb_h / 2,
@@ -450,9 +457,9 @@ def build() -> str:
 
     # --------------------------------------------------------------- chrome
     header = [
-        text(36, 44, "VINTAGE", size=23, fill=INK, weight=700, spacing="0.26em"),
+        text(36, 42, "VINTAGE", size=19, fill=INK, weight=700, spacing="0.26em"),
         text(36, 62, f"{len(SHORT)} free sources, federated behind one interface",
-             size=15, fill=DIM),
+             size=13, fill=DIM),
         text(W - 36, 40, "every value dated twice", size=11, fill=GREEN,
              anchor="end", spacing="0.08em"),
         text(W - 36, 58, "point-in-time by construction, not by flag", size=10,
