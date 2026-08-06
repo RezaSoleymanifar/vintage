@@ -144,6 +144,25 @@ A conversational backtester is an overfitting machine unless it counts how many 
 
 This is the part a paid terminal does not do for you.
 
+## The method
+
+Vintage implements the backtest-validation literature rather than inventing its own statistics. Execution realism is a different problem, already solved by [LEAN](https://www.quantconnect.com/lean) and [Nautilus Trader](https://nautilustrader.io/) — Vintage runs before that, at the stage where most ideas should die.
+
+| Technique | Source | Status |
+|---|---|---|
+| Point-in-time panel indexed on `known_at` | structural, no flag to disable | ✅ shipped |
+| Costs charged on turnover, always | no zero-cost mode exists | ✅ shipped |
+| Deflated Sharpe Ratio | [Bailey & López de Prado (2014)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551) | ✅ shipped |
+| Session trial ledger feeding the deflation | Bailey & López de Prado (2014) | ✅ shipped |
+| Probability of Backtest Overfitting, via CSCV | [Bailey, Borwein, López de Prado & Zhu (2017)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2326253) | ⏳ planned |
+| Purged k-fold CV with embargo | *Advances in Financial Machine Learning*, ch. 7 | ⏳ planned |
+| Combinatorial purged cross-validation | *Advances in Financial Machine Learning*, ch. 12 | ⏳ planned |
+| Minimum Backtest Length | [Bailey, Borwein, López de Prado & Zhu (2014)](https://www.ams.org/notices/201405/rnoti-p458.pdf) | ⏳ planned |
+| Newey–West adjustment for autocorrelated returns | Newey & West (1987) | ⏳ planned |
+| Square-root market impact | Almgren et al. (2005) | ⏳ planned |
+
+Citations are references, not endorsements — none of these authors is affiliated with Vintage. Anything marked planned is not in the code yet, and the `backtest` response says so at runtime rather than in the footnotes.
+
 ## Sources
 
 | Source | Covers | Key | Point-in-time |

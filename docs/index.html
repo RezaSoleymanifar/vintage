@@ -134,6 +134,11 @@ pre{
 .six .card h3{font-size:13px;letter-spacing:.14em;text-transform:uppercase}
 .six .card p{font-size:13.5px}
 .hl{color:var(--ink);font-weight:700}
+.lede{color:var(--dim);font-size:15px;line-height:1.65;margin:0 0 4px;max-width:60em}
+.method td:nth-child(2){color:var(--dim);font-size:12.5px}
+.method .yes{color:var(--green);font-weight:700;white-space:nowrap}
+.method .soon{color:var(--amber);white-space:nowrap}
+.soon{color:var(--amber)}
 
 table{width:100%;border-collapse:collapse;margin-top:16px;font-size:13.5px}
 th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line)}
@@ -271,6 +276,34 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:16px}
         </tr>
       </tbody>
     </table>
+  </section>
+
+  <section>
+    <h2>The method</h2>
+    <p class="lede">Vintage implements the backtest-validation literature rather than inventing its own
+    statistics. Execution realism is a different problem, already solved by
+    <a href="https://www.quantconnect.com/lean">LEAN</a> and
+    <a href="https://nautilustrader.io/">Nautilus Trader</a> — Vintage runs before that, where most
+    ideas should die.</p>
+
+    <table class="method">
+      <thead><tr><th>Technique</th><th>Source</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td class="n">Point-in-time panel, indexed on <code>known_at</code></td><td>structural, no flag to disable</td><td class="yes">shipped</td></tr>
+        <tr><td class="n">Costs charged on turnover, always</td><td>no zero-cost mode exists</td><td class="yes">shipped</td></tr>
+        <tr><td class="n">Deflated Sharpe Ratio</td><td>Bailey &amp; López de Prado (2014)</td><td class="yes">shipped</td></tr>
+        <tr><td class="n">Session trial ledger feeding the deflation</td><td>Bailey &amp; López de Prado (2014)</td><td class="yes">shipped</td></tr>
+        <tr><td class="n">Probability of Backtest Overfitting, via CSCV</td><td>Bailey, Borwein, López de Prado &amp; Zhu (2017)</td><td class="soon">planned</td></tr>
+        <tr><td class="n">Purged k-fold CV with embargo</td><td><i>Advances in Financial Machine Learning</i>, ch. 7</td><td class="soon">planned</td></tr>
+        <tr><td class="n">Combinatorial purged cross-validation</td><td><i>Advances in Financial Machine Learning</i>, ch. 12</td><td class="soon">planned</td></tr>
+        <tr><td class="n">Minimum Backtest Length</td><td>Bailey, Borwein, López de Prado &amp; Zhu (2014)</td><td class="soon">planned</td></tr>
+        <tr><td class="n">Newey–West adjustment for autocorrelated returns</td><td>Newey &amp; West (1987)</td><td class="soon">planned</td></tr>
+        <tr><td class="n">Square-root market impact</td><td>Almgren et&nbsp;al. (2005)</td><td class="soon">planned</td></tr>
+      </tbody>
+    </table>
+    <p class="after">Citations are references, not endorsements — none of these authors is affiliated
+    with Vintage. Anything marked <span class="soon">planned</span> is not in the code yet, and the
+    <code>backtest</code> response says so at runtime rather than in the footnotes.</p>
   </section>
 
   <section>
