@@ -143,7 +143,7 @@ a:hover{text-decoration:underline}
    to the box, would otherwise sit at the top of a mostly empty screen. */
 .fill{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center}
 .drift{display:flex;flex-direction:column;justify-content:center;
-  border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:10px;
+  border:1px solid rgba(53,224,138,.22);border-left:3px solid var(--green);border-radius:10px;
   background:var(--panel);padding:clamp(10px,1.8vh,20px) clamp(12px,1.4vw,20px)}
 .drift b{display:block;color:var(--ink);font-size:clamp(13px,2.1vh,19px)}
 .drift i{display:block;font-style:normal;color:var(--dim);
@@ -235,9 +235,9 @@ a:hover{text-decoration:underline}
 .d-it{fill:var(--ink);font-size:12.5px}
 .d-fn{fill:var(--dim);font-size:10.5px}
 .d-note{fill:var(--green);font-size:11.5px}
-.d-card{fill:rgba(255,255,255,.018);stroke:var(--line)}
-.d-box{fill:#070b11;stroke:var(--line)}
-.d-fam{fill:rgba(255,255,255,.012);stroke:var(--line)}
+.d-card{fill:rgba(255,255,255,.018);stroke:rgba(53,224,138,.22)}
+.d-box{fill:#070b11;stroke:rgba(53,224,138,.22)}
+.d-fam{fill:rgba(255,255,255,.012);stroke:rgba(53,224,138,.22)}
 .d-src{fill:#070b11;stroke:var(--line)}
 .d-cnt{fill:var(--green);font-size:13px;font-weight:700}
 .d-sb{fill:var(--green);font-size:13px;font-weight:700}
@@ -251,22 +251,22 @@ a:hover{text-decoration:underline}
 .d-ban{fill:#070b11;stroke:var(--line)}
 .d-edgemark{opacity:.85}
 .d-edgemark.gov{fill:var(--green)}
-.d-edgemark.edu{fill:var(--blue)}
+.d-edgemark.edu{fill:#2fd587}
 .d-edgemark.third{fill:#3b5468}
 .d-bdg{font-size:10px;letter-spacing:.16em}
 .d-bdg.gov{fill:var(--green)}
-.d-bdg.edu{fill:var(--blue)}
+.d-bdg.edu{fill:#2fd587}
 .d-bdg.third{fill:#6b8299}
 .d-edge{fill:var(--green);opacity:.55}
 .d-pipe{fill:rgba(47,213,135,.05);stroke:rgba(47,213,135,.32)}
-.d-stage{fill:#070b11;stroke:var(--line)}
+.d-stage{fill:#070b11;stroke:rgba(53,224,138,.22)}
 .d-num{fill:none;stroke:var(--green);stroke-width:1.3}
 .d-numt{fill:var(--green);font-size:11.5px}
 .d-st{fill:var(--green);font-size:14.5px;font-weight:700}
 .d-ss{fill:var(--dim);font-size:11px}
 .d-verb{fill:#0c121c;stroke:rgba(47,213,135,.3)}
 .d-vt{fill:var(--green);font-size:13px}
-.d-bub{fill:#0c121c;stroke:var(--line)}
+.d-bub{fill:#0c121c;stroke:rgba(53,224,138,.22)}
 .d-ok{fill:var(--green);font-size:13px;font-weight:700}
 .d-bad{fill:var(--red);font-size:13px;font-weight:700}
 .d-wire{stroke:#21303f;stroke-width:1.6;fill:none}
@@ -285,7 +285,7 @@ a:hover{text-decoration:underline}
 .d-stem{stroke:#21303f;stroke-width:1.3;stroke-dasharray:3 4}
 .d-lag{stroke:var(--red);stroke-width:1.6;stroke-dasharray:4 4}
 .d-lagt{fill:var(--red);font-size:10.5px}
-.d-row{fill:#0c121c;stroke:var(--line)}
+.d-row{fill:#0c121c;stroke:rgba(53,224,138,.22)}
 .d-row.warn{stroke:rgba(242,192,118,.5)}
 .pit-wall{animation:sweep 11s linear infinite}
 @keyframes sweep{to{transform:translateX(920px)}}
@@ -314,7 +314,7 @@ a:hover{text-decoration:underline}
   .stage{min-height:88vh}
   .panels{min-height:70vh}
 }
-.d-paper{fill:#101a26;stroke:#2c3f52}.d-ghost{fill:none;stroke:#21303f;stroke-dasharray:5 5}.d-mast{fill:#5f7a8c;font-size:11px;letter-spacing:.2em}.d-head{fill:#e8f1ec;font-size:19px;font-weight:700}.d-head.warn{fill:var(--amber)}.d-col{stroke:#22323f;stroke-width:3;stroke-linecap:round}.d-shelf{stroke:#2c3f52;stroke-width:2}
+.d-paper{fill:#101a26;stroke:rgba(53,224,138,.22)}.d-ghost{fill:none;stroke:rgba(53,224,138,.14);stroke-dasharray:5 5}.d-mast{fill:#5f7a8c;font-size:11px;letter-spacing:.2em}.d-head{fill:#e8f1ec;font-size:19px;font-weight:700}.d-head.warn{fill:var(--amber)}.d-col{stroke:#22323f;stroke-width:3;stroke-linecap:round}.d-shelf{stroke:rgba(53,224,138,.22);stroke-width:2}
 @keyframes paper0{0%,7.20%{opacity:0.0}7.60%,100%{opacity:1}}
 .pp0{animation:paper0 11.0s linear infinite}
 @keyframes paper1{0%,47.40%{opacity:0.0}47.80%,100%{opacity:1}}
@@ -1322,7 +1322,7 @@ a:hover{text-decoration:underline}
         <h2 class="ptitle">What the forums are saying, right now.</h2>
         <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5a2 2 0 0 1-2 2H8l-4.5 4V5.5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2Z"/><path d="M8 8.5h8"/><path d="M8 12h5"/></svg>fetched while this page was built</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.4l3.4 2"/></svg>stamped with the minute we read it</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5 12 14l3.5-3.5L21 16"/><path d="M21 11v5h-5"/></svg>no history upstream, so we keep one</span></div>
         <div class="fill">
-          <table class="forum"><thead><tr><th></th><th>ticker</th><th>name</th><th class="n">mentions</th><th class="n">24h change</th><th class="n">upvotes</th></tr></thead><tbody><tr><td class="rk">1</td><td class="tk">HTZ</td><td class="nm">Hertz</td><td class="n">1,156</td><td class="n up">+1,144</td><td class="n dimc">6,416</td></tr><tr><td class="rk">2</td><td class="tk">SPY</td><td class="nm">SPDR S&amp;P 500 ETF Trust</td><td class="n">432</td><td class="n down">-293</td><td class="n dimc">1,158</td></tr><tr><td class="rk">3</td><td class="tk">SPCX</td><td class="nm">SpaceX</td><td class="n">397</td><td class="n down">-61</td><td class="n dimc">1,133</td></tr><tr><td class="rk">4</td><td class="tk">SNDK</td><td class="nm">Sandisk</td><td class="n">350</td><td class="n down">-611</td><td class="n dimc">1,153</td></tr><tr><td class="rk">5</td><td class="tk">MU</td><td class="nm">Micron Technology</td><td class="n">240</td><td class="n down">-103</td><td class="n dimc">567</td></tr><tr><td class="rk">6</td><td class="tk">NVDA</td><td class="nm">NVIDIA</td><td class="n">157</td><td class="n down">-91</td><td class="n dimc">491</td></tr><tr><td class="rk">7</td><td class="tk">QQQ</td><td class="nm">Invesco QQQ ETF</td><td class="n">145</td><td class="n down">-18</td><td class="n dimc">306</td></tr><tr><td class="rk">8</td><td class="tk">MSFT</td><td class="nm">Microsoft</td><td class="n">119</td><td class="n up">+33</td><td class="n dimc">469</td></tr></tbody></table><p class="stamp">read from ApeWisdom at 2026-08-06 23:24 UTC &middot; <code>known_at</code> is that moment, not the moment the posts were written</p>
+          <table class="forum"><thead><tr><th></th><th>ticker</th><th>name</th><th class="n">mentions</th><th class="n">24h change</th><th class="n">upvotes</th></tr></thead><tbody><tr><td class="rk">1</td><td class="tk">HTZ</td><td class="nm">Hertz</td><td class="n">1,156</td><td class="n up">+1,144</td><td class="n dimc">6,416</td></tr><tr><td class="rk">2</td><td class="tk">SPY</td><td class="nm">SPDR S&amp;P 500 ETF Trust</td><td class="n">432</td><td class="n down">-293</td><td class="n dimc">1,158</td></tr><tr><td class="rk">3</td><td class="tk">SPCX</td><td class="nm">SpaceX</td><td class="n">397</td><td class="n down">-61</td><td class="n dimc">1,136</td></tr><tr><td class="rk">4</td><td class="tk">SNDK</td><td class="nm">Sandisk</td><td class="n">348</td><td class="n down">-613</td><td class="n dimc">1,145</td></tr><tr><td class="rk">5</td><td class="tk">MU</td><td class="nm">Micron Technology</td><td class="n">239</td><td class="n down">-104</td><td class="n dimc">567</td></tr><tr><td class="rk">6</td><td class="tk">NVDA</td><td class="nm">NVIDIA</td><td class="n">156</td><td class="n down">-92</td><td class="n dimc">489</td></tr><tr><td class="rk">7</td><td class="tk">QQQ</td><td class="nm">Invesco QQQ ETF</td><td class="n">145</td><td class="n down">-18</td><td class="n dimc">305</td></tr><tr><td class="rk">8</td><td class="tk">MSFT</td><td class="nm">Microsoft</td><td class="n">119</td><td class="n up">+33</td><td class="n dimc">471</td></tr></tbody></table><p class="stamp">read from ApeWisdom at 2026-08-06 23:27 UTC &middot; <code>known_at</code> is that moment, not the moment the posts were written</p>
         </div>
       </section>
 

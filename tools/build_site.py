@@ -561,13 +561,13 @@ def diagram_pit() -> str:
              'only read the papers already printed">')
 
     DIA_CSS.append(
-        ".d-paper{fill:#101a26;stroke:#2c3f52}"
-        ".d-ghost{fill:none;stroke:#21303f;stroke-dasharray:5 5}"
+        ".d-paper{fill:#101a26;stroke:rgba(53,224,138,.22)}"
+        ".d-ghost{fill:none;stroke:rgba(53,224,138,.14);stroke-dasharray:5 5}"
         ".d-mast{fill:#5f7a8c;font-size:11px;letter-spacing:.2em}"
         ".d-head{fill:#e8f1ec;font-size:19px;font-weight:700}"
         ".d-head.warn{fill:var(--amber)}"
         ".d-col{stroke:#22323f;stroke-width:3;stroke-linecap:round}"
-        ".d-shelf{stroke:#2c3f52;stroke-width:2}"
+        ".d-shelf{stroke:rgba(53,224,138,.22);stroke-width:2}"
     )
 
     p.append(txt(20, 40, "THE NEWSSTAND", "d-h"))
@@ -974,9 +974,9 @@ h2{font-size:clamp(19px,3.4vw,26px);color:var(--ink);margin:0 0 8px;font-weight:
 .d-it{fill:var(--ink);font-size:12.5px}
 .d-fn{fill:var(--dim);font-size:10.5px}
 .d-note{fill:var(--green);font-size:11.5px}
-.d-card{fill:rgba(255,255,255,.018);stroke:var(--line)}
-.d-box{fill:#0a111a;stroke:var(--line)}
-.d-fam{fill:rgba(255,255,255,.012);stroke:var(--line)}
+.d-card{fill:rgba(255,255,255,.018);stroke:rgba(53,224,138,.22)}
+.d-box{fill:#0a111a;stroke:rgba(53,224,138,.22)}
+.d-fam{fill:rgba(255,255,255,.012);stroke:rgba(53,224,138,.22)}
 .d-src{fill:#0a111a;stroke:var(--line)}
 .d-cnt{fill:var(--green);font-size:13px;font-weight:700}
 .d-sb{fill:var(--green);font-size:13px;font-weight:700}
@@ -988,24 +988,24 @@ h2{font-size:clamp(19px,3.4vw,26px);color:var(--ink);margin:0 0 8px;font-weight:
 .d-ban{fill:#0a111a;stroke:var(--line)}
 .d-edgemark{opacity:.85}
 .d-edgemark.gov{fill:var(--green)}
-.d-edgemark.edu{fill:var(--blue)}
+.d-edgemark.edu{fill:#2fd587}
 .d-edgemark.third{fill:#3b5468}
 .d-bdg{font-size:10px;letter-spacing:.16em}
 .d-bdg.gov{fill:var(--green)}
-.d-bdg.edu{fill:var(--blue)}
+.d-bdg.edu{fill:#2fd587}
 .d-bdg.third{fill:#6b8299}
 .d-px{fill:var(--green);font-size:12px;font-weight:700}
 .d-ans{fill:var(--dim);font-size:10.5px}
 .d-edge{fill:var(--green);opacity:.55}
 .d-pipe{fill:rgba(53,224,138,.05);stroke:rgba(53,224,138,.34)}
-.d-stage{fill:#0a111a;stroke:var(--line)}
+.d-stage{fill:#0a111a;stroke:rgba(53,224,138,.22)}
 .d-num{fill:none;stroke:var(--green);stroke-width:1.3}
 .d-numt{fill:var(--green);font-size:11.5px}
 .d-st{fill:var(--green);font-size:14.5px;font-weight:700}
 .d-ss{fill:var(--dim);font-size:11px}
 .d-verb{fill:#0d1420;stroke:rgba(53,224,138,.32)}
 .d-vt{fill:var(--green);font-size:12.5px}
-.d-bub{fill:#0d1420;stroke:var(--line)}
+.d-bub{fill:#0d1420;stroke:rgba(53,224,138,.22)}
 .d-ok{fill:var(--green);font-size:13px;font-weight:700}
 .d-bad{fill:var(--red);font-size:13px;font-weight:700}
 .d-wire{stroke:#243447;stroke-width:1.6;fill:none}
@@ -1026,7 +1026,7 @@ h2{font-size:clamp(19px,3.4vw,26px);color:var(--ink);margin:0 0 8px;font-weight:
 .d-stem{stroke:#243447;stroke-width:1.3;stroke-dasharray:3 4}
 .d-lag{stroke:var(--red);stroke-width:1.6;stroke-dasharray:4 4}
 .d-lagt{fill:var(--red);font-size:10.5px}
-.d-row{fill:#0d1420;stroke:var(--line)}
+.d-row{fill:#0d1420;stroke:rgba(53,224,138,.22)}
 .d-row.warn{stroke:rgba(255,196,107,.5)}
 .pit-wall{animation:sweep 11s linear infinite}
 @keyframes sweep{to{transform:translateX(920px)}}
@@ -1055,13 +1055,13 @@ h2{font-size:clamp(19px,3.4vw,26px);color:var(--ink);margin:0 0 8px;font-weight:
   background:#0a111a;border:1px solid var(--line);border-left:3px solid var(--line);
   border-radius:8px;padding:7px 12px}
 .tl-row.gov{border-left-color:var(--green)}
-.tl-row.edu{border-left-color:var(--blue)}
+.tl-row.edu{border-left-color:#2fd587}
 .tl-row.third{border-left-color:#3b5468}
 @media(min-width:700px){.tl-row{grid-template-columns:16em 8em 1fr;gap:12px;align-items:center;margin-bottom:6px}}
 .tl-name{font-size:12.5px;color:var(--ink)}
 .tl-badge{font-size:10px;letter-spacing:.16em}
 .tl-badge.gov{color:var(--green)}
-.tl-badge.edu{color:var(--blue)}
+.tl-badge.edu{color:#2fd587}
 .tl-badge.third{color:#6b8299}
 .tl-span{font-size:11px;color:var(--dim)}
 @media(min-width:700px){.tl-span{text-align:right}}
@@ -1111,7 +1111,7 @@ h2{font-size:clamp(19px,3.4vw,26px);color:var(--ink);margin:0 0 8px;font-weight:
 .drifts{display:grid;grid-template-columns:1fr;gap:9px;margin-top:16px}
 @media(min-width:600px){.drifts{grid-template-columns:repeat(2,1fr)}}
 @media(min-width:940px){.drifts{grid-template-columns:repeat(3,1fr)}}
-.drift{display:block;border-left:2px solid var(--amber);padding:2px 0 2px 11px}
+.drift{display:block;border-left:2px solid var(--green);padding:2px 0 2px 11px}
 .drift b{display:block;font-size:12.5px}
 .drift i{display:block;font-style:normal;color:var(--dim);font-size:11.5px;margin-top:1px}
 
@@ -1876,7 +1876,7 @@ a:hover{text-decoration:underline}
    to the box, would otherwise sit at the top of a mostly empty screen. */
 .fill{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center}
 .drift{display:flex;flex-direction:column;justify-content:center;
-  border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:10px;
+  border:1px solid rgba(53,224,138,.22);border-left:3px solid var(--green);border-radius:10px;
   background:var(--panel);padding:clamp(10px,1.8vh,20px) clamp(12px,1.4vw,20px)}
 .drift b{display:block;color:var(--ink);font-size:clamp(13px,2.1vh,19px)}
 .drift i{display:block;font-style:normal;color:var(--dim);
@@ -1968,9 +1968,9 @@ a:hover{text-decoration:underline}
 .d-it{fill:var(--ink);font-size:12.5px}
 .d-fn{fill:var(--dim);font-size:10.5px}
 .d-note{fill:var(--green);font-size:11.5px}
-.d-card{fill:rgba(255,255,255,.018);stroke:var(--line)}
-.d-box{fill:#070b11;stroke:var(--line)}
-.d-fam{fill:rgba(255,255,255,.012);stroke:var(--line)}
+.d-card{fill:rgba(255,255,255,.018);stroke:rgba(53,224,138,.22)}
+.d-box{fill:#070b11;stroke:rgba(53,224,138,.22)}
+.d-fam{fill:rgba(255,255,255,.012);stroke:rgba(53,224,138,.22)}
 .d-src{fill:#070b11;stroke:var(--line)}
 .d-cnt{fill:var(--green);font-size:13px;font-weight:700}
 .d-sb{fill:var(--green);font-size:13px;font-weight:700}
@@ -1984,22 +1984,22 @@ a:hover{text-decoration:underline}
 .d-ban{fill:#070b11;stroke:var(--line)}
 .d-edgemark{opacity:.85}
 .d-edgemark.gov{fill:var(--green)}
-.d-edgemark.edu{fill:var(--blue)}
+.d-edgemark.edu{fill:#2fd587}
 .d-edgemark.third{fill:#3b5468}
 .d-bdg{font-size:10px;letter-spacing:.16em}
 .d-bdg.gov{fill:var(--green)}
-.d-bdg.edu{fill:var(--blue)}
+.d-bdg.edu{fill:#2fd587}
 .d-bdg.third{fill:#6b8299}
 .d-edge{fill:var(--green);opacity:.55}
 .d-pipe{fill:rgba(47,213,135,.05);stroke:rgba(47,213,135,.32)}
-.d-stage{fill:#070b11;stroke:var(--line)}
+.d-stage{fill:#070b11;stroke:rgba(53,224,138,.22)}
 .d-num{fill:none;stroke:var(--green);stroke-width:1.3}
 .d-numt{fill:var(--green);font-size:11.5px}
 .d-st{fill:var(--green);font-size:14.5px;font-weight:700}
 .d-ss{fill:var(--dim);font-size:11px}
 .d-verb{fill:#0c121c;stroke:rgba(47,213,135,.3)}
 .d-vt{fill:var(--green);font-size:13px}
-.d-bub{fill:#0c121c;stroke:var(--line)}
+.d-bub{fill:#0c121c;stroke:rgba(53,224,138,.22)}
 .d-ok{fill:var(--green);font-size:13px;font-weight:700}
 .d-bad{fill:var(--red);font-size:13px;font-weight:700}
 .d-wire{stroke:#21303f;stroke-width:1.6;fill:none}
@@ -2018,7 +2018,7 @@ a:hover{text-decoration:underline}
 .d-stem{stroke:#21303f;stroke-width:1.3;stroke-dasharray:3 4}
 .d-lag{stroke:var(--red);stroke-width:1.6;stroke-dasharray:4 4}
 .d-lagt{fill:var(--red);font-size:10.5px}
-.d-row{fill:#0c121c;stroke:var(--line)}
+.d-row{fill:#0c121c;stroke:rgba(53,224,138,.22)}
 .d-row.warn{stroke:rgba(242,192,118,.5)}
 .pit-wall{animation:sweep 11s linear infinite}
 @keyframes sweep{to{transform:translateX(920px)}}
