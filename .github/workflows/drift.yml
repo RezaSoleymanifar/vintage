@@ -1,0 +1,111 @@
+name: Release drift
+
+# Ask from the outside whether what this repo claims has actually shipped.
+#
+# Versions 0.5.0 through 0.9.0 were tagged and pushed while GitHub Actions was
+# in a major outage. No release run was ever created, so nothing failed and
+# nothing alerted — PyPI simply sat four versions behind, and the MCP registry
+# eight, for most of a day. A pipeline that only reports on runs it was present
+# for cannot see that, which is why this compares the repo against the
+# registries on a schedule rather than trusting the last run's exit code.
+
+on:
+  schedule:
+    # 13:47 UTC, deliberately off the hour — every scheduled job in the world
+    # fires at :00 and GitHub delays the pile-up.
+    - cron: "47 13 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: do the registries match pyproject
+    runs-on: ubuntu-latest
+    outputs:
+      behind: ${{ steps.compare.outputs.behind }}
+      declared: ${{ steps.compare.outputs.declared }}
+      detail: ${{ steps.compare.outputs.detail }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: compare
+        name: Compare against PyPI and the MCP registry
+        run: |
+          set +e
+          out=$(python tools/check_release.py --json)
+          status=$?
+          set -e
+          echo "$out"
+
+          # 2 means a registry did not answer. That is not evidence of drift,
+          # so it must not trigger a republish.
+          if [ "$status" = "2" ]; then
+            echo "::warning::a registry was unreachable — no judgement made"
+            echo "behind=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          declared=$(python -c "import json,sys;print(json.loads(sys.argv[1])['declared'])" "$out")
+          detail=$(python -c "import json,sys;print('; '.join(json.loads(sys.argv[1])['behind']))" "$out")
+          echo "declared=$declared" >> "$GITHUB_OUTPUT"
+          echo "detail=$detail" >> "$GITHUB_OUTPUT"
+          if [ "$status" = "1" ]; then
+            echo "::warning::repo declares $declared but $detail"
+            echo "behind=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "behind=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  republish:
+    name: ship what is missing
+    needs: check
+    if: needs.check.outputs.behind == 'true'
+    # Calling the release workflow rather than dispatching it: a run started by
+    # GITHUB_TOKEN cannot trigger another workflow, so a dispatch here would be
+    # silently swallowed — the exact failure mode this job exists to catch.
+    uses: ./.github/workflows/release.yml
+    permissions:
+      contents: write
+      id-token: write
+
+  tell_someone:
+    name: open an issue if it is still behind
+    needs: [check, republish]
+    if: always() && needs.check.outputs.behind == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: File or update the drift issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DECLARED: ${{ needs.check.outputs.declared }}
+          DETAIL: ${{ needs.check.outputs.detail }}
+          RESULT: ${{ needs.republish.result }}
+        run: |
+          title="Release drift: repo declares $DECLARED"
+          body=$(printf '%s\n' \
+            "The scheduled drift check found the repo ahead of what is published." \
+            "" \
+            "    declared   $DECLARED" \
+            "    behind     $DETAIL" \
+            "" \
+            "The republish attempt finished with: **$RESULT**." \
+            "" \
+            "If that says success, this issue can be closed once the registries" \
+            "catch up. If it says failure or skipped, the release pipeline needs" \
+            "a look — run \`python tools/check_release.py\` locally to confirm." \
+            "" \
+            "_Filed automatically by .github/workflows/drift.yml._")
+
+          existing=$(gh issue list --state open --search "in:title Release drift" \
+                     --json number,title --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body "$body"
+          else
+            gh issue create --title "$title" --body "$body" --label "" || \
+              gh issue create --title "$title" --body "$body"
+          fi

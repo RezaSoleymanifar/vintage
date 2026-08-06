@@ -493,6 +493,49 @@ CLIENTS = [
 ]
 
 
+def build_forums() -> str:
+    """What the forums are actually saying, fetched while the page is built.
+
+    ApeWisdom publishes only the present — there is no history endpoint, and
+    nobody can hand you last Tuesday's ranking. That is the honest demo: a live
+    row, stamped with the minute we read it, and a note that the only way to own
+    a history of this is to start recording it.
+    """
+    import datetime as _dt
+
+    try:
+        import httpx
+        raw = httpx.get("https://apewisdom.io/api/v1.0/filter/all-stocks/page/1",
+                        timeout=30).json()["results"][:8]
+    except Exception:
+        return ('<p class="after">The live forum panel could not be fetched when this '
+                'page was built.</p>')
+
+    rows = []
+    for r in raw:
+        now = int(r.get("mentions") or 0)
+        before = int(r.get("mentions_24h_ago") or 0)
+        delta = now - before
+        cls = "up" if delta > 0 else ("down" if delta < 0 else "flat")
+        arrow = "+" if delta > 0 else ""
+        rows.append(
+            f'<tr><td class="rk">{r.get("rank")}</td>'
+            f'<td class="tk">{html.escape(html.unescape(str(r.get("ticker"))))}</td>'
+            f'<td class="nm">{html.escape(html.unescape(str(r.get("name") or ""))[:26])}</td>'
+            f'<td class="n">{now:,}</td>'
+            f'<td class="n {cls}">{arrow}{delta:,}</td>'
+            f'<td class="n dimc">{int(r.get("upvotes") or 0):,}</td></tr>')
+
+    stamp = _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    return (
+        '<table class="forum"><thead><tr><th></th><th>ticker</th><th>name</th>'
+        '<th class="n">mentions</th><th class="n">24h change</th>'
+        '<th class="n">upvotes</th></tr></thead>'
+        f'<tbody>{"".join(rows)}</tbody></table>'
+        f'<p class="stamp">read from ApeWisdom at {stamp} &middot; '
+        f'<code>known_at</code> is that moment, not the moment the posts were written</p>')
+
+
 def build_clients() -> tuple[str, str]:
     tabs, panes = [], []
     for i, (label, slug, note, code) in enumerate(CLIENTS):
@@ -761,6 +804,20 @@ pre.one{flex:1 1 30em;padding:14px 74px 14px 16px;font-size:clamp(11.5px,2.2vw,1
 footer{padding:56px 0 70px;color:var(--dim);font-size:12.5px}
 footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:14px;font-size:13.5px}
 __DIACSS__
+
+.forum{width:100%;border-collapse:collapse;margin:22px 0 0;font-size:14px}
+.forum th{color:var(--dim);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  font-weight:400;text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+.forum td{padding:10px;border-bottom:1px solid var(--line);color:var(--ink)}
+.forum td.rk{color:var(--dim);width:2em}
+.forum td.tk{font-weight:700;letter-spacing:.04em}
+.forum td.nm{color:var(--dim)}
+.forum .n{text-align:right;font-variant-numeric:tabular-nums}
+.forum th.n{text-align:right}
+.forum .up{color:var(--green)}
+.forum .down{color:var(--red)}
+.forum .flat,.forum .dimc{color:var(--dim)}
+.stamp{color:var(--dim);font-size:12.5px;margin:12px 0 0}
 </style>
 </head>
 <body>
@@ -884,6 +941,18 @@ __DIACSS__
   </section>
 
   <section>
+    <h2>What the forums are saying, right now</h2>
+    <p class="lede">Fetched while this page was built. ApeWisdom ranks mention counts across roughly
+    fifteen stock and crypto subreddits, and it publishes <span class="hl">only the present</span>
+    &mdash; there is no history endpoint, and nobody can sell you last Tuesday's ranking honestly,
+    because anyone claiming years of it re-scored old posts with today's model.</p>
+    __FORUMS__
+    <p class="after">This is why the row is stamped rather than dated. Backtestable history starts the
+    day you begin recording, which is the only version that survives contact with a
+    <code>known_at</code> index.</p>
+  </section>
+
+  <section>
     <h2>Install</h2>
     <div class="tabs">
       __TABS__
@@ -982,7 +1051,8 @@ def main() -> None:
         .replace("__DIA2__", dia2)
         .replace("__DIA3__", dia3)
         .replace("__DIACSS__", "\n".join(DIA_CSS))
-        .replace("__TIMELINE__", build_timeline())
+        .replace("__FORUMS__", build_forums())
+                .replace("__TIMELINE__", build_timeline())
         .replace("__DRIFT__", build_drift())
         .replace("__TABS__", tabs)
         .replace("__PANES__", panes)
