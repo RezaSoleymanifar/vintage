@@ -44,7 +44,7 @@ class Out:
 
 SCRIPT: list = [
     Typed(0.3, "claude mcp add vintage -s user -- uvx vintage-mcp", prompt="$", prompt_class="p-shell", typing=1.8),
-    Out(2.5, "connected · sec edgar · fred · ken french · yahoo · 0 API keys", cls="ok"),
+    Out(2.5, "connected · sec edgar · fred · ken french · openap · yahoo", cls="ok"),
 
     Typed(3.6, "backtest 12-1 momentum on the dow 30 since 2010", typing=1.7),
     Out(5.7, "reading 30 tickers from yahoo-finance, 3,914 sessions", cls="dim", indent=1),
@@ -253,7 +253,8 @@ h1{
   margin-bottom:12px;
 }
 .orgs{display:grid;grid-template-columns:1fr;gap:12px}
-@media(min-width:760px){.orgs{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:620px){.orgs{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:980px){.orgs{grid-template-columns:repeat(4,1fr)}}
 .org{display:block;padding-left:11px;border-left:2px solid var(--green)}
 .org b{display:block;color:var(--ink);font-size:13.5px;line-height:1.35;font-weight:700}
 .org i{display:block;color:var(--dim);font-size:11.5px;font-style:normal;margin-top:3px}
@@ -405,6 +406,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:16px}
         <span class="org"><b>U.S. Securities &amp; Exchange Commission</b><i>EDGAR — the filings themselves</i></span>
         <span class="org"><b>Federal Reserve Bank of St.&nbsp;Louis</b><i>FRED &amp; ALFRED — 800k series</i></span>
         <span class="org"><b>Dartmouth College</b><i>Ken French Library — since 1926</i></span>
+        <span class="org"><b>Open Source Asset Pricing</b><i>Chen &amp; Zimmermann — 331 published claims</i></span>
       </div>
       <p class="tnote">Official filings and central-bank releases, pulled live from the institutions
       that publish them. Not a scrape, not a CSV dump, not a mirror of someone else's mirror.</p>
@@ -434,20 +436,20 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:16px}
 
   <section>
     <h2>Where the data comes from</h2>
-    <p class="lede"><span class="hl">A century of market history, five primary sources, zero API keys.</span>
+    <p class="lede"><span class="hl">A century of market history, six sources, zero API keys.</span>
     The Fama-French factors start in July 1926 and the SEC filing stream runs to this morning —
     Vintage covers both ends from the same six verbs.</p>
-    <p class="lede">Three of the five are the primary source, not a reseller and not a scraper: the
+    <p class="lede">Five of the six are the primary source, not a reseller and not a scraper: the
     filings come from the regulator that receives them, the macro series come from the central bank
     that publishes them, and the factors come from the university that computes them. Vintage hosts
     none of it — it connects, normalizes, and preserves vintage.</p>
 
     <div class="stats">
       <div><b>100</b><span>years, July 1926 to this morning</span></div>
+      <div><b>331</b><span>published anomalies, with claims</span></div>
       <div><b>10,398</b><span>ticker-mapped US filers</span></div>
       <div><b>800k+</b><span>macro series with vintages</span></div>
       <div><b>0</b><span>API keys required</span></div>
-      <div><b>$0</b><span>forever</span></div>
     </div>
 
     <div class="srcs">
@@ -474,6 +476,14 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:16px}
         <h3>Ken French Data Library</h3>
         <p>Dartmouth. FF3, FF5, momentum, daily FF3, and the 49 industry portfolios — the same series
         the papers are written against, from where the authors publish them.</p>
+      </div>
+      <div class="card src">
+        <span class="badge edu">Primary · academic</span>
+        <h3>Open Source Asset Pricing</h3>
+        <p>Chen &amp; Zimmermann's replication of the anomaly zoo: 331 published predictors with the
+        return and t-statistic each paper claimed, its sample window, and a definition precise
+        enough to implement from. This is the scoreboard a replication is scored against —
+        <code>openap:Mom12m</code> returns Jegadeesh-Titman's 1.31%/month, t = 3.74.</p>
       </div>
       <div class="card src">
         <span class="badge third">Third party</span>

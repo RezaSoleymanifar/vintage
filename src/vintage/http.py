@@ -26,6 +26,7 @@ RATE_LIMITS = {
     "stooq.com": 0.5,
     "query1.finance.yahoo.com": 0.6,
     "mba.tuck.dartmouth.edu": 1.0,
+    "raw.githubusercontent.com": 0.3,
     "api.openfigi.com": 2.5,
 }
 

@@ -29,6 +29,7 @@ Source is a parameter, never a separate tool.
 | **sec-edgar-filings** | filing stream: 8-K, 10-K, 10-Q, Form 4, 13D/G | `filing:* (needs an entity)` | yes — exact filing timestamps | none |
 | **yahoo-finance** | daily OHLCV and adjusted close, full history unofficial endpoint; Stooq is blocked behind a JS check as of 2026-08 | `price:close / price:adjclose (needs an entity)` | partial — adjusted retroactively | none |
 | **ken-french-data-library** | Fama-French factors, momentum, industry portfolios | `french:ff3, french:ff5, french:momentum` | no — rebuilt on each release | none |
+| **open-source-asset-pricing** | 331 published anomalies with the return and t-stat each paper claimed Chen & Zimmermann. 56 of the 331 are price-only and replicable with Vintage today. | `openap:Mom12m, or openap:* for all of them` | yes — claims are dated to their publication year | none |
 | **fred** | 800k macro series, with ALFRED first-release vintages | `fred:CPIAUCSL` | yes — real-time vintages | free key |
 
 ## Field prefixes
@@ -40,6 +41,7 @@ How a field name routes to a source.
 | `price:` | prices | yes |
 | `fred:` | fred | no |
 | `french:` | french | no |
+| `openap:` | openap | — |
 | `filing:` | sec-edgar-filings | yes |
 | `us-gaap:` | sec-edgar-xbrl | yes |
 | `dei:` | sec-edgar-xbrl | yes |

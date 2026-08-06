@@ -15,6 +15,7 @@ PREFIXES = {
     "price:": "prices",
     "fred:": "fred",
     "french:": "french",
+    "openap:": "openap",
     "filing:": "sec-edgar-filings",
     "us-gaap:": "sec-edgar-xbrl",
     "dei:": "sec-edgar-xbrl",
@@ -52,6 +53,14 @@ SOURCES = [
         "field_form": "french:ff3, french:ff5, french:momentum",
         "point_in_time": "no — rebuilt on each release",
         "key_required": False,
+    },
+    {
+        "source": "open-source-asset-pricing",
+        "covers": "331 published anomalies with the return and t-stat each paper claimed",
+        "field_form": "openap:Mom12m, or openap:* for all of them",
+        "point_in_time": "yes — claims are dated to their publication year",
+        "key_required": False,
+        "note": "Chen & Zimmermann. 56 of the 331 are price-only and replicable with Vintage today.",
     },
     {
         "source": "fred",

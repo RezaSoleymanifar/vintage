@@ -17,7 +17,7 @@ from .engine import backtest as bt
 from .engine import benchmark as bm
 from .engine import honesty
 from .http import SourceError
-from .sources import edgar, fred, french, yahoo
+from .sources import edgar, fred, french, openap, yahoo
 
 mcp = MCPServer(
     "vintage",
@@ -37,7 +37,7 @@ mcp = MCPServer(
         "returns a deflated Sharpe that accounts for how many specs were tried "
         "this session. Report it. Never present a raw Sharpe alone."
     ),
-    version="0.1.1",
+    version="0.2.0",
 )
 
 # Backtests keep their return series here so the model does not have to carry
@@ -134,6 +134,11 @@ async def discover(query: str, entity: str | None = None, limit: int = 25) -> st
         except SourceError as exc:
             warnings.append(str(exc))
 
+    try:
+        found.extend(await openap.search(query, limit=8))
+    except SourceError as exc:
+        warnings.append(str(exc))
+
     if fred.has_key():
         try:
             found.extend(await fred.search(query, limit=10))
@@ -185,7 +190,8 @@ async def fetch(
     """Fetch any field from any source, as point-in-time rows.
 
     Field forms: "us-gaap:Assets" (needs entity), "price:close" (needs
-    entity), "fred:CPIAUCSL", "french:ff3". Run discover first if unsure.
+    entity), "fred:CPIAUCSL", "french:ff3", "openap:Mom12m" (or "openap:*"
+    for all 331 published claims). Run discover first if unsure.
 
     `as_of` is the point-in-time switch: it drops every row that was not
     public on that date, so you see what a researcher on that day saw,
@@ -198,6 +204,10 @@ async def fetch(
     try:
         if source == "french":
             rows = await french.load(field.split(":", 1)[1])
+        elif source == "openap":
+            name = field.split(":", 1)[1]
+            # "openap:*" is the whole scoreboard; a bare acronym is one claim.
+            rows = await openap.load() if name in ("*", "") else [await openap.get(name)]
         elif source == "fred":
             rows = await fred.observations(
                 field.split(":", 1)[1], start=start, end=end
@@ -269,6 +279,9 @@ async def fetch(
 
 
 def _fetch_next(field: str, entity: str | None) -> list[dict[str, Any]]:
+    if field.startswith("openap:"):
+        return [{"verb": "backtest",
+                 "why": "replicate the claim and compare your Sharpe to the published one"}]
     if field.startswith("french:"):
         return [{"verb": "backtest", "why": "build a factor and score it against this"}]
     if field.startswith("price:") and entity:

@@ -30,6 +30,7 @@
 | **U.S. Securities & Exchange Commission** | EDGAR — the filings themselves, with accession numbers and acceptance timestamps |
 | **Federal Reserve Bank of St. Louis** | FRED & ALFRED — 800,000+ series, with first-release vintages |
 | **Dartmouth College** | Ken French Data Library — the Fama-French factors, from July 1926 |
+| **Open Source Asset Pricing** | Chen & Zimmermann — 331 published anomalies with the return and t-stat each paper claimed |
 
 Official filings and central-bank releases, pulled live from the institutions that publish them. Not a scrape, not a CSV dump, not a mirror of someone else's mirror.
 
@@ -180,16 +181,16 @@ Citations are references, not endorsements — none of these authors is affiliat
 <table>
 <tr>
 <td align="center"><b>100</b><br><sub>years, July 1926 to this morning</sub></td>
+<td align="center"><b>331</b><br><sub>published anomalies, with claims</sub></td>
 <td align="center"><b>10,398</b><br><sub>ticker-mapped US filers</sub></td>
 <td align="center"><b>800k+</b><br><sub>macro series with vintages</sub></td>
 <td align="center"><b>0</b><br><sub>API keys required</sub></td>
-<td align="center"><b>$0</b><br><sub>forever</sub></td>
 </tr>
 </table>
 
-**A century of market history, five primary sources, zero API keys.** The Fama-French factors start in July 1926 and the SEC filing stream runs to this morning — Vintage covers both ends from the same six verbs.
+**A century of market history, six sources, zero API keys.** The Fama-French factors start in July 1926 and the SEC filing stream runs to this morning — Vintage covers both ends from the same six verbs.
 
-**Three of the five are the primary source** — not a reseller, not a scraper. The filings come from the regulator that receives them, the macro series from the central bank that publishes them, and the factors from the university that computes them.
+**Five of the six are the primary source** — not a reseller, not a scraper. The filings come from the regulator that receives them, the macro series from the central bank that publishes them, and the factors from the university that computes them.
 
 | Source | Standing | Covers | Key | Point-in-time |
 |---|---|---|---|---|
@@ -197,6 +198,7 @@ Citations are references, not endorsements — none of these authors is affiliat
 | **SEC filings stream** | Primary · US regulator | 8-K, 10-K, 10-Q, Form 4, 13D/G — timestamped to the second EDGAR accepted them. | none | ✅ exact timestamps |
 | **FRED / ALFRED** | Primary · central bank | Federal Reserve Bank of St. Louis. ALFRED keeps first releases, so you can ask what CPI looked like *that morning*. | free | ✅ first-release vintages |
 | **Ken French Data Library** | Primary · academic | Dartmouth. FF3, FF5, momentum, daily FF3, 49 industry portfolios — from where the authors publish them. | none | ❌ rebuilt each release |
+| **Open Source Asset Pricing** | Primary · academic | Chen & Zimmermann. 331 published predictors with claimed return, t-stat, sample window and an implementable definition. `openap:Mom12m` returns Jegadeesh-Titman's 1.31%/mo, t=3.74. | none | ✅ claims dated to publication year |
 | **Yahoo Finance** | Third party | Daily OHLCV and adjusted close, decades deep. | none | ⚠️ adjusted retroactively, flagged on every row |
 
 **[COVERAGE.md](COVERAGE.md) is the full field-by-field catalogue** — every prefix, every dataset, every signal, with measured coverage spans. It is generated from the registry, so it cannot drift from the code.
@@ -209,7 +211,7 @@ It is the one third-party source here, and the weakest link: an undocumented end
 
 It is mitigated rather than hidden. Vintage fetches per user and redistributes nothing, every price row is flagged as retroactively adjusted, and the price layer is a single adapter, so a keyed alternative (Tiingo, Alpaca) can slot in behind the same `price:` prefix without touching anything else. Stooq was the intended spine — friendlier terms — but it now gates programmatic access behind a JavaScript check. That adapter stays in case the check lifts.
 
-See [`COVERAGE.md`](COVERAGE.md) for what is wired up today, [`DATA_SOURCES.md`](DATA_SOURCES.md) for the wider free-data landscape, and [`DESIGN.md`](DESIGN.md) for the architecture.
+See [`PRINCIPLES.md`](PRINCIPLES.md) for the rules that decide arguments, [`COVERAGE.md`](COVERAGE.md) for what is wired up today, [`DATA_SOURCES.md`](DATA_SOURCES.md) for the wider free-data landscape, and [`DESIGN.md`](DESIGN.md) for the architecture.
 
 ## Cache
 

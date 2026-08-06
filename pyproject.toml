@@ -1,6 +1,6 @@
 [project]
 name = "vintage-mcp"
-version = "0.1.1"
+version = "0.2.0"
 description = "A research terminal that costs $0 and won't lie to you about your Sharpe — point-in-time financial data over MCP"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -57,3 +57,6 @@ packages = ["src/vintage"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+markers = [
+    "network: hits a live upstream source; deselect with -m 'not network'",
+]
