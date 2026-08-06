@@ -6,6 +6,7 @@ breadth arrives through `discover`.
 
 from __future__ import annotations
 
+import asyncio
 import json
 from typing import Any
 
@@ -547,15 +548,25 @@ async def backtest(
             "backtest", f"Unknown signal {signal!r}", did_you_mean=bt.SIGNALS
         )
 
+    # Adjusted close: splits and dividends folded in, which is what a
+    # total-return backtest needs. Fetched concurrently — the per-host throttle
+    # in http.py still paces the requests, so this shortens the wall clock
+    # without asking Yahoo for anything faster than it was already getting.
+    async def _history(ticker: str) -> tuple[str, list[dict[str, Any]] | None]:
+        try:
+            return ticker, await yahoo.prices(ticker, field="adjclose")
+        except SourceError:
+            return ticker, None
+
+    results = await asyncio.gather(*(_history(t) for t in universe))
+
     rows: list[dict[str, Any]] = []
     missing: list[str] = []
-    for ticker in universe:
-        try:
-            # Adjusted close: splits and dividends folded in, which is what a
-            # total-return backtest needs.
-            rows.extend(await yahoo.prices(ticker, field="adjclose"))
-        except SourceError:
+    for ticker, history in results:
+        if history is None:
             missing.append(ticker.upper())
+        else:
+            rows.extend(history)
 
     if not rows:
         return envelope.fail(
