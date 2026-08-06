@@ -1,4 +1,4 @@
-# Vintage — architecture
+# Vintage, architecture
 
 ## 1. Verbs, not sources
 
@@ -11,7 +11,7 @@ Instead: **six verbs, source is a parameter.**
 | `resolve` | Any identifier → the spine (ticker, CIK, FIGI, LEI, FRED id, series id) |
 | `discover` | Free-text search across every source's catalog → series ids. This is how breadth becomes usable |
 | `fetch` | The workhorse. One or many series, date range, `as_of`. Returns tidy rows |
-| `events` | Timeline for an entity — 8-Ks, halts, approvals, insider trades, attention spikes |
+| `events` | Timeline for an entity, 8-Ks, halts, approvals, insider trades, attention spikes |
 | `backtest` | Signal spec → returns, costs, honesty report |
 | `benchmark` | Your return series → correlation and alpha vs published factors |
 
@@ -19,7 +19,7 @@ Twenty more sources adds zero tools. That is the whole point.
 
 ## 2. One envelope
 
-Every value from every source comes back in the same shape. Macro, fundamentals, prices, events — all of it.
+Every value from every source comes back in the same shape. Macro, fundamentals, prices, events, all of it.
 
 ```json
 {
@@ -38,28 +38,28 @@ Every value from every source comes back in the same shape. Macro, fundamentals,
 
 Two time columns are the product:
 
-- `observed_at` — what date the value describes
-- `known_at` — when you could first have seen it
+- `observed_at`, what date the value describes
+- `known_at`, when you could first have seen it
 
 Sources that cannot supply `known_at` get `"vintage": "UNKNOWN_VINTAGE"` and a null. Never a guess. Same discipline as `paper-to-spec`: cite everything, flag what is unknown.
 
 Because the shape never varies, `backtest` needs no per-source adapters. It filters on `known_at < trade_date` and that is the entire look-ahead guarantee.
 
-## 3. MCP now, HTTP API later — and the reason is legal, not technical
+## 3. MCP now, HTTP API later, and the reason is legal, not technical
 
 The transport is trivial: the same server already speaks streamable HTTP. The real difference is who fetches the data.
 
 | | Local MCP | Hosted API |
 |---|---|---|
 | Who calls SEC / Yahoo | The user's machine | **Us** |
-| Redistribution | None — user fetched their own | We are redistributing. Licensing exposure |
+| Redistribution | None, user fetched their own | We are redistributing. Licensing exposure |
 | Cost | Zero | Ours, and it scales with users |
 | Uptime obligation | None | Ours |
-| Rate limits | Per user | Pooled — one heavy user degrades everyone |
+| Rate limits | Per user | Pooled, one heavy user degrades everyone |
 
 Local-first is not a limitation, it is what makes "free forever" a promise we can actually keep.
 
-Ship the HTTP API only when non-Claude demand is proven (Cursor, scripts, other agents), and treat it as the paid tier — because it is the version that costs us money.
+Ship the HTTP API only when non-Claude demand is proven (Cursor, scripts, other agents), and treat it as the paid tier, because it is the version that costs us money.
 
 ## 4. Knowing when breadth is right
 
@@ -75,10 +75,10 @@ Do not guess. Instrument it.
 Tools that merely return data get used once. Tools that return data *plus a hook* get used all conversation.
 
 1. **Server instructions.** Tell the model how to think about the data, not just what the tools are. Point-in-time is a concept it must hold, not a flag it must remember.
-2. **Every response carries flags.** `"warnings": ["3 periods were restated after first filing", "12 tickers in this universe delisted — included"]`. The model surfaces these, the user sees the product catching something, and that is the moment they tell someone.
+2. **Every response carries flags.** `"warnings": ["3 periods were restated after first filing", "12 tickers in this universe delisted, included"]`. The model surfaces these, the user sees the product catching something, and that is the moment they tell someone.
 3. **Every response suggests next steps.** `"suggested_next": [{"verb": "benchmark", "why": "score this against the published UMD series"}]`. Models follow suggestions reliably. This is the self-motivating loop.
 4. **Catalog as an MCP resource.** Expose the source catalog as a browsable resource so the model can see what exists without spending a tool call to find out.
-5. **Prompts as starters.** Ship MCP prompts — `morning-brief`, `verify-this-factor`, `what-changed-today` — so the good conversations are one click, not a blank page.
+5. **Prompts as starters.** Ship MCP prompts (`morning-brief`, `verify-this-factor`, `what-changed-today`) so the good conversations are one click, not a blank page.
 6. **Errors that teach.** A miss returns the nearest matches and why it missed, never a bare failure. Already done in `get_fundamentals`.
 
 The compounding effect: warnings make the product look smart, suggestions make the conversation continue, and the continuation produces another warning.

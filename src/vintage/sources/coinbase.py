@@ -1,4 +1,4 @@
-"""Coinbase Exchange — crypto OHLCV, free and without a key.
+"""Coinbase Exchange, crypto OHLCV, free and without a key.
 
 Crypto is the one asset class where retail gets institutional-grade history
 for nothing, so it belongs here. Binance returns 451 from US addresses, and
@@ -40,7 +40,7 @@ def normalize(symbol: str) -> str:
 
 
 async def products() -> list[dict[str, Any]]:
-    """Every tradable product. Currently listed only — see the module docstring."""
+    """Every tradable product. Currently listed only, see the module docstring."""
     payload = await get_json(f"{BASE}/products", tier="daily")
     return [
         {
@@ -89,7 +89,7 @@ async def candles(
         if isinstance(batch, dict):                       # Coinbase errors as an object
             raise SourceError(
                 f"Coinbase rejected {product}: {batch.get('message', batch)}. "
-                "Check the product id — try BTC-USD."
+                "Check the product id, try BTC-USD."
             )
         if not batch:
             break
@@ -131,7 +131,7 @@ def warnings_for(symbol: str) -> list[str]:
         "Crypto universes here are currently-listed products only. Thousands of "
         "tokens have delisted or died and are absent entirely, so any "
         "cross-sectional crypto backtest built from this list is survivors-only "
-        "— a worse bias than equities, not a milder one.",
+        ", a worse bias than equities, not a milder one.",
         "Coinbase pricing is one venue. Cross-exchange spreads in crypto are real "
         "and can be wide for thin pairs.",
     ]

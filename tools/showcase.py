@@ -1,4 +1,4 @@
-"""The showcase reel — a fake screen recording, built from CSS keyframes.
+"""The showcase reel, a fake screen recording, built from CSS keyframes.
 
 A cursor glides to a target, clicks, the view pushes in on what it hit, the
 answer resolves, then it pulls back out and the next scene takes over. Four
@@ -32,7 +32,7 @@ class Beat:
 
 @dataclass
 class Scene:
-    ask: str                     # what the cursor "types" — plain English
+    ask: str                     # what the cursor "types", plain English
     caption: str                 # the punchline, held at the end
     click: tuple[int, int]       # where the cursor clicks, in stage coords
     zoom: float                  # how far to push in
@@ -61,7 +61,7 @@ SCENES = [
             Beat(2.3, "row", "10-K, FY2019", "31 Oct 2019"),
             Beat(2.7, "row", "8-K, earnings", "30 Oct 2019"),
             Beat(3.1, "row", "10-Q, Q3", "31 Jul 2019"),
-            Beat(3.7, "bad", "10-Q, Q1 2020", "hidden — filed 29 Jan 2020"),
+            Beat(3.7, "bad", "10-Q, Q1 2020", "hidden, filed 29 Jan 2020"),
             Beat(4.4, "note", "The future cannot leak in. There is no flag to turn it off."),
         ],
     ),
@@ -85,7 +85,7 @@ SCENES = [
             Beat(1.9, "rule", "Jegadeesh & Titman, 1993"),
             Beat(2.4, "row", "claimed", "1.31% per month"),
             Beat(2.9, "row", "t-statistic", "3.74"),
-            Beat(3.4, "row", "sample", "1964–1989"),
+            Beat(3.4, "row", "sample", "1964-1989"),
             Beat(4.2, "note", "Now run it yourself, on data that stops where it should."),
         ],
     ),

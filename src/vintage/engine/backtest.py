@@ -74,7 +74,7 @@ def run(
 ) -> dict[str, Any]:
     """Rank, hold, rebalance, charge costs. Returns stats plus an honesty report."""
     if prices.empty:
-        raise ValueError("No price data — nothing to backtest")
+        raise ValueError("No price data, nothing to backtest")
 
     prices = prices.sort_index().ffill()
     if start:

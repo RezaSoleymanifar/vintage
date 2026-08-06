@@ -1,4 +1,4 @@
-"""CFTC Commitments of Traders — who is positioned where, weekly and free.
+"""CFTC Commitments of Traders, who is positioned where, weekly and free.
 
 The classic free positioning dataset. Every Tuesday's open interest is broken
 out by trader class and published the following Friday afternoon, which makes
@@ -54,7 +54,7 @@ PUBLICATION_LAG_DAYS = 3          # Tuesday observation, Friday release
 
 def catalog() -> list[dict[str, Any]]:
     return [
-        {"field": f"cot:{key}", "label": f"CFTC positioning — {name}",
+        {"field": f"cot:{key}", "label": f"CFTC positioning, {name}",
          "source": SOURCE, "vintage": envelope.AS_FILED}
         for key, name in MARKETS.items()
     ]
@@ -123,5 +123,5 @@ def warnings_for() -> list[str]:
     return [
         "Positions are as of Tuesday and released the following Friday afternoon. "
         "known_at reflects that three-day lag, so a backtest cannot act on a reading "
-        "before it existed — which is the mistake this dataset invites."
+        "before it existed, which is the mistake this dataset invites."
     ]

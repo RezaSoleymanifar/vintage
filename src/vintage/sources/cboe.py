@@ -1,4 +1,4 @@
-"""CBOE volatility indices — VIX and its family, free and complete.
+"""CBOE volatility indices, VIX and its family, free and complete.
 
 VIX back to 1990, published by the exchange that computes it. Index levels are
 calculated from that session's option prices and are not revised, so `known_at`
@@ -7,7 +7,7 @@ is the session date and these rows are `AS_FILED`.
 Worth being precise about what this is. It is the *index*, not the options
 underneath it. Historical option chains are paid everywhere and remain one of
 the gaps this project does not pretend to fill. What the VIX family does give
-you, for nothing, is the term structure and the skew — enough for regime work,
+you, for nothing, is the term structure and the skew, enough for regime work,
 volatility-managed portfolios and most of what a paper means by "conditioning
 on volatility".
 

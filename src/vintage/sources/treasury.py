@@ -1,4 +1,4 @@
-"""US Treasury par yield curve — the risk-free curve, free and without a key.
+"""US Treasury par yield curve, the risk-free curve, free and without a key.
 
 Fourteen tenors from one month to thirty years, published each business day by
 the Treasury and not revised. FRED carries the same series but needs a key for

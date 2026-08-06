@@ -1,4 +1,4 @@
-"""SEC Form 25 — every delisting, dated. The survivorship fix.
+"""SEC Form 25, every delisting, dated. The survivorship fix.
 
 A universe built from currently-listed names is a universe of survivors. The
 companies that failed are not merely under-weighted, they are absent, and a
@@ -21,7 +21,7 @@ Quarterly indexes for closed quarters never change, so they cache under the
 
 What this gives you is the *event*: company name, CIK, filing date. Turning a
 CIK into the ticker it used to trade under needs a second lookup, because the
-current ticker map contains only live filers — `former_tickers` does that, one
+current ticker map contains only live filers, `former_tickers` does that, one
 company at a time.
 """
 
@@ -207,7 +207,7 @@ def warnings_for(rows: list[dict[str, Any]], as_of: str | None) -> list[str]:
         if as_of < COMPLETE_FROM:
             notes.append(
                 f"Electronic Form 25 filing only became mandatory in April 2006, so "
-                f"coverage before {COMPLETE_FROM} is partial — roughly 450 filings a "
+                f"coverage before {COMPLETE_FROM} is partial, roughly 450 filings a "
                 "year against 1,300 or more afterwards. A universe as of "
                 f"{as_of} is corrected, but not fully."
             )

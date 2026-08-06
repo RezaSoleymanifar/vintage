@@ -1,14 +1,14 @@
-"""Generate docs/index.html — a diagram-first landing page — and docs/reel.html.
+"""Generate docs/index.html (a diagram-first landing page) and docs/reel.html.
 
 The page makes one claim: Vintage federates the free, point-in-time financial
 data of the web. Three architecture diagrams carry almost all of the argument,
-so the prose can stay short. Each diagram is inline SVG with CSS-driven motion —
-no runtime JS, no libraries, sharp at any size, and a frame grabber can scrub it
+so the prose can stay short. Each diagram is inline SVG with CSS-driven motion.
+No runtime JS, no libraries, sharp at any size, and a frame grabber can scrub it
 deterministically.
 
-  1. Federation  — scattered sources, through four pipeline stages, to six verbs.
-  2. Point-in-time — an as-of wall sweeping a timeline, lighting rows as it passes.
-  3. Honesty     — 41 specs piling into a trial ledger, collapsing the Sharpe.
+  1. Federation: scattered sources, through four pipeline stages, to six verbs.
+  2. Point-in-time: an as-of wall sweeping a timeline, lighting rows as it passes.
+  3. Honesty: 41 specs piling into a trial ledger, collapsing the Sharpe.
 
 The hero terminal is the same keyframe trick, and is how assets/demo.gif is made.
 The four-scene showcase reel now lives on its own page (docs/reel.html) so the
@@ -59,7 +59,7 @@ SCRIPT: list = [
 
     Typed(3.6, "backtest 12-1 momentum on the dow 30 since 2010", typing=1.7),
     Out(5.7, "reading 30 tickers from yahoo-finance, 3,914 sessions", cls="dim", indent=1),
-    Out(6.1, "panel indexed on known_at — lookahead structurally impossible", cls="dim", indent=1),
+    Out(6.1, "panel indexed on known_at, lookahead structurally impossible", cls="dim", indent=1),
     Out(6.6, cells=[("annualized return", "14.8%"), ("volatility", "17.1%"), ("turnover cost", "−40 bps/yr")]),
     Out(7.2, cells=[("sharpe", "2.14")], cls="big"),
 
@@ -180,16 +180,36 @@ def txt(x, y, s, cls, anchor="start") -> str:
 
 # ---------------------------------------------------- diagram 1: federation
 
-TIERS = [
-    ("Regulators", 70, 118, ["SEC EDGAR XBRL", "SEC filings stream", "FINRA short volume"],
-     "XBRL JSON · index files · pipe-delimited"),
-    ("Central bank", 208, 96, ["FRED", "ALFRED vintages"],
-     "CSV · REST · 800k series"),
-    ("Academia", 324, 96, ["Ken French Library", "Open Source Asset Pricing"],
-     "zipped CSV · Google Drive"),
-    ("Markets &amp; crowd", 440, 118, ["Yahoo Finance", "Coinbase Exchange", "ApeWisdom"],
-     "chart JSON · REST · no history"),
+# Every source, as a glyph with what it actually holds. This was four grouped
+# text panels naming nine sources, which both undercounted the breadth by half
+# and buried it in prose. One orb per source shows the spread at a glance and
+# still says what each one carries.
+#   (glyph, name, what it holds, group)
+UNIVERSE = [
+    ("gov",      "SEC XBRL",       "every tagged concept",   "REGULATORS"),
+    ("ledger",   "SEC filings",    "8-K, 10-K, Form 4",      "REGULATORS"),
+    ("stack",    "SEC 13F",        "institutional holdings", "REGULATORS"),
+    ("fall",     "SEC Form 25",    "36,830 delistings",      "REGULATORS"),
+    ("scatter",  "XBRL frames",    "6,289 filers at once",   "REGULATORS"),
+    ("shield",   "FINRA",          "daily short volume",     "REGULATORS"),
+    ("wall",     "CFTC",           "weekly positioning",     "REGULATORS"),
+
+    ("coin",     "FRED",           "800k series, vintages",  "CENTRAL BANKS"),
+    ("series",   "US Treasury",    "14-tenor yield curve",   "CENTRAL BANKS"),
+    ("calendar", "ECB",            "FX rates since 1999",    "CENTRAL BANKS"),
+    ("clock",    "BLS",            "CPI, payrolls, JOLTS",   "CENTRAL BANKS"),
+    ("funnel",   "BEA",            "the national accounts",  "CENTRAL BANKS"),
+
+    ("prompt",   "Yahoo",          "daily OHLCV, decades",   "MARKETS"),
+    ("flask",    "CBOE",           "VIX and the vol family", "MARKETS"),
+    ("install",  "Coinbase",       "crypto, never restated", "MARKETS"),
+
+    ("school",   "Ken French",     "factors from July 1926", "ACADEMIA"),
+    ("zero",     "Open Source AP", "331 published claims",   "ACADEMIA"),
+    ("ask",      "ApeWisdom",      "forum mention ranks",    "ACADEMIA"),
 ]
+
+GROUP_ORDER = ["REGULATORS", "CENTRAL BANKS", "MARKETS", "ACADEMIA"]
 
 STAGES = [
     ("resolve", "AAPL &middot; 0000320193 &middot; &ldquo;Apple Inc&rdquo;",
@@ -210,18 +230,34 @@ def diagram_federation() -> str:
     p.append('<svg class="dia" viewBox="0 0 1160 600" role="img" '
              'aria-label="Scattered free data sources federated through Vintage into six verbs">')
 
-    p.append(txt(20, 44, "THE WEB &middot; FREE, PUBLIC, SCATTERED", "d-h"))
+    p.append(txt(20, 40, "THE WEB &middot; 18 FREE SOURCES", "d-h"))
     p.append(txt(380, 44, "VINTAGE &middot; THE FEDERATION LAYER", "d-h g"))
     p.append(txt(830, 44, "ONE INTERFACE", "d-h"))
 
-    # ---- left: the sources, grouped by who publishes them
-    for tier, y, h, items, foot in TIERS:
-        p.append(card(20, y, 250, h))
-        p.append(f'<rect class="d-edge" x="20" y="{y + 12}" width="2.5" height="{h - 24}" rx="2"/>')
-        p.append(txt(40, y + 24, tier.upper(), "d-ct"))
-        for j, it in enumerate(items):
-            p.append(txt(40, y + 46 + j * 20, it, "d-it"))
-        p.append(txt(40, y + h - 12, foot, "d-fn"))
+    # ---- left: every source as a glyph, grouped by who publishes it
+    # Two columns per group. Eighteen orbs stacked in one column needed a
+    # canvas half again as tall, which broke the layout this page is built
+    # around: everything on one screen, nothing scrolls.
+    y = 66
+    group_mid: dict[str, float] = {}
+    for gi, group in enumerate(GROUP_ORDER):
+        members = [u for u in UNIVERSE if u[3] == group]
+        top = y
+        p.append(txt(20, y, group, "d-ct"))
+        y += 10
+        rows = (len(members) + 1) // 2
+        for j, (glyph, name, holds, _g) in enumerate(members):
+            col, row = j % 2, j // 2
+            cx = 22 + col * 168
+            cy = y + row * 34
+            p.append(f'<g class="d-orb" transform="translate({cx},{cy})" '
+                     f'style="animation-delay:{(gi * 5 + j) * -0.37:.2f}s">'
+                     f'<circle class="d-orbring" cx="10" cy="10" r="11.5"/>'
+                     f'<g transform="translate(-2,-2)">{icon(glyph, 24)}</g></g>')
+            p.append(txt(cx + 28, cy + 9, name, "d-it"))
+            p.append(txt(cx + 28, cy + 21, holds, "d-fn"))
+        y += rows * 34 + 10
+        group_mid[group] = (top + y) / 2 - 8
 
     # ---- middle: the pipeline
     p.append('<rect class="d-pipe" x="380" y="70" width="380" height="490" rx="14"/>')
@@ -234,11 +270,11 @@ def diagram_federation() -> str:
         p.append(txt(456, y + 52, l1, "d-ss"))
         p.append(txt(456, y + 70, l2, "d-ss"))
     p.append(txt(400, 500, "one schema &middot; one key &middot; two dates per row", "d-note"))
-    p.append(txt(400, 524, "nothing hosted &middot; nothing redistributed &middot; no API keys", "d-fn"))
+    p.append(txt(400, 524, "nothing hosted &middot; nothing redistributed &middot; 16 of 18 need no key", "d-fn"))
 
     # ---- wires in
-    for i, (_t, y, h, _items, _f) in enumerate(TIERS):
-        cy = y + h / 2
+    for i, group in enumerate(GROUP_ORDER):
+        cy = group_mid[group]
         ty = 138 + i * 96
         d = f"M270 {cy:.0f} C322 {cy:.0f} 330 {ty} 380 {ty}"
         p.append(f'<path class="d-wire" d="{d}"/>')
@@ -283,7 +319,7 @@ PIT_EVENTS = [
 PIT_ROWS = [
     ("assets $338.5B", "filed 31 Oct 2019", 21.0, "ok"),
     ("Q1 2020 filed", "filed 29 Jan 2020", 38.4, "ok"),
-    ("assets $323.9B &middot; restatement", "filed 30 Oct 2020 &mdash; row 1 stays", 90.5, "warn"),
+    ("assets $323.9B &middot; restatement", "filed 30 Oct 2020, row 1 stays", 90.5, "warn"),
 ]
 
 PIT_TICKS = [(120, "Jul 2019"), (440, "Jan 2020"), (760, "Jul 2020"), (1080, "Jan 2021")]
@@ -365,7 +401,7 @@ def diagram_honesty() -> str:
         at = 4 + i * 1.35
         DIA_CSS.append(f".sp{i}{{animation:{reveal(f'spec{i}', at, HON_LOOP, 0.08)}}}")
         p.append(f'<rect class="d-spec sp{i}" x="{x}" y="{y}" width="22" height="22" rx="4"/>')
-    p.append(txt(40, 96, "41 ideas tried &mdash; every one counted", "d-fn"))
+    p.append(txt(40, 96, "41 ideas tried, every one counted", "d-fn"))
 
     # ---- middle: the ledger
     p.append(card(410, 80, 250, 150, "d-stage"))
@@ -407,7 +443,7 @@ def diagram_honesty() -> str:
 
 # ------------------------------------------------------------ coverage bars
 
-# (name, badge, coverage label, bar start %, bar end %) — 1926 on the left.
+# (name, badge, coverage label, bar start %, bar end %), 1926 on the left.
 SOURCES = [
     ("SEC EDGAR XBRL", "gov", "2009 → today", 83, 100),
     ("SEC filings stream", "gov", "1993 → today", 67, 100),
@@ -486,7 +522,7 @@ CLIENTS = [
     (
         "ChatGPT",
         "chatgpt",
-        "Settings → Connectors → Developer mode. Needs a hosted URL — "
+        "Settings → Connectors → Developer mode. Needs a hosted URL, "
         "run <code>vintage</code> behind HTTPS and point the connector at it.",
         "uvx vintage-mcp --transport streamable-http --port 8000",
     ),
@@ -496,7 +532,7 @@ CLIENTS = [
 def build_forums() -> str:
     """What the forums are actually saying, fetched while the page is built.
 
-    ApeWisdom publishes only the present — there is no history endpoint, and
+    ApeWisdom publishes only the present. There is no history endpoint, and
     nobody can hand you last Tuesday's ranking. That is the honest demo: a live
     row, stamped with the minute we read it, and a note that the only way to own
     a history of this is to start recording it.
@@ -558,11 +594,11 @@ DEEP_PAGE = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vintage — the long version</title>
-<meta name="description" content="Vintage federates the free, point-in-time financial data of the web: eighteen primary sources — SEC EDGAR and Form 13F, FRED, US Treasury, BLS, BEA, ECB, CFTC, CBOE, Ken French and more — behind one interface and six verbs. You only ever see what was public that day. No API keys, no cost.">
+<title>Vintage, the long version</title>
+<meta name="description" content="Vintage federates the free, point-in-time financial data of the web: eighteen primary sources (SEC EDGAR and Form 13F, FRED, US Treasury, BLS, BEA, ECB, CFTC, CBOE, Ken French and more) behind one interface and six verbs. You only ever see what was public that day. Sixteen of the eighteen need no key, and none of it costs anything.">
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="Vintage — the free market research terminal">
+<meta property="og:title" content="Vintage, the free market research terminal">
 <meta property="og:description" content="Vintage federates the free, point-in-time financial data of the web. Eighteen primary sources, one interface, six verbs, $0.">
 <meta property="og:url" content="https://rezasoleymanifar.github.io/vintage/">
 <meta property="og:image" content="https://rezasoleymanifar.github.io/vintage/og.png">
@@ -575,13 +611,13 @@ DEEP_PAGE = """<!doctype html>
   --bg:#0b0f16; --panel:#0d1420; --line:#1f2b3a; --grid:#161f2c;
   --ink:#e8f1ec; --dim:#5f7a8c; --green:#35e08a; --red:#ff6b5e; --amber:#ffc46b;
   --blue:#7fb3ff;
-  --mono:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{
   margin:0; background:var(--bg); color:var(--ink);
-  font-family:var(--mono); font-size:16px; line-height:1.55;
+  font-family:var(--mono); font-size:16.8px; line-height:1.58;
   background-image:linear-gradient(var(--grid) 1px,transparent 1px);
   background-size:100% 60px;
 }
@@ -648,6 +684,10 @@ h2{font-size:clamp(19px,3.4vw,26px);color:var(--ink);margin:0 0 8px;font-weight:
 .dwrap::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
 .dia{display:block;width:100%;height:auto;min-width:940px}
 .dia text{font-family:var(--mono)}
+.d-orbring{fill:rgba(53,224,138,.07);stroke:var(--green);stroke-opacity:.32;stroke-width:1.1}
+.d-orb{color:var(--green);animation:orb 4.6s ease-in-out infinite}
+@keyframes orb{0%,100%{opacity:.6}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.d-orb{animation:none}}
 .swipe{display:none;color:var(--dim);font-size:11px;margin:8px 0 0}
 @media(max-width:980px){.swipe{display:block}}
 
@@ -795,6 +835,13 @@ pre{position:relative;margin:0;background:var(--panel);border:1px solid var(--li
   border-radius:10px;padding:15px 74px 15px 16px;overflow-x:auto;
   font-size:13.5px;line-height:1.65;color:var(--green)}
 pre.one{flex:1 1 30em;padding:14px 74px 14px 16px;font-size:clamp(11.5px,2.2vw,13.5px)}
+.one{position:relative;animation:beckon 2.8s ease-in-out infinite}
+@keyframes beckon{
+  0%,100%{border-color:var(--line);box-shadow:0 0 0 0 rgba(53,224,138,0)}
+  50%{border-color:var(--green);box-shadow:0 0 0 3px rgba(53,224,138,.13),
+      0 0 26px rgba(53,224,138,.20)}}
+.one code{color:var(--green)}
+@media (prefers-reduced-motion:reduce){.one{animation:none;border-color:var(--green)}}
 .copy{position:absolute;top:10px;right:10px;font-family:var(--mono);font-size:11.5px;
   letter-spacing:.1em;color:var(--dim);background:#0a111a;border:1px solid var(--line);
   border-radius:6px;padding:5px 10px;cursor:pointer}
@@ -825,7 +872,7 @@ __DIACSS__
 <div class="wrap">
 
   <header>
-    <p class="eyebrow">MCP server &middot; open source &middot; no API keys</p>
+    <p class="eyebrow">MCP server &middot; open source &middot; 16 of 18 sources need no key</p>
     <h1>VINTAGE</h1>
     <p class="sub">Free market research terminal</p>
 
@@ -834,16 +881,16 @@ __DIACSS__
     <p class="gloss"><b>Point-in-time</b> means you only ever see what the world could actually see
     that day. No number that was revised, restated or listed years later leaks backwards into a test
     of the past.</p>
-    <p class="pitch">There is no free lunch in market data — the real terminals cost more than a car.
+    <p class="pitch">There is no free lunch in market data, the real terminals cost more than a car.
     But most of what they sell is <b>already public and already free</b>, just scattered across a
     dozen government, university and exchange sites in ten incompatible formats, none of them
     keeping track of when anything became known.
     <b>Vintage is the closest thing to a free terminal</b>: one pipeline, one schema, one interface.</p>
 
     <figure class="arch">
-      <img src="architecture.svg" width="1280" height="700" alt="Eighteen free
-      financial data sources &mdash; SEC EDGAR, Form 13F, FRED, ECB, US Treasury, BLS, BEA,
-      CFTC, CBOE, FINRA, Coinbase, Ken French and more &mdash; federated behind one interface,
+      <img src="architecture.svg" width="1280" height="880" alt="Eighteen free
+      financial data sources: SEC EDGAR, Form 13F, FRED, ECB, US Treasury, BLS, BEA,
+      CFTC, CBOE, FINRA, Coinbase, Ken French and more, federated behind one interface,
       every row carrying both the date it describes and the date it became public">
       <figcaption>Eighteen sources scattered across the internet, one interface,
       every value dated twice.</figcaption>
@@ -851,7 +898,7 @@ __DIACSS__
 
     <div class="cta">
       <pre class="one"><code>claude mcp add vintage -s user -- uvx vintage-mcp</code><button class="copy" aria-label="Copy">copy</button></pre>
-      <p class="ctanote">Free forever &middot; no key &middot; no account</p>
+      <p class="ctanote">Free forever &middot; no account &middot; a free key only for FRED and BEA</p>
     </div>
 
     <div class="stats">
@@ -867,7 +914,7 @@ __DIACSS__
   <section>
     <h2>How the federation works</h2>
     <p class="lede">Filings from the regulator that receives them, macro from the central bank that
-    publishes it, factors from the university that computes them &mdash; then four stages that make
+    publishes it, factors from the university that computes them, then four stages that make
     them one dataset. <span class="hl">Vintage hosts none of it.</span></p>
     <div class="dwrap">
       __DIA1__
@@ -916,12 +963,12 @@ __DIACSS__
       <span class="paper off"><b>planned</b> · PBO via CSCV</span>
       <span class="paper off"><b>planned</b> · purged k-fold + embargo</span>
       <span class="paper off"><b>planned</b> · minimum backtest length</span>
-      <span class="paper off"><b>planned</b> · Newey–West</span>
+      <span class="paper off"><b>planned</b> · Newey-West</span>
       <span class="paper off"><b>planned</b> · square-root impact</span>
     </div>
     <p class="after">Execution realism is a different problem, already solved by
     <a href="https://www.quantconnect.com/lean">LEAN</a> and
-    <a href="https://nautilustrader.io/">Nautilus Trader</a> — Vintage runs before that, where most
+    <a href="https://nautilustrader.io/">Nautilus Trader</a>. Vintage runs before that, where most
     ideas should die. Citations are references, not endorsements; anything marked planned is not in
     the code yet, and the <code>backtest</code> response says so at runtime.</p>
   </section>
@@ -931,7 +978,7 @@ __DIACSS__
     <div class="term">
       <div class="bar">
         <span class="tdot"></span><span class="tdot"></span><span class="tdot"></span>
-        <span class="who">claude — vintage</span>
+        <span class="who">claude, vintage</span>
       </div>
       <div class="screen">
         __ROWS__
@@ -944,7 +991,7 @@ __DIACSS__
     <h2>What the forums are saying, right now</h2>
     <p class="lede">Fetched while this page was built. ApeWisdom ranks mention counts across roughly
     fifteen stock and crypto subreddits, and it publishes <span class="hl">only the present</span>
-    &mdash; there is no history endpoint, and nobody can sell you last Tuesday's ranking honestly,
+. There is no history endpoint, and nobody can sell you last Tuesday's ranking honestly,
     because anyone claiming years of it re-scored old posts with today's model.</p>
     __FORUMS__
     <p class="after">This is why the row is stamped rather than dated. Backtestable history starts the
@@ -960,7 +1007,7 @@ __DIACSS__
     __PANES__
     <p class="after">Needs <a href="https://docs.astral.sh/uv/getting-started/installation/">uv</a>.
     Prefer pip? <code>pip install vintage-mcp</code>, then use <code>vintage</code> as the command.
-    No API keys required for anything above.</p>
+    Sixteen of the eighteen sources need no key. FRED and BEA take a free one.</p>
   </section>
 
   <footer>
@@ -971,7 +1018,7 @@ __DIACSS__
       <a href="https://github.com/RezaSoleymanifar/vintage/blob/main/DATA_SOURCES.md">Data landscape</a>
       <a href="https://github.com/RezaSoleymanifar/vintage/blob/main/DESIGN.md">Design</a>
     </div>
-    <p>MIT licensed. Vintage redistributes no data — SEC EDGAR, FRED, Yahoo Finance and the
+    <p>MIT licensed. Vintage redistributes no data, SEC EDGAR, FRED, Yahoo Finance and the
     Ken French library each keep their own terms. Counts current as of August 2026.
     Nothing here is investment advice.</p>
   </footer>
@@ -1019,12 +1066,12 @@ EXPERIMENT: list = [
     Out(2.1, "connected · sec · fred · dartmouth · openap · coinbase · finra", cls="ok"),
 
     Typed(3.0, "replicate jegadeesh-titman momentum on the dow since 2010", typing=1.8),
-    Out(5.2, "openap:Mom12m — the paper claimed 1.31%/month, t = 3.74, sample 1964–1989",
+    Out(5.2, "openap:Mom12m, the paper claimed 1.31%/month, t = 3.74, sample 1964-1989",
         cls="dim", indent=1),
     Out(5.7, "reading 30 tickers, 4,113 sessions · panel indexed on known_at", cls="dim", indent=1),
     Out(6.3, cells=[("annual return", "12.1%"), ("volatility", "19.4%"), ("max drawdown", "−29.5%")]),
     Out(6.9, cells=[("sharpe", "0.688")], cls="big"),
-    Out(7.5, "WBA excluded — no price history. it delisted.", cls="kicker", indent=1),
+    Out(7.5, "WBA excluded, no price history. it delisted.", cls="kicker", indent=1),
 
     Typed(8.6, "is it decaying?", typing=0.9),
     Out(10.1, cells=[("first half", "0.883"), ("second half", "0.566")], cls="mid"),
@@ -1043,7 +1090,7 @@ EXPERIMENT: list = [
 
 
 def build_session(script: list, loop: float, prefix: str) -> tuple[str, str]:
-    """The keyframe terminal, but reusable — `prefix` keeps two of them apart."""
+    """The keyframe terminal, but reusable, `prefix` keeps two of them apart."""
     rows: list[str] = []
     css: list[str] = []
     typed_times = [e.at for e in script if isinstance(e, Typed)]
@@ -1117,11 +1164,113 @@ def diagram_coverage() -> str:
         x = 40 + i * 184
         p.append(f'<rect class="d-verb" x="{x}" y="492" width="170" height="54" rx="10"/>')
         p.append(txt(x + 85, 524, v, "d-vt", "middle"))
-    p.append(txt(40, 578, "source is a parameter, never a new tool — twenty more sources adds zero verbs",
+    p.append(txt(40, 578, "source is a parameter, never a new tool, twenty more sources adds zero verbs",
                  "d-fn"))
 
     p.append("</svg>")
     return ("\n      ").join(p)
+
+
+# --------------------------------------------------------------------- icons
+# Drawn on one 24-unit grid, stroked in the current colour, so a glyph inherits
+# whatever the surrounding text is doing. Words the reader has to parse are the
+# expensive part of a landing page; these carry the same meaning for free.
+
+GLYPHS = {
+    "stack":    '<path d="M12 3 3 7.5 12 12l9-4.5Z"/><path d="M3 12.5 12 17l9-4.5"/>'
+                '<path d="M3 17 12 21.5 21 17"/>',
+    "clock":    '<circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.4l3.4 2"/>',
+    "prompt":   '<rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/>'
+                '<path d="M6.5 9.5 9.5 12l-3 2.5"/><path d="M12.5 15h5"/>',
+    "zero":     '<circle cx="12" cy="12" r="8.5"/><path d="M8 18.5 16 5.5"/>',
+    "series":   '<path d="M3 20V4"/><path d="M3 20h18"/>'
+                '<path d="M6 15.5 10 10l3.5 3.5L20 6"/>',
+    "flask":    '<path d="M9.5 3v6.2L4.7 17.4A2 2 0 0 0 6.4 20.5h11.2a2 2 0 0 0 1.7-3.1L14.5 9.2V3"/>'
+                '<path d="M8.5 3h7"/><path d="M7.4 14h9.2"/>',
+    "install":  '<path d="M12 3.5v11"/><path d="M8 11l4 3.5 4-3.5"/>'
+                '<path d="M4.5 18.5h15"/>',
+    "ask":      '<path d="M20.5 14.5a2 2 0 0 1-2 2H8l-4.5 4V5.5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2Z"/>'
+                '<path d="M8 8.5h8"/><path d="M8 12h5"/>',
+    "shield":   '<path d="M12 3 5 6v5.5c0 4.3 2.9 7.6 7 9.5 4.1-1.9 7-5.2 7-9.5V6Z"/>'
+                '<path d="M9 12l2.2 2.2L15.5 10"/>',
+    "scatter":  '<circle cx="5.5" cy="7" r="1.8"/><circle cx="12" cy="4.8" r="1.8"/>'
+                '<circle cx="18.5" cy="8.5" r="1.8"/><circle cx="7" cy="16.5" r="1.8"/>'
+                '<circle cx="16" cy="18" r="1.8"/><circle cx="11.5" cy="11.5" r="1.8"/>',
+    "funnel":   '<path d="M3.5 4.5h17l-6.6 7.8v6.4l-3.8 2.3v-8.7Z"/>',
+    "calendar": '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/>'
+                '<path d="M3.5 10h17"/><path d="M8 3v4"/><path d="M16 3v4"/>'
+                '<path d="M11 14.5h2"/>',
+    "gov":      '<path d="M3.5 20.5h17"/><path d="M12 3 3.5 7.5h17Z"/>'
+                '<path d="M6.5 10.5v7"/><path d="M11 10.5v7"/><path d="M15.5 10.5v7"/>'
+                '<path d="M20 10.5v7"/>',
+    "school":   '<path d="M12 3.5 2.5 8 12 12.5 21.5 8Z"/><path d="M6.5 10.2v5.3c0 1.9 2.5 3.2 5.5 3.2'
+                's5.5-1.3 5.5-3.2v-5.3"/><path d="M21.5 8v5"/>',
+    "wall":     '<path d="M12 3.5v17"/><path d="M4 7.5h5"/><path d="M4 12h5"/><path d="M4 16.5h5"/>'
+                '<path d="M15.5 9.5h4.5"/><path d="M15.5 14.5h4.5"/>',
+    "ledger":   '<rect x="4" y="3.5" width="16" height="17" rx="2.2"/><path d="M8 8h8"/>'
+                '<path d="M8 12h8"/><path d="M8 16h4.5"/>',
+    "fall":     '<path d="M3 5.5 12 14l3.5-3.5L21 16"/><path d="M21 11v5h-5"/>',
+    "coin":     '<circle cx="12" cy="12" r="8.5"/><path d="M12 7v10"/>'
+                '<path d="M14.6 9.2A2.8 2.8 0 0 0 12 8c-1.7 0-2.8.9-2.8 2s1 1.8 2.8 2 2.8.8 2.8 2'
+                '-1.1 2-2.8 2a2.8 2.8 0 0 1-2.6-1.2"/>',
+}
+
+
+def icon(name: str, size: int = 15) -> str:
+    """One glyph, inheriting the colour and the line height around it."""
+    return (f'<svg class="ic" viewBox="0 0 24 24" width="{size}" height="{size}" '
+            f'fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" '
+            f'stroke-linejoin="round" aria-hidden="true">{GLYPHS[name]}</svg>')
+
+
+# The rail used to say all of this in sentences. Six numbers say it faster.
+TILES = [
+    ("stack", "18", "free sources"),
+    ("clock", "100", "years deep"),
+    ("prompt", "6", "verbs, whole API"),
+    ("zero", "$0", "forever"),
+    ("series", "800k", "macro series"),
+    ("flask", "331", "published anomalies"),
+]
+
+STEPS = [
+    ("install", "install", "one command"),
+    ("ask", "ask", "plain English"),
+    ("shield", "check", "honesty report"),
+]
+
+# One line of evidence per panel, in place of the paragraph that was there.
+FACTS = {
+    "__F1__": [("gov", "regulators and central banks"),
+               ("school", "universities, not resellers"),
+               ("funnel", "one schema out")],
+    "__F2__": [("calendar", "July 1926 to this morning"),
+               ("prompt", "a source is a parameter"),
+               ("stack", "more sources, same six verbs")],
+    "__F3__": [("wall", "nothing crosses the day marker"),
+               ("calendar", "corrections add a row"),
+               ("shield", "no honest date, no silent guess")],
+    "__F4__": [("ledger", "41 specs counted this session"),
+               ("fall", "Sharpe 2.14 deflates to 0.09"),
+               ("prompt", "every number reproducible")],
+}
+
+
+def build_tiles() -> str:
+    return "\n      ".join(
+        f'<div class="tile">{icon(g, 16)}<b>{n}</b><span>{w}</span></div>'
+        for g, n, w in TILES)
+
+
+def build_steps() -> str:
+    return "\n      ".join(
+        f'<div class="step">{icon(g, 15)}<b>{n}</b><span>{w}</span></div>'
+        for g, n, w in STEPS)
+
+
+def build_facts(key: str) -> str:
+    return ('<div class="facts">' + "".join(
+        f'<span class="fact">{icon(g, 14)}{w}</span>' for g, w in FACTS[key]) + '</div>')
 
 
 ONE_PAGE = """<!doctype html>
@@ -1129,11 +1278,11 @@ ONE_PAGE = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vintage — the free market research terminal</title>
-<meta name="description" content="Vintage federates the free, point-in-time financial data of the web. Nine primary sources, one interface, six verbs, $0.">
+<title>Vintage, the free market research terminal</title>
+<meta name="description" content="Vintage federates the free, point-in-time financial data of the web. Eighteen sources, one interface, six verbs, $0.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Vintage — the free market research terminal">
-<meta property="og:description" content="Vintage federates the free, point-in-time financial data of the web. Nine primary sources, one interface, six verbs, $0.">
+<meta property="og:title" content="Vintage, the free market research terminal">
+<meta property="og:description" content="Vintage federates the free, point-in-time financial data of the web. Eighteen sources, one interface, six verbs, $0.">
 <meta property="og:url" content="https://rezasoleymanifar.github.io/vintage/">
 <meta property="og:image" content="https://rezasoleymanifar.github.io/vintage/og.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -1142,7 +1291,7 @@ ONE_PAGE = """<!doctype html>
 :root{
   --bg:#080b11; --panel:#0c121c; --line:#1c2735; --ink:#e9f1ee; --dim:#657f92;
   --green:#2fd587; --red:#ff6b5e; --amber:#f2c076; --blue:#7fb3ff;
-  --mono:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -1171,12 +1320,28 @@ a:hover{text-decoration:underline}
 .claim .g{color:var(--green)}
 .sub{color:var(--dim);font-size:clamp(11px,1.55vh,13.5px);line-height:1.55;margin:0}
 
-.start{margin:0;padding:0;list-style:none;display:grid;gap:clamp(7px,1.2vh,13px)}
-.start li{display:grid;grid-template-columns:22px 1fr;gap:11px;align-items:start}
-.start b{width:22px;height:22px;border-radius:50%;border:1px solid rgba(47,213,135,.45);
-  color:var(--green);font-size:11px;display:grid;place-items:center;font-weight:700}
-.start span{font-size:clamp(11px,1.5vh,13.5px);line-height:1.45;color:var(--dim)}
-.start span i{font-style:normal;color:var(--ink);font-weight:700}
+/* six numbers where six sentences used to be */
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.tile{background:var(--panel);padding:clamp(8px,1.35vh,13px) 9px;display:grid;
+  justify-items:center;gap:2px;text-align:center}
+.tile .ic{color:var(--green);opacity:.85}
+.tile b{color:var(--ink);font-size:clamp(13px,2vh,18px);line-height:1.1;font-weight:700}
+.tile span{color:var(--dim);font-size:clamp(8.5px,1.15vh,10.5px);line-height:1.25;
+  letter-spacing:.04em}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.step{display:grid;justify-items:center;gap:2px;text-align:center;
+  font-size:clamp(9px,1.2vh,11px)}
+.step .ic{color:var(--green);opacity:.8}
+.step b{color:var(--ink);font-weight:700;letter-spacing:.03em}
+.step span{color:var(--dim)}
+
+/* one line of evidence per panel, icon first */
+.facts{display:flex;flex-wrap:wrap;gap:7px 14px;margin:0 0 clamp(8px,1.3vh,14px)}
+.fact{display:inline-flex;align-items:center;gap:6px;color:var(--dim);
+  font-size:clamp(9.5px,1.32vh,12px);line-height:1.3}
+.fact .ic{color:var(--green);opacity:.8;flex:none}
 
 .cmd{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:9px;
   padding:11px 13px 11px 13px;color:var(--green);line-height:1.6;
@@ -1212,6 +1377,10 @@ a:hover{text-decoration:underline}
 .pnote b{color:var(--ink)}
 .dia{flex:1;min-height:0;width:100%;height:100%}
 .dia text{font-family:var(--mono)}
+.d-orbring{fill:rgba(53,224,138,.07);stroke:var(--green);stroke-opacity:.32;stroke-width:1.1}
+.d-orb{color:var(--green);animation:orb 4.6s ease-in-out infinite}
+@keyframes orb{0%,100%{opacity:.6}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.d-orb{animation:none}}
 
 /* the terminal panel */
 .term{flex:0 1 auto;min-height:0;max-height:100%;background:var(--panel);
@@ -1299,7 +1468,7 @@ a:hover{text-decoration:underline}
   .d-future,.pit-wall{display:none}
 }
 
-/* a phone or a short window cannot be one screen — let those scroll */
+/* a phone or a short window cannot be one screen, let those scroll */
 @media(max-width:1039px),(max-height:639px){
   body{overflow:auto}
   .shell{height:auto}
@@ -1321,23 +1490,24 @@ __ONECSS__
 
     <p class="claim">Vintage <span class="g">federates the free, point-in-time financial data of
     the web</span>.</p>
-    <p class="sub">Nine primary sources &mdash; the SEC, the St.&nbsp;Louis Fed, Dartmouth &mdash;
-    behind one interface. You only ever see what was public on the day you are asking about.</p>
+    <p class="sub">You only ever see what was public on the day you are asking about.</p>
 
-    <ol class="start">
-      <li><b>1</b><span><i>Add it.</i> One command, nothing to clone.</span></li>
-      <li><b>2</b><span><i>Ask in plain English.</i> No field names, no keys, no account.</span></li>
-      <li><b>3</b><span><i>Read the honesty report</i> before you believe any Sharpe.</span></li>
-    </ol>
+    <div class="tiles">
+      __TILES__
+    </div>
 
     <div class="cmd"><code>claude mcp add vintage -s user -- uvx vintage-mcp</code><button class="copy" aria-label="Copy">copy</button></div>
+
+    <div class="steps">
+      __STEPS__
+    </div>
 
     <div class="foot">
       <a href="https://github.com/RezaSoleymanifar/vintage">GitHub</a>
       <a href="https://pypi.org/project/vintage-mcp/">PyPI</a>
       <a href="deep.html">The long version</a>
       <a href="reel.html">Demo reel</a>
-      <span>MIT &middot; $0 &middot; no keys</span>
+      <span>MIT &middot; $0 &middot; 16 of 18 sources need no key</span>
     </div>
   </aside>
 
@@ -1346,34 +1516,30 @@ __ONECSS__
     <div class="panels" id="panels">
 
       <section class="panel is-on" data-dwell="10">
-        <h2 class="ptitle">The good data is already free &mdash; it is just scattered.</h2>
-        <p class="pnote">Government, university and exchange sites, ten incompatible formats, none of
-        them tracking when anything became known. <b>Vintage makes them one dataset.</b></p>
+        <h2 class="ptitle">The good data is already free. It is just scattered.</h2>
+        __F1__
         __DIA1__
       </section>
 
       <section class="panel" data-dwell="10">
         <h2 class="ptitle">A century of history, and six verbs that reach all of it.</h2>
-        <p class="pnote">July 1926 to this morning. <b>Source is a parameter, never a new tool</b>
-        &mdash; twenty more sources would still be six verbs.</p>
+        __F2__
         __DIA2__
       </section>
 
       <section class="panel" data-dwell="12">
         <h2 class="ptitle">Point-in-time, in one picture.</h2>
-        <p class="pnote">Watch the day-marker sweep. A fact enters your backtest only once it was
-        genuinely public, and <b>a correction adds a row instead of erasing one</b>.</p>
+        __F3__
         __DIA3__
       </section>
 
       <section class="panel" data-dwell="23">
-        <h2 class="ptitle">A real experiment: does Jegadeesh-Titman momentum still work?</h2>
-        <p class="pnote">Every number below came out of Vintage and is reproducible with these
-        commands. <b>Nothing here is illustrative.</b></p>
+        <h2 class="ptitle">Does Jegadeesh-Titman momentum still work?</h2>
+        __F4__
         <div class="term">
           <div class="bar">
             <span class="tdot"></span><span class="tdot"></span><span class="tdot"></span>
-            <span class="who">claude &mdash; vintage</span>
+            <span class="who">claude, vintage</span>
           </div>
           <div class="screen">
         __EXPROWS__
@@ -1454,13 +1620,13 @@ REEL_PAGE = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vintage — demo reel</title>
+<title>Vintage, demo reel</title>
 <meta name="robots" content="noindex">
 <style>
 :root{
   --bg:#0b0f16; --panel:#0d1420; --line:#1f2b3a;
   --ink:#e8f1ec; --dim:#5f7a8c; --green:#35e08a; --red:#ff6b5e; --amber:#ffc46b;
-  --mono:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono)}
@@ -1473,7 +1639,7 @@ __REELCSS__
 </head>
 <body>
 <div class="wrap">
-  <h1>Vintage — demo reel &middot; <a href="./">back to the site</a></h1>
+  <h1>Vintage, demo reel &middot; <a href="./">back to the site</a></h1>
   <div class="reel">__REEL__</div>
 </div>
 </body>
@@ -1492,16 +1658,20 @@ def main() -> None:
     cover = diagram_coverage()
     diacss = "\n".join(DIA_CSS)
 
-    # index.html — one screen, never scrolls, panels advance on a timer.
+    # index.html, one screen, never scrolls, panels advance on a timer.
     one = (
         ONE_PAGE.replace("__DIA1__", dia1)
         .replace("__DIA2__", cover)
         .replace("__DIA3__", dia2)
         .replace("__EXPROWS__", exp_rows)
+        .replace("__TILES__", build_tiles())
+        .replace("__STEPS__", build_steps())
         .replace("__ONECSS__", diacss + "\n" + exp_anim)
     )
+    for key in FACTS:
+        one = one.replace(key, build_facts(key))
 
-    # deep.html — the long scrolling argument, for people who want it.
+    # deep.html, the long scrolling argument, for people who want it.
     deep = (
         DEEP_PAGE.replace("__ROWS__", rows)
         .replace("__DIA1__", dia1)

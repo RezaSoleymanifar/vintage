@@ -1,4 +1,4 @@
-"""ApeWisdom — how often retail forums are talking about each ticker.
+"""ApeWisdom, how often retail forums are talking about each ticker.
 
 Free, no key, ~15 stock and crypto subreddits plus a 4chan /biz beta.
 
@@ -9,7 +9,7 @@ a model built later, which is a measurement contaminated by hindsight.
 
 So `known_at` here is the moment Vintage fetched the row, not a date the
 upstream asserts. That is the honest stamp, and it means a snapshot taken
-today is genuinely point-in-time a year from now — which is the only way a
+today is genuinely point-in-time a year from now, which is the only way a
 sentiment history can be trustworthy. Backtestable history starts the day
 you begin recording, and the response says so rather than implying depth
 that does not exist.
@@ -43,7 +43,7 @@ def catalog() -> list[dict[str, Any]]:
     return [
         {
             "field": f"ape:{key}",
-            "label": f"Forum mention ranks — {label}",
+            "label": f"Forum mention ranks, {label}",
             "source": SOURCE,
             "vintage": "observed-at-fetch",
         }
@@ -55,7 +55,7 @@ async def mentions(scope: str = "all-stocks", limit: int = 100) -> list[dict[str
     """Current mention ranks for `scope`.
 
     Rows carry `mentions_24h_ago` and `rank_24h_ago` because ApeWisdom returns
-    them — that one-day delta is the only history the API offers, and change in
+    them. That one-day delta is the only history the API offers, and change in
     attention is usually more interesting than its level.
     """
     key = scope.strip().lower()
@@ -121,7 +121,7 @@ def _delta(now: Any, before: Any) -> float | None:
 
 def warnings_for(rows: list[dict[str, Any]]) -> list[str]:
     return [
-        "ApeWisdom has no history endpoint — this is a snapshot of right now, "
+        "ApeWisdom has no history endpoint. This is a snapshot of right now, "
         f"stamped known_at={rows[0]['known_at'] if rows else 'n/a'}. Backtestable "
         "history begins the day you start recording it. Any vendor selling you "
         "years of 'historical sentiment' built it by re-scoring old posts with a "

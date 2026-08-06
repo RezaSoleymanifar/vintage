@@ -1,4 +1,4 @@
-"""Bureau of Labor Statistics — CPI, employment, wages, straight from the source.
+"""Bureau of Labor Statistics, CPI, employment, wages, straight from the source.
 
 FRED mirrors the headline BLS series, but only the headline ones, and it needs a
 key. BLS itself is keyless and carries the detail underneath: CPI broken out to
@@ -158,7 +158,7 @@ async def series(series_id: str, *, start: str | None = None,
     if not points:
         raise SourceError(
             f"BLS has no data for {sid!r} in that window. Series ids are structured, "
-            "not guessable — browse them at https://www.bls.gov/help/hlpforma.htm."
+            "not guessable, browse them at https://www.bls.gov/help/hlpforma.htm."
         )
 
     rows = []
@@ -221,14 +221,14 @@ def warnings_for(series_id: str, rows: list[dict[str, Any]]) -> list[str]:
     notes = [
         "BLS ships the value but not its release date, so these rows carry no known_at "
         "and cannot be filtered point-in-time. Seasonally adjusted series are revised "
-        "every year. For a first-release CPI or payrolls figure use fred: — ALFRED has "
+        "every year. For a first-release CPI or payrolls figure use fred:, ALFRED has "
         "the vintages and this endpoint does not."
     ]
     annual = sum(1 for r in rows if r.get("frequency") == "annual")
     if annual:
         notes.append(
             f"{annual} row(s) are annual averages that BLS files as period M13/Q05/A01, "
-            "not monthly prints. They are labelled `frequency: annual` — summing them "
+            "not monthly prints. They are labelled `frequency: annual`, summing them "
             "with the monthly rows counts the year twice."
         )
     if not has_key():

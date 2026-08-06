@@ -4,7 +4,7 @@ A conversational backtester is an overfitting machine unless it counts how
 many times you asked. This module keeps that count for the session and
 deflates the Sharpe accordingly.
 
-Deflated Sharpe follows Bailey & Lopez de Prado (2014). No scipy — the normal
+Deflated Sharpe follows Bailey & Lopez de Prado (2014). No scipy, the normal
 CDF and its inverse are implemented directly.
 """
 
@@ -119,7 +119,7 @@ def deflated_sharpe(
         "trials_considered": trials,
         "verdict": _verdict(probability, trials),
         "note": (
-            "Sharpe figures in this block are per observation, not annualized — "
+            "Sharpe figures in this block are per observation, not annualized, "
             "that is the frequency the deflation is defined at."
         ),
     }
@@ -129,7 +129,7 @@ def _verdict(probability: float, trials: int) -> str:
     if probability >= 0.95:
         return "survives multiple-testing adjustment"
     if probability >= 0.90:
-        return "marginal — would not survive a stricter trial count"
+        return "marginal, would not survive a stricter trial count"
     if trials > 1:
         return (
             f"does not survive. After {trials} trials this session, a Sharpe this "

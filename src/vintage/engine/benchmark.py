@@ -25,8 +25,8 @@ def compare(
 ) -> dict[str, Any]:
     """Correlations against each factor, plus an OLS attribution.
 
-    Returns alpha, betas, R-squared, and the single most correlated factor —
-    which is usually the honest answer to "what did I actually build?"
+    Returns alpha, betas, R-squared, and the single most correlated factor.
+    Which is usually the honest answer to "what did I actually build?"
     """
     monthly = _to_monthly(strategy).dropna()
     factors = factors.copy()

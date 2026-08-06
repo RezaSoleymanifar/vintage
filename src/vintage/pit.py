@@ -2,7 +2,7 @@
 
 An adjusted close is not a fact about the past, it is a fact about today. Every
 split and dividend since rewrites it, so a series pulled now shows Apple near
-$2 in 2006 — a number no screen ever displayed and no order was ever filled at.
+$2 in 2006. A number no screen ever displayed and no order was ever filled at.
 Backtests built on it inherit a subtle look-ahead, because the adjustment
 encodes corporate actions the trader had not seen yet.
 

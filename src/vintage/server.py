@@ -1,4 +1,4 @@
-"""Vintage — six verbs over every free data source.
+"""Vintage, six verbs over every free data source.
 
 Adding a source adds zero tools. The model learns six verbs once and the
 breadth arrives through `discover`.
@@ -31,13 +31,13 @@ mcp = MCPServer(
         "rows whose known_at precedes the trade date, and that is enforced "
         "structurally rather than by a flag.\n\n"
         "Six verbs: resolve, discover, fetch, events, backtest, benchmark. "
-        "Source is a parameter, never a separate tool. Fields are prefixed — "
-        "`us-gaap:Assets`, `fred:CPIAUCSL`, `13f:value` — and `capabilities` "
+        "Source is a parameter, never a separate tool. Fields are prefixed, "
+        "`us-gaap:Assets`, `fred:CPIAUCSL`, `13f:value`, and `capabilities` "
         "returns every prefix with the arguments it needs and an example that "
         "runs as written. Call it once at the start of a session instead of "
         "guessing field names; `discover` searches within it.\n\n"
         "Responses carry `warnings` and `suggested_next`. Surface warnings to "
-        "the user — a restated figure or a missing delisted name is usually the "
+        "the user. A restated figure or a missing delisted name is usually the "
         "most important thing in the answer. Follow suggested_next when it "
         "would deepen the analysis.\n\n"
         "Backtesting conversationally is an overfitting risk. Every backtest "
@@ -55,7 +55,7 @@ _runs: dict[str, pd.Series] = {}
 # cold agent knows the shape of a session before it makes its first call.
 WORKFLOW = [
     {"step": 1, "verb": "capabilities",
-     "why": "learn the field grammar once — every prefix, its arguments, an example"},
+     "why": "learn the field grammar once, every prefix, its arguments, an example"},
     {"step": 2, "verb": "resolve",
      "why": "turn whatever the user said into the entity key the other verbs accept"},
     {"step": 3, "verb": "discover",
@@ -63,7 +63,7 @@ WORKFLOW = [
     {"step": 4, "verb": "fetch",
      "why": "pull the rows, with `as_of` if the question is about a past date"},
     {"step": 5, "verb": "events",
-     "why": "when the question is about timing rather than values — what was filed, and when"},
+     "why": "when the question is about timing rather than values, what was filed, and when"},
     {"step": 6, "verb": "backtest",
      "why": "cross-sectional signal to returns, costs charged, honesty report attached"},
     {"step": 7, "verb": "benchmark",
@@ -102,7 +102,7 @@ def _capability_payload() -> dict[str, Any]:
     caps = registry.capabilities()
     return {
         "verbs": WORKFLOW,
-        "field_grammar": "prefix:name — e.g. us-gaap:Assets, fred:CPIAUCSL, 13f:value",
+        "field_grammar": "prefix:name, e.g. us-gaap:Assets, fred:CPIAUCSL, 13f:value",
         "fields": caps,
         "entity_required": sorted(c["prefix"] for c in caps if c["needs_entity"]),
         "point_in_time_enforceable": sorted(
@@ -122,7 +122,7 @@ async def capabilities() -> str:
 
     Call this first. It returns every field prefix, whether it needs an
     `entity`, whether `as_of` can be enforced on it, which ones need a key,
-    and an example call per prefix that runs as written — so field names never
+    and an example call per prefix that runs as written, so field names never
     have to be guessed. `discover` searches inside this surface.
     """
     return envelope.respond(
@@ -207,7 +207,7 @@ async def resolve(identifier: str) -> str:
 async def discover(query: str, entity: str | None = None, limit: int = 25) -> str:
     """Search every source's catalog for fields matching a plain-English query.
 
-    This is how breadth is reached — there is no per-source tool. With
+    This is how breadth is reached. There is no per-source tool. With
     `entity` set, it also searches that company's reported XBRL concepts,
     which is the reliable way to find the exact field name for fundamentals.
     """
@@ -304,7 +304,7 @@ async def fetch(
         if source == "french":
             rows = await french.load(field.split(":", 1)[1])
         elif source == "frames":
-            # frame:us-gaap/Assets/CY2023Q1I  — taxonomy/tag/period, unit optional
+            # frame:us-gaap/Assets/CY2023Q1I, taxonomy/tag/period, unit optional
             parts = field.split(":", 1)[1].split("/")
             if len(parts) < 3:
                 return envelope.fail(
@@ -341,7 +341,7 @@ async def fetch(
             warnings += bea.warnings_for(spec, rows)
         elif source == "delistings":
             # Bulk history: one scan of EDGAR's quarterly indexes, then cached.
-            # `as_of` keeps its usual meaning here — delistings already public
+            # `as_of` keeps its usual meaning here, delistings already public
             # on that date. Inverting it to mean "still listed then" would have
             # made one verb mean two opposite things depending on the field.
             rows = delistings.load()
@@ -403,7 +403,7 @@ async def fetch(
             # than a value, so `events` owns it. Say that instead of failing.
             return envelope.fail(
                 "fetch",
-                f"{field!r} is a filing, not a value — `events` returns the filing "
+                f"{field!r} is a filing, not a value, `events` returns the filing "
                 "stream with its exact public timestamps.",
                 did_you_mean=[registry.capability_for(field)],
                 suggested_next=[
@@ -434,7 +434,7 @@ async def fetch(
     rows = envelope.visible_at(rows, as_of)
     if as_of and before != len(rows):
         warnings.append(
-            f"{before - len(rows)} row(s) hidden — they were not public on {as_of}."
+            f"{before - len(rows)} row(s) hidden. They were not public on {as_of}."
         )
 
     warnings.extend(envelope.warn_unknown_vintage(rows))
@@ -485,7 +485,7 @@ def _fetch_next(field: str, entity: str | None) -> list[dict[str, Any]]:
 async def events(entity: str, limit: int = 40, as_of: str | None = None) -> str:
     """Timeline of what happened to an entity, with exact public timestamps.
 
-    Currently the SEC filing stream — 8-K material events, 10-K/10-Q, Form 4
+    Currently the SEC filing stream, 8-K material events, 10-K/10-Q, Form 4
     insider transactions, 13D/G stakes. Every row carries the minute it became
     public, which is what makes event studies possible.
     """
@@ -533,8 +533,8 @@ async def backtest(
     date. Costs are always charged on turnover; there is no zero-cost mode.
 
     The result includes a deflated Sharpe that accounts for how many specs
-    have been tried this session. Always report it alongside the raw Sharpe —
-    a conversational backtester is an overfitting machine without it.
+    have been tried this session. Always report it alongside the raw Sharpe.
+    A conversational backtester is an overfitting machine without it.
 
     Signals: momentum_12_1, momentum_6_1, reversal_1m, low_volatility, trend_200d.
     """
@@ -549,7 +549,7 @@ async def backtest(
         )
 
     # Adjusted close: splits and dividends folded in, which is what a
-    # total-return backtest needs. Fetched concurrently — the per-host throttle
+    # total-return backtest needs. Fetched concurrently, the per-host throttle
     # in http.py still paces the requests, so this shortens the wall clock
     # without asking Yahoo for anything faster than it was already getting.
     async def _history(ticker: str) -> tuple[str, list[dict[str, Any]] | None]:
@@ -603,7 +603,7 @@ async def backtest(
         "illiquid names are wider.",
     ]
     if missing:
-        warnings.append(f"No price history for: {', '.join(missing)} — excluded.")
+        warnings.append(f"No price history for: {', '.join(missing)}, excluded.")
 
     annual = {
         str(year): round(float((1 + group).prod() - 1), 4)

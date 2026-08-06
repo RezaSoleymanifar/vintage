@@ -1,7 +1,7 @@
-"""Generate COVERAGE.md — what Vintage actually serves, today.
+"""Generate COVERAGE.md, what Vintage actually serves, today.
 
 DATA_SOURCES.md is the landscape: everything free that exists, ranked, most of it
-not built yet. This is the opposite document — only what is wired up right now,
+not built yet. This is the opposite document, only what is wired up right now,
 generated from the registry so it cannot drift away from the code.
 
     uv run python tools/build_coverage.py
@@ -26,7 +26,7 @@ from vintage.sources import (apewisdom, bea, bls, cboe, coinbase, ecb, finra,  #
 HEADER = """# Coverage
 
 What Vintage serves **today**. Generated from the registry by
-`tools/build_coverage.py` — if a field is listed here, it is wired up.
+`tools/build_coverage.py`: if a field is listed here, it is wired up.
 
 For the wider landscape of free data that exists but is not built yet, see
 [DATA_SOURCES.md](DATA_SOURCES.md). For the honest limits, see the Known gaps
@@ -46,7 +46,7 @@ Source is a parameter, never a separate tool.
 | `events` | an entity, optional form filter | filing timeline with exact acceptance timestamps |
 | `backtest` | a universe and a signal | returns, costs, and an honesty report |
 | `benchmark` | a run id and a factor set | correlation and alpha vs published factors |
-| `status` | — | cache size, keys configured, specs tried this session |
+| `status` | none | cache size, keys configured, specs tried this session |
 
 """
 
@@ -59,7 +59,7 @@ def field_routing() -> str:
         "us-gaap:": "yes", "dei:": "yes", "ifrs-full:": "yes", "srt:": "yes", "invest:": "yes",
     }
     for prefix, source in registry.PREFIXES.items():
-        rows.append(f"| `{prefix}` | {source} | {needs.get(prefix, '—')} |")
+        rows.append(f"| `{prefix}` | {source} | {needs.get(prefix, ', ')} |")
     rows.append("")
     rows.append("A bare field with no prefix is routed to `sec-edgar-xbrl`. "
                 "An unrecognised prefix returns an error naming the prefixes that exist, "
@@ -89,7 +89,7 @@ def french_table() -> str:
     spans = asyncio.run(_french_spans([c["field"].split(":", 1)[1] for c in cat]))
     for c in cat:
         name = c["field"].split(":", 1)[1]
-        rows.append(f"| `{c['field']}` | {c['label']} | {spans.get(name, '—')} |")
+        rows.append(f"| `{c['field']}` | {c['label']} | {spans.get(name, ', ')} |")
     rows.append("")
     return "\n".join(rows) + "\n"
 
@@ -100,7 +100,7 @@ async def _french_spans(names: list[str]) -> dict[str, str]:
         try:
             data = await french.load(n)
             dates = sorted(r["observed_at"] for r in data if r.get("observed_at"))
-            out[n] = f"{dates[0]} → {dates[-1]}" if dates else "—"
+            out[n] = f"{dates[0]} → {dates[-1]}" if dates else ", "
         except Exception as exc:  # a dead upstream should not kill the doc
             out[n] = f"unavailable ({type(exc).__name__})"
     return out
@@ -109,7 +109,7 @@ async def _french_spans(names: list[str]) -> dict[str, str]:
 def fred_table() -> str:
     rows = [f"## FRED curated series ({len(registry.CURATED)} shortcuts)\n",
             "Federal Reserve Bank of St. Louis. These are hand-picked so `discover` answers well "
-            "before a key is configured — but **any** of FRED's 800,000+ series works by id, and "
+            "before a key is configured, but **any** of FRED's 800,000+ series works by id, and "
             "ALFRED supplies first-release vintages.\n",
             "| Field | Series |", "|---|---|"]
     for item in registry.CURATED:
@@ -121,7 +121,7 @@ def fred_table() -> str:
 def sentiment_table() -> str:
     rows = [
         f"## Forum sentiment ({len(apewisdom.FILTERS)} scopes)\n",
-        "ApeWisdom. No key. **No history endpoint upstream** — every row is stamped "
+        "ApeWisdom. No key. **No history endpoint upstream**. Every row is stamped "
         "`known_at` = the moment Vintage fetched it, so backtestable history begins "
         'the day you start recording. Vendors selling years of "historical sentiment" '
         "built it by re-scoring archived posts with a model that already knew what "
@@ -157,7 +157,7 @@ def short_table() -> str:
     rows = [
         "## Short sale volume\n",
         "FINRA, published after each close and never revised. This is **short volume, "
-        "not short interest** — shares sold short during the session, including "
+        "not short interest**, shares sold short during the session, including "
         "market-maker hedging that is flat again by the close. A flow measure, not "
         "outstanding bearish positioning.\n",
         "| Field | Returns |",
@@ -194,7 +194,7 @@ def vol_table() -> str:
     rows = [
         "## Volatility indices (" + str(len(cboe.INDICES)) + ")" + BLANK,
         "CBOE, no key. Index levels are computed from that session's option prices and "
-        "are not revised. **Levels only** — historical option chains are paid at "
+        "are not revised. **Levels only**, historical option chains are paid at "
         "every vendor and remain a gap." + BLANK,
         "| Field | Covers |", "|---|---|",
     ]
@@ -289,7 +289,7 @@ def macro_table() -> str:
         + " tables, free key)" + BLANK,
         "One call returns every line of a NIPA table rather than one series, which is the "
         "shape a GDP decomposition needs. GDP is published as an advance estimate, revised "
-        "twice within three months, then again at every annual and benchmark revision — "
+        "twice within three months, then again at every annual and benchmark revision, "
         "this endpoint serves only the current estimate." + BLANK,
         "| Field | Table |", "|---|---|",
     ]
@@ -305,7 +305,7 @@ def signals_table() -> str:
     for name, desc in bt.SIGNALS.items():
         rows.append(f"| `{name}` | {desc} |")
     rows.append("")
-    rows.append(f"Costs are charged on turnover on every run — there is no zero-cost mode. "
+    rows.append(f"Costs are charged on turnover on every run. There is no zero-cost mode. "
                 f"Returns are computed over {bt.TRADING_DAYS} trading days per year.\n")
     return "\n".join(rows)
 
@@ -313,7 +313,7 @@ def signals_table() -> str:
 def xbrl_note() -> str:
     return """## SEC XBRL fields
 
-Every concept every US filer has tagged is reachable — there is no fixed list, because the
+Every concept every US filer has tagged is reachable. There is no fixed list, because the
 list is per-filer. A large filer exposes roughly 500 concepts across the `us-gaap` and `dei`
 taxonomies. Use `discover` against an entity to see what that filer actually reports.
 

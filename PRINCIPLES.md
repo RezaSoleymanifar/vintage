@@ -18,7 +18,7 @@ This rule has teeth. It has already cost us:
   sibling repo. That made "open, verified, crowdsourced" untrue, and is why the
   data layer is being replaced with Vintage.
 - OpenAP's SignalDoc was a local CSV copy. Rather than delete it, we made it
-  legitimate — it is now fetched from the public upstream, so anyone gets the
+  legitimate. It is now fetched from the public upstream, so anyone gets the
   same 331 rows.
 
 Local copies are allowed only as a *cache* of something fetchable, never as the
@@ -27,7 +27,7 @@ source of truth.
 ## 2. Two dates, or say you do not know
 
 Every value carries `observed_at` and `known_at`. A source that cannot supply an
-honest `known_at` gets `UNKNOWN_VINTAGE` and a null — never an invented date, and
+honest `known_at` gets `UNKNOWN_VINTAGE` and a null, never an invented date, and
 never a silent default to today.
 
 ## 3. The panel enforces point-in-time, not the caller
@@ -44,9 +44,9 @@ There is no zero-cost mode. A zero-cost backtest is not a backtest.
 
 Every backtest deflates its Sharpe by how many specifications were tried. A user
 cannot turn this off, and no feature may be built that optimizes toward a higher
-Sharpe — that would be building the disease and the cure in one package.
+Sharpe. That would be building the disease and the cure in one package.
 
-Honesty outputs — deflated Sharpe, warnings, verdicts, vintage flags — are
+Honesty outputs (deflated Sharpe, warnings, verdicts, vintage flags) are
 constants. They are never tuned, never softened, and never learned from user
 behaviour, even when softening them would measurably improve engagement.
 

@@ -1,4 +1,4 @@
-"""Routing and discovery — the part that keeps six verbs from becoming twenty."""
+"""Routing and discovery. The part that keeps six verbs from becoming twenty."""
 
 import pytest
 

@@ -1,4 +1,4 @@
-"""Vintage — point-in-time financial data, as a library and as an MCP server.
+"""Vintage, point-in-time financial data, as a library and as an MCP server.
 
     import vintage as v
     v.prices("AAPL")

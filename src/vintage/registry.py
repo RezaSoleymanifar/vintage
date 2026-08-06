@@ -44,21 +44,21 @@ SOURCES = [
         "source": "sec-edgar-xbrl",
         "covers": "US filer fundamentals, every XBRL concept",
         "field_form": "us-gaap:Assets (needs an entity)",
-        "point_in_time": "yes — native filing dates",
+        "point_in_time": "yes, native filing dates",
         "key_required": False,
     },
     {
         "source": "sec-edgar-filings",
         "covers": "filing stream: 8-K, 10-K, 10-Q, Form 4, 13D/G",
         "field_form": "filing:* (needs an entity)",
-        "point_in_time": "yes — exact filing timestamps",
+        "point_in_time": "yes, exact filing timestamps",
         "key_required": False,
     },
     {
         "source": "yahoo-finance",
         "covers": "daily OHLCV and adjusted close, full history",
         "field_form": "price:close / price:adjclose (needs an entity)",
-        "point_in_time": "partial — adjusted retroactively",
+        "point_in_time": "partial, adjusted retroactively",
         "key_required": False,
         "note": "unofficial endpoint; Stooq is blocked behind a JS check as of 2026-08",
     },
@@ -66,14 +66,14 @@ SOURCES = [
         "source": "ken-french-data-library",
         "covers": "Fama-French factors, momentum, industry portfolios",
         "field_form": "french:ff3, french:ff5, french:momentum",
-        "point_in_time": "no — rebuilt on each release",
+        "point_in_time": "no, rebuilt on each release",
         "key_required": False,
     },
     {
         "source": "open-source-asset-pricing",
         "covers": "331 published anomalies with the return and t-stat each paper claimed",
         "field_form": "openap:Mom12m, or openap:* for all of them",
-        "point_in_time": "yes — claims are dated to their publication year",
+        "point_in_time": "yes, claims are dated to their publication year",
         "key_required": False,
         "note": "Chen & Zimmermann. 56 of the 331 are price-only and replicable with Vintage today.",
     },
@@ -81,7 +81,7 @@ SOURCES = [
         "source": "coinbase-exchange",
         "covers": "crypto OHLCV, every listed pair, no key",
         "field_form": "crypto:close (needs an entity like BTC-USD)",
-        "point_in_time": "yes — trade prints are never restated",
+        "point_in_time": "yes, trade prints are never restated",
         "key_required": False,
         "note": "Currently-listed products only; dead tokens are absent, so crypto survivorship is worse than equities.",
     },
@@ -89,14 +89,14 @@ SOURCES = [
         "source": "finra-short-volume",
         "covers": "daily short volume and short ratio per symbol",
         "field_form": "short:short_ratio (needs an entity)",
-        "point_in_time": "yes — published after the close, never revised",
+        "point_in_time": "yes, published after the close, never revised",
         "key_required": False,
     },
     {
         "source": "apewisdom",
         "covers": "retail forum mention ranks across ~15 stock and crypto subreddits",
         "field_form": "ape:all-stocks, ape:wallstreetbets, ape:all-crypto",
-        "point_in_time": "only forward — known_at is when Vintage fetched it",
+        "point_in_time": "only forward, known_at is when Vintage fetched it",
         "key_required": False,
         "note": "No history endpoint upstream. Backtestable history starts the day you record it.",
     },
@@ -104,14 +104,14 @@ SOURCES = [
         "source": "ecb-reference-rates",
         "covers": "daily FX reference rates against the euro, 1999 onward, plus cross rates",
         "field_form": "fx:EURUSD, fx:USDJPY",
-        "point_in_time": "yes — published each afternoon and never revised",
+        "point_in_time": "yes, published each afternoon and never revised",
         "key_required": False,
     },
     {
         "source": "cboe-indices",
         "covers": "VIX and the volatility family: term structure, VVIX, SKEW",
         "field_form": "vol:VIX, vol:VIX3M, vol:SKEW",
-        "point_in_time": "yes — index levels are not revised",
+        "point_in_time": "yes, index levels are not revised",
         "key_required": False,
         "note": "Index levels only. Historical option chains are paid everywhere.",
     },
@@ -119,15 +119,15 @@ SOURCES = [
         "source": "sec-form-25",
         "covers": "every delisting on record: 36,830 filings, 11,614 companies, 2003 on",
         "field_form": "delisting:form25",
-        "point_in_time": "yes — filing dates, never revised",
+        "point_in_time": "yes, filing dates, never revised",
         "key_required": False,
         "note": "The survivorship correction. Complete from April 2006, partial before.",
     },
     {
         "source": "sec-xbrl-frames",
-        "covers": "one concept across every filer in one call — the cross-section",
+        "covers": "one concept across every filer in one call, the cross-section",
         "field_form": "frame:us-gaap/Assets/CY2023Q1I",
-        "point_in_time": "no — carries the accession but not its filing date",
+        "point_in_time": "no, carries the accession but not its filing date",
         "key_required": False,
         "note": "6,289 filers in one 840KB request. Use fetch per entity when the date matters.",
     },
@@ -135,21 +135,21 @@ SOURCES = [
         "source": "us-treasury",
         "covers": "par yield curve, 14 tenors from 1 month to 30 years",
         "field_form": "ust:10y, ust:2y, ust:all",
-        "point_in_time": "yes — published daily and never revised",
+        "point_in_time": "yes, published daily and never revised",
         "key_required": False,
     },
     {
         "source": "cftc-cot",
         "covers": "weekly futures positioning by trader class",
         "field_form": "cot:noncommercial_net (needs an entity like SP500)",
-        "point_in_time": "yes — Tuesday positions, released Friday, lag preserved",
+        "point_in_time": "yes, Tuesday positions, released Friday, lag preserved",
         "key_required": False,
     },
     {
         "source": "sec-form-13f",
         "covers": "institutional equity holdings for every manager over $100m",
         "field_form": "13f:value, 13f:shares (needs an entity like BERKSHIRE)",
-        "point_in_time": "yes — quarter end and filing date, up to 45 days apart",
+        "point_in_time": "yes, quarter end and filing date, up to 45 days apart",
         "key_required": False,
         "note": "Long US equity only. Values normalised across the 2023 thousands-to-dollars change.",
     },
@@ -157,15 +157,15 @@ SOURCES = [
         "source": "bls",
         "covers": "CPI to item level, payrolls, JOLTS, wages, productivity",
         "field_form": "bls:CUUR0000SA0",
-        "point_in_time": "no — BLS ships no release date with the value",
+        "point_in_time": "no, BLS ships no release date with the value",
         "key_required": False,
         "note": "Keyless tier is 25 queries a day. Use fred: when the vintage matters.",
     },
     {
         "source": "bea",
-        "covers": "the national accounts — every line of a NIPA table at once",
+        "covers": "the national accounts, every line of a NIPA table at once",
         "field_form": "bea:T10101",
-        "point_in_time": "no — current estimate only, never the first print",
+        "point_in_time": "no, current estimate only, never the first print",
         "key_required": True,
         "note": "GDP is revised at least three times. ALFRED via fred: has the vintages.",
     },
@@ -173,7 +173,7 @@ SOURCES = [
         "source": "fred",
         "covers": "800k macro series, with ALFRED first-release vintages",
         "field_form": "fred:CPIAUCSL",
-        "point_in_time": "yes — real-time vintages",
+        "point_in_time": "yes, real-time vintages",
         "key_required": True,
     },
 ]
@@ -205,7 +205,7 @@ def route(field: str) -> str | None:
 # --------------------------------------------------------------- capability
 
 # The adapters `fetch` actually branches on. A prefix routing to anything else
-# is not fetchable, whatever the router says — `test_capabilities` enforces it.
+# is not fetchable, whatever the router says, `test_capabilities` enforces it.
 FETCH_ADAPTERS = {
     "sec-edgar-xbrl", "prices", "fred", "french", "openap", "apewisdom",
     "crypto", "finra", "ecb", "cboe", "delistings", "frames", "treasury",
@@ -240,9 +240,9 @@ ADAPTER_SOURCE = {
 # an example that runs as written. This is the whole surface, machine-readable,
 # so an agent never has to infer the grammar from a docstring.
 #
-#   as_of: "enforced"  — rows filed after as_of are dropped
-#          "partial"   — filtered, but the source cannot date every row
-#          "none"      — the source carries no filing date at all
+#   as_of: "enforced", rows filed after as_of are dropped
+#          "partial", filtered, but the source cannot date every row
+#          "none". The source carries no filing date at all
 PREFIX_SPECS: dict[str, dict[str, Any]] = {
     "us-gaap:": dict(verb="fetch", answers="US GAAP fundamentals, any tagged concept",
                      needs_entity=True, entity_example="AAPL",
@@ -263,12 +263,12 @@ PREFIX_SPECS: dict[str, dict[str, Any]] = {
     "filing:": dict(verb="events", answers="the filing stream itself: 8-K, 10-K, Form 4, 13D/G",
                     needs_entity=True, entity_example="AAPL",
                     example_field="filing:8-K", as_of="enforced",
-                    note="Served by `events`, not `fetch` — a filing is a timestamp, not a value."),
+                    note="Served by `events`, not `fetch`. A filing is a timestamp, not a value."),
     "price:": dict(verb="fetch", answers="daily OHLCV and adjusted close",
                    needs_entity=True, entity_example="AAPL",
                    example_field="price:close", as_of="partial",
                    note="price:pit_adjclose rebuilds the unadjusted series as of a date."),
-    "index:": dict(verb="fetch", answers="index levels — same adapter as price:",
+    "index:": dict(verb="fetch", answers="index levels, same adapter as price:",
                    needs_entity=True, entity_example="^GSPC",
                    example_field="index:close", as_of="partial"),
     "fred:": dict(verb="fetch", answers="800k macro series with ALFRED first-release vintages",
@@ -379,7 +379,7 @@ def nearest_prefixes(field: str, limit: int = 4) -> list[dict[str, Any]]:
     """Prefixes worth trying for a field that routed nowhere.
 
     Scored on shared leading characters, then on whether any word of the field
-    appears in what the prefix answers — enough to turn a dead end into a next
+    appears in what the prefix answers, enough to turn a dead end into a next
     call the model can actually make.
     """
     head = field.split(":", 1)[0].lower()
@@ -420,7 +420,7 @@ def capability_catalog() -> list[dict[str, Any]]:
     """The capability map, in the shape `discover` searches.
 
     Without this, asking `discover` for "holdings" or "short interest" finds
-    nothing unless some source happened to spell it that way in a label — the
+    nothing unless some source happened to spell it that way in a label, the
     prefixes themselves were invisible to search even though they are the
     thing the caller needs.
     """

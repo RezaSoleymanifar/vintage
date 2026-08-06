@@ -1,4 +1,4 @@
-"""SEC Form 13F — what the big managers held, and when you could have known it.
+"""SEC Form 13F, what the big managers held, and when you could have known it.
 
 Every institution running over $100m in US equities files a holdings table
 within 45 days of each quarter end. That 45-day gap is the entire point. The
@@ -91,7 +91,7 @@ def catalog() -> list[dict[str, Any]]:
          "source": SOURCE, "vintage": envelope.AS_FILED},
     ]
     out += [
-        {"field": "13f:value", "entity": key, "label": f"13F holdings — {name}",
+        {"field": "13f:value", "entity": key, "label": f"13F holdings, {name}",
          "source": SOURCE, "vintage": envelope.AS_FILED}
         for key, (_, name) in MANAGERS.items()
     ]
@@ -200,7 +200,7 @@ def chain(found: list[dict[str, str]], *, quarter: str | None,
     """Every document that makes up one quarter's record, oldest first.
 
     With `as_of` set, anything filed later is invisible, so the answer is the
-    most recent quarter that had actually been reported by then — which in the
+    most recent quarter that had actually been reported by then, which in the
     six weeks after a quarter end is the *previous* quarter, not the one that
     just closed. That gap is the reason this source exists.
 
@@ -377,7 +377,7 @@ async def assemble(cik: str, documents: list[dict[str, str]]) -> dict[str, Any]:
             continue
 
         # Thousands before the 2023 amendment, dollars after. The document does
-        # not say which, so the filing date decides — per document, because a
+        # not say which, so the filing date decides, per document, because a
         # quarter can straddle the boundary.
         scale = 1.0 if filing["filed"] >= DOLLARS_FROM else 1_000.0
         for line in lines:
@@ -499,7 +499,7 @@ def warnings_for(rows: list[dict[str, Any]], as_of: str | None = None) -> list[s
         kind = ("adds positions to the original rather than replacing it"
                 if "NEW HOLDINGS" in trail else "replaces the original table")
         notes.append(
-            f"This quarter is made of more than one document — {trail}. The amendment "
+            f"This quarter is made of more than one document, {trail}. The amendment "
             f"{kind}, so the two are combined here. Each row's known_at is the date of "
             "the document that row came from, which is why they are not all the same."
         )

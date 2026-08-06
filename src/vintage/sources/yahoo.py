@@ -1,4 +1,4 @@
-"""Yahoo Finance chart API — the price spine.
+"""Yahoo Finance chart API, the price spine.
 
 Stooq was the first choice because it publishes terms, but as of 2026 it
 gates programmatic access behind a JavaScript browser check. Yahoo's chart

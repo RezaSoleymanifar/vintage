@@ -1,4 +1,4 @@
-"""Stooq — free daily OHLCV, plain CSV, no key, global coverage.
+"""Stooq, free daily OHLCV, plain CSV, no key, global coverage.
 
 BLOCKED as of 2026-08: Stooq now gates programmatic access behind a
 JavaScript browser check, so this adapter returns an explanatory error rather

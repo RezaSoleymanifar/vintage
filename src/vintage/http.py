@@ -6,7 +6,7 @@ asking an enthusiastic question.
 Two properties matter more than they look:
 
 Retries are not a nicety. A backtest fans out over thirty tickers, and a
-single 503 used to drop a name into `excluded` — silently changing the
+single 503 used to drop a name into `excluded`, silently changing the
 universe the result was computed on, which is survivorship bias arriving by
 way of a flaky network. Transient failures are retried; refusals are not.
 
@@ -159,7 +159,7 @@ async def post_json(url: str, body: dict, *, tier: str = "daily",
                     headers: dict | None = None) -> Any:
     """POST a JSON body and cache on the body as well as the URL.
 
-    Only used where an API takes its parameters no other way — BLS ignores
+    Only used where an API takes its parameters no other way, BLS ignores
     query strings on its GET route and silently returns the default window,
     which is a worse failure than an error.
     """

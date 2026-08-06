@@ -2,7 +2,7 @@
 
 Five releases in a row failed on a GitHub Actions outage and PyPI sat four
 versions behind for most of a day without anything noticing. The release
-workflow was not the problem — it never ran. A pipeline that only reports
+workflow was not the problem, it never ran. A pipeline that only reports
 failures it was present for cannot catch that, so this asks the question from
 the outside instead: what does the repo claim, and what do the registries
 actually serve?
@@ -10,7 +10,7 @@ actually serve?
 Exit status is the signal, so CI can act on it.
 
     0  everything downstream matches pyproject.toml
-    1  the repo is ahead — something needs republishing
+    1  the repo is ahead, something needs republishing
     2  could not reach a registry, so no judgement is possible
 
     uv run python tools/check_release.py
@@ -86,7 +86,7 @@ def main() -> None:
         report = {"ok": False, "reason": "pyproject and server.json disagree",
                   "pyproject": package, "server_json": manifest}
         print(json.dumps(report) if args.json else
-              f"pyproject says {package}, server.json says {manifest} — fix that first")
+              f"pyproject says {package}, server.json says {manifest}, fix that first")
         raise SystemExit(1)
 
     try:

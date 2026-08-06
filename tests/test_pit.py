@@ -1,7 +1,7 @@
 """Point-in-time price reconstruction.
 
 The bug this suite exists to prevent: Yahoo's `quote.close` looks like a raw
-print and is not — it is already split-adjusted. Building a point-in-time
+print and is not. It is already split-adjusted. Building a point-in-time
 series on top of it silently reintroduces the retroactive adjustment the whole
 exercise is meant to remove, and the result looks plausible, which is worse.
 """

@@ -1,4 +1,4 @@
-"""SEC EDGAR — the only free point-in-time fundamentals that exist.
+"""SEC EDGAR, the only free point-in-time fundamentals that exist.
 
 Every XBRL fact carries `filed`, the day the number became public. That maps
 straight onto `known_at`, which is what makes look-ahead prevention real
@@ -144,7 +144,7 @@ def to_rows(
 
 
 async def recent_filings(cik: str, limit: int = 40) -> list[dict[str, Any]]:
-    """Filing stream for an entity — the event timeline's backbone."""
+    """Filing stream for an entity, the event timeline's backbone."""
     data = await get_json(SUBMISSIONS_URL.format(cik=cik), tier="session")
     recent = data.get("filings", {}).get("recent", {})
     forms = recent.get("form", [])

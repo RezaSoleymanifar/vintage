@@ -1,4 +1,4 @@
-"""Open Source Asset Pricing — Chen & Zimmermann's replication of the anomaly zoo.
+"""Open Source Asset Pricing, Chen & Zimmermann's replication of the anomaly zoo.
 
 SignalDoc.csv is the scoreboard for the whole "does published alpha survive"
 question: 331 documented predictors, each with the return and t-statistic the
@@ -7,7 +7,7 @@ definition precise enough to implement from.
 
 This source answers "what did the literature claim", never "what is true now".
 Its rows are claims about a fixed historical sample, so they carry the paper's
-publication year as `known_at` and are `IMMUTABLE` — a 1993 claim does not
+publication year as `known_at` and are `IMMUTABLE`. A 1993 claim does not
 change, even when a replication disagrees with it.
 """
 
@@ -28,13 +28,13 @@ HOME = "https://www.openassetpricing.com/"
 # What each signal needs in order to be computed. Vintage can serve Price
 # today; the rest are honest about why they are out of reach.
 DATA_CATEGORY_SUPPORT = {
-    "Price": "supported — computable from price history Vintage already serves",
-    "Accounting": "partial — SEC XBRL only reaches back to ~2009",
-    "Analyst": "unsupported — no free estimates source exists",
-    "Trading": "partial — volume yes, microstructure no",
-    "13F": "planned — SEC 13F filings are free and not yet wired",
-    "Event": "partial — the SEC filing stream covers some of these",
-    "Options": "unsupported — historical chains are paid everywhere",
+    "Price": "supported, computable from price history Vintage already serves",
+    "Accounting": "partial, SEC XBRL only reaches back to ~2009",
+    "Analyst": "unsupported, no free estimates source exists",
+    "Trading": "partial, volume yes, microstructure no",
+    "13F": "planned, SEC 13F filings are free and not yet wired",
+    "Event": "partial. The SEC filing stream covers some of these",
+    "Options": "unsupported, historical chains are paid everywhere",
     "Other": "varies",
 }
 
@@ -110,7 +110,7 @@ async def catalog() -> list[dict[str, Any]]:
     return [
         {
             "field": r["field"],
-            "label": f"{r['label']} — {r['authors']} ({r['sample_start']}-{r['sample_end']})",
+            "label": f"{r['label']}, {r['authors']} ({r['sample_start']}-{r['sample_end']})",
             "source": SOURCE,
             "claimed_monthly_return": r["value"],
             "claimed_t_stat": r["t_stat"],
@@ -139,7 +139,7 @@ async def get(acronym: str) -> dict[str, Any]:
     raise SourceError(
         f"No OpenAP predictor called '{acronym}'. "
         + (f"Close matches: {', '.join(close)}. " if close else "")
-        + f"{len(rows)} predictors are documented — use discover to search them."
+        + f"{len(rows)} predictors are documented, use discover to search them."
     )
 
 
@@ -147,7 +147,7 @@ async def search(query: str, limit: int = 10) -> list[dict[str, Any]]:
     """Rank predictors against a plain-English query.
 
     Matches acronym, description and authors, then breaks ties by citation
-    count — so "momentum" surfaces Jegadeesh-Titman rather than an obscure
+    count: so "momentum" surfaces Jegadeesh-Titman rather than an obscure
     variant that happens to share the word.
     """
     terms = [t for t in query.lower().split() if t]

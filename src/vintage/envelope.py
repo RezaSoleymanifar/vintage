@@ -58,7 +58,7 @@ def visible_at(rows: Iterable[dict[str, Any]], as_of: str | None) -> list[dict[s
     """Drop anything that was not knowable on `as_of`.
 
     Rows with an unknown vintage are kept but they are the reason
-    `warn_unknown_vintage` exists — the caller must surface that.
+    `warn_unknown_vintage` exists, the caller must surface that.
     """
     if not as_of:
         return list(rows)
@@ -117,7 +117,7 @@ def respond(
     """Serialize a successful response.
 
     `warnings` make the product look like it is paying attention.
-    `suggested_next` is what keeps the conversation going — models follow them.
+    `suggested_next` is what keeps the conversation going, models follow them.
     """
     body: dict[str, Any] = {"ok": True, "verb": verb, "retrieved_at": now_iso()}
     body.update(payload)
@@ -133,7 +133,7 @@ def respond(
 
 
 def fail(verb: str, message: str, *, did_you_mean: Any = None, **payload: Any) -> str:
-    """Serialize a failure. Errors teach — never a bare 'not found'."""
+    """Serialize a failure. Errors teach, never a bare 'not found'."""
     body: dict[str, Any] = {"ok": False, "verb": verb, "error": message}
     if did_you_mean:
         body["did_you_mean"] = did_you_mean

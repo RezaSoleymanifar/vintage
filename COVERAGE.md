@@ -1,7 +1,7 @@
 # Coverage
 
 What Vintage serves **today**. Generated from the registry by
-`tools/build_coverage.py` — if a field is listed here, it is wired up.
+`tools/build_coverage.py`: if a field is listed here, it is wired up.
 
 For the wider landscape of free data that exists but is not built yet, see
 [DATA_SOURCES.md](DATA_SOURCES.md). For the honest limits, see the Known gaps
@@ -19,30 +19,30 @@ Source is a parameter, never a separate tool.
 | `events` | an entity, optional form filter | filing timeline with exact acceptance timestamps |
 | `backtest` | a universe and a signal | returns, costs, and an honesty report |
 | `benchmark` | a run id and a factor set | correlation and alpha vs published factors |
-| `status` | — | cache size, keys configured, specs tried this session |
+| `status` | none | cache size, keys configured, specs tried this session |
 
 ## Sources wired up
 
 | Source | Covers | Field form | Point-in-time | Key |
 |---|---|---|---|---|
-| **sec-edgar-xbrl** | US filer fundamentals, every XBRL concept | `us-gaap:Assets (needs an entity)` | yes — native filing dates | none |
-| **sec-edgar-filings** | filing stream: 8-K, 10-K, 10-Q, Form 4, 13D/G | `filing:* (needs an entity)` | yes — exact filing timestamps | none |
-| **yahoo-finance** | daily OHLCV and adjusted close, full history unofficial endpoint; Stooq is blocked behind a JS check as of 2026-08 | `price:close / price:adjclose (needs an entity)` | partial — adjusted retroactively | none |
-| **ken-french-data-library** | Fama-French factors, momentum, industry portfolios | `french:ff3, french:ff5, french:momentum` | no — rebuilt on each release | none |
-| **open-source-asset-pricing** | 331 published anomalies with the return and t-stat each paper claimed Chen & Zimmermann. 56 of the 331 are price-only and replicable with Vintage today. | `openap:Mom12m, or openap:* for all of them` | yes — claims are dated to their publication year | none |
-| **coinbase-exchange** | crypto OHLCV, every listed pair, no key Currently-listed products only; dead tokens are absent, so crypto survivorship is worse than equities. | `crypto:close (needs an entity like BTC-USD)` | yes — trade prints are never restated | none |
-| **finra-short-volume** | daily short volume and short ratio per symbol | `short:short_ratio (needs an entity)` | yes — published after the close, never revised | none |
-| **apewisdom** | retail forum mention ranks across ~15 stock and crypto subreddits No history endpoint upstream. Backtestable history starts the day you record it. | `ape:all-stocks, ape:wallstreetbets, ape:all-crypto` | only forward — known_at is when Vintage fetched it | none |
-| **ecb-reference-rates** | daily FX reference rates against the euro, 1999 onward, plus cross rates | `fx:EURUSD, fx:USDJPY` | yes — published each afternoon and never revised | none |
-| **cboe-indices** | VIX and the volatility family: term structure, VVIX, SKEW Index levels only. Historical option chains are paid everywhere. | `vol:VIX, vol:VIX3M, vol:SKEW` | yes — index levels are not revised | none |
-| **sec-form-25** | every delisting on record: 36,830 filings, 11,614 companies, 2003 on The survivorship correction. Complete from April 2006, partial before. | `delisting:form25` | yes — filing dates, never revised | none |
-| **sec-xbrl-frames** | one concept across every filer in one call — the cross-section 6,289 filers in one 840KB request. Use fetch per entity when the date matters. | `frame:us-gaap/Assets/CY2023Q1I` | no — carries the accession but not its filing date | none |
-| **us-treasury** | par yield curve, 14 tenors from 1 month to 30 years | `ust:10y, ust:2y, ust:all` | yes — published daily and never revised | none |
-| **cftc-cot** | weekly futures positioning by trader class | `cot:noncommercial_net (needs an entity like SP500)` | yes — Tuesday positions, released Friday, lag preserved | none |
-| **sec-form-13f** | institutional equity holdings for every manager over $100m Long US equity only. Values normalised across the 2023 thousands-to-dollars change. | `13f:value, 13f:shares (needs an entity like BERKSHIRE)` | yes — quarter end and filing date, up to 45 days apart | none |
-| **bls** | CPI to item level, payrolls, JOLTS, wages, productivity Keyless tier is 25 queries a day. Use fred: when the vintage matters. | `bls:CUUR0000SA0` | no — BLS ships no release date with the value | none |
-| **bea** | the national accounts — every line of a NIPA table at once GDP is revised at least three times. ALFRED via fred: has the vintages. | `bea:T10101` | no — current estimate only, never the first print | free key |
-| **fred** | 800k macro series, with ALFRED first-release vintages | `fred:CPIAUCSL` | yes — real-time vintages | free key |
+| **sec-edgar-xbrl** | US filer fundamentals, every XBRL concept | `us-gaap:Assets (needs an entity)` | yes, native filing dates | none |
+| **sec-edgar-filings** | filing stream: 8-K, 10-K, 10-Q, Form 4, 13D/G | `filing:* (needs an entity)` | yes, exact filing timestamps | none |
+| **yahoo-finance** | daily OHLCV and adjusted close, full history unofficial endpoint; Stooq is blocked behind a JS check as of 2026-08 | `price:close / price:adjclose (needs an entity)` | partial, adjusted retroactively | none |
+| **ken-french-data-library** | Fama-French factors, momentum, industry portfolios | `french:ff3, french:ff5, french:momentum` | no, rebuilt on each release | none |
+| **open-source-asset-pricing** | 331 published anomalies with the return and t-stat each paper claimed Chen & Zimmermann. 56 of the 331 are price-only and replicable with Vintage today. | `openap:Mom12m, or openap:* for all of them` | yes, claims are dated to their publication year | none |
+| **coinbase-exchange** | crypto OHLCV, every listed pair, no key Currently-listed products only; dead tokens are absent, so crypto survivorship is worse than equities. | `crypto:close (needs an entity like BTC-USD)` | yes, trade prints are never restated | none |
+| **finra-short-volume** | daily short volume and short ratio per symbol | `short:short_ratio (needs an entity)` | yes, published after the close, never revised | none |
+| **apewisdom** | retail forum mention ranks across ~15 stock and crypto subreddits No history endpoint upstream. Backtestable history starts the day you record it. | `ape:all-stocks, ape:wallstreetbets, ape:all-crypto` | only forward, known_at is when Vintage fetched it | none |
+| **ecb-reference-rates** | daily FX reference rates against the euro, 1999 onward, plus cross rates | `fx:EURUSD, fx:USDJPY` | yes, published each afternoon and never revised | none |
+| **cboe-indices** | VIX and the volatility family: term structure, VVIX, SKEW Index levels only. Historical option chains are paid everywhere. | `vol:VIX, vol:VIX3M, vol:SKEW` | yes, index levels are not revised | none |
+| **sec-form-25** | every delisting on record: 36,830 filings, 11,614 companies, 2003 on The survivorship correction. Complete from April 2006, partial before. | `delisting:form25` | yes, filing dates, never revised | none |
+| **sec-xbrl-frames** | one concept across every filer in one call, the cross-section 6,289 filers in one 840KB request. Use fetch per entity when the date matters. | `frame:us-gaap/Assets/CY2023Q1I` | no, carries the accession but not its filing date | none |
+| **us-treasury** | par yield curve, 14 tenors from 1 month to 30 years | `ust:10y, ust:2y, ust:all` | yes, published daily and never revised | none |
+| **cftc-cot** | weekly futures positioning by trader class | `cot:noncommercial_net (needs an entity like SP500)` | yes, Tuesday positions, released Friday, lag preserved | none |
+| **sec-form-13f** | institutional equity holdings for every manager over $100m Long US equity only. Values normalised across the 2023 thousands-to-dollars change. | `13f:value, 13f:shares (needs an entity like BERKSHIRE)` | yes, quarter end and filing date, up to 45 days apart | none |
+| **bls** | CPI to item level, payrolls, JOLTS, wages, productivity Keyless tier is 25 queries a day. Use fred: when the vintage matters. | `bls:CUUR0000SA0` | no, BLS ships no release date with the value | none |
+| **bea** | the national accounts, every line of a NIPA table at once GDP is revised at least three times. ALFRED via fred: has the vintages. | `bea:T10101` | no, current estimate only, never the first print | free key |
+| **fred** | 800k macro series, with ALFRED first-release vintages | `fred:CPIAUCSL` | yes, real-time vintages | free key |
 
 ## Field prefixes
 
@@ -53,20 +53,20 @@ How a field name routes to a source.
 | `price:` | prices | yes |
 | `fred:` | fred | no |
 | `french:` | french | no |
-| `openap:` | openap | — |
-| `ape:` | apewisdom | — |
-| `crypto:` | crypto | — |
-| `short:` | finra | — |
-| `fx:` | ecb | — |
-| `vol:` | cboe | — |
-| `delisting:` | delistings | — |
-| `frame:` | frames | — |
-| `ust:` | treasury | — |
-| `cot:` | cftc | — |
-| `13f:` | thirteenf | — |
-| `bls:` | bls | — |
-| `bea:` | bea | — |
-| `index:` | prices | — |
+| `openap:` | openap | ,  |
+| `ape:` | apewisdom | ,  |
+| `crypto:` | crypto | ,  |
+| `short:` | finra | ,  |
+| `fx:` | ecb | ,  |
+| `vol:` | cboe | ,  |
+| `delisting:` | delistings | ,  |
+| `frame:` | frames | ,  |
+| `ust:` | treasury | ,  |
+| `cot:` | cftc | ,  |
+| `13f:` | thirteenf | ,  |
+| `bls:` | bls | ,  |
+| `bea:` | bea | ,  |
+| `index:` | prices | ,  |
 | `filing:` | sec-edgar-filings | yes |
 | `us-gaap:` | sec-edgar-xbrl | yes |
 | `dei:` | sec-edgar-xbrl | yes |
@@ -90,7 +90,7 @@ Dartmouth. The benchmark every factor claim is scored against.
 
 ## FRED curated series (12 shortcuts)
 
-Federal Reserve Bank of St. Louis. These are hand-picked so `discover` answers well before a key is configured — but **any** of FRED's 800,000+ series works by id, and ALFRED supplies first-release vintages.
+Federal Reserve Bank of St. Louis. These are hand-picked so `discover` answers well before a key is configured, but **any** of FRED's 800,000+ series works by id, and ALFRED supplies first-release vintages.
 
 | Field | Series |
 |---|---|
@@ -124,7 +124,7 @@ European Central Bank reference rates, no key. Published each working day around
 
 Any ISO code the ECB publishes works, and any two of them cross. History begins in 1999.
 ## Volatility indices (10)
-CBOE, no key. Index levels are computed from that session's option prices and are not revised. **Levels only** — historical option chains are paid at every vendor and remain a gap.
+CBOE, no key. Index levels are computed from that session's option prices and are not revised. **Levels only**, historical option chains are paid at every vendor and remain a gap.
 | Field | Covers |
 |---|---|
 | `vol:VIX` | S&P 500 30-day implied volatility, from 1990 |
@@ -225,7 +225,7 @@ CPI down to item strata, payrolls, JOLTS, wages, productivity. Any BLS series id
 | `bls:CIU1010000000000A` | Employment cost index, compensation |
 
 ### Bureau of Economic Analysis (11 tables, free key)
-One call returns every line of a NIPA table rather than one series, which is the shape a GDP decomposition needs. GDP is published as an advance estimate, revised twice within three months, then again at every annual and benchmark revision — this endpoint serves only the current estimate.
+One call returns every line of a NIPA table rather than one series, which is the shape a GDP decomposition needs. GDP is published as an advance estimate, revised twice within three months, then again at every annual and benchmark revision, this endpoint serves only the current estimate.
 | Field | Table |
 |---|---|
 | `bea:T10101` | Real GDP, percent change from preceding period |
@@ -256,7 +256,7 @@ Intervals: `1d`, `6h`, `1h`, `15m`, `5m`, `1m`. All crypto fields need an entity
 
 ## Short sale volume
 
-FINRA, published after each close and never revised. This is **short volume, not short interest** — shares sold short during the session, including market-maker hedging that is flat again by the close. A flow measure, not outstanding bearish positioning.
+FINRA, published after each close and never revised. This is **short volume, not short interest**, shares sold short during the session, including market-maker hedging that is flat again by the close. A flow measure, not outstanding bearish positioning.
 
 | Field | Returns |
 |---|---|
@@ -269,7 +269,7 @@ One HTTP request per trading day, so `days` defaults to 20 and caps at 90.
 
 ## Forum sentiment (7 scopes)
 
-ApeWisdom. No key. **No history endpoint upstream** — every row is stamped `known_at` = the moment Vintage fetched it, so backtestable history begins the day you start recording. Vendors selling years of "historical sentiment" built it by re-scoring archived posts with a model that already knew what happened next.
+ApeWisdom. No key. **No history endpoint upstream**. Every row is stamped `known_at` = the moment Vintage fetched it, so backtestable history begins the day you start recording. Vendors selling years of "historical sentiment" built it by re-scoring archived posts with a model that already knew what happened next.
 
 | Field | Scope |
 |---|---|
@@ -283,7 +283,7 @@ ApeWisdom. No key. **No history endpoint upstream** — every row is stamped `kn
 
 ## SEC XBRL fields
 
-Every concept every US filer has tagged is reachable — there is no fixed list, because the
+Every concept every US filer has tagged is reachable. There is no fixed list, because the
 list is per-filer. A large filer exposes roughly 500 concepts across the `us-gaap` and `dei`
 taxonomies. Use `discover` against an entity to see what that filer actually reports.
 
@@ -306,7 +306,7 @@ accounting-based anomalies, whose original samples usually start in the 1960s or
 | `low_volatility` | negative of trailing 12-month volatility |
 | `trend_200d` | price relative to its 200-day moving average |
 
-Costs are charged on turnover on every run — there is no zero-cost mode. Returns are computed over 252 trading days per year.
+Costs are charged on turnover on every run. There is no zero-cost mode. Returns are computed over 252 trading days per year.
 ---
 
 Counts and coverage spans measured at generation time. Vintage redistributes none of this data; each upstream source keeps its own terms.

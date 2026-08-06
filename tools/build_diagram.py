@@ -1,4 +1,4 @@
-"""Generate assets/architecture.svg — the flow diagram, animated.
+"""Generate assets/architecture.svg, the flow diagram, animated.
 
 One picture of the whole product: what is scattered across the internet on the
 left, what comes out the other side on the right, and packets moving along the
@@ -20,12 +20,12 @@ sys.path.insert(0, os.path.join(
 
 from vintage import registry  # noqa: E402
 
-W, H = 1280, 700
+W, H = 1280, 930
 
 # Panel metrics, kept together because the vertical layout is derived from them
 # and the lanes have to fit between the header and footer rules.
-ROW_H = 17
-PANEL_HEAD = 40
+ROW_H = 28
+PANEL_HEAD = 48
 LANE_GAP = 10
 TOP_RULE, BOTTOM_RULE = 72, H - 44
 
@@ -81,26 +81,73 @@ LANES = [
     },
 ]
 
-# The short label under each lane, since the registry keys are not display text.
+# The label beside each row: who publishes it, then what it is. The registry
+# keys are not display text and the covers field is a paragraph, so this sits
+# between the two.
 SHORT = {
-    "sec-edgar-xbrl": "SEC EDGAR XBRL",
-    "sec-edgar-filings": "SEC filing stream",
-    "sec-form-13f": "SEC Form 13F",
-    "sec-form-25": "SEC Form 25",
-    "sec-xbrl-frames": "SEC XBRL frames",
-    "finra-short-volume": "FINRA",
-    "cftc-cot": "CFTC",
-    "fred": "FRED / ALFRED",
-    "ecb-reference-rates": "ECB",
-    "us-treasury": "US Treasury",
-    "bls": "BLS",
-    "bea": "BEA",
-    "cboe-indices": "CBOE",
-    "coinbase-exchange": "Coinbase",
-    "yahoo-finance": "Yahoo Finance",
-    "ken-french-data-library": "Ken French",
-    "open-source-asset-pricing": "Open Source Asset Pricing",
-    "apewisdom": "ApeWisdom",
+    "sec-edgar-xbrl": ("SEC EDGAR", "XBRL fundamentals"),
+    "sec-edgar-filings": ("SEC", "filing stream, to the second"),
+    "sec-form-13f": ("SEC Form 13F", "institutional holdings"),
+    "sec-form-25": ("SEC Form 25", "every delisting on record"),
+    "sec-xbrl-frames": ("SEC frames", "one concept, all filers"),
+    "finra-short-volume": ("FINRA", "daily short volume"),
+    "cftc-cot": ("CFTC", "weekly futures positioning"),
+    "fred": ("FRED / ALFRED", "macro, with vintages"),
+    "ecb-reference-rates": ("ECB", "FX reference rates"),
+    "us-treasury": ("US Treasury", "the par yield curve"),
+    "bls": ("BLS", "CPI, payrolls, JOLTS"),
+    "bea": ("BEA", "the national accounts"),
+    "cboe-indices": ("CBOE", "VIX and the vol family"),
+    "coinbase-exchange": ("Coinbase", "crypto OHLCV"),
+    "yahoo-finance": ("Yahoo Finance", "daily prices, decades deep"),
+    "ken-french-data-library": ("Ken French", "the factor benchmarks"),
+    "open-source-asset-pricing": ("Open Source Asset Pricing", "331 published claims"),
+    "apewisdom": ("ApeWisdom", "Reddit mention ranks"),
+}
+
+# One glyph per publisher, drawn on the same 20x20 box as the lane icons. A
+# reader recognises the shape of a filing or a yield curve faster than they
+# read the name beside it, which is the entire reason these exist.
+SOURCE_ICONS = {
+    "sec-edgar-xbrl": ("M4 1.8h8l4 4v12.4H4Z", "M12 1.8v4h4", "M6.6 9.4h6.8",
+                       "M6.6 12.4h6.8", "M6.6 15.4h4"),
+    "sec-edgar-filings": ("M6.4 3.2h6.8l3.4 3.4v10.2H6.4Z", "M13.2 3.2v3.4h3.4",
+                          "M3.4 6v10.4", "M9.4 9.6h4.6", "M9.4 12.6h4.6"),
+    "sec-form-13f": ("M2.8 6.6h14.4v9.6H2.8Z", "M7.4 6.6V4.8h5.2v1.8",
+                     "M2.8 10.8h14.4", "M9.2 10.8v1.8h1.6v-1.8"),
+    "sec-form-25": ("M4 1.8h8l4 4v12.4H4Z", "M12 1.8v4h4", "M7.6 10.6l4.8 4.8",
+                    "M12.4 10.6l-4.8 4.8"),
+    "sec-xbrl-frames": ("M2.8 2.8h14.4v14.4H2.8Z", "M2.8 7.6h14.4", "M2.8 12.4h14.4",
+                        "M7.6 2.8v14.4", "M12.4 2.8v14.4"),
+    "finra-short-volume": ("M3 17.2h14", "M5.2 6.4v10.8", "M9.4 9.4v7.8",
+                           "M13.6 12.4v4.8", "M14.4 4.4h3v3"),
+    "cftc-cot": ("M10 3.2v13.8", "M4.8 17h10.4", "M3.4 6.8h13.2",
+                 "M6.4 6.8 3.6 12h5.6Z", "M13.6 6.8 10.8 12h5.6Z"),
+    "fred": ("M2.4 7.6 10 2.8l7.6 4.8", "M2.4 17.6h15.2", "M4.8 9.4v6.8",
+             "M8.2 9.4v6.8", "M11.8 9.4v6.8", "M15.2 9.4v6.8"),
+    "ecb-reference-rates": ("M10 2.8a7.2 7.2 0 1 0 0 14.4 7.2 7.2 0 0 0 0-14.4Z",
+                           "M13.2 7.4a3.8 3.8 0 0 0-6 2.6 3.8 3.8 0 0 0 6 2.8",
+                           "M5.8 9.2h5", "M5.8 11.2h5"),
+    "us-treasury": ("M3.2 17V3.6", "M3.2 17h13.8",
+                    "M4 14.6c3.8-6.2 7.8-8 12.4-8.6"),
+    "bls": ("M10 3.4a2.3 2.3 0 1 0 0 4.6 2.3 2.3 0 0 0 0-4.6Z",
+            "M4.8 16.6c0-2.9 2.3-5 5.2-5s5.2 2.1 5.2 5", "M2.8 17h14.4"),
+    "bea": ("M9.6 3.2a7 7 0 1 0 7 7h-7Z", "M12 2.6a7 7 0 0 1 5.4 5.4H12Z"),
+    "cboe-indices": ("M3 17h14", "M3.2 12.4 6 6.6l3 8 3-9.8 2.6 6 2.2 2.4"),
+    "coinbase-exchange": ("M10 2.8a7.2 7.2 0 1 0 0 14.4 7.2 7.2 0 0 0 0-14.4Z",
+                          "M13 7.4a3.6 3.6 0 0 0-3-1.4c-2.2 0-3.8 1.8-3.8 4s1.6 4 3.8 4"
+                          "a3.6 3.6 0 0 0 3-1.4"),
+    "yahoo-finance": ("M5 2.6v14.8", "M10 1.8v16.4", "M15 4.4v11",
+                      "M3.2 5.8h3.6v7.2H3.2Z", "M8.2 4.4h3.6v9.2H8.2Z",
+                      "M13.2 7.4h3.6v6h-3.6Z"),
+    "ken-french-data-library": ("M10 2.6 18.4 6.6 10 10.6 1.6 6.6Z",
+                                "M4.8 8.2v4.6c0 1.8 2.3 3.2 5.2 3.2s5.2-1.4 5.2-3.2V8.2",
+                                "M18.4 6.6v4.8"),
+    "open-source-asset-pricing": ("M10 5.4C8.4 4 6.3 3.4 3.6 3.4v11c2.7 0 4.8.6 6.4 2"
+                                  " 1.6-1.4 3.7-2 6.4-2v-11c-2.7 0-4.8.6-6.4 2Z",
+                                  "M10 5.4v11"),
+    "apewisdom": ("M2.6 4.6h10.6v6.4H7L4.4 13.2V11H2.6Z",
+                  "M7.8 8.4h9.6v6.2h-1.8v2.2l-2.6-2.2H9.6"),
 }
 
 ICONS = {
@@ -157,14 +204,17 @@ def text(x, y, body, *, size=12, fill=INK, weight=400, anchor="start",
             f'{extra}>{esc(body)}</text>')
 
 
-def icon(kind: str, x: float, y: float, colour: str, delay: float) -> str:
+def icon(kind: str, x: float, y: float, colour: str, delay: float,
+         scale: float = 1.0, glyphs: dict | None = None) -> str:
+    paths = (glyphs or ICONS)[kind]
     strokes = "".join(
-        f'<path d="{d}" fill="none" stroke="{colour}" stroke-width="1.4" '
+        f'<path d="{d}" fill="none" stroke="{colour}" stroke-width="{1.4 / scale:.2f}" '
         f'stroke-linecap="round" stroke-linejoin="round"/>'
-        for d in ICONS[kind]
+        for d in paths
     )
+    grow = f" scale({scale})" if scale != 1.0 else ""
     return (
-        f'<g transform="translate({x},{y})" opacity="0.9">{strokes}'
+        f'<g transform="translate({x},{y}){grow}" opacity="0.9">{strokes}'
         f'<animate attributeName="opacity" values="0.55;1;0.55" dur="4.2s" '
         f'begin="{delay}s" repeatCount="indefinite"/></g>'
     )
@@ -213,26 +263,24 @@ def lane_panel(lane: dict, x: float, y: float, w: float, index: int) -> tuple[st
         f'stroke="{LINE}"/>',
         f'<rect x="{x}" y="{y}" width="3" height="{h}" rx="1.5" fill="{accent}" '
         f'opacity="0.55"/>',
-        icon(lane["icon"], x + 15, y + 11, accent, index * 0.5),
-        text(x + 44, y + 19, lane["title"], size=10, fill=INK, weight=700, spacing="0.1em"),
-        text(x + 44, y + 31, lane["note"], size=8.5, fill=DIM, spacing="0.06em"),
+        icon(lane["icon"], x + 15, y + 12, accent, index * 0.5, 1.15),
+        text(x + 48, y + 22, lane["title"], size=12, fill=INK, weight=700, spacing="0.1em"),
+        text(x + 48, y + 36, lane["note"], size=10, fill=DIM, spacing="0.06em"),
     ]
     for i, name in enumerate(rows):
-        row_y = y + PANEL_HEAD + 8 + i * ROW_H
-        parts.append(
-            f'<circle cx="{x + 20}" cy="{row_y - 4}" r="2.2" fill="{accent}" '
-            f'opacity="0.35"><animate attributeName="opacity" '
-            f'values="0.25;0.95;0.25" dur="3.4s" begin="{(index * 5 + i) * 0.31:.2f}s" '
-            f'repeatCount="indefinite"/></circle>'
-        )
-        parts.append(text(x + 32, row_y, SHORT[name], size=10.5, fill="#a9c0cf"))
+        row_y = y + PANEL_HEAD + 12 + i * ROW_H
+        who, what = SHORT[name]
+        parts.append(icon(name, x + 14, row_y - 15, accent,
+                          (index * 5 + i) * 0.31, 1.22, SOURCE_ICONS))
+        parts.append(text(x + 52, row_y - 2, who, size=12.5, fill=INK, weight=700))
+        parts.append(text(x + 52, row_y + 11, what, size=11, fill="#8ea6b8"))
     return "".join(parts), h
 
 
 def build() -> str:
     check_lanes()
 
-    lane_x, lane_w = 36, 268
+    lane_x, lane_w = 36, 310
     core_x, core_w = 566, 214
     right_x, right_w = 900, 344
 
@@ -385,9 +433,9 @@ def build() -> str:
 
     # --------------------------------------------------------------- chrome
     header = [
-        text(36, 40, "VINTAGE", size=15, fill=INK, weight=700, spacing="0.26em"),
-        text(36, 58, f"{len(SHORT)} free sources, federated behind one interface",
-             size=11, fill=DIM),
+        text(36, 42, "VINTAGE", size=19, fill=INK, weight=700, spacing="0.26em"),
+        text(36, 62, f"{len(SHORT)} free sources, federated behind one interface",
+             size=13, fill=DIM),
         text(W - 36, 40, "every value dated twice", size=11, fill=GREEN,
              anchor="end", spacing="0.08em"),
         text(W - 36, 58, "point-in-time by construction, not by flag", size=10,
@@ -403,7 +451,7 @@ def build() -> str:
     ]
 
     return f"""<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" aria-label="Vintage architecture: eighteen free financial data sources federated behind one interface, every row carrying both the date it describes and the date it became public">
-<title>Vintage — eighteen scattered sources, one interface, every row dated twice</title>
+<title>Vintage, eighteen scattered sources, one interface, every row dated twice</title>
 <defs>
 <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
   <stop offset="0%" stop-color="#0b0f16"/><stop offset="52%" stop-color="#0c121c"/>

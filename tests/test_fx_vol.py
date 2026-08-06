@@ -1,6 +1,6 @@
 """Foreign exchange and volatility indices.
 
-Both are unusually clean on vintage — published once and never revised — so
+Both are unusually clean on vintage (published once and never revised) so
 what needs guarding is the conventions: which way a pair is quoted, and that a
 cross rate is labelled as derived rather than passed off as a traded quote.
 """

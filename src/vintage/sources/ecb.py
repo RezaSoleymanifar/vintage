@@ -1,4 +1,4 @@
-"""European Central Bank reference rates — free foreign exchange, no key.
+"""European Central Bank reference rates, free foreign exchange, no key.
 
 The ECB publishes one set of reference rates each working day at about 16:00
 CET and never revises them, so these are genuinely point-in-time: `known_at` is

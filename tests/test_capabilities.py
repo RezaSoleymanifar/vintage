@@ -3,7 +3,7 @@
 Every check here exists because a specific kind of lie is possible: a prefix
 the router knows but the map does not describe, a map entry pointing at a
 source that no longer exists, an example that would not run, or a prefix that
-routes to an adapter `fetch` never branches on — which is how `filing:` sat in
+routes to an adapter `fetch` never branches on, which is how `filing:` sat in
 the router for months while every fetch of it returned "no source answers".
 """
 
@@ -94,7 +94,7 @@ def test_payload_is_self_describing():
     ],
 )
 def test_discover_can_reach_a_prefix_by_what_it_answers(query, expected_prefix):
-    """The prefixes used to be invisible to search — you had to know the name."""
+    """The prefixes used to be invisible to search. You had to know the name."""
     hits = registry.search_static(query, limit=8)
     assert any(h["field"].startswith(expected_prefix) for h in hits), (
         f"{query!r} found {[h['field'] for h in hits]}"

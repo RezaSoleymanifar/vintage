@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vintage — the long version</title>
-<meta name="description" content="Vintage federates the free, point-in-time financial data of the web: eighteen primary sources — SEC EDGAR and Form 13F, FRED, US Treasury, BLS, BEA, ECB, CFTC, CBOE, Ken French and more — behind one interface and six verbs. You only ever see what was public that day. No API keys, no cost.">
+<title>Vintage, the long version</title>
+<meta name="description" content="Vintage federates the free, point-in-time financial data of the web: eighteen primary sources (SEC EDGAR and Form 13F, FRED, US Treasury, BLS, BEA, ECB, CFTC, CBOE, Ken French and more) behind one interface and six verbs. You only ever see what was public that day. Sixteen of the eighteen need no key, and none of it costs anything.">
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="Vintage — the free market research terminal">
+<meta property="og:title" content="Vintage, the free market research terminal">
 <meta property="og:description" content="Vintage federates the free, point-in-time financial data of the web. Eighteen primary sources, one interface, six verbs, $0.">
 <meta property="og:url" content="https://rezasoleymanifar.github.io/vintage/">
 <meta property="og:image" content="https://rezasoleymanifar.github.io/vintage/og.png">
@@ -20,13 +20,13 @@
   --bg:#0b0f16; --panel:#0d1420; --line:#1f2b3a; --grid:#161f2c;
   --ink:#e8f1ec; --dim:#5f7a8c; --green:#35e08a; --red:#ff6b5e; --amber:#ffc46b;
   --blue:#7fb3ff;
-  --mono:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{
   margin:0; background:var(--bg); color:var(--ink);
-  font-family:var(--mono); font-size:16px; line-height:1.55;
+  font-family:var(--mono); font-size:16.8px; line-height:1.58;
   background-image:linear-gradient(var(--grid) 1px,transparent 1px);
   background-size:100% 60px;
 }
@@ -93,6 +93,10 @@ h2{font-size:clamp(19px,3.4vw,26px);color:var(--ink);margin:0 0 8px;font-weight:
 .dwrap::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
 .dia{display:block;width:100%;height:auto;min-width:940px}
 .dia text{font-family:var(--mono)}
+.d-orbring{fill:rgba(53,224,138,.07);stroke:var(--green);stroke-opacity:.32;stroke-width:1.1}
+.d-orb{color:var(--green);animation:orb 4.6s ease-in-out infinite}
+@keyframes orb{0%,100%{opacity:.6}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.d-orb{animation:none}}
 .swipe{display:none;color:var(--dim);font-size:11px;margin:8px 0 0}
 @media(max-width:980px){.swipe{display:block}}
 
@@ -240,6 +244,13 @@ pre{position:relative;margin:0;background:var(--panel);border:1px solid var(--li
   border-radius:10px;padding:15px 74px 15px 16px;overflow-x:auto;
   font-size:13.5px;line-height:1.65;color:var(--green)}
 pre.one{flex:1 1 30em;padding:14px 74px 14px 16px;font-size:clamp(11.5px,2.2vw,13.5px)}
+.one{position:relative;animation:beckon 2.8s ease-in-out infinite}
+@keyframes beckon{
+  0%,100%{border-color:var(--line);box-shadow:0 0 0 0 rgba(53,224,138,0)}
+  50%{border-color:var(--green);box-shadow:0 0 0 3px rgba(53,224,138,.13),
+      0 0 26px rgba(53,224,138,.20)}}
+.one code{color:var(--green)}
+@media (prefers-reduced-motion:reduce){.one{animation:none;border-color:var(--green)}}
 .copy{position:absolute;top:10px;right:10px;font-family:var(--mono);font-size:11.5px;
   letter-spacing:.1em;color:var(--dim);background:#0a111a;border:1px solid var(--line);
   border-radius:6px;padding:5px 10px;cursor:pointer}
@@ -369,7 +380,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:14px;font-size:
 <div class="wrap">
 
   <header>
-    <p class="eyebrow">MCP server &middot; open source &middot; no API keys</p>
+    <p class="eyebrow">MCP server &middot; open source &middot; 16 of 18 sources need no key</p>
     <h1>VINTAGE</h1>
     <p class="sub">Free market research terminal</p>
 
@@ -378,16 +389,16 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:14px;font-size:
     <p class="gloss"><b>Point-in-time</b> means you only ever see what the world could actually see
     that day. No number that was revised, restated or listed years later leaks backwards into a test
     of the past.</p>
-    <p class="pitch">There is no free lunch in market data — the real terminals cost more than a car.
+    <p class="pitch">There is no free lunch in market data, the real terminals cost more than a car.
     But most of what they sell is <b>already public and already free</b>, just scattered across a
     dozen government, university and exchange sites in ten incompatible formats, none of them
     keeping track of when anything became known.
     <b>Vintage is the closest thing to a free terminal</b>: one pipeline, one schema, one interface.</p>
 
     <figure class="arch">
-      <img src="architecture.svg" width="1280" height="700" alt="Eighteen free
-      financial data sources &mdash; SEC EDGAR, Form 13F, FRED, ECB, US Treasury, BLS, BEA,
-      CFTC, CBOE, FINRA, Coinbase, Ken French and more &mdash; federated behind one interface,
+      <img src="architecture.svg" width="1280" height="880" alt="Eighteen free
+      financial data sources: SEC EDGAR, Form 13F, FRED, ECB, US Treasury, BLS, BEA,
+      CFTC, CBOE, FINRA, Coinbase, Ken French and more, federated behind one interface,
       every row carrying both the date it describes and the date it became public">
       <figcaption>Eighteen sources scattered across the internet, one interface,
       every value dated twice.</figcaption>
@@ -395,7 +406,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:14px;font-size:
 
     <div class="cta">
       <pre class="one"><code>claude mcp add vintage -s user -- uvx vintage-mcp</code><button class="copy" aria-label="Copy">copy</button></pre>
-      <p class="ctanote">Free forever &middot; no key &middot; no account</p>
+      <p class="ctanote">Free forever &middot; no account &middot; a free key only for FRED and BEA</p>
     </div>
 
     <div class="stats">
@@ -411,39 +422,71 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:14px;font-size:
   <section>
     <h2>How the federation works</h2>
     <p class="lede">Filings from the regulator that receives them, macro from the central bank that
-    publishes it, factors from the university that computes them &mdash; then four stages that make
+    publishes it, factors from the university that computes them, then four stages that make
     them one dataset. <span class="hl">Vintage hosts none of it.</span></p>
     <div class="dwrap">
       <svg class="dia" viewBox="0 0 1160 600" role="img" aria-label="Scattered free data sources federated through Vintage into six verbs">
-      <text class="d-h" x="20" y="44">THE WEB &middot; FREE, PUBLIC, SCATTERED</text>
+      <text class="d-h" x="20" y="40">THE WEB &middot; 18 FREE SOURCES</text>
       <text class="d-h g" x="380" y="44">VINTAGE &middot; THE FEDERATION LAYER</text>
       <text class="d-h" x="830" y="44">ONE INTERFACE</text>
-      <rect class="d-card" x="20" y="70" width="250" height="118" rx="11"/>
-      <rect class="d-edge" x="20" y="82" width="2.5" height="94" rx="2"/>
-      <text class="d-ct" x="40" y="94">REGULATORS</text>
-      <text class="d-it" x="40" y="116">SEC EDGAR XBRL</text>
-      <text class="d-it" x="40" y="136">SEC filings stream</text>
-      <text class="d-it" x="40" y="156">FINRA short volume</text>
-      <text class="d-fn" x="40" y="176">XBRL JSON · index files · pipe-delimited</text>
-      <rect class="d-card" x="20" y="208" width="250" height="96" rx="11"/>
-      <rect class="d-edge" x="20" y="220" width="2.5" height="72" rx="2"/>
-      <text class="d-ct" x="40" y="232">CENTRAL BANK</text>
-      <text class="d-it" x="40" y="254">FRED</text>
-      <text class="d-it" x="40" y="274">ALFRED vintages</text>
-      <text class="d-fn" x="40" y="292">CSV · REST · 800k series</text>
-      <rect class="d-card" x="20" y="324" width="250" height="96" rx="11"/>
-      <rect class="d-edge" x="20" y="336" width="2.5" height="72" rx="2"/>
-      <text class="d-ct" x="40" y="348">ACADEMIA</text>
-      <text class="d-it" x="40" y="370">Ken French Library</text>
-      <text class="d-it" x="40" y="390">Open Source Asset Pricing</text>
-      <text class="d-fn" x="40" y="408">zipped CSV · Google Drive</text>
-      <rect class="d-card" x="20" y="440" width="250" height="118" rx="11"/>
-      <rect class="d-edge" x="20" y="452" width="2.5" height="94" rx="2"/>
-      <text class="d-ct" x="40" y="464">MARKETS &AMP; CROWD</text>
-      <text class="d-it" x="40" y="486">Yahoo Finance</text>
-      <text class="d-it" x="40" y="506">Coinbase Exchange</text>
-      <text class="d-it" x="40" y="526">ApeWisdom</text>
-      <text class="d-fn" x="40" y="546">chart JSON · REST · no history</text>
+      <text class="d-ct" x="20" y="66">REGULATORS</text>
+      <g class="d-orb" transform="translate(22,76)" style="animation-delay:-0.00s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5h17"/><path d="M12 3 3.5 7.5h17Z"/><path d="M6.5 10.5v7"/><path d="M11 10.5v7"/><path d="M15.5 10.5v7"/><path d="M20 10.5v7"/></svg></g></g>
+      <text class="d-it" x="50" y="85">SEC XBRL</text>
+      <text class="d-fn" x="50" y="97">every tagged concept</text>
+      <g class="d-orb" transform="translate(190,76)" style="animation-delay:-0.37s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="2.2"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h4.5"/></svg></g></g>
+      <text class="d-it" x="218" y="85">SEC filings</text>
+      <text class="d-fn" x="218" y="97">8-K, 10-K, Form 4</text>
+      <g class="d-orb" transform="translate(22,110)" style="animation-delay:-0.74s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 7.5 12 12l9-4.5Z"/><path d="M3 12.5 12 17l9-4.5"/><path d="M3 17 12 21.5 21 17"/></svg></g></g>
+      <text class="d-it" x="50" y="119">SEC 13F</text>
+      <text class="d-fn" x="50" y="131">institutional holdings</text>
+      <g class="d-orb" transform="translate(190,110)" style="animation-delay:-1.11s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5 12 14l3.5-3.5L21 16"/><path d="M21 11v5h-5"/></svg></g></g>
+      <text class="d-it" x="218" y="119">SEC Form 25</text>
+      <text class="d-fn" x="218" y="131">36,830 delistings</text>
+      <g class="d-orb" transform="translate(22,144)" style="animation-delay:-1.48s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.5" cy="7" r="1.8"/><circle cx="12" cy="4.8" r="1.8"/><circle cx="18.5" cy="8.5" r="1.8"/><circle cx="7" cy="16.5" r="1.8"/><circle cx="16" cy="18" r="1.8"/><circle cx="11.5" cy="11.5" r="1.8"/></svg></g></g>
+      <text class="d-it" x="50" y="153">XBRL frames</text>
+      <text class="d-fn" x="50" y="165">6,289 filers at once</text>
+      <g class="d-orb" transform="translate(190,144)" style="animation-delay:-1.85s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.3 2.9 7.6 7 9.5 4.1-1.9 7-5.2 7-9.5V6Z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg></g></g>
+      <text class="d-it" x="218" y="153">FINRA</text>
+      <text class="d-fn" x="218" y="165">daily short volume</text>
+      <g class="d-orb" transform="translate(22,178)" style="animation-delay:-2.22s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v17"/><path d="M4 7.5h5"/><path d="M4 12h5"/><path d="M4 16.5h5"/><path d="M15.5 9.5h4.5"/><path d="M15.5 14.5h4.5"/></svg></g></g>
+      <text class="d-it" x="50" y="187">CFTC</text>
+      <text class="d-fn" x="50" y="199">weekly positioning</text>
+      <text class="d-ct" x="20" y="222">CENTRAL BANKS</text>
+      <g class="d-orb" transform="translate(22,232)" style="animation-delay:-1.85s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v10"/><path d="M14.6 9.2A2.8 2.8 0 0 0 12 8c-1.7 0-2.8.9-2.8 2s1 1.8 2.8 2 2.8.8 2.8 2-1.1 2-2.8 2a2.8 2.8 0 0 1-2.6-1.2"/></svg></g></g>
+      <text class="d-it" x="50" y="241">FRED</text>
+      <text class="d-fn" x="50" y="253">800k series, vintages</text>
+      <g class="d-orb" transform="translate(190,232)" style="animation-delay:-2.22s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20V4"/><path d="M3 20h18"/><path d="M6 15.5 10 10l3.5 3.5L20 6"/></svg></g></g>
+      <text class="d-it" x="218" y="241">US Treasury</text>
+      <text class="d-fn" x="218" y="253">14-tenor yield curve</text>
+      <g class="d-orb" transform="translate(22,266)" style="animation-delay:-2.59s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M11 14.5h2"/></svg></g></g>
+      <text class="d-it" x="50" y="275">ECB</text>
+      <text class="d-fn" x="50" y="287">FX rates since 1999</text>
+      <g class="d-orb" transform="translate(190,266)" style="animation-delay:-2.96s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.4l3.4 2"/></svg></g></g>
+      <text class="d-it" x="218" y="275">BLS</text>
+      <text class="d-fn" x="218" y="287">CPI, payrolls, JOLTS</text>
+      <g class="d-orb" transform="translate(22,300)" style="animation-delay:-3.33s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 4.5h17l-6.6 7.8v6.4l-3.8 2.3v-8.7Z"/></svg></g></g>
+      <text class="d-it" x="50" y="309">BEA</text>
+      <text class="d-fn" x="50" y="321">the national accounts</text>
+      <text class="d-ct" x="20" y="344">MARKETS</text>
+      <g class="d-orb" transform="translate(22,354)" style="animation-delay:-3.70s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M6.5 9.5 9.5 12l-3 2.5"/><path d="M12.5 15h5"/></svg></g></g>
+      <text class="d-it" x="50" y="363">Yahoo</text>
+      <text class="d-fn" x="50" y="375">daily OHLCV, decades</text>
+      <g class="d-orb" transform="translate(190,354)" style="animation-delay:-4.07s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 3v6.2L4.7 17.4A2 2 0 0 0 6.4 20.5h11.2a2 2 0 0 0 1.7-3.1L14.5 9.2V3"/><path d="M8.5 3h7"/><path d="M7.4 14h9.2"/></svg></g></g>
+      <text class="d-it" x="218" y="363">CBOE</text>
+      <text class="d-fn" x="218" y="375">VIX and the vol family</text>
+      <g class="d-orb" transform="translate(22,388)" style="animation-delay:-4.44s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v11"/><path d="M8 11l4 3.5 4-3.5"/><path d="M4.5 18.5h15"/></svg></g></g>
+      <text class="d-it" x="50" y="397">Coinbase</text>
+      <text class="d-fn" x="50" y="409">crypto, never restated</text>
+      <text class="d-ct" x="20" y="432">ACADEMIA</text>
+      <g class="d-orb" transform="translate(22,442)" style="animation-delay:-5.55s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5 2.5 8 12 12.5 21.5 8Z"/><path d="M6.5 10.2v5.3c0 1.9 2.5 3.2 5.5 3.2s5.5-1.3 5.5-3.2v-5.3"/><path d="M21.5 8v5"/></svg></g></g>
+      <text class="d-it" x="50" y="451">Ken French</text>
+      <text class="d-fn" x="50" y="463">factors from July 1926</text>
+      <g class="d-orb" transform="translate(190,442)" style="animation-delay:-5.92s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8 18.5 16 5.5"/></svg></g></g>
+      <text class="d-it" x="218" y="451">Open Source AP</text>
+      <text class="d-fn" x="218" y="463">331 published claims</text>
+      <g class="d-orb" transform="translate(22,476)" style="animation-delay:-6.29s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5a2 2 0 0 1-2 2H8l-4.5 4V5.5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2Z"/><path d="M8 8.5h8"/><path d="M8 12h5"/></svg></g></g>
+      <text class="d-it" x="50" y="485">ApeWisdom</text>
+      <text class="d-fn" x="50" y="497">forum mention ranks</text>
       <rect class="d-pipe" x="380" y="70" width="380" height="490" rx="14"/>
       <rect class="d-stage" x="400" y="96" width="340" height="84" rx="11"/>
       <circle class="d-num" cx="428" cy="138" r="14"/>
@@ -470,15 +513,15 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:14px;font-size:
       <text class="d-ss" x="456" y="436">the panel is point-in-time by construction</text>
       <text class="d-ss" x="456" y="454">there is no flag that turns this off</text>
       <text class="d-note" x="400" y="500">one schema &middot; one key &middot; two dates per row</text>
-      <text class="d-fn" x="400" y="524">nothing hosted &middot; nothing redistributed &middot; no API keys</text>
-      <path class="d-wire" d="M270 129 C322 129 330 138 380 138"/>
-      <path class="d-flow" style="animation-delay:-0.0s" d="M270 129 C322 129 330 138 380 138"/>
-      <path class="d-wire" d="M270 256 C322 256 330 234 380 234"/>
-      <path class="d-flow" style="animation-delay:-0.4s" d="M270 256 C322 256 330 234 380 234"/>
-      <path class="d-wire" d="M270 372 C322 372 330 330 380 330"/>
-      <path class="d-flow" style="animation-delay:-0.8s" d="M270 372 C322 372 330 330 380 330"/>
-      <path class="d-wire" d="M270 499 C322 499 330 426 380 426"/>
-      <path class="d-flow" style="animation-delay:-1.2s" d="M270 499 C322 499 330 426 380 426"/>
+      <text class="d-fn" x="400" y="524">nothing hosted &middot; nothing redistributed &middot; 16 of 18 need no key</text>
+      <path class="d-wire" d="M270 136 C322 136 330 138 380 138"/>
+      <path class="d-flow" style="animation-delay:-0.0s" d="M270 136 C322 136 330 138 380 138"/>
+      <path class="d-wire" d="M270 275 C322 275 330 234 380 234"/>
+      <path class="d-flow" style="animation-delay:-0.4s" d="M270 275 C322 275 330 234 380 234"/>
+      <path class="d-wire" d="M270 380 C322 380 330 330 380 330"/>
+      <path class="d-flow" style="animation-delay:-0.8s" d="M270 380 C322 380 330 330 380 330"/>
+      <path class="d-wire" d="M270 468 C322 468 330 426 380 426"/>
+      <path class="d-flow" style="animation-delay:-1.2s" d="M270 468 C322 468 330 426 380 426"/>
       <rect class="d-box" x="830" y="70" width="310" height="250" rx="11"/>
       <text class="d-ct" x="850" y="98">SIX VERBS</text>
       <rect class="d-verb" x="850" y="114" width="134" height="44" rx="9"/>
@@ -589,7 +632,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:14px;font-size:
       <g class="pr2">
       <rect class="d-row warn" x="784" y="368" width="336" height="38" rx="8"/>
       <text class="d-it" x="798" y="385">assets $323.9B &middot; restatement</text>
-      <text class="d-fn" x="798" y="400">filed 30 Oct 2020 &mdash; row 1 stays</text>
+      <text class="d-fn" x="798" y="400">filed 30 Oct 2020, row 1 stays</text>
       </g>
       </svg>
     </div>
@@ -656,7 +699,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:14px;font-size:
       <rect class="d-spec sp38" x="272" y="197" width="22" height="22" rx="4"/>
       <rect class="d-spec sp39" x="301" y="197" width="22" height="22" rx="4"/>
       <rect class="d-spec sp40" x="40" y="226" width="22" height="22" rx="4"/>
-      <text class="d-fn" x="40" y="96">41 ideas tried &mdash; every one counted</text>
+      <text class="d-fn" x="40" y="96">41 ideas tried, every one counted</text>
       <rect class="d-stage" x="410" y="80" width="250" height="150" rx="11"/>
       <text class="d-ct" x="430" y="108">TRIAL LEDGER</text>
       <text class="d-big" x="430" y="150">n = 41</text>
@@ -692,12 +735,12 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:14px;font-size:
       <span class="paper off"><b>planned</b> · PBO via CSCV</span>
       <span class="paper off"><b>planned</b> · purged k-fold + embargo</span>
       <span class="paper off"><b>planned</b> · minimum backtest length</span>
-      <span class="paper off"><b>planned</b> · Newey–West</span>
+      <span class="paper off"><b>planned</b> · Newey-West</span>
       <span class="paper off"><b>planned</b> · square-root impact</span>
     </div>
     <p class="after">Execution realism is a different problem, already solved by
     <a href="https://www.quantconnect.com/lean">LEAN</a> and
-    <a href="https://nautilustrader.io/">Nautilus Trader</a> — Vintage runs before that, where most
+    <a href="https://nautilustrader.io/">Nautilus Trader</a>. Vintage runs before that, where most
     ideas should die. Citations are references, not endorsements; anything marked planned is not in
     the code yet, and the <code>backtest</code> response says so at runtime.</p>
   </section>
@@ -707,14 +750,14 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:14px;font-size:
     <div class="term">
       <div class="bar">
         <span class="tdot"></span><span class="tdot"></span><span class="tdot"></span>
-        <span class="who">claude — vintage</span>
+        <span class="who">claude, vintage</span>
       </div>
       <div class="screen">
         <div class="row r0"><span class="prompt p-shell">$</span><span class="typed t0">claude mcp add vintage -s user -- uvx vintage-mcp</span><span class="caret k0"></span></div>
         <div class="row r1 ok"><b>✓</b>connected · sec · fred · dartmouth · openap · coinbase · finra</div>
         <div class="row r2"><span class="prompt p-user">❯</span><span class="typed t2">backtest 12-1 momentum on the dow 30 since 2010</span><span class="caret k2"></span></div>
         <div class="row r3 dim in1">reading 30 tickers from yahoo-finance, 3,914 sessions</div>
-        <div class="row r4 dim in1">panel indexed on known_at — lookahead structurally impossible</div>
+        <div class="row r4 dim in1">panel indexed on known_at, lookahead structurally impossible</div>
         <div class="row r5 kv"><span class="k">annualized return</span><span class="v">14.8%</span><span class="k">volatility</span><span class="v">17.1%</span><span class="k">turnover cost</span><span class="v">−40 bps/yr</span></div>
         <div class="row r6 big kv"><span class="k">sharpe</span><span class="v">2.14</span></div>
         <div class="row r7"><span class="prompt p-user">❯</span><span class="typed t7">try short-term reversal instead</span><span class="caret k7"></span></div>
@@ -736,9 +779,9 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:14px;font-size:
     <h2>What the forums are saying, right now</h2>
     <p class="lede">Fetched while this page was built. ApeWisdom ranks mention counts across roughly
     fifteen stock and crypto subreddits, and it publishes <span class="hl">only the present</span>
-    &mdash; there is no history endpoint, and nobody can sell you last Tuesday's ranking honestly,
+. There is no history endpoint, and nobody can sell you last Tuesday's ranking honestly,
     because anyone claiming years of it re-scored old posts with today's model.</p>
-    <table class="forum"><thead><tr><th></th><th>ticker</th><th>name</th><th class="n">mentions</th><th class="n">24h change</th><th class="n">upvotes</th></tr></thead><tbody><tr><td class="rk">1</td><td class="tk">SNDK</td><td class="nm">Sandisk</td><td class="n">754</td><td class="n up">+275</td><td class="n dimc">4,091</td></tr><tr><td class="rk">2</td><td class="tk">HTZ</td><td class="nm">Hertz</td><td class="n">637</td><td class="n up">+632</td><td class="n dimc">3,223</td></tr><tr><td class="rk">3</td><td class="tk">SPY</td><td class="nm">SPDR S&amp;P 500 ETF Trust</td><td class="n">494</td><td class="n down">-272</td><td class="n dimc">1,258</td></tr><tr><td class="rk">4</td><td class="tk">SPCX</td><td class="nm">SpaceX</td><td class="n">429</td><td class="n down">-239</td><td class="n dimc">1,538</td></tr><tr><td class="rk">5</td><td class="tk">MU</td><td class="nm">Micron Technology</td><td class="n">311</td><td class="n up">+6</td><td class="n dimc">1,112</td></tr><tr><td class="rk">6</td><td class="tk">QQQ</td><td class="nm">Invesco QQQ ETF</td><td class="n">171</td><td class="n up">+28</td><td class="n dimc">346</td></tr><tr><td class="rk">7</td><td class="tk">NVDA</td><td class="nm">NVIDIA</td><td class="n">168</td><td class="n down">-159</td><td class="n dimc">555</td></tr><tr><td class="rk">8</td><td class="tk">WDC</td><td class="nm">Western Digital</td><td class="n">165</td><td class="n up">+123</td><td class="n dimc">447</td></tr></tbody></table><p class="stamp">read from ApeWisdom at 2026-08-06 20:05 UTC &middot; <code>known_at</code> is that moment, not the moment the posts were written</p>
+    <table class="forum"><thead><tr><th></th><th>ticker</th><th>name</th><th class="n">mentions</th><th class="n">24h change</th><th class="n">upvotes</th></tr></thead><tbody><tr><td class="rk">1</td><td class="tk">HTZ</td><td class="nm">Hertz</td><td class="n">705</td><td class="n up">+697</td><td class="n dimc">3,729</td></tr><tr><td class="rk">2</td><td class="tk">SNDK</td><td class="nm">Sandisk</td><td class="n">488</td><td class="n down">-179</td><td class="n dimc">2,186</td></tr><tr><td class="rk">3</td><td class="tk">SPY</td><td class="nm">SPDR S&amp;P 500 ETF Trust</td><td class="n">467</td><td class="n down">-275</td><td class="n dimc">1,202</td></tr><tr><td class="rk">4</td><td class="tk">SPCX</td><td class="nm">SpaceX</td><td class="n">409</td><td class="n down">-101</td><td class="n dimc">1,096</td></tr><tr><td class="rk">5</td><td class="tk">MU</td><td class="nm">Micron Technology</td><td class="n">282</td><td class="n down">-34</td><td class="n dimc">822</td></tr><tr><td class="rk">6</td><td class="tk">NVDA</td><td class="nm">NVIDIA</td><td class="n">164</td><td class="n down">-155</td><td class="n dimc">545</td></tr><tr><td class="rk">7</td><td class="tk">QQQ</td><td class="nm">Invesco QQQ ETF</td><td class="n">151</td><td class="n up">+4</td><td class="n dimc">288</td></tr><tr><td class="rk">8</td><td class="tk">MSFT</td><td class="nm">Microsoft</td><td class="n">122</td><td class="n up">+37</td><td class="n dimc">490</td></tr></tbody></table><p class="stamp">read from ApeWisdom at 2026-08-06 20:55 UTC &middot; <code>known_at</code> is that moment, not the moment the posts were written</p>
     <p class="after">This is why the row is stamped rather than dated. Backtestable history starts the
     day you begin recording, which is the only version that survives contact with a
     <code>known_at</code> index.</p>
@@ -769,10 +812,10 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:14px;font-size:
     }
   }
 }</code><button class="copy" aria-label="Copy">copy</button></pre></div>
-        <div class="pane" id="chatgpt"><p class="note">Settings → Connectors → Developer mode. Needs a hosted URL — run <code>vintage</code> behind HTTPS and point the connector at it.</p><pre><code>uvx vintage-mcp --transport streamable-http --port 8000</code><button class="copy" aria-label="Copy">copy</button></pre></div>
+        <div class="pane" id="chatgpt"><p class="note">Settings → Connectors → Developer mode. Needs a hosted URL, run <code>vintage</code> behind HTTPS and point the connector at it.</p><pre><code>uvx vintage-mcp --transport streamable-http --port 8000</code><button class="copy" aria-label="Copy">copy</button></pre></div>
     <p class="after">Needs <a href="https://docs.astral.sh/uv/getting-started/installation/">uv</a>.
     Prefer pip? <code>pip install vintage-mcp</code>, then use <code>vintage</code> as the command.
-    No API keys required for anything above.</p>
+    Sixteen of the eighteen sources need no key. FRED and BEA take a free one.</p>
   </section>
 
   <footer>
@@ -783,7 +826,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:14px;font-size:
       <a href="https://github.com/RezaSoleymanifar/vintage/blob/main/DATA_SOURCES.md">Data landscape</a>
       <a href="https://github.com/RezaSoleymanifar/vintage/blob/main/DESIGN.md">Design</a>
     </div>
-    <p>MIT licensed. Vintage redistributes no data — SEC EDGAR, FRED, Yahoo Finance and the
+    <p>MIT licensed. Vintage redistributes no data, SEC EDGAR, FRED, Yahoo Finance and the
     Ken French library each keep their own terms. Counts current as of August 2026.
     Nothing here is investment advice.</p>
   </footer>

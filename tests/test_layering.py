@@ -1,8 +1,8 @@
 """The data layer may not import the engine.
 
 Vintage is a data library that happens to ship a backtester, not a backtester
-that happens to fetch data. The dependency runs one way — engine reads data —
-and this test is what keeps it that way once someone is in a hurry.
+that happens to fetch data. The dependency runs one way, engine reads data.
+And this test is what keeps it that way once someone is in a hurry.
 
 If this fails, the fix is never to loosen the test. It is to move whatever
 computation reached for the engine out of the data layer.

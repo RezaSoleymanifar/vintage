@@ -11,7 +11,7 @@ VERBS = {"resolve", "discover", "fetch", "events", "backtest", "benchmark"}
 
 # Two tools that are not verbs: `status` reports the server's own state and
 # `capabilities` describes the surface. Neither is a data source, and the list
-# is closed — a new source must still add zero tools.
+# is closed, a new source must still add zero tools.
 META = {"status", "capabilities"}
 
 

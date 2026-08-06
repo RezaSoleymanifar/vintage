@@ -1,8 +1,8 @@
-"""Bureau of Economic Analysis — GDP and the national accounts, at table level.
+"""Bureau of Economic Analysis, GDP and the national accounts, at table level.
 
 FRED carries the headline series one at a time. BEA serves the whole NIPA table,
-so a single call returns every line of the GDP decomposition — consumption,
-investment, net exports, government, each with its contribution to growth — in
+so a single call returns every line of the GDP decomposition, consumption,
+investment, net exports, government, each with its contribution to growth, in
 the shape a macro overlay actually needs.
 
 The vintage story here is the sharpest in the product, and it is a warning
@@ -108,7 +108,7 @@ async def table(spec: str = "T10101", *, frequency: str | None = None,
     dataset, name, embedded = parse_spec(spec)
     freq = (frequency or embedded or "Q").upper()
     if freq not in ("A", "Q", "M"):
-        raise SourceError(f"BEA frequency is A, Q or M — not {freq!r}.")
+        raise SourceError(f"BEA frequency is A, Q or M, not {freq!r}.")
 
     url = (f"{BASE}?&UserID={_key()}&method=GetData&DataSetName={dataset}"
            f"&TableName={name}&Frequency={freq}&Year={year}&ResultFormat=JSON")
@@ -128,7 +128,7 @@ async def table(spec: str = "T10101", *, frequency: str | None = None,
     if not data:
         raise SourceError(
             f"BEA returned no rows for {dataset}/{name}. Monthly data exists only for "
-            "a few tables such as T20600 — most NIPA tables are quarterly or annual."
+            "a few tables such as T20600. Most NIPA tables are quarterly or annual."
         )
 
     unit_label = results.get("UnitOfMeasure")
@@ -185,7 +185,7 @@ def warnings_for(spec: str, rows: list[dict[str, Any]]) -> list[str]:
         f"{lines} table line(s) across {len({r['observed_at'] for r in rows})} periods. "
         "Every figure is the current estimate. GDP is published as an advance estimate "
         "about a month after the quarter, revised twice more within three months, then "
-        "again at every annual and benchmark revision — so the number here was not "
+        "again at every annual and benchmark revision, so the number here was not "
         "public on the date it describes, and often differs from the first print by more "
         "than a percentage point. These rows carry no known_at for that reason. Use "
         "fred:GDPC1 with ALFRED vintages when the backtest has to be honest.",

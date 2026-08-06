@@ -1,4 +1,4 @@
-"""FINRA daily short sale volume — free, daily, and almost nobody glues it.
+"""FINRA daily short sale volume, free, daily, and almost nobody glues it.
 
 FINRA publishes one pipe-delimited file per trading day covering every
 consolidated-tape symbol: short volume, short-exempt volume, total volume.
@@ -103,7 +103,7 @@ async def short_volume(
     if not rows:
         raise SourceError(
             f"FINRA reported no short volume for {symbol} in the last {days} sessions. "
-            "The file covers consolidated-tape equities — check the symbol, and note "
+            "The file covers consolidated-tape equities, check the symbol, and note "
             "that today's file appears only after the session closes."
         )
     return sorted(rows, key=lambda r: r["observed_at"])
@@ -127,7 +127,7 @@ def _extract(text: str, symbol: str) -> tuple[float, float, float] | None:
 def warnings_for(rows: list[dict[str, Any]]) -> list[str]:
     return [
         "Short volume is not short interest. This counts shares sold short during "
-        "the session, including market-maker hedging that is flat by the close — "
+        "the session, including market-maker hedging that is flat by the close, "
         "it is a flow measure, not a measure of outstanding bearish positioning.",
         f"Covers consolidated-tape venues only; off-exchange activity is partial. "
         f"{len(rows)} session(s) returned.",

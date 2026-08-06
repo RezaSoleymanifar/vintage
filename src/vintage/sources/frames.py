@@ -1,4 +1,4 @@
-"""SEC XBRL frames — one concept, every company, one request.
+"""SEC XBRL frames, one concept, every company, one request.
 
 This is the difference between a lookup and a factor engine. `companyfacts`
 answers "what were Apple's assets"; frames answers "what were assets for all
@@ -72,7 +72,7 @@ async def cross_section(
         alt = period + "I" if not period.endswith("I") else period[:-1]
         raise SourceError(
             f"No frame for {taxonomy}:{tag} {unit} {period}. "
-            f"Balance-sheet concepts need the instant form — try {alt}. ({exc})"
+            f"Balance-sheet concepts need the instant form, try {alt}. ({exc})"
         ) from exc
 
     data = payload.get("data") or []

@@ -1,4 +1,4 @@
-"""Ken French Data Library — the benchmark every factor claim is scored against.
+"""Ken French Data Library. The benchmark every factor claim is scored against.
 
 Static ZIPs, no key, no rate drama. The parsing is fiddly because the files
 carry a monthly block followed by an annual block under one header.
@@ -64,7 +64,7 @@ async def load(dataset: str) -> list[dict[str, Any]]:
 
     French series are revised on rebuild rather than filed, so there is no
     honest `known_at`. They are flagged UNKNOWN_VINTAGE rather than given a
-    fabricated date — but as a benchmark that is fine, since you compare
+    fabricated date: but as a benchmark that is fine, since you compare
     against them rather than trade on them.
     """
     meta = DATASETS.get(dataset)

@@ -1,4 +1,4 @@
-"""FRED / ALFRED — 800k macro series, and the only free source of macro vintages.
+"""FRED / ALFRED, 800k macro series, and the only free source of macro vintages.
 
 ALFRED's `realtime_start` is when a value first appeared, which is a genuine
 `known_at`. Most people use FRED and quietly backtest on revised GDP. This
