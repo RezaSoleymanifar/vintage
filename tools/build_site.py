@@ -19,7 +19,9 @@ landing page stays short while the GIF pipeline keeps working.
 
 from __future__ import annotations
 
+import hashlib
 import html
+import io
 import os
 import sys
 
@@ -368,7 +370,10 @@ def diagram_taxonomy() -> str:
              'through the same six verbs">')
 
     # The panel opens on the block the previous panel closed on.
-    vintage_bar(p, 16, lede="the same block the last panel ended on")
+    # This used to read "the same block the last panel ended on", which was true
+    # while the source grid was the slide before it. That slide is gone, so the
+    # bar has to introduce itself instead of pointing back at nothing.
+    vintage_bar(p, 16, lede="eighteen sources in, one grammar out")
 
     p.append(txt(20, 132, "ONE TAXONOMY", "d-h g"))
     p.append(txt(1140, 132, "23 PREFIXES", "d-h", "end"))
@@ -1697,6 +1702,18 @@ def build_badges() -> str:
             f'<div class="badges">{engine}</div>')
 
 
+def arch_src() -> str:
+    """The map with a content hash on it. Without one a browser keeps showing
+    the copy it cached, which is how a redrawn diagram silently does not ship."""
+    path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                        "docs", "architecture.svg")
+    try:
+        digest = hashlib.md5(io.open(path, "rb").read()).hexdigest()[:10]
+    except OSError:
+        return "architecture.svg"
+    return f"architecture.svg?v={digest}"
+
+
 def build_tiles() -> str:
     return "\n      ".join(
         f'<div class="tile">{icon(g, 16)}<b>{n}</b><span>{w}</span></div>'
@@ -2081,16 +2098,10 @@ __ONECSS__
     <div class="chips" id="chips"></div>
     <div class="panels" id="panels">
 
-      <section class="panel is-on" data-dwell="10">
-        <h2 class="ptitle">Sources</h2>
-        __F1__
-        __DIA1__
-      </section>
-
-      <section class="panel arch" data-dwell="14">
+      <section class="panel arch is-on" data-dwell="14">
         <h2 class="ptitle">The whole thing, on one page.</h2>
         __FMAP__
-        <div class="archwrap"><img src="architecture.svg" width="1280" height="930"
+        <div class="archwrap"><img src="__ARCHSRC__" width="1280" height="930"
           alt="Eighteen free financial data sources: SEC EDGAR, Form 13F, FRED, ECB,
           US Treasury, BLS, BEA, CFTC, CBOE, FINRA, Coinbase, Ken French and more,
           federated behind one interface, every row carrying both the date it
@@ -2197,7 +2208,7 @@ __ONECSS__
 (function () {
   var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
   var chipbar = document.getElementById('chips');
-  var titles = ['What it is', 'The map', 'The taxonomy', 'The schema', 'What you get',
+  var titles = ['The map', 'The taxonomy', 'The schema', 'What you get',
                 'Point-in-time', 'The drift', 'The engine', 'The experiment',
                 'A session', 'The forums', 'Install'];
   var timer, at = 0, held = false;
@@ -2323,7 +2334,10 @@ def main() -> None:
 
     # Diagrams are built before the page is assembled: each one appends its own
     # keyframes to DIA_CSS as a side effect.
-    dia1, dia2, dia3 = diagram_federation(), diagram_pit(), diagram_honesty()
+    # diagram_federation() is kept, but no slide renders it any more: the source
+    # grid it drew was cut. Calling it here would only pour its keyframes into
+    # DIA_CSS for nothing.
+    dia2, dia3 = diagram_pit(), diagram_honesty()
     taxo = diagram_taxonomy()
     schema = diagram_schema()
     cover = diagram_coverage()
@@ -2335,8 +2349,7 @@ def main() -> None:
     # page - the six drifts, the live forum board, the session, the install tabs -
     # is a slide here instead.
     one = (
-        ONE_PAGE.replace("__DIA1__", dia1)
-        .replace("__DIA5__", taxo)
+        ONE_PAGE.replace("__DIA5__", taxo)
         .replace("__DIA6__", schema)
         .replace("__DIA2__", cover)
         .replace("__DIA3__", dia2)
@@ -2348,6 +2361,7 @@ def main() -> None:
         .replace("__TABS__", tabs)
         .replace("__PANES__", panes)
         .replace("__METHODS__", build_methods())
+        .replace("__ARCHSRC__", arch_src())
         .replace("__TILES__", build_tiles())
         .replace("__BADGES__", build_badges())
         .replace("__ONECSS__", diacss + "\n" + exp_anim + "\n" + anim)
