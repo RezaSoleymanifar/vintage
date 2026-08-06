@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: py${{ matrix.python }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Sync
+        run: uv sync --group dev --python ${{ matrix.python }}
+
+      - name: Test
+        run: uv run pytest -q
+
+  build:
+    name: build distributions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+
+      - run: uv build
+
+      - name: Check metadata renders on PyPI
+        run: uvx twine check dist/*
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  manifest:
+    name: validate server.json
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate against the MCP registry schema
+        run: |
+          npx --yes ajv-cli@5 validate \
+            -s <(curl -sS https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json) \
+            -d server.json --spec=draft7
+        shell: bash
+
+      - name: server.json version must match pyproject
+        run: |
+          pkg=$(grep -m1 '^version' pyproject.toml | cut -d'"' -f2)
+          man=$(python -c "import json;d=json.load(open('server.json'));print(d['version'])")
+          dep=$(python -c "import json;d=json.load(open('server.json'));print(d['packages'][0]['version'])")
+          echo "pyproject=$pkg  server.json=$man  package=$dep"
+          test "$pkg" = "$man" && test "$pkg" = "$dep"
+        shell: bash

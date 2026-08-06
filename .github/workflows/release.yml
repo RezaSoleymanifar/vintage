@@ -1,0 +1,112 @@
+name: Release
+
+# Tag a version and this ships it everywhere:
+#   git tag v0.1.0 && git push origin v0.1.0
+#
+# No secrets are stored. PyPI uses Trusted Publishing and the MCP registry
+# uses GitHub OIDC — both authenticate from this workflow's identity alone.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    name: tag must match pyproject and server.json
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compare versions
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          [ "${{ github.event_name }}" = "workflow_dispatch" ] && exit 0
+          pkg=$(grep -m1 '^version' pyproject.toml | cut -d'"' -f2)
+          man=$(python -c "import json;print(json.load(open('server.json'))['version'])")
+          dep=$(python -c "import json;print(json.load(open('server.json'))['packages'][0]['version'])")
+          echo "tag=$tag pyproject=$pkg server.json=$man package=$dep"
+          if [ "$tag" != "$pkg" ] || [ "$tag" != "$man" ] || [ "$tag" != "$dep" ]; then
+            echo "::error::version mismatch — bump pyproject.toml and server.json to $tag"
+            exit 1
+          fi
+
+  test:
+    name: full suite before shipping
+    needs: guard
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --group dev
+      - run: uv run pytest -q
+
+  pypi:
+    name: publish to PyPI
+    needs: test
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/vintage-mcp/
+    permissions:
+      id-token: write  # Trusted Publishing — no API token needed
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+
+      - run: uv build
+      - run: uvx twine check dist/*
+
+      - name: Upload
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+  registry:
+    name: publish to the MCP Registry
+    needs: pypi
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # GitHub OIDC proves we own io.github.rezasoleymanifar/*
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Wait for PyPI to serve the new version
+        run: |
+          want=$(python -c "import json;print(json.load(open('server.json'))['packages'][0]['version'])")
+          for i in $(seq 1 30); do
+            if curl -sf "https://pypi.org/pypi/vintage-mcp/$want/json" > /dev/null; then
+              echo "vintage-mcp $want is live on PyPI"; exit 0
+            fi
+            echo "attempt $i — not indexed yet, waiting 20s"; sleep 20
+          done
+          echo "::error::vintage-mcp $want never appeared on PyPI"; exit 1
+
+      - name: Install mcp-publisher
+        run: |
+          curl -sSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_linux_amd64.tar.gz" \
+            | tar xz mcp-publisher
+          chmod +x mcp-publisher
+
+      - name: Authenticate via GitHub OIDC
+        run: ./mcp-publisher login github-oidc
+
+      - name: Publish
+        run: ./mcp-publisher publish
+
+  github_release:
+    name: draft the GitHub release
+    needs: registry
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv build
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true

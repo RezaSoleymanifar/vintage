@@ -1,0 +1,44 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.rezasoleymanifar/vintage",
+  "title": "Vintage",
+  "description": "A research terminal that costs $0 and won't lie to you about your Sharpe. Point-in-time financial data from SEC EDGAR, FRED and Ken French behind six verbs, with a backtester that deflates your Sharpe by how many specs you tried.",
+  "version": "0.1.0",
+  "websiteUrl": "https://github.com/RezaSoleymanifar/vintage",
+  "repository": {
+    "url": "https://github.com/RezaSoleymanifar/vintage",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "pypi",
+      "registryBaseUrl": "https://pypi.org",
+      "identifier": "vintage-mcp",
+      "version": "0.1.0",
+      "transport": { "type": "stdio" },
+      "environmentVariables": [
+        {
+          "name": "VINTAGE_USER_AGENT",
+          "description": "Contact string sent to SEC EDGAR, which asks for a real name and email. Format: 'Your Name your@email.com'.",
+          "format": "string",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "FRED_API_KEY",
+          "description": "Free key from https://fredaccount.stlouisfed.org/apikeys. Unlocks 800k macro series with ALFRED first-release vintages. Everything else works without it.",
+          "format": "string",
+          "isRequired": false,
+          "isSecret": true
+        },
+        {
+          "name": "VINTAGE_CACHE_DIR",
+          "description": "Where the gzipped response cache lives. Defaults to ~/.cache/vintage.",
+          "format": "string",
+          "isRequired": false,
+          "isSecret": false
+        }
+      ]
+    }
+  ]
+}
