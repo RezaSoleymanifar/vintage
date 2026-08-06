@@ -211,6 +211,14 @@ UNIVERSE = [
 
 GROUP_ORDER = ["REGULATORS", "CENTRAL BANKS", "MARKETS", "ACADEMIA"]
 
+# What each family is, in the six words a reader will actually spend attention on.
+GROUP_GLOSS = {
+    "REGULATORS":    "what filers are compelled to disclose",
+    "CENTRAL BANKS": "what the state measures about itself",
+    "MARKETS":       "what changed hands, and at what price",
+    "ACADEMIA":      "what has been published, and claimed",
+}
+
 STAGES = [
     ("resolve", "AAPL &middot; 0000320193 &middot; &ldquo;Apple Inc&rdquo;",
      "&rarr; one entity key every source accepts"),
@@ -309,77 +317,96 @@ def diagram_federation() -> str:
 
 # -------------------------------------------------- diagram 2: point-in-time
 
-# (label, second line, x on the axis, percent of the sweep when the wall reaches it)
-PIT_EVENTS = [
-    ("10-K FY2019 &middot; assets $338.5B", "public 31 Oct 2019", 333, 21.0),
-    ("10-Q Q1 2020", "public 29 Jan 2020", 493, 38.4),
-    ("FY2019 restated &middot; $323.9B", "public 30 Oct 2020", 973, 90.5),
+# The point-in-time idea told as a newsstand, because everyone already knows
+# how a newspaper works: you can read the ones printed on or before today, the
+# rest are not out yet, and a correction is a new edition rather than an edit
+# to the paper already on the shelf.
+#
+# (masthead date, headline, second line, x of the paper, percent of the sweep)
+PAPERS = [
+    ("31 OCT 2019", "Assets $338.5B", "the annual report, as filed", 60, 7.6, False),
+    ("29 JAN 2020", "Q1 comes in", "the quarter, as filed", 430, 47.8, False),
+    ("30 OCT 2020", "Correction: $323.9B", "last year restated, a year later", 800, 88.0, True),
 ]
 
-PIT_ROWS = [
-    ("assets $338.5B", "filed 31 Oct 2019", 21.0, "ok"),
-    ("Q1 2020 filed", "filed 29 Jan 2020", 38.4, "ok"),
-    ("assets $323.9B &middot; restatement", "filed 30 Oct 2020, row 1 stays", 90.5, "warn"),
+SLIPS = [
+    ("assets $338.5B", "readable from 31 Oct 2019", 7.6, "ok"),
+    ("Q1 2020 filed", "readable from 29 Jan 2020", 47.8, "ok"),
+    ("assets $323.9B", "a second row. The first one still says $338.5B", 88.0, "warn"),
 ]
 
-PIT_TICKS = [(120, "Jul 2019"), (440, "Jan 2020"), (760, "Jul 2020"), (1080, "Jan 2021")]
 PIT_LOOP = 11.0
 
 
 def diagram_pit() -> str:
+    """A shelf of dated newspapers with today sweeping across it."""
     p: list[str] = []
     p.append('<svg class="dia" viewBox="0 0 1160 440" role="img" '
-             'aria-label="An as-of wall sweeping a timeline, revealing filings only once they were public">')
+             'aria-label="A newsstand: today sweeps left to right, and a backtest may '
+             'only read the papers already printed">')
 
-    p.append('<defs><clipPath id="plot"><rect x="118" y="60" width="964" height="230"/></clipPath></defs>')
-    p.append(txt(20, 40, "TIME &rarr;", "d-h"))
-    p.append(txt(1082, 326, "the day you are pretending it is", "d-fn", "end"))
+    DIA_CSS.append(
+        ".d-paper{fill:#101a26;stroke:#2c3f52}"
+        ".d-ghost{fill:none;stroke:#21303f;stroke-dasharray:5 5}"
+        ".d-mast{fill:#5f7a8c;font-size:11px;letter-spacing:.2em}"
+        ".d-head{fill:#e8f1ec;font-size:19px;font-weight:700}"
+        ".d-head.warn{fill:var(--amber)}"
+        ".d-col{stroke:#22323f;stroke-width:3;stroke-linecap:round}"
+        ".d-shelf{stroke:#2c3f52;stroke-width:2}"
+    )
 
-    # the future, shaded, riding along with the wall
-    p.append('<g clip-path="url(#plot)"><g class="pit-wall">'
-             '<rect class="d-future" x="140" y="60" width="960" height="230"/>'
-             '<line class="d-wallline" x1="140" y1="60" x2="140" y2="282"/>'
-             '</g></g>')
-    p.append('<g class="pit-wall"><rect class="d-walltag" x="102" y="34" width="76" height="22" rx="6"/>'
-             + txt(140, 49, "today", "d-walltxt", "middle") + "</g>")
+    p.append(txt(20, 40, "THE NEWSSTAND", "d-h"))
+    p.append(txt(1140, 40, "you may read what was already printed", "d-h g", "end"))
 
-    # the axis
-    p.append('<line class="d-axis" x1="118" y1="282" x2="1082" y2="282"/>')
-    for x, lab in PIT_TICKS:
-        p.append(f'<line class="d-tick" x1="{x}" y1="278" x2="{x}" y2="290"/>')
-        p.append(txt(x, 308, lab, "d-fn", "middle"))
+    # today, sweeping. Everything to its right has not been printed yet.
+    p.append('<g class="pit-wall">'
+             '<rect class="d-future" x="140" y="56" width="1020" height="238"/>'
+             '<line class="d-wallline" x1="140" y1="56" x2="140" y2="300"/></g>')
+    p.append('<g class="pit-wall">'
+             '<rect class="d-walltag" x="104" y="30" width="72" height="22" rx="6"/>'
+             + txt(140, 45, "today", "d-walltxt", "middle") + "</g>")
 
-    # the filings
-    for i, (lab, sub, x, at) in enumerate(PIT_EVENTS):
-        y = 100 if i == 1 else 170
-        DIA_CSS.append(f".pe{i}{{animation:{reveal(f'pev{i}', at, PIT_LOOP)}}}")
-        p.append(f'<g class="pe{i}">')
-        p.append(f'<line class="d-stem" x1="{x}" y1="{y + 52}" x2="{x}" y2="278"/>')
-        p.append(f'<circle class="d-evdot" cx="{x}" cy="282" r="5"/>')
-        p.append(f'<rect class="d-ev" x="{x - 150}" y="{y}" width="300" height="52" rx="10"/>')
-        p.append(txt(x, y + 22, lab, "d-evt", "middle"))
-        p.append(txt(x, y + 40, sub, "d-fn", "middle"))
+    for i, (date, head, sub, x, at, warn) in enumerate(PAPERS):
+        w, h, y = 300, 150, 76
+
+        # what is on the shelf before it is printed
+        p.append(f'<rect class="d-ghost" x="{x}" y="{y}" width="{w}" height="{h}" rx="8"/>')
+        p.append(txt(x + w / 2, y + h / 2 + 5, "not printed yet", "d-fn", "middle"))
+
+        DIA_CSS.append(f".pp{i}{{animation:{reveal(f'paper{i}', at, PIT_LOOP, 0.0)}}}")
+        p.append(f'<g class="pp{i}">')
+        p.append(f'<rect class="d-paper" x="{x}" y="{y}" width="{w}" height="{h}" rx="8"/>')
+        p.append(txt(x + 18, y + 26, date, "d-mast"))
+        p.append(f'<line class="d-shelf" x1="{x + 18}" y1="{y + 34}" x2="{x + w - 18}" y2="{y + 34}"/>')
+        p.append(txt(x + 18, y + 62, head, "d-head warn" if warn else "d-head"))
+        p.append(txt(x + 18, y + 82, sub, "d-fn"))
+        for c in range(3):
+            cx = x + 18 + c * 92
+            for row in range(3):
+                p.append(f'<line class="d-col" x1="{cx}" y1="{y + 104 + row * 13}" '
+                         f'x2="{cx + 76}" y2="{y + 104 + row * 13}"/>')
         p.append("</g>")
 
-    # the gap between "true" and "public", drawn once
-    p.append('<line class="d-lag" x1="245" y1="248" x2="333" y2="248"/>')
-    p.append(txt(289, 240, "nobody knew yet", "d-lagt", "middle"))
-    p.append(txt(245, 266, "period ends Sep 2019", "d-fn", "middle"))
+    # the shelf itself
+    p.append('<line class="d-shelf" x1="40" y1="240" x2="1120" y2="240"/>')
+    p.append(txt(40, 262, "printed, dated, and never edited afterwards", "d-fn"))
+    p.append(txt(1120, 262, "the day you are pretending it is", "d-fn", "end"))
 
-    # the panel that grows behind the wall
-    p.append(card(20, 330, 1120, 92, "d-box"))
-    p.append(txt(40, 356, "WHAT YOUR BACKTEST IS ALLOWED TO SEE", "d-ct"))
-    for i, (lab, sub, at, kind) in enumerate(PIT_ROWS):
+    # what the backtest is handed
+    p.append(card(20, 300, 1120, 120, "d-box"))
+    p.append(txt(40, 328, "WHAT YOUR BACKTEST IS ALLOWED TO READ", "d-ct"))
+    for i, (lab, sub, at, kind) in enumerate(SLIPS):
         x = 40 + i * 372
         DIA_CSS.append(f".pr{i}{{animation:{reveal(f'prow{i}', at, PIT_LOOP, 0.0)}}}")
         p.append(f'<g class="pr{i}">')
-        p.append(f'<rect class="d-row {kind}" x="{x}" y="368" width="336" height="38" rx="8"/>')
-        p.append(txt(x + 14, 385, lab, "d-it"))
-        p.append(txt(x + 14, 400, sub, "d-fn"))
+        p.append(f'<rect class="d-row {kind}" x="{x}" y="344" width="336" height="52" rx="8"/>')
+        p.append(txt(x + 16, 368, lab, "d-it"))
+        p.append(txt(x + 16, 386, sub, "d-fn"))
         p.append("</g>")
 
     p.append("</svg>")
     return "\n      ".join(p)
+
 
 
 # ------------------------------------------------------- diagram 3: honesty
@@ -932,9 +959,9 @@ __DIACSS__
   <section>
     <h2>Point-in-time, in one picture</h2>
     <p class="lede">Gluing ten APIs together is a weekend. Keeping them
-    <span class="hl">honest about time</span> is the whole job. Watch the day-marker sweep forward:
-    a fact only enters your backtest once it was genuinely public, and a correction adds a row
-    instead of erasing one.</p>
+    <span class="hl">honest about time</span> is the whole job. Think of a newsstand: you may read
+    the papers already printed and not tomorrow's, and a correction arrives as a new edition while
+    the old paper stays on the shelf saying what it said.</p>
     <div class="dwrap">
       __DIA2__
     </div>
@@ -1247,9 +1274,9 @@ FACTS = {
     "__F2__": [("calendar", "July 1926 to this morning"),
                ("prompt", "a source is a parameter"),
                ("stack", "more sources, same six verbs")],
-    "__F3__": [("wall", "nothing crosses the day marker"),
-               ("calendar", "corrections add a row"),
-               ("shield", "no honest date, no silent guess")],
+    "__F3__": [("wall", "you never get tomorrow's paper"),
+               ("calendar", "a correction is a new edition, not an edit"),
+               ("shield", "no print date, no silent guess")],
     "__F5__": [("ledger", "it counts how many times you asked"),
                ("fall", "the Sharpe is deflated for that count"),
                ("shield", "published methods, cited on the page")],

@@ -229,17 +229,18 @@ a:hover{text-decoration:underline}
   .stage{min-height:88vh}
   .panels{min-height:70vh}
 }
-@keyframes pev0{0%,20.60%{opacity:0.14}21.00%,100%{opacity:1}}
-.pe0{animation:pev0 11.0s linear infinite}
-@keyframes pev1{0%,38.00%{opacity:0.14}38.40%,100%{opacity:1}}
-.pe1{animation:pev1 11.0s linear infinite}
-@keyframes pev2{0%,90.10%{opacity:0.14}90.50%,100%{opacity:1}}
-.pe2{animation:pev2 11.0s linear infinite}
-@keyframes prow0{0%,20.60%{opacity:0.0}21.00%,100%{opacity:1}}
+.d-paper{fill:#101a26;stroke:#2c3f52}.d-ghost{fill:none;stroke:#21303f;stroke-dasharray:5 5}.d-mast{fill:#5f7a8c;font-size:11px;letter-spacing:.2em}.d-head{fill:#e8f1ec;font-size:19px;font-weight:700}.d-head.warn{fill:var(--amber)}.d-col{stroke:#22323f;stroke-width:3;stroke-linecap:round}.d-shelf{stroke:#2c3f52;stroke-width:2}
+@keyframes paper0{0%,7.20%{opacity:0.0}7.60%,100%{opacity:1}}
+.pp0{animation:paper0 11.0s linear infinite}
+@keyframes paper1{0%,47.40%{opacity:0.0}47.80%,100%{opacity:1}}
+.pp1{animation:paper1 11.0s linear infinite}
+@keyframes paper2{0%,87.60%{opacity:0.0}88.00%,100%{opacity:1}}
+.pp2{animation:paper2 11.0s linear infinite}
+@keyframes prow0{0%,7.20%{opacity:0.0}7.60%,100%{opacity:1}}
 .pr0{animation:prow0 11.0s linear infinite}
-@keyframes prow1{0%,38.00%{opacity:0.0}38.40%,100%{opacity:1}}
+@keyframes prow1{0%,47.40%{opacity:0.0}47.80%,100%{opacity:1}}
 .pr1{animation:prow1 11.0s linear infinite}
-@keyframes prow2{0%,90.10%{opacity:0.0}90.50%,100%{opacity:1}}
+@keyframes prow2{0%,87.60%{opacity:0.0}88.00%,100%{opacity:1}}
 .pr2{animation:prow2 11.0s linear infinite}
 @keyframes spec0{0%,3.60%{opacity:0.08}4.00%,100%{opacity:1}}
 .sp0{animation:spec0 9.0s linear infinite}
@@ -704,62 +705,85 @@ a:hover{text-decoration:underline}
 
       <section class="panel" data-dwell="12">
         <h2 class="ptitle">Point-in-time, in one picture.</h2>
-        <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v17"/><path d="M4 7.5h5"/><path d="M4 12h5"/><path d="M4 16.5h5"/><path d="M15.5 9.5h4.5"/><path d="M15.5 14.5h4.5"/></svg>nothing crosses the day marker</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M11 14.5h2"/></svg>corrections add a row</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.3 2.9 7.6 7 9.5 4.1-1.9 7-5.2 7-9.5V6Z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg>no honest date, no silent guess</span></div>
-        <svg class="dia" viewBox="0 0 1160 440" role="img" aria-label="An as-of wall sweeping a timeline, revealing filings only once they were public">
-      <defs><clipPath id="plot"><rect x="118" y="60" width="964" height="230"/></clipPath></defs>
-      <text class="d-h" x="20" y="40">TIME &rarr;</text>
-      <text class="d-fn" x="1082" y="326" text-anchor="end">the day you are pretending it is</text>
-      <g clip-path="url(#plot)"><g class="pit-wall"><rect class="d-future" x="140" y="60" width="960" height="230"/><line class="d-wallline" x1="140" y1="60" x2="140" y2="282"/></g></g>
-      <g class="pit-wall"><rect class="d-walltag" x="102" y="34" width="76" height="22" rx="6"/><text class="d-walltxt" x="140" y="49" text-anchor="middle">today</text></g>
-      <line class="d-axis" x1="118" y1="282" x2="1082" y2="282"/>
-      <line class="d-tick" x1="120" y1="278" x2="120" y2="290"/>
-      <text class="d-fn" x="120" y="308" text-anchor="middle">Jul 2019</text>
-      <line class="d-tick" x1="440" y1="278" x2="440" y2="290"/>
-      <text class="d-fn" x="440" y="308" text-anchor="middle">Jan 2020</text>
-      <line class="d-tick" x1="760" y1="278" x2="760" y2="290"/>
-      <text class="d-fn" x="760" y="308" text-anchor="middle">Jul 2020</text>
-      <line class="d-tick" x1="1080" y1="278" x2="1080" y2="290"/>
-      <text class="d-fn" x="1080" y="308" text-anchor="middle">Jan 2021</text>
-      <g class="pe0">
-      <line class="d-stem" x1="333" y1="222" x2="333" y2="278"/>
-      <circle class="d-evdot" cx="333" cy="282" r="5"/>
-      <rect class="d-ev" x="183" y="170" width="300" height="52" rx="10"/>
-      <text class="d-evt" x="333" y="192" text-anchor="middle">10-K FY2019 &middot; assets $338.5B</text>
-      <text class="d-fn" x="333" y="210" text-anchor="middle">public 31 Oct 2019</text>
+        <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v17"/><path d="M4 7.5h5"/><path d="M4 12h5"/><path d="M4 16.5h5"/><path d="M15.5 9.5h4.5"/><path d="M15.5 14.5h4.5"/></svg>you never get tomorrow's paper</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M11 14.5h2"/></svg>a correction is a new edition, not an edit</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.3 2.9 7.6 7 9.5 4.1-1.9 7-5.2 7-9.5V6Z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg>no print date, no silent guess</span></div>
+        <svg class="dia" viewBox="0 0 1160 440" role="img" aria-label="A newsstand: today sweeps left to right, and a backtest may only read the papers already printed">
+      <text class="d-h" x="20" y="40">THE NEWSSTAND</text>
+      <text class="d-h g" x="1140" y="40" text-anchor="end">you may read what was already printed</text>
+      <g class="pit-wall"><rect class="d-future" x="140" y="56" width="1020" height="238"/><line class="d-wallline" x1="140" y1="56" x2="140" y2="300"/></g>
+      <g class="pit-wall"><rect class="d-walltag" x="104" y="30" width="72" height="22" rx="6"/><text class="d-walltxt" x="140" y="45" text-anchor="middle">today</text></g>
+      <rect class="d-ghost" x="60" y="76" width="300" height="150" rx="8"/>
+      <text class="d-fn" x="210.0" y="156.0" text-anchor="middle">not printed yet</text>
+      <g class="pp0">
+      <rect class="d-paper" x="60" y="76" width="300" height="150" rx="8"/>
+      <text class="d-mast" x="78" y="102">31 OCT 2019</text>
+      <line class="d-shelf" x1="78" y1="110" x2="342" y2="110"/>
+      <text class="d-head" x="78" y="138">Assets $338.5B</text>
+      <text class="d-fn" x="78" y="158">the annual report, as filed</text>
+      <line class="d-col" x1="78" y1="180" x2="154" y2="180"/>
+      <line class="d-col" x1="78" y1="193" x2="154" y2="193"/>
+      <line class="d-col" x1="78" y1="206" x2="154" y2="206"/>
+      <line class="d-col" x1="170" y1="180" x2="246" y2="180"/>
+      <line class="d-col" x1="170" y1="193" x2="246" y2="193"/>
+      <line class="d-col" x1="170" y1="206" x2="246" y2="206"/>
+      <line class="d-col" x1="262" y1="180" x2="338" y2="180"/>
+      <line class="d-col" x1="262" y1="193" x2="338" y2="193"/>
+      <line class="d-col" x1="262" y1="206" x2="338" y2="206"/>
       </g>
-      <g class="pe1">
-      <line class="d-stem" x1="493" y1="152" x2="493" y2="278"/>
-      <circle class="d-evdot" cx="493" cy="282" r="5"/>
-      <rect class="d-ev" x="343" y="100" width="300" height="52" rx="10"/>
-      <text class="d-evt" x="493" y="122" text-anchor="middle">10-Q Q1 2020</text>
-      <text class="d-fn" x="493" y="140" text-anchor="middle">public 29 Jan 2020</text>
+      <rect class="d-ghost" x="430" y="76" width="300" height="150" rx="8"/>
+      <text class="d-fn" x="580.0" y="156.0" text-anchor="middle">not printed yet</text>
+      <g class="pp1">
+      <rect class="d-paper" x="430" y="76" width="300" height="150" rx="8"/>
+      <text class="d-mast" x="448" y="102">29 JAN 2020</text>
+      <line class="d-shelf" x1="448" y1="110" x2="712" y2="110"/>
+      <text class="d-head" x="448" y="138">Q1 comes in</text>
+      <text class="d-fn" x="448" y="158">the quarter, as filed</text>
+      <line class="d-col" x1="448" y1="180" x2="524" y2="180"/>
+      <line class="d-col" x1="448" y1="193" x2="524" y2="193"/>
+      <line class="d-col" x1="448" y1="206" x2="524" y2="206"/>
+      <line class="d-col" x1="540" y1="180" x2="616" y2="180"/>
+      <line class="d-col" x1="540" y1="193" x2="616" y2="193"/>
+      <line class="d-col" x1="540" y1="206" x2="616" y2="206"/>
+      <line class="d-col" x1="632" y1="180" x2="708" y2="180"/>
+      <line class="d-col" x1="632" y1="193" x2="708" y2="193"/>
+      <line class="d-col" x1="632" y1="206" x2="708" y2="206"/>
       </g>
-      <g class="pe2">
-      <line class="d-stem" x1="973" y1="222" x2="973" y2="278"/>
-      <circle class="d-evdot" cx="973" cy="282" r="5"/>
-      <rect class="d-ev" x="823" y="170" width="300" height="52" rx="10"/>
-      <text class="d-evt" x="973" y="192" text-anchor="middle">FY2019 restated &middot; $323.9B</text>
-      <text class="d-fn" x="973" y="210" text-anchor="middle">public 30 Oct 2020</text>
+      <rect class="d-ghost" x="800" y="76" width="300" height="150" rx="8"/>
+      <text class="d-fn" x="950.0" y="156.0" text-anchor="middle">not printed yet</text>
+      <g class="pp2">
+      <rect class="d-paper" x="800" y="76" width="300" height="150" rx="8"/>
+      <text class="d-mast" x="818" y="102">30 OCT 2020</text>
+      <line class="d-shelf" x1="818" y1="110" x2="1082" y2="110"/>
+      <text class="d-head warn" x="818" y="138">Correction: $323.9B</text>
+      <text class="d-fn" x="818" y="158">last year restated, a year later</text>
+      <line class="d-col" x1="818" y1="180" x2="894" y2="180"/>
+      <line class="d-col" x1="818" y1="193" x2="894" y2="193"/>
+      <line class="d-col" x1="818" y1="206" x2="894" y2="206"/>
+      <line class="d-col" x1="910" y1="180" x2="986" y2="180"/>
+      <line class="d-col" x1="910" y1="193" x2="986" y2="193"/>
+      <line class="d-col" x1="910" y1="206" x2="986" y2="206"/>
+      <line class="d-col" x1="1002" y1="180" x2="1078" y2="180"/>
+      <line class="d-col" x1="1002" y1="193" x2="1078" y2="193"/>
+      <line class="d-col" x1="1002" y1="206" x2="1078" y2="206"/>
       </g>
-      <line class="d-lag" x1="245" y1="248" x2="333" y2="248"/>
-      <text class="d-lagt" x="289" y="240" text-anchor="middle">nobody knew yet</text>
-      <text class="d-fn" x="245" y="266" text-anchor="middle">period ends Sep 2019</text>
-      <rect class="d-box" x="20" y="330" width="1120" height="92" rx="11"/>
-      <text class="d-ct" x="40" y="356">WHAT YOUR BACKTEST IS ALLOWED TO SEE</text>
+      <line class="d-shelf" x1="40" y1="240" x2="1120" y2="240"/>
+      <text class="d-fn" x="40" y="262">printed, dated, and never edited afterwards</text>
+      <text class="d-fn" x="1120" y="262" text-anchor="end">the day you are pretending it is</text>
+      <rect class="d-box" x="20" y="300" width="1120" height="120" rx="11"/>
+      <text class="d-ct" x="40" y="328">WHAT YOUR BACKTEST IS ALLOWED TO READ</text>
       <g class="pr0">
-      <rect class="d-row ok" x="40" y="368" width="336" height="38" rx="8"/>
-      <text class="d-it" x="54" y="385">assets $338.5B</text>
-      <text class="d-fn" x="54" y="400">filed 31 Oct 2019</text>
+      <rect class="d-row ok" x="40" y="344" width="336" height="52" rx="8"/>
+      <text class="d-it" x="56" y="368">assets $338.5B</text>
+      <text class="d-fn" x="56" y="386">readable from 31 Oct 2019</text>
       </g>
       <g class="pr1">
-      <rect class="d-row ok" x="412" y="368" width="336" height="38" rx="8"/>
-      <text class="d-it" x="426" y="385">Q1 2020 filed</text>
-      <text class="d-fn" x="426" y="400">filed 29 Jan 2020</text>
+      <rect class="d-row ok" x="412" y="344" width="336" height="52" rx="8"/>
+      <text class="d-it" x="428" y="368">Q1 2020 filed</text>
+      <text class="d-fn" x="428" y="386">readable from 29 Jan 2020</text>
       </g>
       <g class="pr2">
-      <rect class="d-row warn" x="784" y="368" width="336" height="38" rx="8"/>
-      <text class="d-it" x="798" y="385">assets $323.9B &middot; restatement</text>
-      <text class="d-fn" x="798" y="400">filed 30 Oct 2020, row 1 stays</text>
+      <rect class="d-row warn" x="784" y="344" width="336" height="52" rx="8"/>
+      <text class="d-it" x="800" y="368">assets $323.9B</text>
+      <text class="d-fn" x="800" y="386">a second row. The first one still says $338.5B</text>
       </g>
       </svg>
       </section>
