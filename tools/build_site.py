@@ -2069,7 +2069,6 @@ __ONECSS__
       <a href="https://pypi.org/project/vintage-mcp/">PyPI</a>
       <a href="https://github.com/RezaSoleymanifar/vintage/blob/main/COVERAGE.md">Full catalogue</a>
       <a href="reel.html">Demo reel</a>
-      <span>MIT &middot; $0 &middot; 16 of 18 sources need no key</span>
     </div>
   </aside>
 
