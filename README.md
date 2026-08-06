@@ -4,7 +4,7 @@
 
 Free financial data exists and is scattered across twenty APIs with twenty shapes. Everyone rebuilds the same glue, badly, and quietly ends up backtesting on restated figures and survivor biased universes.
 
-Vintage is that glue, written once, served over [MCP](https://modelcontextprotocol.io). It hosts no data. It connects, normalizes, and serves financial data from the web.
+Vintage is that glue, written once, served over [MCP](https://modelcontextprotocol.io). It hosts no data. It connects, normalizes, and serves structured financial data from the web.
 
 <p align="center">
   <b>A research terminal that costs $0 and won't lie to you about your Sharpe.</b>
