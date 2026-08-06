@@ -1608,19 +1608,12 @@ def icon(name: str, size: int = 15) -> str:
 
 # The rail used to say all of this in sentences. Six numbers say it faster.
 TILES = [
-    ("stack", "18", "free sources"),
     ("clock", "100", "years deep"),
     ("prompt", "6", "verbs, whole API"),
     ("zero", "$0", "forever"),
     ("series", "800k", "macro series"),
-    ("flask", "331", "published anomalies"),
 ]
 
-STEPS = [
-    ("install", "install", "one command"),
-    ("ask", "ask", "plain English"),
-    ("shield", "check", "honesty report"),
-]
 
 # One line of evidence per panel, in place of the paragraph that was there.
 FACTS = {
@@ -1645,6 +1638,18 @@ FACTS = {
     "__F7__": [("scatter", "four wire formats in, one row out"),
                ("calendar", "two dates on every row, always"),
                ("shield", "no honest date, no invented one")],
+    "__F8__": [("wall", "all six happen to real data"),
+               ("fall", "all six flatter a backtest"),
+               ("calendar", "known_at is the defence against every one")],
+    "__F9__": [("prompt", "plain English in, pandas out"),
+               ("ledger", "the restatement shows up as a row"),
+               ("shield", "the caveat arrives with the answer")],
+    "__F10__": [("ask", "fetched while this page was built"),
+                ("clock", "stamped with the minute we read it"),
+                ("fall", "no history upstream, so we keep one")],
+    "__F11__": [("install", "one command, nothing to clone"),
+                ("zero", "no account, no key, no card"),
+                ("stack", "same server behind every client")],
 }
 
 
@@ -1652,12 +1657,6 @@ def build_tiles() -> str:
     return "\n      ".join(
         f'<div class="tile">{icon(g, 16)}<b>{n}</b><span>{w}</span></div>'
         for g, n, w in TILES)
-
-
-def build_steps() -> str:
-    return "\n      ".join(
-        f'<div class="step">{icon(g, 15)}<b>{n}</b><span>{w}</span></div>'
-        for g, n, w in STEPS)
 
 
 # The backtest-validation literature, named rather than paraphrased, with what
@@ -1736,7 +1735,7 @@ a:hover{text-decoration:underline}
 .sub{color:var(--dim);font-size:clamp(11px,1.55vh,13.5px);line-height:1.55;margin:0}
 
 /* six numbers where six sentences used to be */
-.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);
   border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .tile{background:var(--panel);padding:clamp(8px,1.35vh,13px) 9px;display:grid;
   justify-items:center;gap:2px;text-align:center}
@@ -1745,12 +1744,6 @@ a:hover{text-decoration:underline}
 .tile span{color:var(--dim);font-size:clamp(8.5px,1.15vh,10.5px);line-height:1.25;
   letter-spacing:.04em}
 
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
-.step{display:grid;justify-items:center;gap:2px;text-align:center;
-  font-size:clamp(9px,1.2vh,11px)}
-.step .ic{color:var(--green);opacity:.8}
-.step b{color:var(--ink);font-weight:700;letter-spacing:.03em}
-.step span{color:var(--dim)}
 
 /* one line of evidence per panel, icon first */
 .facts{display:flex;flex-wrap:wrap;gap:7px 14px;margin:0 0 clamp(8px,1.3vh,14px)}
@@ -1800,15 +1793,67 @@ a:hover{text-decoration:underline}
 /* ----------------------------------------------------------------- stage */
 .stage{position:relative;display:flex;flex-direction:column;min-width:0;min-height:0;
   padding:clamp(16px,2.6vh,30px) clamp(16px,2.2vw,34px)}
-.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:clamp(10px,1.6vh,18px);flex:none}
+/* Eleven chips will not wrap onto one row at any width worth designing for, and
+   two rows of chips steal height the panels need. One strip that scrolls
+   sideways keeps the bar exactly one line tall however many sections there are;
+   the active chip is scrolled into view rather than hunted for. */
+.chips{display:flex;flex-wrap:nowrap;gap:7px;margin-bottom:clamp(10px,1.6vh,18px);
+  flex:none;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;
+  scroll-behavior:smooth;padding-bottom:2px}
+.chips::-webkit-scrollbar{display:none}
 .chip{font-family:var(--mono);font-size:clamp(9px,1.28vh,11.5px);letter-spacing:.11em;
   text-transform:uppercase;color:var(--dim);background:transparent;cursor:pointer;
-  border:1px solid var(--line);border-radius:99px;padding:6px 13px;position:relative;overflow:hidden}
+  border:1px solid var(--line);border-radius:99px;padding:6px 13px;position:relative;
+  overflow:hidden;flex:none;white-space:nowrap}
 .chip:hover{color:var(--ink)}
 .chip.is-on{color:var(--ink);border-color:rgba(47,213,135,.5)}
 .chip.is-on::after{content:"";position:absolute;left:0;bottom:0;height:2px;background:var(--green);
   width:100%;transform-origin:left;animation:tick var(--dwell,9s) linear forwards}
 @keyframes tick{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+/* the six drifts, as cards rather than the long page's list */
+.drifts{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);
+  gap:clamp(8px,1.4vh,16px);flex:1;min-height:0}
+/* Slides whose content is a table or a code block, rather than a diagram sized
+   to the box, would otherwise sit at the top of a mostly empty screen. */
+.fill{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center}
+.drift{display:flex;flex-direction:column;justify-content:center;
+  border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:10px;
+  background:var(--panel);padding:clamp(10px,1.8vh,20px) clamp(12px,1.4vw,20px)}
+.drift b{display:block;color:var(--ink);font-size:clamp(13px,2.1vh,19px)}
+.drift i{display:block;font-style:normal;color:var(--dim);
+  font-size:clamp(10.5px,1.6vh,14px);margin-top:5px;line-height:1.45}
+
+/* the live forum board */
+.forum{width:100%;border-collapse:collapse;font-size:clamp(10.5px,1.75vh,15px)}
+.forum th{color:var(--dim);font-size:clamp(9px,1.25vh,11px);letter-spacing:.12em;
+  text-transform:uppercase;text-align:left;padding:0 10px 8px;border-bottom:1px solid var(--line)}
+.forum td{padding:clamp(5px,1.1vh,11px) 10px;border-bottom:1px solid var(--line);color:var(--ink)}
+.forum td.rk{color:var(--dim);width:2em}
+.forum td.tk{font-weight:700;letter-spacing:.04em;color:var(--green)}
+.forum td.nm{color:var(--dim)}
+.forum .n{text-align:right;font-variant-numeric:tabular-nums}
+.forum th.n{text-align:right}
+.forum .up{color:var(--green)}
+.forum .down{color:var(--red)}
+.forum .flat,.forum .dimc{color:var(--dim)}
+.stamp{color:var(--dim);font-size:clamp(10px,1.5vh,13px);margin:clamp(8px,1.4vh,16px) 0 0}
+.stamp code{color:var(--green)}
+
+/* the install tabs */
+.tabs{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:clamp(10px,1.6vh,18px)}
+.tab{font-family:var(--mono);font-size:clamp(10px,1.5vh,13px);color:var(--dim);cursor:pointer;
+  background:transparent;border:1px solid var(--line);border-radius:99px;padding:6px 14px}
+.tab:hover{color:var(--ink)}
+.tab.is-on{color:var(--bg);background:var(--green);border-color:var(--green);font-weight:700}
+.pane{display:none}
+.pane.is-on{display:block}
+.pane .note{color:var(--dim);font-size:clamp(11px,1.6vh,14px);margin:0 0 clamp(8px,1.3vh,14px)}
+.pane .note code{color:var(--green)}
+.pane pre{position:relative;margin:0;background:var(--panel);border:1px solid var(--line);
+  border-radius:10px;padding:clamp(12px,1.8vh,20px);overflow:auto;max-height:44vh}
+.pane pre code{font-family:var(--mono);font-size:clamp(10.5px,1.65vh,14px);
+  color:var(--ink);white-space:pre}
 
 .panels{position:relative;flex:1;min-height:0}
 .panel{position:absolute;inset:0;opacity:0;visibility:hidden;
@@ -1956,10 +2001,8 @@ __ONECSS__
       <p class="tag">Free market research terminal</p>
     </div>
 
-    <p class="claim">Vintage is <span class="g">the schema for the free financial data of the
-    web</span>.</p>
-    <p class="sub">Eighteen publishers, one row shape, two dates on every row. You only ever
-    see what was public on the day you are asking about.</p>
+    <p class="claim">Good market data is already free. It&rsquo;s just scattered.
+    <span class="g">Vintage unifies free market data in a single MCP server.</span></p>
 
     <div class="tiles">
       __TILES__
@@ -1967,14 +2010,10 @@ __ONECSS__
 
     <div class="cmd"><code>claude mcp add vintage -s user -- uvx vintage-mcp</code><button class="copy" aria-label="Copy">copy</button></div>
 
-    <div class="steps">
-      __STEPS__
-    </div>
-
     <div class="foot">
       <a href="https://github.com/RezaSoleymanifar/vintage">GitHub</a>
       <a href="https://pypi.org/project/vintage-mcp/">PyPI</a>
-      <a href="deep.html">The long version</a>
+      <a href="https://github.com/RezaSoleymanifar/vintage/blob/main/COVERAGE.md">Full catalogue</a>
       <a href="reel.html">Demo reel</a>
       <span>MIT &middot; $0 &middot; 16 of 18 sources need no key</span>
     </div>
@@ -1985,7 +2024,7 @@ __ONECSS__
     <div class="panels" id="panels">
 
       <section class="panel is-on" data-dwell="10">
-        <h2 class="ptitle">The good data is already free. It is just scattered.</h2>
+        <h2 class="ptitle">Twenty APIs, twenty shapes, and no shared clock.</h2>
         __F1__
         __DIA1__
       </section>
@@ -2012,6 +2051,14 @@ __ONECSS__
         <h2 class="ptitle">Point-in-time, in one picture.</h2>
         __F3__
         __DIA3__
+      </section>
+
+      <section class="panel" data-dwell="12">
+        <h2 class="ptitle">Six ways yesterday's data changed underneath you.</h2>
+        __F8__
+        <div class="drifts">
+          __DRIFT__
+        </div>
       </section>
 
       <section class="panel" data-dwell="14">
@@ -2041,6 +2088,39 @@ __ONECSS__
         </div>
       </section>
 
+      <section class="panel" data-dwell="20">
+        <h2 class="ptitle">What it feels like.</h2>
+        __F9__
+        <div class="term">
+          <div class="bar">
+            <span class="tdot"></span><span class="tdot"></span><span class="tdot"></span>
+            <span class="who">claude, vintage</span>
+          </div>
+          <div class="screen">
+        __ROWS__
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" data-dwell="14">
+        <h2 class="ptitle">What the forums are saying, right now.</h2>
+        __F10__
+        <div class="fill">
+          __FORUMS__
+        </div>
+      </section>
+
+      <section class="panel" data-dwell="16">
+        <h2 class="ptitle">One line, in whichever client you already use.</h2>
+        __F11__
+        <div class="fill">
+          <div class="tabs">
+            __TABS__
+          </div>
+          __PANES__
+        </div>
+      </section>
+
     </div>
   </main>
 </div>
@@ -2050,14 +2130,18 @@ __ONECSS__
   var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
   var chipbar = document.getElementById('chips');
   var titles = ['What it is', 'The taxonomy', 'The schema', 'What you get',
-                'Point-in-time', 'The engine', 'The experiment'];
-  var timer, at = 0;
+                'Point-in-time', 'The drift', 'The engine', 'The experiment',
+                'A session', 'The forums', 'Install'];
+  var timer, at = 0, held = false;
 
   var chips = titles.map(function (t, i) {
     var b = document.createElement('button');
     b.className = 'chip';
     b.textContent = t;
-    b.addEventListener('click', function () { show(i); });
+    // Eleven sections on a timer is a two-minute loop, longer than anyone waits.
+    // A click is a decision to read this one, so it stops the carousel for good
+    // and hands the page over. Browsing should always beat waiting.
+    b.addEventListener('click', function () { held = true; show(i); });
     chipbar.appendChild(b);
     return b;
   });
@@ -2081,18 +2165,38 @@ __ONECSS__
       c.classList.remove('is-on');
       c.style.removeProperty('--dwell');
     });
-    chips[i].style.setProperty('--dwell', (dwell / 1000) + 's');
+    if (!held) { chips[i].style.setProperty('--dwell', (dwell / 1000) + 's'); }
     chips[i].classList.add('is-on');
+    // The bar scrolls sideways, so the active chip is put in view rather than
+    // left off the end where nobody would find it.
+    if (chips[i].scrollIntoView) {
+      chips[i].scrollIntoView({block: 'nearest', inline: 'center'});
+    }
     replay(panels[i]);
     clearTimeout(timer);
-    timer = setTimeout(function () { show((at + 1) % panels.length); }, dwell);
+    if (!held) {
+      timer = setTimeout(function () { show((at + 1) % panels.length); }, dwell);
+    }
   }
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    chips[0].classList.add('is-on');
+    held = true;
+    show(0);
   } else {
     show(0);
   }
+
+  // the install panel's client tabs
+  document.querySelectorAll('.tab').forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      var wrap = tab.closest('.panel');
+      wrap.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('is-on'); });
+      wrap.querySelectorAll('.pane').forEach(function (p) { p.classList.remove('is-on'); });
+      tab.classList.add('is-on');
+      var pane = wrap.querySelector('#' + tab.dataset.pane);
+      if (pane) { pane.classList.add('is-on'); }
+    });
+  });
 })();
 
 document.querySelectorAll('.copy').forEach(function (btn) {
@@ -2143,20 +2247,25 @@ __REELCSS__
 
 
 def main() -> None:
-    rows, anim = build_terminal()
+    # One session script per terminal panel, each with its own class prefix so the
+    # two sets of keyframes cannot collide on the same page.
+    rows, anim = build_session(SCRIPT, LOOP, "s")
     exp_rows, exp_anim = build_session(EXPERIMENT, EXPERIMENT_LOOP, "x")
     tabs, panes = build_clients()
-    install_html, install_css = build_install_reels()
 
-    # Diagrams are built before the pages are assembled: each one appends its own
-    # keyframes to DIA_CSS as a side effect, so both pages need the same block.
+    # Diagrams are built before the page is assembled: each one appends its own
+    # keyframes to DIA_CSS as a side effect.
     dia1, dia2, dia3 = diagram_federation(), diagram_pit(), diagram_honesty()
     taxo = diagram_taxonomy()
     schema = diagram_schema()
     cover = diagram_coverage()
     diacss = "\n".join(DIA_CSS)
 
-    # index.html, one screen, never scrolls, panels advance on a timer.
+    # index.html is the whole site now. The long scrolling page said the same
+    # things in the same order, so keeping both meant maintaining one argument
+    # twice and letting the two drift apart. Everything that was only on the long
+    # page - the six drifts, the live forum board, the session, the install tabs -
+    # is a slide here instead.
     one = (
         ONE_PAGE.replace("__DIA1__", dia1)
         .replace("__DIA5__", taxo)
@@ -2164,30 +2273,18 @@ def main() -> None:
         .replace("__DIA2__", cover)
         .replace("__DIA3__", dia2)
         .replace("__EXPROWS__", exp_rows)
+        .replace("__ROWS__", rows)
         .replace("__DIA4__", dia3)
+        .replace("__DRIFT__", build_drift())
+        .replace("__FORUMS__", build_forums())
+        .replace("__TABS__", tabs)
+        .replace("__PANES__", panes)
         .replace("__METHODS__", build_methods())
         .replace("__TILES__", build_tiles())
-        .replace("__STEPS__", build_steps())
-        .replace("__ONECSS__", diacss + "\n" + exp_anim)
+        .replace("__ONECSS__", diacss + "\n" + exp_anim + "\n" + anim)
     )
     for key in FACTS:
         one = one.replace(key, build_facts(key))
-
-    # deep.html, the long scrolling argument, for people who want it.
-    deep = (
-        DEEP_PAGE.replace("__ROWS__", rows)
-        .replace("__DIA1__", dia1)
-        .replace("__DIA2__", dia2)
-        .replace("__DIA3__", dia3)
-        .replace("__DIACSS__", diacss + "\n" + install_css)
-        .replace("__FORUMS__", build_forums())
-        .replace("__TIMELINE__", build_timeline())
-        .replace("__DRIFT__", build_drift())
-        .replace("__INSTALLREEL__", install_html)
-        .replace("__TABS__", tabs)
-        .replace("__PANES__", panes)
-        .replace("__ANIM__", anim)
-    )
 
     reel_html, reel_css = showcase.build()
     reel = (
@@ -2197,10 +2294,17 @@ def main() -> None:
 
     root = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "docs")
     os.makedirs(root, exist_ok=True)
-    for name, body in (("index.html", one), ("deep.html", deep), ("reel.html", reel)):
+    for name, body in (("index.html", one), ("reel.html", reel)):
         with open(os.path.join(root, name), "w", encoding="utf-8", newline="\n") as fh:
             fh.write(body)
         print(f"wrote {os.path.join(root, name)} ({len(body):,} bytes)")
+
+    # The long page is gone. Remove it rather than leaving a stale copy of an
+    # argument that has moved, since GitHub Pages would happily keep serving it.
+    stale = os.path.join(root, "deep.html")
+    if os.path.exists(stale):
+        os.remove(stale)
+        print(f"removed {stale}")
 
 
 if __name__ == "__main__":

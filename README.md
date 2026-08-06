@@ -25,7 +25,6 @@
 <p align="center">
   <a href="https://rezasoleymanifar.github.io/vintage/"><b>rezasoleymanifar.github.io/vintage</b></a>
   &nbsp;·&nbsp;
-  <a href="https://rezasoleymanifar.github.io/vintage/deep.html">the long version</a>
   &nbsp;·&nbsp;
   <a href="https://rezasoleymanifar.github.io/vintage/reel.html">the reel</a>
 </p>

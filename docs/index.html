@@ -46,7 +46,7 @@ a:hover{text-decoration:underline}
 .sub{color:var(--dim);font-size:clamp(11px,1.55vh,13.5px);line-height:1.55;margin:0}
 
 /* six numbers where six sentences used to be */
-.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);
   border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .tile{background:var(--panel);padding:clamp(8px,1.35vh,13px) 9px;display:grid;
   justify-items:center;gap:2px;text-align:center}
@@ -55,12 +55,6 @@ a:hover{text-decoration:underline}
 .tile span{color:var(--dim);font-size:clamp(8.5px,1.15vh,10.5px);line-height:1.25;
   letter-spacing:.04em}
 
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
-.step{display:grid;justify-items:center;gap:2px;text-align:center;
-  font-size:clamp(9px,1.2vh,11px)}
-.step .ic{color:var(--green);opacity:.8}
-.step b{color:var(--ink);font-weight:700;letter-spacing:.03em}
-.step span{color:var(--dim)}
 
 /* one line of evidence per panel, icon first */
 .facts{display:flex;flex-wrap:wrap;gap:7px 14px;margin:0 0 clamp(8px,1.3vh,14px)}
@@ -110,15 +104,67 @@ a:hover{text-decoration:underline}
 /* ----------------------------------------------------------------- stage */
 .stage{position:relative;display:flex;flex-direction:column;min-width:0;min-height:0;
   padding:clamp(16px,2.6vh,30px) clamp(16px,2.2vw,34px)}
-.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:clamp(10px,1.6vh,18px);flex:none}
+/* Eleven chips will not wrap onto one row at any width worth designing for, and
+   two rows of chips steal height the panels need. One strip that scrolls
+   sideways keeps the bar exactly one line tall however many sections there are;
+   the active chip is scrolled into view rather than hunted for. */
+.chips{display:flex;flex-wrap:nowrap;gap:7px;margin-bottom:clamp(10px,1.6vh,18px);
+  flex:none;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;
+  scroll-behavior:smooth;padding-bottom:2px}
+.chips::-webkit-scrollbar{display:none}
 .chip{font-family:var(--mono);font-size:clamp(9px,1.28vh,11.5px);letter-spacing:.11em;
   text-transform:uppercase;color:var(--dim);background:transparent;cursor:pointer;
-  border:1px solid var(--line);border-radius:99px;padding:6px 13px;position:relative;overflow:hidden}
+  border:1px solid var(--line);border-radius:99px;padding:6px 13px;position:relative;
+  overflow:hidden;flex:none;white-space:nowrap}
 .chip:hover{color:var(--ink)}
 .chip.is-on{color:var(--ink);border-color:rgba(47,213,135,.5)}
 .chip.is-on::after{content:"";position:absolute;left:0;bottom:0;height:2px;background:var(--green);
   width:100%;transform-origin:left;animation:tick var(--dwell,9s) linear forwards}
 @keyframes tick{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+/* the six drifts, as cards rather than the long page's list */
+.drifts{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);
+  gap:clamp(8px,1.4vh,16px);flex:1;min-height:0}
+/* Slides whose content is a table or a code block, rather than a diagram sized
+   to the box, would otherwise sit at the top of a mostly empty screen. */
+.fill{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center}
+.drift{display:flex;flex-direction:column;justify-content:center;
+  border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:10px;
+  background:var(--panel);padding:clamp(10px,1.8vh,20px) clamp(12px,1.4vw,20px)}
+.drift b{display:block;color:var(--ink);font-size:clamp(13px,2.1vh,19px)}
+.drift i{display:block;font-style:normal;color:var(--dim);
+  font-size:clamp(10.5px,1.6vh,14px);margin-top:5px;line-height:1.45}
+
+/* the live forum board */
+.forum{width:100%;border-collapse:collapse;font-size:clamp(10.5px,1.75vh,15px)}
+.forum th{color:var(--dim);font-size:clamp(9px,1.25vh,11px);letter-spacing:.12em;
+  text-transform:uppercase;text-align:left;padding:0 10px 8px;border-bottom:1px solid var(--line)}
+.forum td{padding:clamp(5px,1.1vh,11px) 10px;border-bottom:1px solid var(--line);color:var(--ink)}
+.forum td.rk{color:var(--dim);width:2em}
+.forum td.tk{font-weight:700;letter-spacing:.04em;color:var(--green)}
+.forum td.nm{color:var(--dim)}
+.forum .n{text-align:right;font-variant-numeric:tabular-nums}
+.forum th.n{text-align:right}
+.forum .up{color:var(--green)}
+.forum .down{color:var(--red)}
+.forum .flat,.forum .dimc{color:var(--dim)}
+.stamp{color:var(--dim);font-size:clamp(10px,1.5vh,13px);margin:clamp(8px,1.4vh,16px) 0 0}
+.stamp code{color:var(--green)}
+
+/* the install tabs */
+.tabs{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:clamp(10px,1.6vh,18px)}
+.tab{font-family:var(--mono);font-size:clamp(10px,1.5vh,13px);color:var(--dim);cursor:pointer;
+  background:transparent;border:1px solid var(--line);border-radius:99px;padding:6px 14px}
+.tab:hover{color:var(--ink)}
+.tab.is-on{color:var(--bg);background:var(--green);border-color:var(--green);font-weight:700}
+.pane{display:none}
+.pane.is-on{display:block}
+.pane .note{color:var(--dim);font-size:clamp(11px,1.6vh,14px);margin:0 0 clamp(8px,1.3vh,14px)}
+.pane .note code{color:var(--green)}
+.pane pre{position:relative;margin:0;background:var(--panel);border:1px solid var(--line);
+  border-radius:10px;padding:clamp(12px,1.8vh,20px);overflow:auto;max-height:44vh}
+.pane pre code{font-family:var(--mono);font-size:clamp(10.5px,1.65vh,14px);
+  color:var(--ink);white-space:pre}
 
 .panels{position:relative;flex:1;min-height:0}
 .panel{position:absolute;inset:0;opacity:0;visibility:hidden;
@@ -417,6 +463,56 @@ a:hover{text-decoration:underline}
 .rx21{animation:ax21 27.0s infinite}
 @keyframes ax22{0%,77.222%{opacity:0;transform:translateY(3px)}78.074%,100%{opacity:1;transform:none}}
 .rx22{animation:ax22 27.0s infinite}
+@keyframes as0{0%,1.316%{opacity:0}1.579%,100%{opacity:1}}
+@keyframes ws0{0%,1.579%{width:0}11.053%,100%{width:49ch}}
+@keyframes cs0{0%,1.316%{visibility:hidden}1.579%,18.158%{visibility:visible}18.421%,100%{visibility:hidden}}
+.rs0{animation:as0 19.0s infinite}
+.ts0{animation:ws0 19.0s steps(49,end) infinite}
+.ks0{animation:cs0 19.0s infinite,blink .9s steps(2,end) infinite}
+@keyframes as1{0%,12.895%{opacity:0;transform:translateY(3px)}14.105%,100%{opacity:1;transform:none}}
+.rs1{animation:as1 19.0s infinite}
+@keyframes as2{0%,18.684%{opacity:0}18.947%,100%{opacity:1}}
+@keyframes ws2{0%,18.947%{width:0}27.895%,100%{width:47ch}}
+@keyframes cs2{0%,18.684%{visibility:hidden}18.947%,42.368%{visibility:visible}42.632%,100%{visibility:hidden}}
+.rs2{animation:as2 19.0s infinite}
+.ts2{animation:ws2 19.0s steps(47,end) infinite}
+.ks2{animation:cs2 19.0s infinite,blink .9s steps(2,end) infinite}
+@keyframes as3{0%,29.737%{opacity:0;transform:translateY(3px)}30.947%,100%{opacity:1;transform:none}}
+.rs3{animation:as3 19.0s infinite}
+@keyframes as4{0%,31.842%{opacity:0;transform:translateY(3px)}33.053%,100%{opacity:1;transform:none}}
+.rs4{animation:as4 19.0s infinite}
+@keyframes as5{0%,34.474%{opacity:0;transform:translateY(3px)}35.684%,100%{opacity:1;transform:none}}
+.rs5{animation:as5 19.0s infinite}
+@keyframes as6{0%,37.632%{opacity:0;transform:translateY(3px)}38.842%,100%{opacity:1;transform:none}}
+.rs6{animation:as6 19.0s infinite}
+@keyframes as7{0%,42.895%{opacity:0}43.158%,100%{opacity:1}}
+@keyframes ws7{0%,43.158%{width:0}50.000%,100%{width:31ch}}
+@keyframes cs7{0%,42.895%{visibility:hidden}43.158%,55.526%{visibility:visible}55.789%,100%{visibility:hidden}}
+.rs7{animation:as7 19.0s infinite}
+.ts7{animation:ws7 19.0s steps(31,end) infinite}
+.ks7{animation:cs7 19.0s infinite,blink .9s steps(2,end) infinite}
+@keyframes as8{0%,51.842%{opacity:0;transform:translateY(3px)}53.053%,100%{opacity:1;transform:none}}
+.rs8{animation:as8 19.0s infinite}
+@keyframes as9{0%,56.053%{opacity:0}56.316%,100%{opacity:1}}
+@keyframes ws9{0%,56.316%{width:0}62.105%,100%{width:18ch}}
+@keyframes cs9{0%,56.053%{visibility:hidden}56.316%,97.105%{visibility:visible}97.368%,100%{visibility:hidden}}
+.rs9{animation:as9 19.0s infinite}
+.ts9{animation:ws9 19.0s steps(18,end) infinite}
+.ks9{animation:cs9 19.0s infinite,blink .9s steps(2,end) infinite}
+@keyframes as10{0%,63.421%{opacity:0;transform:translateY(3px)}64.632%,100%{opacity:1;transform:none}}
+.rs10{animation:as10 19.0s infinite}
+@keyframes as11{0%,68.158%{opacity:0;transform:translateY(3px)}69.368%,100%{opacity:1;transform:none}}
+.rs11{animation:as11 19.0s infinite}
+@keyframes as12{0%,69.737%{opacity:0;transform:translateY(3px)}70.947%,100%{opacity:1;transform:none}}
+.rs12{animation:as12 19.0s infinite}
+@keyframes as13{0%,71.842%{opacity:0;transform:translateY(3px)}73.053%,100%{opacity:1;transform:none}}
+.rs13{animation:as13 19.0s infinite}
+@keyframes as14{0%,73.947%{opacity:0;transform:translateY(3px)}75.158%,100%{opacity:1;transform:none}}
+.rs14{animation:as14 19.0s infinite}
+@keyframes as15{0%,77.632%{opacity:0;transform:translateY(3px)}78.842%,100%{opacity:1;transform:none}}
+.rs15{animation:as15 19.0s infinite}
+@keyframes as16{0%,81.842%{opacity:0;transform:translateY(3px)}83.053%,100%{opacity:1;transform:none}}
+.rs16{animation:as16 19.0s infinite}
 </style>
 </head>
 <body>
@@ -428,32 +524,22 @@ a:hover{text-decoration:underline}
       <p class="tag">Free market research terminal</p>
     </div>
 
-    <p class="claim">Vintage is <span class="g">the schema for the free financial data of the
-    web</span>.</p>
-    <p class="sub">Eighteen publishers, one row shape, two dates on every row. You only ever
-    see what was public on the day you are asking about.</p>
+    <p class="claim">Good market data is already free. It&rsquo;s just scattered.
+    <span class="g">Vintage unifies free market data in a single MCP server.</span></p>
 
     <div class="tiles">
-      <div class="tile"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 7.5 12 12l9-4.5Z"/><path d="M3 12.5 12 17l9-4.5"/><path d="M3 17 12 21.5 21 17"/></svg><b>18</b><span>free sources</span></div>
       <div class="tile"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.4l3.4 2"/></svg><b>100</b><span>years deep</span></div>
       <div class="tile"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M6.5 9.5 9.5 12l-3 2.5"/><path d="M12.5 15h5"/></svg><b>6</b><span>verbs, whole API</span></div>
       <div class="tile"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8 18.5 16 5.5"/></svg><b>$0</b><span>forever</span></div>
       <div class="tile"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20V4"/><path d="M3 20h18"/><path d="M6 15.5 10 10l3.5 3.5L20 6"/></svg><b>800k</b><span>macro series</span></div>
-      <div class="tile"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 3v6.2L4.7 17.4A2 2 0 0 0 6.4 20.5h11.2a2 2 0 0 0 1.7-3.1L14.5 9.2V3"/><path d="M8.5 3h7"/><path d="M7.4 14h9.2"/></svg><b>331</b><span>published anomalies</span></div>
     </div>
 
     <div class="cmd"><code>claude mcp add vintage -s user -- uvx vintage-mcp</code><button class="copy" aria-label="Copy">copy</button></div>
 
-    <div class="steps">
-      <div class="step"><svg class="ic" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v11"/><path d="M8 11l4 3.5 4-3.5"/><path d="M4.5 18.5h15"/></svg><b>install</b><span>one command</span></div>
-      <div class="step"><svg class="ic" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5a2 2 0 0 1-2 2H8l-4.5 4V5.5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2Z"/><path d="M8 8.5h8"/><path d="M8 12h5"/></svg><b>ask</b><span>plain English</span></div>
-      <div class="step"><svg class="ic" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.3 2.9 7.6 7 9.5 4.1-1.9 7-5.2 7-9.5V6Z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg><b>check</b><span>honesty report</span></div>
-    </div>
-
     <div class="foot">
       <a href="https://github.com/RezaSoleymanifar/vintage">GitHub</a>
       <a href="https://pypi.org/project/vintage-mcp/">PyPI</a>
-      <a href="deep.html">The long version</a>
+      <a href="https://github.com/RezaSoleymanifar/vintage/blob/main/COVERAGE.md">Full catalogue</a>
       <a href="reel.html">Demo reel</a>
       <span>MIT &middot; $0 &middot; 16 of 18 sources need no key</span>
     </div>
@@ -464,7 +550,7 @@ a:hover{text-decoration:underline}
     <div class="panels" id="panels">
 
       <section class="panel is-on" data-dwell="10">
-        <h2 class="ptitle">The good data is already free. It is just scattered.</h2>
+        <h2 class="ptitle">Twenty APIs, twenty shapes, and no shared clock.</h2>
         <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5h17"/><path d="M12 3 3.5 7.5h17Z"/><path d="M6.5 10.5v7"/><path d="M11 10.5v7"/><path d="M15.5 10.5v7"/><path d="M20 10.5v7"/></svg>regulators and central banks</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5 2.5 8 12 12.5 21.5 8Z"/><path d="M6.5 10.2v5.3c0 1.9 2.5 3.2 5.5 3.2s5.5-1.3 5.5-3.2v-5.3"/><path d="M21.5 8v5"/></svg>universities, not resellers</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 4.5h17l-6.6 7.8v6.4l-3.8 2.3v-8.7Z"/></svg>one schema out</span></div>
         <svg class="dia" viewBox="0 0 1160 600" role="img" aria-label="Eighteen free data sources in four families - regulators, central banks, markets and academia - all flowing down into Vintage, which resolves, normalizes, stamps and indexes them">
       <text class="d-h" x="20" y="30">THE WEB &middot; 18 FREE SOURCES, FOUR FAMILIES</text>
@@ -1048,6 +1134,19 @@ a:hover{text-decoration:underline}
       </svg>
       </section>
 
+      <section class="panel" data-dwell="12">
+        <h2 class="ptitle">Six ways yesterday's data changed underneath you.</h2>
+        <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v17"/><path d="M4 7.5h5"/><path d="M4 12h5"/><path d="M4 16.5h5"/><path d="M15.5 9.5h4.5"/><path d="M15.5 14.5h4.5"/></svg>all six happen to real data</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5 12 14l3.5-3.5L21 16"/><path d="M21 11v5h-5"/></svg>all six flatter a backtest</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M11 14.5h2"/></svg>known_at is the defence against every one</span></div>
+        <div class="drifts">
+          <span class="drift"><b>Lag</b><i>true in December, published in February</i></span>
+        <span class="drift"><b>Restatement</b><i>the company changes last year's number</i></span>
+        <span class="drift"><b>Revision</b><i>the government keeps fixing old figures</i></span>
+        <span class="drift"><b>Survivorship</b><i>dead companies quietly disappear</i></span>
+        <span class="drift"><b>Membership</b><i>today's S&amp;P 500 is not 2005's list</i></span>
+        <span class="drift"><b>Adjustment</b><i>splits rewrite every price before them</i></span>
+        </div>
+      </section>
+
       <section class="panel" data-dwell="14">
         <h2 class="ptitle">And a backtester that argues with you.</h2>
         <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="2.2"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h4.5"/></svg>it counts how many times you asked</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5 12 14l3.5-3.5L21 16"/><path d="M21 11v5h-5"/></svg>the Sharpe is deflated for that count</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.3 2.9 7.6 7 9.5 4.1-1.9 7-5.2 7-9.5V6Z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg>published methods, cited on the page</span></div>
@@ -1166,6 +1265,75 @@ a:hover{text-decoration:underline}
         </div>
       </section>
 
+      <section class="panel" data-dwell="20">
+        <h2 class="ptitle">What it feels like.</h2>
+        <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M6.5 9.5 9.5 12l-3 2.5"/><path d="M12.5 15h5"/></svg>plain English in, pandas out</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="2.2"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h4.5"/></svg>the restatement shows up as a row</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.3 2.9 7.6 7 9.5 4.1-1.9 7-5.2 7-9.5V6Z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg>the caveat arrives with the answer</span></div>
+        <div class="term">
+          <div class="bar">
+            <span class="tdot"></span><span class="tdot"></span><span class="tdot"></span>
+            <span class="who">claude, vintage</span>
+          </div>
+          <div class="screen">
+        <div class="row rs0"><span class="prompt p-shell">$</span><span class="typed ts0">claude mcp add vintage -s user -- uvx vintage-mcp</span><span class="caret ks0"></span></div>
+        <div class="row rs1 ok"><b>✓</b>connected · sec · fred · dartmouth · openap · coinbase · finra</div>
+        <div class="row rs2"><span class="prompt p-user">❯</span><span class="typed ts2">backtest 12-1 momentum on the dow 30 since 2010</span><span class="caret ks2"></span></div>
+        <div class="row rs3 dim in1">reading 30 tickers from yahoo-finance, 3,914 sessions</div>
+        <div class="row rs4 dim in1">panel indexed on known_at, lookahead structurally impossible</div>
+        <div class="row rs5 kv"><span class="k">annualized return</span><span class="v">14.8%</span><span class="k">volatility</span><span class="v">17.1%</span><span class="k">turnover cost</span><span class="v">−40 bps/yr</span></div>
+        <div class="row rs6 big kv"><span class="k">sharpe</span><span class="v">2.14</span></div>
+        <div class="row rs7"><span class="prompt p-user">❯</span><span class="typed ts7">try short-term reversal instead</span><span class="caret ks7"></span></div>
+        <div class="row rs8 mid kv"><span class="k">sharpe</span><span class="v">1.87</span></div>
+        <div class="row rs9"><span class="prompt p-user">❯</span><span class="typed ts9">and low volatility</span><span class="caret ks9"></span></div>
+        <div class="row rs10 mid kv"><span class="k">sharpe</span><span class="v">2.31</span></div>
+        <div class="row rs11 rule"><i></i>honesty report<i></i></div>
+        <div class="row rs12 in1 kv"><span class="k">specs tried this session</span><span class="v">41</span></div>
+        <div class="row rs13 in1 kv"><span class="k">sharpe noise would produce</span><span class="v">2.29</span></div>
+        <div class="row rs14 bad in1 kv"><span class="k">deflated sharpe probability</span><span class="v">0.09</span></div>
+        <div class="row rs15 verdict in1">after 41 trials, a sharpe this high is what noise produces.</div>
+        <div class="row rs16 kicker in1">the terminal you pay for does not tell you this.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" data-dwell="14">
+        <h2 class="ptitle">What the forums are saying, right now.</h2>
+        <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5a2 2 0 0 1-2 2H8l-4.5 4V5.5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2Z"/><path d="M8 8.5h8"/><path d="M8 12h5"/></svg>fetched while this page was built</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.4l3.4 2"/></svg>stamped with the minute we read it</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5 12 14l3.5-3.5L21 16"/><path d="M21 11v5h-5"/></svg>no history upstream, so we keep one</span></div>
+        <div class="fill">
+          <table class="forum"><thead><tr><th></th><th>ticker</th><th>name</th><th class="n">mentions</th><th class="n">24h change</th><th class="n">upvotes</th></tr></thead><tbody><tr><td class="rk">1</td><td class="tk">HTZ</td><td class="nm">Hertz</td><td class="n">1,118</td><td class="n up">+1,106</td><td class="n dimc">6,274</td></tr><tr><td class="rk">2</td><td class="tk">SPY</td><td class="nm">SPDR S&amp;P 500 ETF Trust</td><td class="n">436</td><td class="n down">-292</td><td class="n dimc">1,165</td></tr><tr><td class="rk">3</td><td class="tk">SPCX</td><td class="nm">SpaceX</td><td class="n">396</td><td class="n down">-63</td><td class="n dimc">1,119</td></tr><tr><td class="rk">4</td><td class="tk">SNDK</td><td class="nm">Sandisk</td><td class="n">356</td><td class="n down">-602</td><td class="n dimc">1,177</td></tr><tr><td class="rk">5</td><td class="tk">MU</td><td class="nm">Micron Technology</td><td class="n">243</td><td class="n down">-103</td><td class="n dimc">573</td></tr><tr><td class="rk">6</td><td class="tk">NVDA</td><td class="nm">NVIDIA</td><td class="n">158</td><td class="n down">-94</td><td class="n dimc">504</td></tr><tr><td class="rk">7</td><td class="tk">QQQ</td><td class="nm">Invesco QQQ ETF</td><td class="n">146</td><td class="n down">-17</td><td class="n dimc">305</td></tr><tr><td class="rk">8</td><td class="tk">MSFT</td><td class="nm">Microsoft</td><td class="n">118</td><td class="n up">+32</td><td class="n dimc">474</td></tr></tbody></table><p class="stamp">read from ApeWisdom at 2026-08-06 23:05 UTC &middot; <code>known_at</code> is that moment, not the moment the posts were written</p>
+        </div>
+      </section>
+
+      <section class="panel" data-dwell="16">
+        <h2 class="ptitle">One line, in whichever client you already use.</h2>
+        <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v11"/><path d="M8 11l4 3.5 4-3.5"/><path d="M4.5 18.5h15"/></svg>one command, nothing to clone</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8 18.5 16 5.5"/></svg>no account, no key, no card</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 7.5 12 12l9-4.5Z"/><path d="M3 12.5 12 17l9-4.5"/><path d="M3 17 12 21.5 21 17"/></svg>same server behind every client</span></div>
+        <div class="fill">
+          <div class="tabs">
+            <button class="tab is-on" data-pane="claude-code">Claude Code</button>
+          <button class="tab" data-pane="claude-desktop">Claude Desktop</button>
+          <button class="tab" data-pane="cursor">Cursor</button>
+          <button class="tab" data-pane="chatgpt">ChatGPT</button>
+          </div>
+          <div class="pane is-on" id="claude-code"><p class="note">One command. Nothing to clone.</p><pre><code>claude mcp add vintage -s user -- uvx vintage-mcp</code><button class="copy" aria-label="Copy">copy</button></pre></div>
+        <div class="pane" id="claude-desktop"><p class="note">Add to <code>claude_desktop_config.json</code>, then restart the app.</p><pre><code>{
+  &quot;mcpServers&quot;: {
+    &quot;vintage&quot;: {
+      &quot;command&quot;: &quot;uvx&quot;,
+      &quot;args&quot;: [&quot;vintage-mcp&quot;]
+    }
+  }
+}</code><button class="copy" aria-label="Copy">copy</button></pre></div>
+        <div class="pane" id="cursor"><p class="note">Add to <code>~/.cursor/mcp.json</code>.</p><pre><code>{
+  &quot;mcpServers&quot;: {
+    &quot;vintage&quot;: {
+      &quot;command&quot;: &quot;uvx&quot;,
+      &quot;args&quot;: [&quot;vintage-mcp&quot;]
+    }
+  }
+}</code><button class="copy" aria-label="Copy">copy</button></pre></div>
+        <div class="pane" id="chatgpt"><p class="note">Settings → Connectors → Developer mode. Needs a hosted URL, run <code>vintage</code> behind HTTPS and point the connector at it.</p><pre><code>uvx vintage-mcp --transport streamable-http --port 8000</code><button class="copy" aria-label="Copy">copy</button></pre></div>
+        </div>
+      </section>
+
     </div>
   </main>
 </div>
@@ -1175,14 +1343,18 @@ a:hover{text-decoration:underline}
   var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
   var chipbar = document.getElementById('chips');
   var titles = ['What it is', 'The taxonomy', 'The schema', 'What you get',
-                'Point-in-time', 'The engine', 'The experiment'];
-  var timer, at = 0;
+                'Point-in-time', 'The drift', 'The engine', 'The experiment',
+                'A session', 'The forums', 'Install'];
+  var timer, at = 0, held = false;
 
   var chips = titles.map(function (t, i) {
     var b = document.createElement('button');
     b.className = 'chip';
     b.textContent = t;
-    b.addEventListener('click', function () { show(i); });
+    // Eleven sections on a timer is a two-minute loop, longer than anyone waits.
+    // A click is a decision to read this one, so it stops the carousel for good
+    // and hands the page over. Browsing should always beat waiting.
+    b.addEventListener('click', function () { held = true; show(i); });
     chipbar.appendChild(b);
     return b;
   });
@@ -1206,18 +1378,38 @@ a:hover{text-decoration:underline}
       c.classList.remove('is-on');
       c.style.removeProperty('--dwell');
     });
-    chips[i].style.setProperty('--dwell', (dwell / 1000) + 's');
+    if (!held) { chips[i].style.setProperty('--dwell', (dwell / 1000) + 's'); }
     chips[i].classList.add('is-on');
+    // The bar scrolls sideways, so the active chip is put in view rather than
+    // left off the end where nobody would find it.
+    if (chips[i].scrollIntoView) {
+      chips[i].scrollIntoView({block: 'nearest', inline: 'center'});
+    }
     replay(panels[i]);
     clearTimeout(timer);
-    timer = setTimeout(function () { show((at + 1) % panels.length); }, dwell);
+    if (!held) {
+      timer = setTimeout(function () { show((at + 1) % panels.length); }, dwell);
+    }
   }
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    chips[0].classList.add('is-on');
+    held = true;
+    show(0);
   } else {
     show(0);
   }
+
+  // the install panel's client tabs
+  document.querySelectorAll('.tab').forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      var wrap = tab.closest('.panel');
+      wrap.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('is-on'); });
+      wrap.querySelectorAll('.pane').forEach(function (p) { p.classList.remove('is-on'); });
+      tab.classList.add('is-on');
+      var pane = wrap.querySelector('#' + tab.dataset.pane);
+      if (pane) { pane.classList.add('is-on'); }
+    });
+  });
 })();
 
 document.querySelectorAll('.copy').forEach(function (btn) {
