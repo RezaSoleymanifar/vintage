@@ -17,7 +17,8 @@ from .engine import backtest as bt
 from .engine import benchmark as bm
 from .engine import honesty
 from .http import SourceError
-from .sources import apewisdom, coinbase, edgar, finra, fred, french, openap, yahoo
+from .sources import (apewisdom, cboe, coinbase, ecb, edgar, finra, fred,
+                      french, openap, yahoo)
 
 mcp = MCPServer(
     "vintage",
@@ -37,7 +38,7 @@ mcp = MCPServer(
         "returns a deflated Sharpe that accounts for how many specs were tried "
         "this session. Report it. Never present a raw Sharpe alone."
     ),
-    version="0.6.0",
+    version="0.7.0",
 )
 
 # Backtests keep their return series here so the model does not have to carry
@@ -206,6 +207,14 @@ async def fetch(
     try:
         if source == "french":
             rows = await french.load(field.split(":", 1)[1])
+        elif source == "ecb":
+            pair = field.split(":", 1)[1]
+            rows = await ecb.rates(pair, start=start, end=end)
+            warnings += ecb.warnings_for(pair)
+        elif source == "cboe":
+            sym = field.split(":", 1)[1]
+            rows = await cboe.levels(sym, start=start, end=end)
+            warnings += cboe.warnings_for(sym)
         elif source == "crypto":
             if not entity:
                 return envelope.fail("fetch", "crypto fields need an `entity`, e.g. BTC-USD")

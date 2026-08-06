@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from .sources import apewisdom, fred, french
+from .sources import apewisdom, cboe, ecb, fred, french
 
 # Field prefix -> source. This is the router.
 PREFIXES = {
@@ -19,6 +19,9 @@ PREFIXES = {
     "ape:": "apewisdom",
     "crypto:": "crypto",
     "short:": "finra",
+    "fx:": "ecb",
+    "vol:": "cboe",
+    "index:": "prices",
     "filing:": "sec-edgar-filings",
     "us-gaap:": "sec-edgar-xbrl",
     "dei:": "sec-edgar-xbrl",
@@ -89,6 +92,21 @@ SOURCES = [
         "note": "No history endpoint upstream. Backtestable history starts the day you record it.",
     },
     {
+        "source": "ecb-reference-rates",
+        "covers": "daily FX reference rates against the euro, 1999 onward, plus cross rates",
+        "field_form": "fx:EURUSD, fx:USDJPY",
+        "point_in_time": "yes — published each afternoon and never revised",
+        "key_required": False,
+    },
+    {
+        "source": "cboe-indices",
+        "covers": "VIX and the volatility family: term structure, VVIX, SKEW",
+        "field_form": "vol:VIX, vol:VIX3M, vol:SKEW",
+        "point_in_time": "yes — index levels are not revised",
+        "key_required": False,
+        "note": "Index levels only. Historical option chains are paid everywhere.",
+    },
+    {
         "source": "fred",
         "covers": "800k macro series, with ALFRED first-release vintages",
         "field_form": "fred:CPIAUCSL",
@@ -121,8 +139,28 @@ def route(field: str) -> str | None:
     return "sec-edgar-xbrl" if ":" not in field else None
 
 
+# Index tickers route through the price adapter; they are listed so `discover`
+# can find them, since nobody guesses "^GSPC" unprompted.
+INDICES = [
+    {"field": "price:close", "entity": "^GSPC", "label": "S&P 500 index"},
+    {"field": "price:close", "entity": "^DJI", "label": "Dow Jones Industrial Average"},
+    {"field": "price:close", "entity": "^IXIC", "label": "Nasdaq Composite"},
+    {"field": "price:close", "entity": "^NDX", "label": "Nasdaq-100"},
+    {"field": "price:close", "entity": "^RUT", "label": "Russell 2000"},
+    {"field": "price:close", "entity": "^VIX", "label": "VIX (see also vol:VIX)"},
+    {"field": "price:close", "entity": "^FTSE", "label": "FTSE 100"},
+    {"field": "price:close", "entity": "^GDAXI", "label": "DAX"},
+    {"field": "price:close", "entity": "^N225", "label": "Nikkei 225"},
+    {"field": "price:close", "entity": "^STOXX50E", "label": "Euro Stoxx 50"},
+    {"field": "price:close", "entity": "^HSI", "label": "Hang Seng"},
+    {"field": "price:close", "entity": "^TNX", "label": "US 10-year yield"},
+]
+
+
 def static_catalog() -> list[dict[str, Any]]:
-    return french.catalog() + apewisdom.catalog() + [
+    return french.catalog() + apewisdom.catalog() + ecb.catalog() + cboe.catalog() + [
+        {**item, "source": "yahoo-finance", "kind": "index"} for item in INDICES
+    ] + [
         {**item, "source": "fred", "key_required": not fred.has_key()}
         for item in CURATED
     ]

@@ -33,6 +33,8 @@ Source is a parameter, never a separate tool.
 | **coinbase-exchange** | crypto OHLCV, every listed pair, no key Currently-listed products only; dead tokens are absent, so crypto survivorship is worse than equities. | `crypto:close (needs an entity like BTC-USD)` | yes — trade prints are never restated | none |
 | **finra-short-volume** | daily short volume and short ratio per symbol | `short:short_ratio (needs an entity)` | yes — published after the close, never revised | none |
 | **apewisdom** | retail forum mention ranks across ~15 stock and crypto subreddits No history endpoint upstream. Backtestable history starts the day you record it. | `ape:all-stocks, ape:wallstreetbets, ape:all-crypto` | only forward — known_at is when Vintage fetched it | none |
+| **ecb-reference-rates** | daily FX reference rates against the euro, 1999 onward, plus cross rates | `fx:EURUSD, fx:USDJPY` | yes — published each afternoon and never revised | none |
+| **cboe-indices** | VIX and the volatility family: term structure, VVIX, SKEW Index levels only. Historical option chains are paid everywhere. | `vol:VIX, vol:VIX3M, vol:SKEW` | yes — index levels are not revised | none |
 | **fred** | 800k macro series, with ALFRED first-release vintages | `fred:CPIAUCSL` | yes — real-time vintages | free key |
 
 ## Field prefixes
@@ -48,6 +50,9 @@ How a field name routes to a source.
 | `ape:` | apewisdom | — |
 | `crypto:` | crypto | — |
 | `short:` | finra | — |
+| `fx:` | ecb | — |
+| `vol:` | cboe | — |
+| `index:` | prices | — |
 | `filing:` | sec-edgar-filings | yes |
 | `us-gaap:` | sec-edgar-xbrl | yes |
 | `dei:` | sec-edgar-xbrl | yes |
@@ -88,6 +93,61 @@ Federal Reserve Bank of St. Louis. These are hand-picked so `discover` answers w
 | `fred:M2SL` | M2 money stock |
 | `fred:INDPRO` | Industrial production |
 
+## Foreign exchange
+European Central Bank reference rates, no key. Published each working day around 16:00 CET and never revised, so these are honestly point-in-time. Everything is quoted against the euro; a cross rate such as `fx:USDJPY` is derived from the two euro legs and labelled as derived.
+| Field | Pair |
+|---|---|
+| `fx:EURUSD` | Euro to USD |
+| `fx:EURJPY` | Euro to JPY |
+| `fx:EURGBP` | Euro to GBP |
+| `fx:EURCHF` | Euro to CHF |
+| `fx:EURAUD` | Euro to AUD |
+| `fx:EURCAD` | Euro to CAD |
+| `fx:EURCNY` | Euro to CNY |
+| `fx:EURSEK` | Euro to SEK |
+| `fx:EURNOK` | Euro to NOK |
+| `fx:EURNZD` | Euro to NZD |
+
+Any ISO code the ECB publishes works, and any two of them cross. History begins in 1999.
+## Volatility indices (10)
+CBOE, no key. Index levels are computed from that session's option prices and are not revised. **Levels only** — historical option chains are paid at every vendor and remain a gap.
+| Field | Covers |
+|---|---|
+| `vol:VIX` | S&P 500 30-day implied volatility, from 1990 |
+| `vol:VIX9D` | S&P 500 9-day implied volatility, from 2011 |
+| `vol:VIX3M` | S&P 500 3-month implied volatility, from 2009 |
+| `vol:VIX6M` | S&P 500 6-month implied volatility |
+| `vol:VVIX` | Volatility of VIX itself, from 2006 |
+| `vol:SKEW` | Tail-risk skew of S&P 500 options, from 1990 |
+| `vol:VXN` | Nasdaq-100 implied volatility |
+| `vol:RVX` | Russell 2000 implied volatility |
+| `vol:OVX` | Crude oil ETF implied volatility |
+| `vol:GVZ` | Gold ETF implied volatility |
+
+## Market indices
+Routed through the price adapter. Listed here because nobody guesses the caret tickers unprompted.
+| Entity | Index |
+|---|---|
+| `^GSPC` | S&P 500 index |
+| `^DJI` | Dow Jones Industrial Average |
+| `^IXIC` | Nasdaq Composite |
+| `^NDX` | Nasdaq-100 |
+| `^RUT` | Russell 2000 |
+| `^VIX` | VIX (see also vol:VIX) |
+| `^FTSE` | FTSE 100 |
+| `^GDAXI` | DAX |
+| `^N225` | Nikkei 225 |
+| `^STOXX50E` | Euro Stoxx 50 |
+| `^HSI` | Hang Seng |
+| `^TNX` | US 10-year yield |
+
+## Delistings, and survivorship
+SEC Form 25 filings: 36,830 covering 11,614 companies, 2003 to 2026, each with a company name, a CIK and an exact date. This is the correction for a universe built from currently-listed names, which is a universe of survivors.
+| Field | Returns |
+|---|---|
+| `delisting:form25` | every delisting on record, dated |
+
+Electronic Form 25 filing became mandatory in April 2006, and the counts show the step: about 450 a year through 2005, 1,421 in 2006, then 1,300 to 2,300 a year. Complete from 2006, partial before, and the response says which.
 ## Crypto
 
 Coinbase Exchange, no key. A trade print is never restated, so these rows are *more* honestly point-in-time than equity adjusted closes. Survivorship runs the other way: dead tokens are absent entirely, which is a worse bias than equities, not a milder one.

@@ -1,5 +1,6 @@
 <!doctype html>
-<html lang="en"><head>
+<html lang="en">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vintage — a research terminal that costs $0 and won't lie to you about your Sharpe</title>
@@ -12,497 +13,206 @@
 <meta property="og:image" content="https://rezasoleymanifar.github.io/vintage/og.png">
 <meta name="twitter:card" content="summary_large_image">
 
-<link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'&gt;&lt;rect width='32' height='32' rx='7' fill='%230a0a0f'/&gt;&lt;path d='M6 22 L13 12 L19 18 L26 8' stroke='%23d74939' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/&gt;&lt;/svg&gt;">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230b0f16'/><path d='M6 22 L13 12 L19 18 L26 8' stroke='%2335e08a' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
 
 <style>
 :root{
-  --neutral-0:#faf4ec; --neutral-200:#d8cec2;
-  --bg:#0a0a0f; --surface:#121117; --surface-2:#1a1920;
-  --panel:#121117;
-  --red:#d74939; --red-light:#ff8163; --red-glow:rgba(215,73,57,.15);
-  --accent:#ff8163; --brand:#d74939;
-  --ink:#faf4ec; --text-mid:rgba(250,244,236,.75); --dim:rgba(250,244,236,.55);
-  --line:rgba(250,244,236,.08); --line-hover:rgba(250,244,236,.15);
-  --ok:#8be9a1; --bad:#ff8163; --amber:#d19a66; --blue:#93c5fd;
-  --code-str:#34d399; --code-kw:#ff8163; --code-fn:#93c5fd; --code-num:#d19a66; --code-text:#abb2bf;
-  --display:"Outfit",system-ui,sans-serif;
-  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
-  --ease:cubic-bezier(.16,1,.3,1);
+  --bg:#0b0f16; --panel:#0d1420; --line:#1f2b3a; --grid:#161f2c;
+  --ink:#e8f1ec; --dim:#5f7a8c; --green:#35e08a; --red:#ff6b5e; --amber:#ffc46b;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
 }
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+html{-webkit-text-size-adjust:100%}
 body{
   margin:0; background:var(--bg); color:var(--ink);
-  font-family:var(--display); font-size:17px; line-height:1.55;
-  -webkit-font-smoothing:antialiased;
+  font-family:var(--mono); font-size:16px; line-height:1.55;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px);
+  background-size:100% 60px;
 }
-a{color:var(--accent);text-decoration:none}
-a:hover{color:var(--ink)}
-.wrap{max-width:1240px;margin:0 auto;padding:0 32px}
-@media(max-width:640px){.wrap{padding:0 20px}}
-
-/* ------------------------------------------------------------------- nav */
-.nav{
-  position:sticky;top:0;z-index:50;background:rgba(10,10,15,.82);
-  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--line);
-}
-.nav .wrap{display:flex;align-items:center;gap:26px;height:82px}
-.logo{display:flex;align-items:center;gap:11px;color:var(--ink);font-weight:800;
-  font-size:21px;letter-spacing:.06em}
-.logo svg{display:block}
-.nlinks{display:flex;gap:26px;margin:0 auto;font-size:15px;font-family:var(--mono);
-  letter-spacing:-.01em}
-.nlinks a{color:var(--text-mid)}
-.nlinks a:hover{color:var(--ink)}
-.nav .cta{
-  font-family:var(--mono);font-size:14px;background:var(--brand);color:var(--ink);
-  padding:12px 20px;border-radius:9px;white-space:nowrap;
-  transition:background .18s var(--ease),transform .18s var(--ease);
-}
-.nav .cta:hover{background:var(--red-light);color:#0a0a0f;transform:translateY(-2px)}
-.npill{
-  display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:13px;
-  color:var(--text-mid);border:1px solid var(--line);border-radius:9px;padding:11px 14px;
-}
-.npill::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ok)}
-.nicon{
-  display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;
-  border:1px solid var(--line);border-radius:9px;color:var(--text-mid);
-  transition:all .18s var(--ease);
-}
-.nicon:hover{color:var(--ink);border-color:var(--line-hover)}
-@media(max-width:900px){.nlinks,.npill{display:none}.nav .wrap{height:68px}}
+.wrap{max-width:1000px;margin:0 auto;padding:0 20px}
+a{color:var(--green);text-decoration:none}
+a:hover{text-decoration:underline}
 
 /* ------------------------------------------------------------------ hero */
-.hero{position:relative;overflow:hidden;padding:200px 0 250px;text-align:center;isolation:isolate}
-@media(max-width:760px){.hero{padding:110px 0 130px}}
-.hero-bg{
-  position:absolute;inset:0;z-index:-2;pointer-events:none;
-  background:
-    radial-gradient(1px 1px at 12% 22%,rgba(215,73,57,.5),transparent),
-    linear-gradient(rgba(250,244,236,.028) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(250,244,236,.028) 1px,transparent 1px);
-  background-size:auto,100px 100px,100px 100px;
-}
-.ascii{
-  position:absolute;inset:0;z-index:-1;margin:0;pointer-events:none;user-select:none;
-  font-family:var(--mono);font-size:clamp(8px,.92vw,14px);line-height:1.24;
-  text-align:center;white-space:pre;color:var(--brand);
-  overflow:hidden;
-  -webkit-mask-image:
-    linear-gradient(to bottom,#000 0%,#000 86%,transparent 100%),
-    linear-gradient(to right,transparent 0%,#000 13%,#000 87%,transparent 100%);
-  mask-image:
-    linear-gradient(to bottom,#000 0%,#000 86%,transparent 100%),
-    linear-gradient(to right,transparent 0%,#000 13%,#000 87%,transparent 100%);
-  -webkit-mask-composite:source-in;
-  mask-composite:intersect;
-}
-.ascii b{display:block;font-weight:400}
-.hero-scrim{
-  position:absolute;left:0;right:0;top:0;bottom:0;z-index:-1;pointer-events:none;
-  background:radial-gradient(44% 32% at 50% 47%,rgba(10,10,15,.82) 0%,rgba(10,10,15,.44) 58%,transparent 100%);
-}
-.eyebrow{
-  font-family:var(--mono);font-size:13px;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--ink);margin:0 0 26px;
-}
+header{padding:60px 0 26px}
 h1{
-  font-size:clamp(42px,7.2vw,84px);font-weight:800;line-height:1.02;letter-spacing:-.03em;
-  margin:0 0 26px;
+  font-size:clamp(38px,8vw,74px); font-weight:700; letter-spacing:.16em;
+  margin:0 0 10px; line-height:1;
 }
-h1 em{display:block;font-style:normal;color:var(--brand)}
-.lede{
-  font-size:clamp(17px,1.5vw,21px);color:var(--dim);margin:0 auto;max-width:46em;line-height:1.62;
-  font-weight:300;
+.sub{color:var(--dim);letter-spacing:.14em;font-size:clamp(11px,2.4vw,15px);margin:0}
+.pitch{
+  font-size:clamp(17px,3.2vw,23px); line-height:1.45; margin:30px 0 0; max-width:24em;
 }
-.lede b{color:var(--ink);font-weight:500}
-.hbtns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:34px}
-.btn{
-  font-family:var(--mono);font-size:14px;padding:13px 22px;border-radius:9px;
-  border:1px solid transparent;transition:all .18s var(--ease);display:inline-block;
-}
-.btn.solid{background:var(--brand);color:var(--ink)}
-.btn.solid:hover{background:var(--red-light);color:#0a0a0f;transform:translateY(-2px)}
-.btn.ghost{border-color:var(--brand);color:var(--accent)}
-.btn.ghost:hover{background:rgba(215,73,57,.12);color:var(--ink);transform:translateY(-2px)}
+.pitch b{color:var(--green);font-weight:700}
 
-/* ------------------------------------------------------------ why exists */
-.why{position:relative;padding:300px 0 110px}
-@media(max-width:760px){.why{padding:140px 0 80px}}
-.why-inner{max-width:672px;margin:0 auto;text-align:left;padding:0 20px;position:relative}
-.why-inner::before{
-  content:"";position:absolute;inset:-56px -64px;z-index:-1;
-  background:radial-gradient(68% 68% at 50% 50%,rgba(10,10,15,.9) 0%,rgba(10,10,15,.6) 58%,transparent 100%);
+/* ----------------------------------------------------------------- trust */
+.trust{
+  margin:28px 0 0;padding:17px 19px;border:1px solid var(--line);border-radius:11px;
+  background:linear-gradient(180deg,rgba(53,224,138,.05),transparent);
 }
-.why-copy{
-  font-size:clamp(21px,2.1vw,30px);font-weight:300;line-height:1.5;letter-spacing:-.015em;
-  color:var(--ink);margin:0 0 34px;
+.tlabel{
+  display:block;color:var(--dim);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+  margin-bottom:12px;
 }
-.why .kicker{color:var(--brand)}
+.orgs{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:620px){.orgs{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:980px){.orgs{grid-template-columns:repeat(4,1fr)}}
+.org{display:block;padding-left:11px;border-left:2px solid var(--green)}
+.org b{display:block;color:var(--ink);font-size:13.5px;line-height:1.35;font-weight:700}
+.org i{display:block;color:var(--dim);font-size:11.5px;font-style:normal;margin-top:3px}
+.tnote{margin:14px 0 0;color:var(--dim);font-size:12.5px;line-height:1.6}
 
-/* --------------------------------------------------------------- trusted */
-.trusted{padding:54px 0 64px;border-top:1px solid var(--line)}
-.tkick{
-  text-align:center;font-family:var(--mono);font-size:12px;letter-spacing:.24em;
-  text-transform:uppercase;color:var(--dim);margin:0 0 34px;
+/* -------------------------------------------------------------- terminal */
+.term{
+  margin:34px 0 0; background:var(--panel); border:1px solid var(--line);
+  border-radius:12px; overflow:hidden;
+  box-shadow:0 22px 60px -28px rgba(53,224,138,.32);
 }
-.marks{
-  display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
-  gap:20px 40px;
+.bar{
+  display:flex; align-items:center; gap:8px;
+  padding:11px 15px; border-bottom:1px solid var(--line); background:#0a111a;
 }
-.marks span{
-  font-size:clamp(15px,1.4vw,20px);font-weight:700;letter-spacing:-.01em;color:rgba(250,244,236,.38);
-  transition:color .2s var(--ease);white-space:nowrap;
-}
-.marks span:hover{color:rgba(250,244,236,.75)}
+.dot{width:11px;height:11px;border-radius:50%;background:#22303f}
+.bar .who{margin-left:8px;color:var(--dim);font-size:12.5px;letter-spacing:.1em}
+.screen{padding:18px 18px 22px;font-size:clamp(11.5px,2.3vw,14.5px);min-height:352px}
 
-/* -------------------------------------------------------------- sections */
-section{padding:104px 0}
-.kicker{
-  font-family:var(--mono);font-size:13px;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--brand);margin:0 0 20px;
+.row{display:flex;align-items:baseline;flex-wrap:wrap;gap:0 8px;padding:1.5px 0;opacity:0}
+.in1{padding-left:1.6em}
+.prompt{font-weight:700}
+.p-shell{color:var(--dim)}
+.p-user{color:var(--green)}
+.typed{display:inline-block;overflow:hidden;white-space:nowrap;vertical-align:bottom;width:0}
+.caret{
+  display:inline-block;width:.58em;height:1.05em;background:var(--green);
+  vertical-align:text-bottom;visibility:hidden;
 }
-h2{
-  font-size:clamp(30px,4.4vw,50px);font-weight:800;letter-spacing:-.028em;line-height:1.08;
-  margin:0 0 22px;max-width:17em;
-}
-h2 em{font-style:normal;color:var(--brand)}
-.sublede{color:var(--dim);font-size:18px;max-width:44em;margin:0 0 12px;line-height:1.6}
-.sublede b{color:var(--ink);font-weight:600}
-.after{color:var(--dim);font-size:15px;margin:22px 0 0;max-width:58em;line-height:1.65}
-.after code,.sublede code,.card code{font-family:var(--mono);font-size:.9em;color:var(--accent)}
+@keyframes blink{0%{opacity:1}50%{opacity:0}}
 
-/* ------------------------------------------------------------ proof band */
-.proof{display:grid;grid-template-columns:1fr;gap:0;margin-top:40px;
-  border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
-@media(min-width:900px){.proof{grid-template-columns:1.05fr 1fr}}
-.pstats{display:flex;flex-direction:column}
-.pstat{
-  display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
-  padding:26px 30px;border-bottom:1px solid var(--line);
+.dim{color:var(--dim)}
+.ok{color:var(--green)}
+.ok b{margin-right:7px}
+.kv .k{color:var(--dim)}
+.kv .v{color:var(--ink);font-weight:700;margin-right:20px}
+.kv.big .v{color:var(--green);font-size:1.5em}
+.kv.mid .v{color:var(--ink)}
+.kv.bad .v{color:var(--red);font-size:1.25em}
+.verdict{color:var(--red)}
+.kicker{color:var(--amber)}
+.rule{
+  color:var(--dim);letter-spacing:.22em;font-size:.82em;
+  margin-top:14px;text-transform:uppercase;gap:12px;
 }
-.pstat:last-child{border-bottom:none}
-.pstat:first-child{background:linear-gradient(90deg,rgba(215,73,57,.16),transparent)}
-.pstat b{font-size:20px;font-weight:700;color:var(--accent);letter-spacing:-.01em}
-.pstat span{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
-.pquote{padding:34px 34px;border-left:1px solid var(--line);background:var(--surface-2);
-  display:flex;flex-direction:column;justify-content:center}
-.pquote p{font-size:clamp(20px,2.4vw,26px);font-weight:500;line-height:1.32;margin:0 0 18px;letter-spacing:-.015em}
-.pquote cite{font-style:normal;color:var(--dim);font-size:15px}
-@media(max-width:899px){.pquote{border-left:none;border-top:1px solid var(--line)}}
+.rule i{flex:1;height:1px;background:var(--line);min-width:14px}
 
-.orgs{display:grid;grid-template-columns:1fr;gap:1px;background:var(--line);
-  border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:34px}
-@media(min-width:640px){.orgs{grid-template-columns:1fr 1fr}}
-@media(min-width:1000px){.orgs{grid-template-columns:repeat(4,1fr)}}
-.org{background:var(--surface);padding:22px 24px}
-.org b{display:block;font-size:15px;font-weight:600;line-height:1.35}
-.org i{display:block;font-style:normal;color:var(--dim);font-size:13.5px;margin-top:6px;font-family:var(--mono)}
-
-/* ------------------------------------------------- product rail + panel */
-.prod{
-  display:grid;grid-template-columns:1fr;border:1px solid var(--line);border-radius:16px;
-  overflow:hidden;background:var(--surface);
+@media (prefers-reduced-motion:reduce){
+  .row{opacity:1!important;animation:none!important;transform:none!important}
+  .typed{width:auto!important;animation:none!important}
+  .caret{display:none}
 }
-@media(min-width:960px){.prod{grid-template-columns:300px 1fr}}
-.prail{border-right:1px solid var(--line);padding-top:34px;background:rgba(250,244,236,.012)}
-.prail-top{padding:0 30px 30px}
-.prail h2{font-size:clamp(28px,2.6vw,38px);margin:0 0 16px;max-width:11em}
-.prail p{color:var(--dim);font-size:16px;margin:0;line-height:1.55}
-.pitem{
-  display:block;width:100%;text-align:left;background:none;border:0;
-  border-top:1px solid var(--line);border-left:3px solid transparent;
-  padding:19px 30px;color:var(--text-mid);font-family:var(--display);font-size:17px;
-  font-weight:500;cursor:pointer;transition:all .18s var(--ease);
-}
-.pitem:hover{color:var(--ink);background:rgba(250,244,236,.03)}
-.pitem.is-on{
-  color:var(--ink);border-left-color:var(--brand);
-  background:linear-gradient(90deg,rgba(215,73,57,.18),rgba(215,73,57,0));
-}
-.ppanel{display:none;min-width:0}
-.ppanel.is-on{display:block}
-.phead{padding:28px 32px 24px}
-.phead h3{margin:0 0 10px;font-size:23px;font-weight:700;letter-spacing:-.02em}
-.phead p{margin:0;color:var(--text-mid);font-size:16px;max-width:58em;line-height:1.55}
-.pfeat{display:grid;grid-template-columns:repeat(2,1fr);border-top:1px solid var(--line)}
-@media(min-width:1080px){.pfeat{grid-template-columns:repeat(4,1fr)}}
-.pfeat div{
-  padding:22px 22px 26px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);
-  color:var(--dim);font-size:14.5px;line-height:1.5;
-}
-.pfeat div:last-child{border-right:none}
-.pfeat svg{color:var(--brand);display:block;margin-bottom:14px}
-.pchrome{
-  display:flex;align-items:center;gap:7px;padding:12px 22px;background:#0d0d13;
-  border-bottom:1px solid var(--line);
-}
-.pchrome i{width:11px;height:11px;border-radius:50%;display:block}
-.pchrome i:nth-child(1){background:#d74939}.pchrome i:nth-child(2){background:#d19a66}.pchrome i:nth-child(3){background:#8be9a1}
-.ptabs{display:flex;gap:6px;margin-left:26px}
-.ptab{
-  font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--dim);background:none;border:0;padding:6px 12px;border-radius:7px;cursor:pointer;
-}
-.ptab:hover{color:var(--ink)}
-.ptab.is-on{color:var(--accent);border-bottom:2px solid var(--brand);border-radius:0}
-.pfoot{border-top:1px solid var(--line);padding:18px 32px;text-align:right}
-.pfoot a{font-family:var(--mono);font-size:13.5px}
-.code{
-  margin:0;padding:20px 22px;font-family:var(--mono);font-size:13px;line-height:1.75;
-  color:var(--code-text);overflow-x:auto;background:#0c0c11;min-height:250px;
-}
-.code .k{color:var(--code-kw)}
-.code .s{color:var(--code-str)}
-.code .n{color:var(--code-num)}
-.code .f{color:var(--code-fn)}
-.code .c{color:var(--dim)}
-.code .ok{color:var(--ok)}
-.code .bad{color:var(--bad);font-weight:700}
-.codepane{display:none}
-.codepane.is-on{display:block}
-
-/* --------------------------------------------------- section head + tiles */
-.sechead{display:flex;justify-content:space-between;align-items:flex-start;gap:32px;flex-wrap:wrap}
-.sechead h2{margin-bottom:18px}
-.sechead .sublede{margin-bottom:0}
-.nowrap{white-space:nowrap}
-.tiles{
-  display:grid;grid-template-columns:repeat(2,1fr);margin:54px 0 56px;
-  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
-}
-@media(min-width:620px){.tiles{grid-template-columns:repeat(4,1fr)}}
-@media(min-width:1000px){.tiles{grid-template-columns:repeat(6,1fr)}}
-@media(min-width:1240px){.tiles{grid-template-columns:repeat(12,1fr)}}
-.tiles div{
-  padding:34px 6px;text-align:center;font-family:var(--mono);font-size:12px;
-  color:var(--dim);border-right:1px solid var(--line);border-bottom:1px solid var(--line);
-  transition:background .18s var(--ease),color .18s var(--ease);
-}
-.tiles div:hover{background:rgba(250,244,236,.03);color:var(--ink)}
 
 /* --------------------------------------------------------------- install */
-.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:36px 0 16px}
+section{padding:64px 0 0}
+h2{font-size:13px;letter-spacing:.24em;color:var(--dim);text-transform:uppercase;margin:0 0 20px;font-weight:400}
+.tabs{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
 .tab{
-  font-family:var(--mono);font-size:14px;color:var(--dim);cursor:pointer;
-  background:transparent;border:1px solid var(--line);border-radius:9px;padding:10px 18px;
-  transition:all .18s var(--ease);
+  font-family:var(--mono);font-size:13px;color:var(--dim);cursor:pointer;
+  background:transparent;border:1px solid var(--line);border-radius:7px;padding:7px 13px;
 }
-.tab:hover{color:var(--ink);border-color:var(--line-hover)}
-.tab.is-on{color:var(--ink);background:var(--brand);border-color:var(--brand)}
+.tab:hover{color:var(--ink)}
+.tab.is-on{color:var(--bg);background:var(--green);border-color:var(--green);font-weight:700}
 .pane{display:none}
 .pane.is-on{display:block}
-.note{color:var(--dim);font-size:15.5px;margin:0 0 13px}
+.note{color:var(--dim);font-size:14px;margin:0 0 11px}
 .note code{color:var(--ink)}
-pre.sh{
-  position:relative;margin:0;background:var(--surface);border:1px solid var(--line);
-  border-radius:12px;padding:18px 84px 18px 20px;overflow-x:auto;
-  font-family:var(--mono);font-size:14px;line-height:1.7;color:var(--accent);
+pre{
+  position:relative;margin:0;background:var(--panel);border:1px solid var(--line);
+  border-radius:10px;padding:15px 74px 15px 16px;overflow-x:auto;
+  font-size:13.5px;line-height:1.65;color:var(--green);
 }
 .copy{
-  position:absolute;top:12px;right:12px;font-family:var(--mono);font-size:12px;
-  letter-spacing:.08em;color:var(--dim);background:#0c0c11;border:1px solid var(--line);
-  border-radius:7px;padding:6px 12px;cursor:pointer;
+  position:absolute;top:10px;right:10px;font-family:var(--mono);font-size:11.5px;
+  letter-spacing:.1em;color:var(--dim);background:#0a111a;border:1px solid var(--line);
+  border-radius:6px;padding:5px 10px;cursor:pointer;
 }
-.copy:hover{color:var(--accent);border-color:var(--brand)}
-.copy.done{color:#0a0a0f;background:var(--accent);border-color:var(--accent)}
+.copy:hover{color:var(--green);border-color:var(--green)}
+.copy.done{color:var(--bg);background:var(--green);border-color:var(--green)}
+.after{color:var(--dim);font-size:13.5px;margin:12px 0 0}
 
-/* ---------------------------------------------------- list + detail pane */
-.feat{
-  display:grid;grid-template-columns:1fr;margin-top:40px;
-  border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--surface);
-}
-@media(min-width:900px){.feat{grid-template-columns:minmax(0,505px) 1fr}}
-.flist{border-right:1px solid var(--line)}
-.frow{
-  display:flex;align-items:center;gap:16px;width:100%;padding:20px 26px;
-  background:none;border:0;border-bottom:1px solid var(--line);
-  color:var(--ink);font-family:var(--display);font-size:16px;font-weight:600;
-  text-align:left;cursor:pointer;transition:background .18s var(--ease);
-}
-.frow:last-child{border-bottom:none}
-.frow svg{color:var(--brand);flex:none}
-.frow:hover{background:rgba(250,244,236,.03)}
-.frow.is-on{background:linear-gradient(90deg,rgba(215,73,57,.18),rgba(215,73,57,0))}
-.fdetail{display:none;padding:52px 46px;background:rgba(250,244,236,.02)}
-.fdetail.is-on{display:flex;flex-direction:column;justify-content:center}
-.fdetail h3{margin:0 0 16px;font-size:clamp(22px,2.2vw,28px);font-weight:700;letter-spacing:-.02em}
-.fdetail p{margin:0;color:var(--dim);font-size:17px;line-height:1.6;max-width:28em}
-
-/* ----------------------------------------------------------------- cards */
-.grid2{display:grid;grid-template-columns:1fr;gap:18px;margin-top:34px}
-@media(min-width:760px){.grid2{grid-template-columns:1fr 1fr}}
-.grid3{display:grid;grid-template-columns:1fr;gap:18px;margin-top:34px}
-@media(min-width:640px){.grid3{grid-template-columns:1fr 1fr}}
-@media(min-width:980px){.grid3{grid-template-columns:repeat(3,1fr)}}
-.card{
-  background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:26px 27px;
-  transition:border-color .2s var(--ease),transform .2s var(--ease);
-}
-.card:hover{border-color:var(--line-hover);transform:translateY(-2px)}
-.card h3{margin:12px 0 10px;font-size:19px;font-weight:700;letter-spacing:-.015em}
-.card p{margin:0;color:var(--dim);font-size:15px;line-height:1.6}
-.card p .val,.card p .hl{color:var(--ink)}
-.badge{
-  display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
-  text-transform:uppercase;padding:4px 10px;border-radius:6px;border:1px solid;
-}
-.badge.gov{color:var(--accent);border-color:rgba(215,73,57,.45);background:rgba(215,73,57,.1)}
-.badge.edu{color:var(--blue);border-color:rgba(147,197,253,.35);background:rgba(147,197,253,.08)}
-.badge.third{color:var(--dim);border-color:var(--line);background:transparent}
+/* ------------------------------------------------------------ two dates */
+.dates{display:grid;grid-template-columns:1fr;gap:14px;margin-top:6px}
+@media(min-width:720px){.dates{grid-template-columns:1fr 1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:18px 19px}
+.card h3{margin:0 0 7px;font-size:14px;color:var(--green);letter-spacing:.08em}
+.card p{margin:0;color:var(--dim);font-size:14px;line-height:1.6}
+.card .val{color:var(--ink)}
+.six{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:640px){.six{grid-template-columns:1fr 1fr}}
+@media(min-width:920px){.six{grid-template-columns:1fr 1fr 1fr}}
+.six .card h3{font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+.six .card p{font-size:13.5px}
+.hl{color:var(--ink);font-weight:700}
+.lede{color:var(--dim);font-size:15px;line-height:1.65;margin:0 0 4px;max-width:60em}
+.method td:nth-child(2){color:var(--dim);font-size:12.5px}
+.method .yes{color:var(--green);font-weight:700;white-space:nowrap}
+.method .soon{color:var(--amber);white-space:nowrap}
+.soon{color:var(--amber)}
 
 .stats{
-  display:grid;grid-template-columns:repeat(2,1fr);gap:1px;margin:36px 0 0;
-  background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  display:grid;grid-template-columns:repeat(2,1fr);gap:1px;margin:22px 0 20px;
+  background:var(--line);border:1px solid var(--line);border-radius:11px;overflow:hidden;
 }
-@media(min-width:820px){.stats{grid-template-columns:repeat(5,1fr)}}
-.stats div{background:var(--surface);padding:28px 18px;text-align:center}
-.stats b{display:block;color:var(--accent);font-size:clamp(28px,3.6vw,38px);font-weight:800;letter-spacing:-.03em}
-.stats span{display:block;color:var(--dim);font-size:13px;margin-top:8px;line-height:1.45;font-family:var(--mono)}
+@media(min-width:760px){.stats{grid-template-columns:repeat(5,1fr)}}
+.stats div{background:var(--panel);padding:17px 14px;text-align:center}
+.stats b{display:block;color:var(--green);font-size:clamp(21px,4vw,27px);letter-spacing:.02em}
+.stats span{display:block;color:var(--dim);font-size:11.5px;letter-spacing:.07em;margin-top:5px;line-height:1.4}
 
-table{width:100%;border-collapse:collapse;margin-top:30px;font-size:15px}
-th,td{text-align:left;padding:15px 16px;border-bottom:1px solid var(--line)}
-th{color:var(--dim);font-weight:400;font-family:var(--mono);font-size:12px;
-  letter-spacing:.16em;text-transform:uppercase}
-td.n{color:var(--ink);font-weight:600}
-td.was{color:var(--dim)}
-td.now{color:var(--accent);font-weight:600}
-.method td:nth-child(2){color:var(--dim);font-size:14px}
-.method .yes{color:var(--ok);font-weight:600;white-space:nowrap;font-family:var(--mono);font-size:13.5px}
-.method .soon{color:var(--amber);white-space:nowrap;font-family:var(--mono);font-size:13.5px}
-.soon{color:var(--amber)}
-.verbs{width:100%;border-collapse:collapse;font-size:16px;margin-top:34px}
-.verbs td{border-bottom:1px solid var(--line);padding:16px;color:var(--dim)}
-.verbs td:first-child{color:var(--accent);font-weight:700;width:10em;font-family:var(--mono);font-size:15px}
-
-/* ------------------------------------------------------------- final cta */
-.finale{
-  text-align:center;border-top:1px solid var(--line);
-  background:radial-gradient(60% 100% at 50% 100%,rgba(215,73,57,.14),transparent 70%);
+.srcs{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:700px){.srcs{grid-template-columns:1fr 1fr}}
+.src h3{margin:9px 0 7px;font-size:15px;letter-spacing:.04em}
+.src p{font-size:13.5px}
+.badge{
+  display:inline-block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  padding:3px 8px;border-radius:5px;border:1px solid;
 }
-.finale h2{margin:0 auto 22px;max-width:24em}
-.finale .lede{margin-bottom:0}
+.badge.gov{color:var(--green);border-color:rgba(53,224,138,.4);background:rgba(53,224,138,.08)}
+.badge.edu{color:#7fb3ff;border-color:rgba(127,179,255,.4);background:rgba(127,179,255,.08)}
+.badge.third{color:var(--dim);border-color:var(--line);background:transparent}
 
-/* ---------------------------------------------------------------- footer */
-footer{border-top:1px solid var(--line);padding:64px 0 56px;background:var(--surface)}
-.fgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:34px}
-@media(min-width:820px){.fgrid{grid-template-columns:repeat(5,1fr)}}
-.fcol a.fico{display:flex;align-items:center;gap:10px}
-.fcol a.fico svg{flex:none;opacity:.75}
-.fcol h4{margin:0 0 16px;font-family:var(--mono);font-size:12px;letter-spacing:.18em;
-  text-transform:uppercase;color:var(--dim);font-weight:400}
-.fcol a{display:block;color:var(--text-mid);font-size:15px;padding:5px 0}
-.fcol a:hover{color:var(--ink)}
-.fnote{
-  margin:52px 0 0;padding-top:28px;border-top:1px solid var(--line);
-  color:var(--dim);font-size:13px;line-height:1.7;max-width:62em;font-family:var(--mono);
-}
+table{width:100%;border-collapse:collapse;margin-top:16px;font-size:13.5px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--dim);font-weight:400;letter-spacing:.1em;font-size:11.5px;text-transform:uppercase}
+td.n{color:var(--ink);font-weight:700}
+td.was{color:var(--red)}
+td.now{color:var(--green)}
+
+.verbs{width:100%;border-collapse:collapse;font-size:14px}
+.verbs td{border-bottom:1px solid var(--line);padding:10px 12px;color:var(--dim)}
+.verbs td:first-child{color:var(--green);font-weight:700;width:9.5em}
+
+footer{padding:64px 0 70px;color:var(--dim);font-size:13.5px}
+footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:16px}
 </style>
 </head>
 <body>
 
-<nav class="nav">
-  <div class="wrap">
-    <a class="logo" href="#top">
-      <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#d74939"></rect><path d="M6 22 L13 12 L19 18 L26 8" stroke="#faf4ec" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-      VINTAGE
-    </a>
-    <div class="nlinks">
-      <a href="#verbs">Verbs</a>
-      <a href="#sources">Data</a>
-      <a href="#method">Method</a>
-      <a href="#install">Install</a>
-      <a href="https://github.com/RezaSoleymanifar/vintage">GitHub</a>
-    </div>
-    <a class="cta" href="#install">Get the command</a>
-    <span class="npill">v0.3.0</span>
-    <a class="nicon" href="https://github.com/RezaSoleymanifar/vintage" aria-label="GitHub">
-      <svg width="17" height="17" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"></path></svg>
-    </a>
-  </div>
-</nav>
+<div class="wrap">
 
-<header class="hero" id="top">
-  <div class="hero-bg"></div>
-  <pre class="ascii" id="ascii" aria-hidden="true"></pre>
-  <div class="hero-scrim"></div>
-  <div class="wrap">
-    <p class="eyebrow">Point-in-time research terminal · MCP</p>
-    <h1>A research terminal that<em>won't lie to you.</em></h1>
-    <p class="lede">Every number carries <b>the date it became public</b>, so lookahead is impossible.<br>
-    <b>Nine primary sources, six verbs, zero API keys.</b> One terminal, a century of history.</p>
-    <div class="hbtns">
-      <a class="btn solid" href="#install">Get the install command</a>
-      <a class="btn ghost" href="https://github.com/RezaSoleymanifar/vintage">Read the docs</a>
-    </div>
-  </div>
+  <header>
+    <h1>VINTAGE</h1>
+    <p class="sub">POINT-IN-TIME RESEARCH TERMINAL &middot; MCP</p>
+    <p class="pitch">A research terminal that costs <b>$0</b> and won't lie to you about your Sharpe.</p>
 
-  <div class="why">
-    <div class="why-inner">
-      <p class="kicker">Why Vintage exists</p>
-      <p class="why-copy">Research was built to be checkable, a thing anyone could rerun and confirm.
-      Vintage keeps it that way. Every number comes from the institution that published it, carrying
-      the moment it became public, so a backtest can only ever see what the market saw. A front door
-      to what was known, open to everyone.</p>
-      <a class="btn ghost" href="https://github.com/RezaSoleymanifar/vintage/blob/main/PRINCIPLES.md">Read the principles</a>
-    </div>
-  </div>
-</header>
-
-<div class="trusted">
-  <div class="wrap">
-    <p class="tkick">Sourced from</p>
-    <div class="marks">
-      <span>SEC EDGAR</span>
-      <span>FRED</span>
-      <span>ALFRED</span>
-      <span>DARTMOUTH</span>
-      <span>OPENAP</span>
-      <span>FINRA</span>
-      <span>COINBASE</span>
-      <span>YAHOO FINANCE</span>
-    </div>
-  </div>
-</div>
-
-<section>
-  <div class="wrap">
-    <p class="kicker">Filed with, published by, and computed at</p>
-    <h2>The institutions come <em>first, not a reseller.</em></h2>
-    <p class="sublede">Official filings and central-bank releases, pulled live from the institutions
-    that publish them. Not a scrape, not a CSV dump, not a mirror of someone else's mirror.</p>
-
-    <div class="orgs">
-      <span class="org"><b>U.S. Securities &amp; Exchange Commission</b><i>EDGAR — the filings themselves</i></span>
-      <span class="org"><b>Federal Reserve Bank of St. Louis</b><i>FRED &amp; ALFRED — 800k series</i></span>
-      <span class="org"><b>Dartmouth College</b><i>Ken French Library — since 1926</i></span>
-      <span class="org"><b>Open Source Asset Pricing</b><i>Chen &amp; Zimmermann — 331 claims</i></span>
-    </div>
-
-    <div class="proof">
-      <div class="pstats">
-        <div class="pstat"><b>$338.5B → $323.9B restated</b><span>Apple FY2019</span></div>
-        <div class="pstat"><b>2.14 → 0.09 after deflation</b><span>your 41st idea</span></div>
-        <div class="pstat"><b>1926 → this morning</b><span>a century of history</span></div>
+    <div class="trust">
+      <span class="tlabel">Data filed with, published by, and computed at</span>
+      <div class="orgs">
+        <span class="org"><b>U.S. Securities &amp; Exchange Commission</b><i>EDGAR — the filings themselves</i></span>
+        <span class="org"><b>Federal Reserve Bank of St.&nbsp;Louis</b><i>FRED &amp; ALFRED — 800k series</i></span>
+        <span class="org"><b>Dartmouth College</b><i>Ken French Library — since 1926</i></span>
+        <span class="org"><b>Open Source Asset Pricing</b><i>Chen &amp; Zimmermann — 331 published claims</i></span>
       </div>
-      <div class="pquote">
-        <p>"The terminal you pay for does not tell you this."</p>
-        <cite>Deflated Sharpe Ratio — Bailey &amp; López de Prado (2014), shipped</cite>
-      </div>
+      <p class="tnote">Official filings and central-bank releases, pulled live from the institutions
+      that publish them. Not a scrape, not a CSV dump, not a mirror of someone else's mirror.</p>
     </div>
-  </div>
-</section>
-
-<section>
-  <div class="wrap">
-    <p class="kicker">Watch it work</p>
-    <h2>It counts how many times you asked <em>before it believes you.</em></h2>
 
     <div class="term">
       <div class="bar">
@@ -526,237 +236,56 @@ footer{border-top:1px solid var(--line);padding:64px 0 56px;background:var(--sur
         <div class="row r13 in1 kv"><span class="k">sharpe noise would produce</span><span class="v">2.29</span></div>
         <div class="row r14 bad in1 kv"><span class="k">deflated sharpe probability</span><span class="v">0.09</span></div>
         <div class="row r15 verdict in1">after 41 trials, a sharpe this high is what noise produces.</div>
-        <div class="row r16 kick in1">the terminal you pay for does not tell you this.</div>
+        <div class="row r16 kicker in1">the terminal you pay for does not tell you this.</div>
       </div>
     </div>
-  </div>
-</section>
+  </header>
 
-<section>
-  <div class="wrap">
-    <div class="prod">
+  <section>
+    <h2>What people use it for</h2>
+    <div class="reel"><div class="stage"><div class="zoomer"><div class="scenes"><div class="scene sc0"><div class="ask"><span class="q">?</span><span class="asktext ask0">Did Apple ever restate its 2019 revenue?</span></div><div class="answer"><div class="brule b0_0">What Apple reported for FY2019</div><div class="brow b0_1"><span>$338.5 billion</span><b>filed 31 Oct 2019</b></div><div class="bstrike b0_2"><span>$323.9 billion</span><b>restated 30 Oct 2020</b></div><div class="bnote b0_3">Vintage keeps both, and the date of each.</div></div><div class="cap cap0">The number changed. Most data feeds only keep the second one.</div></div><div class="scene sc1"><div class="ask"><span class="q">?</span><span class="asktext ask1">What was actually public on 1 January 2020?</span></div><div class="answer"><div class="brule b1_0">Filings visible on 2020-01-01</div><div class="brow b1_1"><span>10-K, FY2019</span><b>31 Oct 2019</b></div><div class="brow b1_2"><span>8-K, earnings</span><b>30 Oct 2019</b></div><div class="brow b1_3"><span>10-Q, Q3</span><b>31 Jul 2019</b></div><div class="bbad b1_4"><span>10-Q, Q1 2020</span><b>hidden — filed 29 Jan 2020</b></div><div class="bnote b1_5">The future cannot leak in. There is no flag to turn it off.</div></div><div class="cap cap1">Everything after that date is invisible. By construction, not by setting.</div></div><div class="scene sc2"><div class="ask"><span class="q">?</span><span class="asktext ask2">Backtest momentum. Then let me try a few more ideas.</span></div><div class="answer"><div class="bbig b2_0"><span>Sharpe</span><b>2.14</b></div><div class="brow b2_1"><span>specs you tried</span><b>41</b></div><div class="brow b2_2"><span>Sharpe noise would produce</span><b>2.29</b></div><div class="bbad b2_3"><span>after adjustment</span><b>0.09</b></div><div class="bnote b2_4">The terminal you pay for does not tell you this.</div></div><div class="cap cap2">You asked 41 times. That is what noise looks like.</div></div><div class="scene sc3"><div class="ask"><span class="q">?</span><span class="asktext ask3">Does the published research actually hold up?</span></div><div class="answer"><div class="brule b3_0">Jegadeesh &amp; Titman, 1993</div><div class="brow b3_1"><span>claimed</span><b>1.31% per month</b></div><div class="brow b3_2"><span>t-statistic</span><b>3.74</b></div><div class="brow b3_3"><span>sample</span><b>1964–1989</b></div><div class="bnote b3_4">Now run it yourself, on data that stops where it should.</div></div><div class="cap cap3">331 published anomalies, each with the number to beat.</div></div></div><span class="rip rip0"></span><span class="rip rip1"></span><span class="rip rip2"></span><span class="rip rip3"></span></div><span class="ptr"></span><div class="dots"><span class="dot d0"></span><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div></div></div>
+  </section>
 
-      <div class="prail">
-        <div class="prail-top">
-          <h2>Every way to ask what was public.</h2>
-          <p>Resolve, fetch, and test against a century of history — from one set of verbs.</p>
-        </div>
-        <button class="pitem is-on" data-verb="p-fetch">fetch</button>
-        <button class="pitem" data-verb="p-backtest">backtest</button>
-        <button class="pitem" data-verb="p-benchmark">benchmark</button>
-      </div>
-
-      <div class="ppanel is-on" id="p-fetch">
-        <div class="phead">
-          <h3>fetch</h3>
-          <p>Any field, any source, as of any date. Restatements arrive as separate rows rather than an
-          overwrite, so you get both figures and the date each was filed.</p>
-        </div>
-        <div class="pfeat">
-          <div><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18"></path></svg>
-            Nine sources behind one call: filings, macro, factors, prices, flow.</div>
-          <div><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"></path></svg>
-            <code>as_of</code> is not a filter. It is the index the whole panel is built on.</div>
-          <div><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6z"></path><circle cx="12" cy="12" r="2.6"></circle></svg>
-            Every value carries <code>observed_at</code> and <code>known_at</code>, or says it cannot.</div>
-          <div><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="10" width="16" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
-            No API key, no account, nothing hosted by us.</div>
-        </div>
-        <div class="pchrome">
-          <i></i><i></i><i></i>
-          <div class="ptabs">
-            <button class="ptab is-on" data-code="f-mcp">MCP</button>
-            <button class="ptab" data-code="f-py">Python</button>
-          </div>
-        </div>
-        <pre class="code codepane is-on" id="f-mcp"><span class="c"># What did Apple report for FY2019 — as anyone could see it on New Year's Day 2020?</span>
-<span class="k">fetch</span>(<span class="f">entity</span>=<span class="s">"AAPL"</span>, <span class="f">field</span>=<span class="s">"sec:Revenues"</span>, <span class="f">fiscal_year</span>=<span class="n">2019</span>, <span class="f">as_of</span>=<span class="s">"2020-01-01"</span>)
-
-<span class="ok">✓ sec edgar</span>  <span class="c">·  0.4s  ·  accession 0000320193-19-000119</span>
-{
-  <span class="f">"value"</span>: <span class="n">338500000000</span>,          <span class="f">"observed_at"</span>: <span class="s">"2019-09-28"</span>,
-  <span class="f">"known_at"</span>: <span class="s">"2019-10-31T16:32:00Z"</span>, <span class="f">"vintage"</span>: <span class="s">"as-filed"</span>,
-  <span class="f">"superseded_by"</span>: { <span class="f">"value"</span>: <span class="n">323900000000</span>, <span class="f">"known_at"</span>: <span class="s">"2020-10-30"</span>,
-                     <span class="f">"visible_at_as_of"</span>: <span class="bad">false</span> }
-}</pre>
-        <pre class="code codepane" id="f-py"><span class="k">from</span> vintage <span class="k">import</span> Client
-
-v = Client()
-row = v.<span class="f">fetch</span>(entity=<span class="s">"AAPL"</span>, field=<span class="s">"sec:Revenues"</span>, fiscal_year=<span class="n">2019</span>,
-             as_of=<span class="s">"2020-01-01"</span>)
-
-<span class="f">print</span>(row.value, row.known_at)     <span class="c"># 338500000000 2019-10-31T16:32:00Z</span>
-<span class="f">print</span>(row.superseded_by.value)     <span class="c"># 323900000000 — filed later, hidden here</span></pre>
-        <div class="pfoot"><a href="https://github.com/RezaSoleymanifar/vintage/blob/main/COVERAGE.md">Every field <code>fetch</code> accepts →</a></div>
-      </div>
-
-      <div class="ppanel" id="p-backtest">
-        <div class="phead">
-          <h3>backtest</h3>
-          <p>Cross-sectional signal to returns, costs, and an honesty report. Costs are charged on
-          turnover always, and no flag turns off the point-in-time index.</p>
-        </div>
-        <div class="pfeat">
-          <div><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 20h18M6 16l4-6 4 3 5-8"></path></svg>
-            The panel is indexed on <code>known_at</code>. Look-ahead is structurally impossible.</div>
-          <div><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
-            Turnover is always charged. A zero-cost backtest is not a backtest.</div>
-          <div><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="4" width="16" height="16" rx="2"></rect><path d="M8 9h8M8 13h8M8 17h4"></path></svg>
-            A session ledger counts every specification you tried.</div>
-          <div><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 3 20h18L12 3z"></path><path d="M12 10v4M12 17h.01"></path></svg>
-            The Sharpe is deflated by that count, and cannot be turned off.</div>
-        </div>
-        <div class="pchrome">
-          <i></i><i></i><i></i>
-          <div class="ptabs">
-            <button class="ptab is-on" data-code="b-mcp">MCP</button>
-            <button class="ptab" data-code="b-py">Python</button>
-          </div>
-        </div>
-        <pre class="code codepane is-on" id="b-mcp"><span class="c"># Your 41st idea this session. It remembers the other 40.</span>
-<span class="k">backtest</span>(<span class="f">signal</span>=<span class="s">"momentum_12_1"</span>, <span class="f">universe</span>=<span class="s">"dow30"</span>, <span class="f">start</span>=<span class="s">"2010-01-01"</span>)
-
-<span class="ok">✓ 3,914 sessions</span>  <span class="c">·  30 tickers  ·  panel on known_at</span>
-  annualized return <span class="n">14.8%</span>   volatility <span class="n">17.1%</span>   turnover cost <span class="n">−40 bps/yr</span>
-  sharpe            <span class="ok">2.14</span>
-
-<span class="c">── honesty report ───────────────────────────────────────────</span>
-  specs tried <span class="n">41</span>   sharpe noise produces <span class="n">2.29</span>   deflated <span class="bad">0.09</span>
-<span class="bad">  after 41 trials, a sharpe this high is what noise produces.</span></pre>
-        <pre class="code codepane" id="b-py">res = v.<span class="f">backtest</span>(signal=<span class="s">"momentum_12_1"</span>, universe=<span class="s">"dow30"</span>,
-                  start=<span class="s">"2010-01-01"</span>, rebalance=<span class="s">"monthly"</span>)
-
-<span class="f">print</span>(res.sharpe)                  <span class="c"># 2.14</span>
-<span class="f">print</span>(res.honesty.trials)          <span class="c"># 41</span>
-<span class="f">print</span>(res.honesty.deflated_sharpe) <span class="c"># 0.09</span>
-<span class="f">print</span>(res.honesty.verdict)         <span class="c"># "this is what noise produces"</span></pre>
-        <div class="pfoot"><a href="https://github.com/RezaSoleymanifar/vintage/blob/main/DESIGN.md">How the deflation works →</a></div>
-      </div>
-
-      <div class="ppanel" id="p-benchmark">
-        <div class="phead">
-          <h3>benchmark</h3>
-          <p>Your returns against the published factors, from the university that computes them — plus
-          the 331 anomalies with the number each paper actually claimed.</p>
-        </div>
-        <div class="pfeat">
-          <div><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19V5m0 14h16"></path><rect x="7" y="11" width="3" height="8"></rect><rect x="13" y="7" width="3" height="12"></rect></svg>
-            FF3, FF5, momentum and 49 industries, straight from Dartmouth.</div>
-          <div><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 3h12v18l-6-4-6 4z"></path></svg>
-            331 published predictors, each with its claimed return and t-statistic.</div>
-          <div><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"></circle><path d="M9 12h6M12 9v6"></path></svg>
-            Alpha and loadings with t-statistics, not a single headline number.</div>
-          <div><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h16M4 12h10M4 18h7"></path></svg>
-            History runs to July 1926, so the sample is the paper's, not yours.</div>
-        </div>
-        <div class="pchrome">
-          <i></i><i></i><i></i>
-          <div class="ptabs">
-            <button class="ptab is-on" data-code="k-mcp">MCP</button>
-            <button class="ptab" data-code="k-py">Python</button>
-          </div>
-        </div>
-        <pre class="code codepane is-on" id="k-mcp"><span class="c"># Is it you, or is it the factor?</span>
-<span class="k">benchmark</span>(<span class="f">returns</span>=my_strategy, <span class="f">against</span>=[<span class="s">"ff5"</span>, <span class="s">"mom"</span>, <span class="s">"openap:Mom12m"</span>])
-
-<span class="ok">✓ ken french library</span>  <span class="c">·  dartmouth  ·  1926-07 →</span>
-  alpha (monthly) <span class="n">0.08%</span>  t = <span class="n">0.61</span>      mkt-rf beta <span class="n">0.94</span>
-  mom loading     <span class="n">0.71</span>   t = <span class="n">6.20</span>
-
-<span class="c">── vs. published claim ──────────────────────────────────────</span>
-  <span class="f">openap:Mom12m</span>  Jegadeesh &amp; Titman 1993   <span class="n">1.31%/month</span>, t = <span class="n">3.74</span>
-<span class="bad">  your alpha is the factor, not you.</span></pre>
-        <pre class="code codepane" id="k-py">rep = v.<span class="f">benchmark</span>(returns=my_strategy,
-                   against=[<span class="s">"ff5"</span>, <span class="s">"mom"</span>, <span class="s">"openap:Mom12m"</span>])
-
-<span class="f">print</span>(rep.alpha_monthly, rep.alpha_t)   <span class="c"># 0.0008 0.61</span>
-<span class="f">print</span>(rep.loadings[<span class="s">"mom"</span>])            <span class="c"># 0.71  (t = 6.20)</span>
-<span class="f">print</span>(rep.claims[<span class="s">"openap:Mom12m"</span>])    <span class="c"># 1.31%/month, t = 3.74</span></pre>
-        <div class="pfoot"><a href="https://github.com/RezaSoleymanifar/vintage/blob/main/COVERAGE.md">All 331 anomalies →</a></div>
-      </div>
-
-    </div>
-    <p class="after">Source is a parameter, never a separate tool — <code>resolve</code>,
-    <code>discover</code> and <code>events</code> round out the six. Twenty more sources adds zero tools.</p>
-  </div>
-</section>
-
-<section id="install">
-  <div class="wrap">
-    <div class="sechead">
-      <div>
-        <p class="kicker">Integrations</p>
-        <h2>Plug into your chat &amp; any MCP client.</h2>
-        <p class="sublede">Works with every MCP client and with plain Python. One command, no account,
-        no API key for anything below.</p>
-      </div>
-      <a class="btn ghost nowrap" href="https://github.com/RezaSoleymanifar/vintage/blob/main/COVERAGE.md">Browse the catalogue &rarr;</a>
-    </div>
-  </div>
-
-  <div class="tiles">
-    <div>Claude Code</div>
-    <div>Desktop</div>
-    <div>Cursor</div>
-    <div>ChatGPT</div>
-    <div>VS Code</div>
-    <div>Windsurf</div>
-    <div>Zed</div>
-    <div>Continue</div>
-    <div>Python</div>
-    <div>uvx</div>
-    <div>pip</div>
-    <div>stdio · HTTP</div>
-  </div>
-
-  <div class="wrap">
+  <section>
+    <h2>Install</h2>
     <div class="tabs">
       <button class="tab is-on" data-pane="claude-code">Claude Code</button>
-      <button class="tab" data-pane="claude-desktop">Claude Desktop</button>
-      <button class="tab" data-pane="cursor">Cursor</button>
-      <button class="tab" data-pane="chatgpt">ChatGPT</button>
+          <button class="tab" data-pane="claude-desktop">Claude Desktop</button>
+          <button class="tab" data-pane="cursor">Cursor</button>
+          <button class="tab" data-pane="chatgpt">ChatGPT</button>
     </div>
-    <div class="pane is-on" id="claude-code"><p class="note">One command. Nothing to clone.</p><pre class="sh"><code>claude mcp add vintage -s user -- uvx vintage-mcp</code><button class="copy" aria-label="Copy">copy</button></pre></div>
-    <div class="pane" id="claude-desktop"><p class="note">Add to <code>claude_desktop_config.json</code>, then restart the app.</p><pre class="sh"><code>{
-  "mcpServers": {
-    "vintage": {
-      "command": "uvx",
-      "args": ["vintage-mcp"]
+    <div class="pane is-on" id="claude-code"><p class="note">One command. Nothing to clone.</p><pre><code>claude mcp add vintage -s user -- uvx vintage-mcp</code><button class="copy" aria-label="Copy">copy</button></pre></div>
+        <div class="pane" id="claude-desktop"><p class="note">Add to <code>claude_desktop_config.json</code>, then restart the app.</p><pre><code>{
+  &quot;mcpServers&quot;: {
+    &quot;vintage&quot;: {
+      &quot;command&quot;: &quot;uvx&quot;,
+      &quot;args&quot;: [&quot;vintage-mcp&quot;]
     }
   }
 }</code><button class="copy" aria-label="Copy">copy</button></pre></div>
-    <div class="pane" id="cursor"><p class="note">Add to <code>~/.cursor/mcp.json</code>.</p><pre class="sh"><code>{
-  "mcpServers": {
-    "vintage": {
-      "command": "uvx",
-      "args": ["vintage-mcp"]
+        <div class="pane" id="cursor"><p class="note">Add to <code>~/.cursor/mcp.json</code>.</p><pre><code>{
+  &quot;mcpServers&quot;: {
+    &quot;vintage&quot;: {
+      &quot;command&quot;: &quot;uvx&quot;,
+      &quot;args&quot;: [&quot;vintage-mcp&quot;]
     }
   }
 }</code><button class="copy" aria-label="Copy">copy</button></pre></div>
-    <div class="pane" id="chatgpt"><p class="note">Settings → Connectors → Developer mode. Needs a hosted URL — run <code>vintage</code> behind HTTPS and point the connector at it.</p><pre class="sh"><code>uvx vintage-mcp --transport streamable-http --port 8000</code><button class="copy" aria-label="Copy">copy</button></pre></div>
-
+        <div class="pane" id="chatgpt"><p class="note">Settings → Connectors → Developer mode. Needs a hosted URL — run <code>vintage</code> behind HTTPS and point the connector at it.</p><pre><code>uvx vintage-mcp --transport streamable-http --port 8000</code><button class="copy" aria-label="Copy">copy</button></pre></div>
     <p class="after">Needs <a href="https://docs.astral.sh/uv/getting-started/installation/">uv</a>.
-    Prefer pip? <code>pip install vintage-mcp</code>, then use <code>vintage</code> as the command.</p>
-  </div>
-</section>
+    Prefer pip? <code>pip install vintage-mcp</code>, then use <code>vintage</code> as the command.
+    No API keys required for anything above.</p>
+  </section>
 
-<section>
-  <div class="wrap">
-    <p class="kicker">What people use it for</p>
-    <h2>Built for forensics, replication, <em>and killing bad ideas early.</em></h2>
-    <div class="reel"><div class="stage"><div class="zoomer"><div class="scenes"><div class="scene sc0"><div class="ask"><span class="q">?</span><span class="asktext ask0">Did Apple ever restate its 2019 revenue?</span></div><div class="answer"><div class="brule b0_0">What Apple reported for FY2019</div><div class="brow b0_1"><span>$338.5 billion</span><b>filed 31 Oct 2019</b></div><div class="bstrike b0_2"><span>$323.9 billion</span><b>restated 30 Oct 2020</b></div><div class="bnote b0_3">Vintage keeps both, and the date of each.</div></div><div class="cap cap0">The number changed. Most data feeds only keep the second one.</div></div><div class="scene sc1"><div class="ask"><span class="q">?</span><span class="asktext ask1">What was actually public on 1 January 2020?</span></div><div class="answer"><div class="brule b1_0">Filings visible on 2020-01-01</div><div class="brow b1_1"><span>10-K, FY2019</span><b>31 Oct 2019</b></div><div class="brow b1_2"><span>8-K, earnings</span><b>30 Oct 2019</b></div><div class="brow b1_3"><span>10-Q, Q3</span><b>31 Jul 2019</b></div><div class="bbad b1_4"><span>10-Q, Q1 2020</span><b>hidden — filed 29 Jan 2020</b></div><div class="bnote b1_5">The future cannot leak in. There is no flag to turn it off.</div></div><div class="cap cap1">Everything after that date is invisible. By construction, not by setting.</div></div><div class="scene sc2"><div class="ask"><span class="q">?</span><span class="asktext ask2">Backtest momentum. Then let me try a few more ideas.</span></div><div class="answer"><div class="bbig b2_0"><span>Sharpe</span><b>2.14</b></div><div class="brow b2_1"><span>specs you tried</span><b>41</b></div><div class="brow b2_2"><span>Sharpe noise would produce</span><b>2.29</b></div><div class="bbad b2_3"><span>after adjustment</span><b>0.09</b></div><div class="bnote b2_4">The terminal you pay for does not tell you this.</div></div><div class="cap cap2">You asked 41 times. That is what noise looks like.</div></div><div class="scene sc3"><div class="ask"><span class="q">?</span><span class="asktext ask3">Does the published research actually hold up?</span></div><div class="answer"><div class="brule b3_0">Jegadeesh &amp; Titman, 1993</div><div class="brow b3_1"><span>claimed</span><b>1.31% per month</b></div><div class="brow b3_2"><span>t-statistic</span><b>3.74</b></div><div class="brow b3_3"><span>sample</span><b>1964–1989</b></div><div class="bnote b3_4">Now run it yourself, on data that stops where it should.</div></div><div class="cap cap3">331 published anomalies, each with the number to beat.</div></div></div><span class="rip rip0"></span><span class="rip rip1"></span><span class="rip rip2"></span><span class="rip rip3"></span></div><span class="ptr"></span><div class="dots"><span class="dot d0"></span><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div></div></div>
-  </div>
-</section>
-
-<section id="sources">
-  <div class="wrap">
-    <p class="kicker">Where the data comes from</p>
-    <h2>A century of market history, nine sources, <em>zero API keys.</em></h2>
-    <p class="sublede">The Fama-French factors start in July 1926 and the SEC filing stream runs to this
-    morning — Vintage covers both ends from the same six verbs. Most of these are the primary source,
-    not a reseller and not a scraper: the filings come from the regulator that receives them, the macro
-    series from the central bank that publishes them, and the factors from the university that computes
-    them. Vintage hosts none of it — it connects, normalizes, and preserves vintage.</p>
+  <section>
+    <h2>Where the data comes from</h2>
+    <p class="lede"><span class="hl">A century of market history, nine sources, zero API keys.</span>
+    The Fama-French factors start in July 1926 and the SEC filing stream runs to this morning —
+    Vintage covers both ends from the same six verbs.</p>
+    <p class="lede">Most of these are the primary source, not a reseller and not a scraper: the
+    filings come from the regulator that receives them, the macro series come from the central bank
+    that publishes them, and the factors come from the university that computes them. Vintage hosts
+    none of it — it connects, normalizes, and preserves vintage.</p>
 
     <div class="stats">
       <div><b>100</b><span>years, July 1926 to this morning</span></div>
@@ -764,63 +293,64 @@ row = v.<span class="f">fetch</span>(entity=<span class="s">"AAPL"</span>, field
       <div><b>9</b><span>sources, one set of six verbs</span></div>
       <div><b>10,398</b><span>ticker-mapped US filers</span></div>
       <div><b>800k+</b><span>macro series with vintages</span></div>
-    </div>
+      </div>
 
-    <div class="grid3">
-      <div class="card">
+    <div class="srcs">
+      <div class="card src">
         <span class="badge gov">Primary · US regulator</span>
         <h3>SEC EDGAR XBRL</h3>
         <p>Every concept every US filer has ever tagged, with the accession number and filing date
         attached to each figure. Restatements arrive as separate rows, not as an overwrite.</p>
       </div>
-      <div class="card">
+      <div class="card src">
         <span class="badge gov">Primary · US regulator</span>
         <h3>SEC filings stream</h3>
         <p>8-K, 10-K, 10-Q, Form 4 and 13D/G, timestamped to the second EDGAR accepted them. This is
         the clock the rest of the market runs on.</p>
       </div>
-      <div class="card">
+      <div class="card src">
         <span class="badge gov">Primary · central bank</span>
         <h3>FRED &amp; ALFRED</h3>
         <p>Federal Reserve Bank of St. Louis. ALFRED is the rare archive that keeps first releases,
         so you can ask what CPI looked like <i>that morning</i> rather than after the revisions.</p>
       </div>
-      <div class="card">
+      <div class="card src">
         <span class="badge edu">Primary · academic</span>
         <h3>Ken French Data Library</h3>
         <p>Dartmouth. FF3, FF5, momentum, daily FF3, and the 49 industry portfolios — the same series
         the papers are written against, from where the authors publish them.</p>
       </div>
-      <div class="card">
+      <div class="card src">
         <span class="badge edu">Primary · academic</span>
         <h3>Open Source Asset Pricing</h3>
         <p>Chen &amp; Zimmermann's replication of the anomaly zoo: 331 published predictors with the
-        return and t-statistic each paper claimed, its sample window, and a definition precise enough
-        to implement from. <code>openap:Mom12m</code> returns Jegadeesh-Titman's 1.31%/month, t = 3.74.</p>
+        return and t-statistic each paper claimed, its sample window, and a definition precise
+        enough to implement from. This is the scoreboard a replication is scored against —
+        <code>openap:Mom12m</code> returns Jegadeesh-Titman's 1.31%/month, t = 3.74.</p>
       </div>
-      <div class="card">
+      <div class="card src">
         <span class="badge gov">Primary · US regulator</span>
         <h3>FINRA short sale volume</h3>
-        <p>Daily short volume for every consolidated-tape symbol, published after each close and never
-        revised. Free, genuinely predictive, and almost nobody glues it. Note it is short <i>volume</i>,
-        not short interest — a flow measure, and the response says so.</p>
+        <p>Daily short volume for every consolidated-tape symbol, published after each close
+        and never revised. Free, genuinely predictive, and almost nobody glues it. Note it is
+        short <i>volume</i>, not short interest — a flow measure, and the response says so.</p>
       </div>
-      <div class="card">
+      <div class="card src">
         <span class="badge third">Exchange</span>
         <h3>Coinbase Exchange</h3>
         <p>Crypto OHLCV, no key. A trade print is never restated, so these are more honestly
-        point-in-time than equity adjusted closes — but dead tokens are absent entirely, so crypto
-        survivorship is worse than equities, not milder.</p>
+        point-in-time than equity adjusted closes — but dead tokens are absent entirely, so
+        crypto survivorship is worse than equities, not milder.</p>
       </div>
-      <div class="card">
+      <div class="card src">
         <span class="badge third">Community</span>
         <h3>ApeWisdom</h3>
-        <p>Forum mention ranks across ~15 stock and crypto subreddits. There is no history upstream, so
-        every row is stamped with the moment we fetched it. Backtestable history starts the day you
-        record it — the only honest version, since anyone selling years of "historical sentiment"
-        built it by re-scoring old posts.</p>
+        <p>Forum mention ranks across ~15 stock and crypto subreddits. There is no history
+        upstream, so every row is stamped with the moment we fetched it. Backtestable history
+        starts the day you record it — which is the only honest version, since anyone selling
+        years of "historical sentiment" built it by re-scoring old posts.</p>
       </div>
-      <div class="card">
+      <div class="card src">
         <span class="badge third">Third party</span>
         <h3>Yahoo Finance</h3>
         <p>Daily OHLCV and adjusted close, decades deep. Labelled honestly: adjustments are applied
@@ -831,14 +361,11 @@ row = v.<span class="f">fetch</span>(entity=<span class="s">"AAPL"</span>, field
     full field-by-field catalogue</a> lists every prefix, dataset and signal with measured coverage
     spans — generated from the registry, so it cannot drift from the code. Counts current as of
     August 2026. Each upstream source keeps its own terms; Vintage redistributes none of it.</p>
-  </div>
-</section>
+  </section>
 
-<section>
-  <div class="wrap">
-    <p class="kicker">Two dates, always</p>
-    <h2>Every value carries <em>when it was true and when it was known.</em></h2>
-    <div class="grid2">
+  <section>
+    <h2>Every value carries two dates</h2>
+    <div class="dates">
       <div class="card">
         <h3>observed_at</h3>
         <p>What period the number describes. <span class="val">Apple's Q4 2019 assets describe September 2019.</span></p>
@@ -851,62 +378,25 @@ row = v.<span class="f">fetch</span>(entity=<span class="s">"AAPL"</span>, field
     <p class="after">The backtest panel is indexed on <code>known_at</code>, so any slice of it is
     automatically point-in-time. There is no flag to turn that off. Sources that cannot supply an
     honest <code>known_at</code> are flagged <code>UNKNOWN_VINTAGE</code> rather than given a made-up date.</p>
+  </section>
 
-    <div class="sechead" style="margin-top:96px">
-      <div>
-        <p class="kicker">Six kinds of drift</p>
-        <h2>Six ways yesterday's data quietly changed.</h2>
-        <p class="sublede">Each one turns a backtest into a memory of the future. Vintage handles all
-        six in the panel index rather than trusting you to remember them.</p>
-      </div>
-      <a class="btn ghost nowrap" href="https://github.com/RezaSoleymanifar/vintage/blob/main/DATA_SOURCES.md">See the landscape &rarr;</a>
+  <section>
+    <h2>Six ways yesterday's data quietly changed</h2>
+    <div class="six">
+      <div class="card"><h3>Lag</h3><p>The number is true in December. It gets published in February.</p></div>
+      <div class="card"><h3>Restatement</h3><p>The company says "oops, wrong" and changes last year's number.</p></div>
+      <div class="card"><h3>Revision</h3><p>The government keeps fixing old jobs and inflation figures, for years.</p></div>
+      <div class="card"><h3>Survivorship</h3><p>Dead companies get deleted. Only the winners are still listed.</p></div>
+      <div class="card"><h3>Membership</h3><p>Today's S&amp;P 500 list is not the list from 2005.</p></div>
+      <div class="card"><h3>Price adjustment</h3><p>Splits and dividends silently rewrite every price before them.</p></div>
     </div>
+    <p class="after">All six say the same thing: <span class="hl">the data you have today is not what
+    people saw back then</span>. Point-in-time means showing only what was already public that day —
+    and Vintage enforces it in the panel index rather than trusting you to remember.</p>
+  </section>
 
-    <div class="feat">
-      <div class="flist">
-        <button class="frow is-on" data-f="d-lag"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Lag</button>
-        <button class="frow" data-f="d-restate"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 9h11a5 5 0 0 1 0 10H8"/><path d="M8 5 4 9l4 4"/></svg>Restatement</button>
-        <button class="frow" data-f="d-revise"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 20h4l10-10-4-4L4 16v4z"/><path d="M14 6l4 4"/></svg>Revision</button>
-        <button class="frow" data-f="d-surv"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 6l12 12M18 6 6 18"/></svg>Survivorship</button>
-        <button class="frow" data-f="d-memb"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h16M4 12h16M4 18h9"/></svg>Membership</button>
-        <button class="frow" data-f="d-price"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 20h18M6 16l4-6 4 3 5-8"/></svg>Price adjustment</button>
-      </div>
-      <div class="fdetail is-on" id="d-lag">
-        <h3>Lag</h3>
-        <p>The number is true in December. It gets published in February. Anyone who traded on it in
-        January was reading a number that did not exist yet.</p>
-      </div>
-      <div class="fdetail" id="d-restate">
-        <h3>Restatement</h3>
-        <p>The company says "oops, wrong" and changes last year's number. Most feeds keep only the
-        correction; Vintage keeps both rows and the date each was filed.</p>
-      </div>
-      <div class="fdetail" id="d-revise">
-        <h3>Revision</h3>
-        <p>The government keeps fixing old jobs and inflation figures, for years. ALFRED archives the
-        first release, so you can ask what the print looked like that morning.</p>
-      </div>
-      <div class="fdetail" id="d-surv">
-        <h3>Survivorship</h3>
-        <p>Dead companies get deleted. Only the winners are still listed, which makes every historical
-        universe quietly flattering. Where Vintage cannot fix it, it says so in the response.</p>
-      </div>
-      <div class="fdetail" id="d-memb">
-        <h3>Membership</h3>
-        <p>Today's S&amp;P 500 list is not the list from 2005. Backtesting the current index over old
-        data buys every stock that was about to be added.</p>
-      </div>
-      <div class="fdetail" id="d-price">
-        <h3>Price adjustment</h3>
-        <p>Splits and dividends silently rewrite every price before them, so an adjusted close is not
-        what anyone saw. Vintage labels it on every row rather than pretending otherwise.</p>
-      </div>
-    </div>
-    <p class="after">All six say the same thing: <span class="hl" style="color:var(--ink)">the data you
-    have today is not what people saw back then</span>. Point-in-time means showing only what was
-    already public that day — and Vintage enforces it in the panel index rather than trusting you to
-    remember.</p>
-
+  <section>
+    <h2>Why that matters</h2>
     <table>
       <thead><tr><th>What you ask for</th><th>What a normal API returns</th><th>What Vintage returns</th></tr></thead>
       <tbody>
@@ -927,14 +417,12 @@ row = v.<span class="f">fetch</span>(entity=<span class="s">"AAPL"</span>, field
         </tr>
       </tbody>
     </table>
-  </div>
-</section>
+  </section>
 
-<section id="method">
-  <div class="wrap">
-    <p class="kicker">The method</p>
-    <h2>The literature, implemented — <em>not statistics we invented.</em></h2>
-    <p class="sublede">Execution realism is a different problem, already solved by
+  <section>
+    <h2>The method</h2>
+    <p class="lede">Vintage implements the backtest-validation literature rather than inventing its own
+    statistics. Execution realism is a different problem, already solved by
     <a href="https://www.quantconnect.com/lean">LEAN</a> and
     <a href="https://nautilustrader.io/">Nautilus Trader</a> — Vintage runs before that, where most
     ideas should die.</p>
@@ -957,130 +445,36 @@ row = v.<span class="f">fetch</span>(entity=<span class="s">"AAPL"</span>, field
     <p class="after">Citations are references, not endorsements — none of these authors is affiliated
     with Vintage. Anything marked <span class="soon">planned</span> is not in the code yet, and the
     <code>backtest</code> response says so at runtime rather than in the footnotes.</p>
-  </div>
-</section>
+  </section>
 
-<section id="verbs">
-  <div class="wrap">
-    <p class="kicker">The surface</p>
-    <h2>Nine sources. <em>Six verbs.</em></h2>
+  <section>
+    <h2>Six verbs</h2>
     <table class="verbs">
-      <tbody><tr><td>resolve</td><td>Any identifier → the entity key everything else accepts</td></tr>
+      <tr><td>resolve</td><td>Any identifier &rarr; the entity key everything else accepts</td></tr>
       <tr><td>discover</td><td>Plain-English search across every source's catalog</td></tr>
       <tr><td>fetch</td><td>The workhorse. Any field, any source, with <code>as_of</code></td></tr>
       <tr><td>events</td><td>Filing timeline with exact public timestamps</td></tr>
-      <tr><td>backtest</td><td>Cross-sectional signal → returns, costs, honesty report</td></tr>
-      <tr><td>benchmark</td><td>Your returns → correlation and alpha vs published factors</td></tr>
-    </tbody></table>
+      <tr><td>backtest</td><td>Cross-sectional signal &rarr; returns, costs, honesty report</td></tr>
+      <tr><td>benchmark</td><td>Your returns &rarr; correlation and alpha vs published factors</td></tr>
+    </table>
     <p class="after">Source is a parameter, never a separate tool. Twenty more sources adds zero tools.</p>
-  </div>
-</section>
+  </section>
 
-<section class="finale">
-  <div class="wrap">
-    <h2>Ask what was actually known that day.</h2>
-    <p class="lede">It costs $0, needs no API key, and tells you when your idea is noise.</p>
-    <div class="hbtns">
-      <a class="btn solid" href="#install">Get the install command</a>
-      <a class="btn ghost" href="https://github.com/RezaSoleymanifar/vintage">Read the docs</a>
+  <footer>
+    <div class="links">
+      <a href="https://github.com/RezaSoleymanifar/vintage">GitHub</a>
+      <a href="https://pypi.org/project/vintage-mcp/">PyPI</a>
+      <a href="https://github.com/RezaSoleymanifar/vintage/blob/main/COVERAGE.md">Full data catalogue</a>
+      <a href="https://github.com/RezaSoleymanifar/vintage/blob/main/DATA_SOURCES.md">Data landscape</a>
+      <a href="https://github.com/RezaSoleymanifar/vintage/blob/main/DESIGN.md">Design</a>
     </div>
-  </div>
-</section>
-
-<footer>
-  <div class="wrap">
-    <div class="fgrid">
-      <div class="fcol">
-        <h4>Product</h4>
-        <a href="#verbs">Six verbs</a>
-        <a href="#install">Install</a>
-        <a href="#method">Method</a>
-        <a href="https://pypi.org/project/vintage-mcp/">PyPI</a>
-      </div>
-      <div class="fcol">
-        <h4>Data</h4>
-        <a href="#sources">Sources</a>
-        <a href="https://github.com/RezaSoleymanifar/vintage/blob/main/COVERAGE.md">Full catalogue</a>
-        <a href="https://github.com/RezaSoleymanifar/vintage/blob/main/DATA_SOURCES.md">Data landscape</a>
-        <a href="https://github.com/RezaSoleymanifar/vintage/blob/main/DATA_ROADMAP.md">Roadmap</a>
-      </div>
-      <div class="fcol">
-        <h4>Project</h4>
-        <a href="https://github.com/RezaSoleymanifar/vintage">GitHub</a>
-        <a href="https://github.com/RezaSoleymanifar/vintage/blob/main/DESIGN.md">Design</a>
-        <a href="https://github.com/RezaSoleymanifar/vintage/blob/main/PRINCIPLES.md">Principles</a>
-        <a href="https://github.com/RezaSoleymanifar/vintage/issues">Issues</a>
-      </div>
-      <div class="fcol">
-        <h4>Legal</h4>
-        <a href="https://github.com/RezaSoleymanifar/vintage/blob/main/LICENSE">MIT License</a>
-        <a href="https://www.sec.gov/about/privacy-information#security">SEC terms</a>
-        <a href="https://fred.stlouisfed.org/legal/">FRED terms</a>
-        <a href="#sources">Source attribution</a>
-      </div>
-      <div class="fcol">
-        <h4>Connect</h4>
-        <a class="fico" href="https://github.com/RezaSoleymanifar/vintage"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"></path></svg>GitHub</a>
-        <a class="fico" href="https://pypi.org/project/vintage-mcp/"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5V8z"></path><path d="M3 8l9 5 9-5M12 13v8"></path></svg>PyPI</a>
-        <a class="fico" href="https://modelcontextprotocol.io"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18"></path></svg>MCP</a>
-      </div>
-    </div>
-    <p class="fnote">MIT licensed. Vintage redistributes no data — SEC EDGAR, FRED, Yahoo Finance and the
+    <p>MIT licensed. Vintage redistributes no data — SEC EDGAR, FRED, Yahoo Finance and the
     Ken French library each keep their own terms. Nothing here is investment advice.</p>
-  </div>
-</footer>
+  </footer>
 
-<style>
-/* -------------------------------------------------------------- terminal */
-.term{
-  margin:44px 0 0; background:var(--surface); border:1px solid var(--line);
-  border-radius:16px; overflow:hidden;
-  box-shadow:0 30px 80px -40px rgba(215,73,57,.5);
-}
-.bar{
-  display:flex; align-items:center; gap:8px;
-  padding:13px 18px; border-bottom:1px solid var(--line); background:#0d0d13;
-}
-.dot{width:11px;height:11px;border-radius:50%;background:#2a2a33}
-.bar .dot:nth-child(1){background:#d74939}.bar .dot:nth-child(2){background:#d19a66}.bar .dot:nth-child(3){background:#8be9a1}
-.bar .who{margin-left:8px;color:var(--dim);font-size:13px;font-family:var(--mono)}
-.screen{padding:22px 22px 26px;font-family:var(--mono);font-size:clamp(11.5px,1.6vw,14.5px);min-height:360px}
+</div>
 
-.row{display:flex;align-items:baseline;flex-wrap:wrap;gap:0 8px;padding:1.5px 0;opacity:0}
-.in1{padding-left:1.6em}
-.prompt{font-weight:700}
-.p-shell{color:var(--dim)}
-.p-user{color:var(--accent)}
-.typed{display:inline-block;overflow:hidden;white-space:nowrap;vertical-align:bottom;width:0}
-.caret{
-  display:inline-block;width:.58em;height:1.05em;background:var(--accent);
-  vertical-align:text-bottom;visibility:hidden;
-}
-@keyframes blink{0%{opacity:1}50%{opacity:0}}
-
-.screen .dim{color:var(--dim)}
-.screen .ok{color:var(--ok)}
-.screen .ok b{margin-right:7px}
-.kv .k{color:var(--dim)}
-.kv .v{color:var(--ink);font-weight:700;margin-right:20px}
-.kv.big .v{color:var(--ok);font-size:1.5em}
-.kv.mid .v{color:var(--ink)}
-.kv.bad .v{color:var(--bad);font-size:1.25em}
-.verdict{color:var(--bad)}
-.screen .kick{color:var(--amber)}
-.rule{
-  color:var(--dim);letter-spacing:.22em;font-size:.82em;
-  margin-top:14px;text-transform:uppercase;gap:12px;
-}
-.rule i{flex:1;height:1px;background:var(--line);min-width:14px}
-
-@media (prefers-reduced-motion:reduce){
-  .row{opacity:1!important;animation:none!important;transform:none!important}
-  .typed{width:auto!important;animation:none!important}
-  .caret{display:none}
-}
-
-@keyframes a0{0%,1.316%{opacity:0}1.579%,100%{opacity:1}}
+<style>@keyframes a0{0%,1.316%{opacity:0}1.579%,100%{opacity:1}}
 @keyframes w0{0%,1.579%{width:0}11.053%,100%{width:49ch}}
 @keyframes c0{0%,1.316%{visibility:hidden}1.579%,18.158%{visibility:visible}18.421%,100%{visibility:hidden}}
 .r0{animation:a0 19.0s infinite}
@@ -1131,13 +525,12 @@ row = v.<span class="f">fetch</span>(entity=<span class="s">"AAPL"</span>, field
 @keyframes a16{0%,81.842%{opacity:0;transform:translateY(3px)}83.053%,100%{opacity:1;transform:none}}
 .r16{animation:a16 19.0s infinite}
 
-/* ------------------------------------------------------------------ reel */
-.reel{margin:40px 0 0}
+.reel{margin:26px 0 0}
 .stage{
-  position:relative;width:100%;max-width:1180px;aspect-ratio:1000/520;
-  margin:0 auto;overflow:hidden;border:1px solid var(--line);border-radius:16px;
-  background:radial-gradient(120% 120% at 30% 10%,#171016 0%,#0a0a0f 60%);
-  container-type:inline-size;font-family:var(--display);
+  position:relative;width:100%;max-width:1000px;aspect-ratio:1000/520;
+  margin:0 auto;overflow:hidden;border:1px solid var(--line);border-radius:13px;
+  background:radial-gradient(120% 120% at 30% 10%,#101a26 0%,#0a0e14 60%);
+  container-type:inline-size;
 }
 .zoomer{
   position:absolute;inset:0;animation:zoom 28.0s cubic-bezier(.55,.06,.32,1) infinite;
@@ -1147,17 +540,16 @@ row = v.<span class="f">fetch</span>(entity=<span class="s">"AAPL"</span>, field
 .scene{position:absolute;inset:0;opacity:0;padding:5cqw 12cqw 8.5cqw;display:flex;flex-direction:column}
 
 .ask{display:flex;align-items:baseline;gap:.7cqw;margin-bottom:2.6cqw}
-.ask .q{color:var(--accent);font-weight:700;font-size:1.95cqw}
+.ask .q{color:var(--green);font-weight:700;font-size:1.95cqw}
 .asktext{
   display:inline-block;overflow:hidden;white-space:nowrap;width:0;
-  color:var(--ink);font-size:1.95cqw;font-weight:700;letter-spacing:-.01em;font-family:var(--mono);
+  color:var(--ink);font-size:1.95cqw;font-weight:700;letter-spacing:.01em;
 }
 .answer{flex:1}
 .cap{margin-top:auto}
 .brule{
   color:var(--dim);font-size:1.35cqw;letter-spacing:.22em;text-transform:uppercase;
   padding-bottom:.9cqw;border-bottom:1px solid var(--line);margin-bottom:1.5cqw;opacity:0;
-  font-family:var(--mono);
 }
 .brow,.bbad,.bstrike,.bbig{
   display:flex;justify-content:space-between;align-items:baseline;gap:2cqw;
@@ -1166,15 +558,15 @@ row = v.<span class="f">fetch</span>(entity=<span class="s">"AAPL"</span>, field
 .brow span,.bbad span,.bstrike span,.bbig span{color:var(--dim);font-size:1.75cqw}
 .brow b{color:var(--ink);font-size:2.1cqw}
 .bbig span{font-size:1.9cqw}
-.bbig b{color:var(--ok);font-size:4.4cqw;line-height:1}
-.bbad b{color:var(--bad);font-size:3.1cqw;line-height:1}
-.bbad span{color:var(--bad);opacity:.75}
+.bbig b{color:var(--green);font-size:4.4cqw;line-height:1}
+.bbad b{color:var(--red);font-size:3.1cqw;line-height:1}
+.bbad span{color:var(--red);opacity:.75}
 .bstrike b{color:var(--amber);font-size:2.1cqw}
 .bstrike span{color:var(--amber);opacity:.8}
 .bnote{margin-top:1.4cqw;color:var(--dim);font-size:1.6cqw;line-height:1.5;opacity:0}
 .cap{
   opacity:0;color:var(--ink);font-size:1.9cqw;line-height:1.45;
-  border-left:2px solid var(--brand);padding-left:1.4cqw;
+  border-left:2px solid var(--green);padding-left:1.4cqw;
 }
 
 .ptr{
@@ -1185,13 +577,13 @@ row = v.<span class="f">fetch</span>(entity=<span class="s">"AAPL"</span>, field
 }
 .rip{
   position:absolute;width:5cqw;height:5cqw;margin:-2.5cqw 0 0 -2.5cqw;border-radius:50%;
-  border:2px solid var(--brand);opacity:0;pointer-events:none;
+  border:2px solid var(--green);opacity:0;pointer-events:none;
 }
 .dots{position:absolute;left:0;right:0;bottom:2.2cqw;display:flex;justify-content:center;gap:.7cqw}
-.dots .dot{height:7px;width:7px;border-radius:99px;background:var(--brand);opacity:.25}
+.dot{height:7px;width:7px;border-radius:99px;background:var(--green);opacity:.25}
 
 @media (prefers-reduced-motion:reduce){
-  .zoomer,.ptr,.rip,.dots .dot{animation:none!important;transform:none!important}
+  .zoomer,.ptr,.rip,.dot{animation:none!important;transform:none!important}
   .scene{animation:none!important}
   .scene:first-child{opacity:1}
   .asktext{width:auto!important;animation:none!important}
@@ -1280,101 +672,9 @@ row = v.<span class="f">fetch</span>(entity=<span class="s">"AAPL"</span>, field
 @keyframes dot2{48.929%{opacity:.25;width:7px}51.071%{opacity:1;width:22px}73.929%{opacity:1;width:22px}75.000%{opacity:.25;width:7px}}
 .d2{animation:dot2 28.0s infinite}
 @keyframes dot3{73.929%{opacity:.25;width:7px}76.071%{opacity:1;width:22px}98.929%{opacity:1;width:22px}100.000%{opacity:.25;width:7px}}
-.d3{animation:dot3 28.0s infinite}
-</style>
+.d3{animation:dot3 28.0s infinite}</style>
 
 <script>
-/* ------------------------------------------------- ascii hero background */
-(function () {
-  var el = document.getElementById('ascii');
-  if (!el) return;
-  var COLS = 132, ROWS = 62, mask = [];
-  var RAMP = ' ...::--==++**SIVMEJ%#8@';
-  var PTS = [[0.08,0.80],[0.32,0.26],[0.55,0.60],[0.90,0.10]];
-  var seed = 20191031;
-  function rnd() { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; }
-
-  function lineY(t) {
-    for (var i = 0; i < PTS.length - 1; i++) {
-      var a = PTS[i], b = PTS[i + 1];
-      if (t >= a[0] && t <= b[0]) {
-        var u = (t - a[0]) / (b[0] - a[0]);
-        return a[1] + (b[1] - a[1]) * u;
-      }
-    }
-    return t < PTS[0][0] ? PTS[0][1] : PTS[PTS.length - 1][1];
-  }
-
-  /* size the character grid to the box it actually has to fill */
-  function measure() {
-    var cs = getComputedStyle(el);
-    var fs = parseFloat(cs.fontSize) || 12;
-    var lh = fs * 1.24;
-    var probe = document.createElement('span');
-    probe.style.cssText = 'position:absolute;visibility:hidden;white-space:pre;font:' +
-      cs.fontStyle + ' ' + cs.fontWeight + ' ' + cs.fontSize + '/' + cs.lineHeight + ' ' + cs.fontFamily;
-    probe.textContent = '0123456789';
-    document.body.appendChild(probe);
-    var cw = probe.getBoundingClientRect().width / 10 || fs * 0.6;
-    document.body.removeChild(probe);
-    ROWS = Math.max(20, Math.ceil(el.clientHeight / lh) + 1);
-    COLS = Math.max(40, Math.ceil(el.clientWidth / cw) + 1);
-  }
-
-  function build() {
-  measure();
-  mask = [];
-  for (var y = 0; y < ROWS; y++) {
-    mask[y] = [];
-    for (var x = 0; x < COLS; x++) {
-      var t = x / (COLS - 1), ny = y / (ROWS - 1);
-      /* centred column, dense bands top and bottom — the shape reads as a data column */
-      var col = Math.exp(-Math.pow((t - 0.5) / 0.19, 2));
-      var band = ny < 0.30 ? (0.30 - ny) / 0.30 : (ny > 0.70 ? (ny - 0.70) / 0.30 : 0);
-      band = Math.pow(band, 0.7);
-      /* the chart line still runs through it, a shade brighter */
-      var dy = Math.abs(ny - lineY(t));
-      var line = 0.55 * Math.exp(-(dy * dy) / (2 * 0.045 * 0.045));
-      var s = Math.max(Math.max(col, band * 0.62), line);
-      s *= 0.74 + 0.26 * Math.sin(t * 7.4 + ny * 3.1);
-      mask[y][x] = 0.30 + 0.70 * s;
-    }
-  }
-  }
-
-  function frame(jitter) {
-    var html = '';
-    for (var y = 0; y < ROWS; y++) {
-      var line = '', sum = 0;
-      for (var x = 0; x < COLS; x++) {
-        var d = mask[y][x] + (rnd() - 0.5) * jitter;
-        sum += d;
-        if (d < 0.26 + rnd() * 0.46) { line += ' '; continue; }
-        var i = Math.max(0, Math.min(RAMP.length - 1, Math.round(d * (RAMP.length - 1))));
-        line += RAMP.charAt(i);
-      }
-      var op = Math.min(0.52, 0.04 + (sum / COLS) * 0.95);
-      html += '<b style="opacity:' + op.toFixed(2) + '">' + line + '</b>';
-    }
-    el.innerHTML = html;
-  }
-
-  build();
-  frame(0.10);
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    setInterval(function () { frame(0.10); }, 160);
-  }
-  var rt;
-  window.addEventListener('resize', function () {
-    clearTimeout(rt);
-    rt = setTimeout(function () { build(); frame(0.10); }, 220);
-  });
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(function () { build(); frame(0.10); });
-  }
-})();
-
-/* -------------------------------------------------------- install tabs */
 document.querySelectorAll('.tab').forEach(function (tab) {
   tab.addEventListener('click', function () {
     document.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('is-on'); });
@@ -1384,38 +684,6 @@ document.querySelectorAll('.tab').forEach(function (tab) {
   });
 });
 
-/* --------------------------------------------------- verb rail + panels */
-document.querySelectorAll('.pitem').forEach(function (item) {
-  item.addEventListener('click', function () {
-    document.querySelectorAll('.pitem').forEach(function (i) { i.classList.remove('is-on'); });
-    document.querySelectorAll('.ppanel').forEach(function (p) { p.classList.remove('is-on'); });
-    item.classList.add('is-on');
-    document.getElementById(item.dataset.verb).classList.add('is-on');
-  });
-});
-
-document.querySelectorAll('.ppanel').forEach(function (panel) {
-  panel.querySelectorAll('.ptab').forEach(function (tab) {
-    tab.addEventListener('click', function () {
-      panel.querySelectorAll('.ptab').forEach(function (t) { t.classList.remove('is-on'); });
-      panel.querySelectorAll('.codepane').forEach(function (p) { p.classList.remove('is-on'); });
-      tab.classList.add('is-on');
-      panel.querySelector('#' + tab.dataset.code).classList.add('is-on');
-    });
-  });
-});
-
-/* ------------------------------------------------- drift list + detail */
-document.querySelectorAll('.frow').forEach(function (row) {
-  row.addEventListener('click', function () {
-    document.querySelectorAll('.frow').forEach(function (r) { r.classList.remove('is-on'); });
-    document.querySelectorAll('.fdetail').forEach(function (d) { d.classList.remove('is-on'); });
-    row.classList.add('is-on');
-    document.getElementById(row.dataset.f).classList.add('is-on');
-  });
-});
-
-/* ------------------------------------------------------------- copy btn */
 document.querySelectorAll('.copy').forEach(function (btn) {
   btn.addEventListener('click', function () {
     var code = btn.parentElement.querySelector('code').innerText;
@@ -1427,6 +695,5 @@ document.querySelectorAll('.copy').forEach(function (btn) {
   });
 });
 </script>
-
-
-</body></html>
+</body>
+</html>

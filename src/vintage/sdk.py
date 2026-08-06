@@ -35,8 +35,8 @@ import pandas as pd
 from . import envelope, registry
 from .engine import backtest as _bt
 from .engine import honesty as _honesty
-from .sources import (apewisdom, coinbase, delistings as _delistings, edgar,
-                      finra, fred, french, openap, yahoo)
+from .sources import (apewisdom, cboe, coinbase, delistings as _delistings,
+                      ecb, edgar, finra, fred, french, openap, yahoo)
 
 T = TypeVar("T")
 
@@ -44,7 +44,7 @@ __all__ = [
     "prices", "panel", "returns", "fundamentals", "filings", "factors", "macro",
     "claim", "claims", "crypto", "short_volume", "sentiment",
     "resolve", "search", "sources", "signals", "backtest", "trials", "frame",
-    "delistings", "survivorship_warning",
+    "delistings", "survivorship_warning", "fx", "volatility", "index",
     "corporate_actions",
 ]
 
@@ -153,6 +153,26 @@ def panel(tickers: Iterable[str], *, field: str = "adjclose", start: str | None 
 def returns(prices_frame: pd.DataFrame, *, periods: int = 1) -> pd.DataFrame:
     """Simple returns. Here so a notebook does not reinvent it in cell three."""
     return prices_frame.pct_change(periods).dropna(how="all")
+
+
+def fx(pair: str = "EURUSD", *, start: str | None = None,
+       end: str | None = None) -> pd.DataFrame:
+    """ECB daily reference rates. Published each afternoon, never revised, so
+    these are honestly point-in-time. Cross rates are derived from the two euro
+    legs."""
+    return frame(_run(ecb.rates(pair, start=start, end=end)), value=pair.upper())
+
+
+def volatility(symbol: str = "VIX", *, field: str = "close",
+               start: str | None = None, end: str | None = None) -> pd.DataFrame:
+    """CBOE volatility indices. Levels, not option chains."""
+    return frame(_run(cboe.levels(symbol, field=field, start=start, end=end)),
+                 value=symbol.upper())
+
+
+def index(symbol: str = "^GSPC", **kwargs) -> pd.DataFrame:
+    """A market index. Same path as any other price series."""
+    return prices(symbol, **kwargs)
 
 
 def crypto(symbol: str = "BTC-USD", *, field: str = "close", interval: str = "1d",

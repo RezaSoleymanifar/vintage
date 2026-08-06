@@ -16,8 +16,11 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src"))
 
 from vintage import registry  # noqa: E402
+
+NL = chr(10)
+BLANK = ""
 from vintage.engine import backtest as bt  # noqa: E402
-from vintage.sources import apewisdom, coinbase, finra, french  # noqa: E402
+from vintage.sources import apewisdom, cboe, coinbase, ecb, finra, french  # noqa: E402
 
 HEADER = """# Coverage
 
@@ -169,6 +172,66 @@ def short_table() -> str:
     return "\n".join(rows) + "\n"
 
 
+def fx_table() -> str:
+    rows = [
+        "## Foreign exchange" + BLANK,
+        "European Central Bank reference rates, no key. Published each working day "
+        "around 16:00 CET and never revised, so these are honestly point-in-time. "
+        "Everything is quoted against the euro; a cross rate such as `fx:USDJPY` is "
+        "derived from the two euro legs and labelled as derived." + BLANK,
+        "| Field | Pair |", "|---|---|",
+    ]
+    for code in ecb.MAJORS:
+        rows.append("| `fx:EUR" + code + "` | Euro to " + code + " |")
+    rows.append("")
+    rows.append("Any ISO code the ECB publishes works, and any two of them cross. "
+                "History begins in 1999." + BLANK)
+    return NL.join(rows) + NL
+
+
+def vol_table() -> str:
+    rows = [
+        "## Volatility indices (" + str(len(cboe.INDICES)) + ")" + BLANK,
+        "CBOE, no key. Index levels are computed from that session's option prices and "
+        "are not revised. **Levels only** — historical option chains are paid at "
+        "every vendor and remain a gap." + BLANK,
+        "| Field | Covers |", "|---|---|",
+    ]
+    for symbol, label in cboe.INDICES.items():
+        rows.append("| `vol:" + symbol + "` | " + label + " |")
+    rows.append("")
+    return NL.join(rows) + NL
+
+
+def index_table() -> str:
+    rows = [
+        "## Market indices" + BLANK,
+        "Routed through the price adapter. Listed here because nobody guesses the caret "
+        "tickers unprompted." + BLANK,
+        "| Entity | Index |", "|---|---|",
+    ]
+    for item in registry.INDICES:
+        rows.append("| `" + item["entity"] + "` | " + item["label"] + " |")
+    rows.append("")
+    return NL.join(rows) + NL
+
+
+def delistings_table() -> str:
+    rows = [
+        "## Delistings, and survivorship" + BLANK,
+        "SEC Form 25 filings: 36,830 covering 11,614 companies, 2003 to 2026, each with "
+        "a company name, a CIK and an exact date. This is the correction for a universe "
+        "built from currently-listed names, which is a universe of survivors." + BLANK,
+        "| Field | Returns |", "|---|---|",
+        "| `delisting:form25` | every delisting on record, dated |", "",
+        "Electronic Form 25 filing became mandatory in April 2006, and the counts show "
+        "the step: about 450 a year through 2005, 1,421 in 2006, then 1,300 to 2,300 a "
+        "year. Complete from 2006, partial before, and the response says which." + BLANK,
+    ]
+    return NL.join(rows) + NL
+
+
+
 def signals_table() -> str:
     rows = [f"## Backtest signals ({len(bt.SIGNALS)} built in)\n",
             "| Signal | Definition |", "|---|---|"]
@@ -207,6 +270,10 @@ def main() -> None:
         + field_routing()
         + french_table()
         + fred_table()
+        + fx_table()
+        + vol_table()
+        + index_table()
+        + delistings_table()
         + crypto_table()
         + short_table()
         + sentiment_table()

@@ -2,8 +2,8 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.RezaSoleymanifar/vintage",
   "title": "Vintage",
-  "description": "Point-in-time financial data, and a backtester that deflates your Sharpe by how often you asked.",
-  "version": "0.6.0",
+  "description": "Free financial data from eleven sources behind six verbs, point-in-time where the source allows.",
+  "version": "0.7.0",
   "websiteUrl": "https://github.com/RezaSoleymanifar/vintage",
   "repository": {
     "url": "https://github.com/RezaSoleymanifar/vintage",
@@ -14,7 +14,7 @@
       "registryType": "pypi",
       "registryBaseUrl": "https://pypi.org",
       "identifier": "vintage-mcp",
-      "version": "0.6.0",
+      "version": "0.7.0",
       "transport": { "type": "stdio" },
       "environmentVariables": [
         {
