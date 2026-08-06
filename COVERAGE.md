@@ -35,6 +35,7 @@ Source is a parameter, never a separate tool.
 | **apewisdom** | retail forum mention ranks across ~15 stock and crypto subreddits No history endpoint upstream. Backtestable history starts the day you record it. | `ape:all-stocks, ape:wallstreetbets, ape:all-crypto` | only forward — known_at is when Vintage fetched it | none |
 | **ecb-reference-rates** | daily FX reference rates against the euro, 1999 onward, plus cross rates | `fx:EURUSD, fx:USDJPY` | yes — published each afternoon and never revised | none |
 | **cboe-indices** | VIX and the volatility family: term structure, VVIX, SKEW Index levels only. Historical option chains are paid everywhere. | `vol:VIX, vol:VIX3M, vol:SKEW` | yes — index levels are not revised | none |
+| **sec-form-25** | every delisting on record: 36,830 filings, 11,614 companies, 2003 on The survivorship correction. Complete from April 2006, partial before. | `delisting:form25` | yes — filing dates, never revised | none |
 | **fred** | 800k macro series, with ALFRED first-release vintages | `fred:CPIAUCSL` | yes — real-time vintages | free key |
 
 ## Field prefixes
@@ -52,6 +53,7 @@ How a field name routes to a source.
 | `short:` | finra | — |
 | `fx:` | ecb | — |
 | `vol:` | cboe | — |
+| `delisting:` | delistings | — |
 | `index:` | prices | — |
 | `filing:` | sec-edgar-filings | yes |
 | `us-gaap:` | sec-edgar-xbrl | yes |

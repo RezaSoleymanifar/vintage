@@ -21,6 +21,7 @@ PREFIXES = {
     "short:": "finra",
     "fx:": "ecb",
     "vol:": "cboe",
+    "delisting:": "delistings",
     "index:": "prices",
     "filing:": "sec-edgar-filings",
     "us-gaap:": "sec-edgar-xbrl",
@@ -105,6 +106,14 @@ SOURCES = [
         "point_in_time": "yes — index levels are not revised",
         "key_required": False,
         "note": "Index levels only. Historical option chains are paid everywhere.",
+    },
+    {
+        "source": "sec-form-25",
+        "covers": "every delisting on record: 36,830 filings, 11,614 companies, 2003 on",
+        "field_form": "delisting:form25",
+        "point_in_time": "yes — filing dates, never revised",
+        "key_required": False,
+        "note": "The survivorship correction. Complete from April 2006, partial before.",
     },
     {
         "source": "fred",

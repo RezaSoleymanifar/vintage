@@ -198,7 +198,9 @@ def warnings_for(rows: list[dict[str, Any]], as_of: str | None) -> list[str]:
         # threefold: 36,830 filings cover 11,614 companies.
         revived = len({r["cik"] for r in rows if r["known_at"] > as_of})
         notes.append(
-            f"{revived:,} companies delisted after {as_of} and were still trading then. "
+            f"These rows are delistings already public on {as_of}. To build a universe "
+            f"as it stood then, you want the complement: the {revived:,} companies that "
+            f"delisted *after* {as_of} were still trading and belong in it. "
             "A universe built from a current listing omits all of them, which biases "
             "short legs and any test of failure in particular."
         )

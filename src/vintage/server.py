@@ -17,8 +17,8 @@ from .engine import backtest as bt
 from .engine import benchmark as bm
 from .engine import honesty
 from .http import SourceError
-from .sources import (apewisdom, cboe, coinbase, ecb, edgar, finra, fred,
-                      french, openap, yahoo)
+from .sources import (apewisdom, cboe, coinbase, delistings, ecb, edgar,
+                      finra, fred, french, openap, yahoo)
 
 mcp = MCPServer(
     "vintage",
@@ -38,7 +38,7 @@ mcp = MCPServer(
         "returns a deflated Sharpe that accounts for how many specs were tried "
         "this session. Report it. Never present a raw Sharpe alone."
     ),
-    version="0.7.0",
+    version="0.7.1",
 )
 
 # Backtests keep their return series here so the model does not have to carry
@@ -207,6 +207,13 @@ async def fetch(
     try:
         if source == "french":
             rows = await french.load(field.split(":", 1)[1])
+        elif source == "delistings":
+            # Bulk history: one scan of EDGAR's quarterly indexes, then cached.
+            # `as_of` keeps its usual meaning here — delistings already public
+            # on that date. Inverting it to mean "still listed then" would have
+            # made one verb mean two opposite things depending on the field.
+            rows = delistings.load()
+            warnings += delistings.warnings_for(rows, as_of)
         elif source == "ecb":
             pair = field.split(":", 1)[1]
             rows = await ecb.rates(pair, start=start, end=end)
