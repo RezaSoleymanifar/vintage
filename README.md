@@ -23,6 +23,18 @@
 
 ---
 
+### Data filed with, published by, and computed at
+
+| | |
+|---|---|
+| **U.S. Securities & Exchange Commission** | EDGAR — the filings themselves, with accession numbers and acceptance timestamps |
+| **Federal Reserve Bank of St. Louis** | FRED & ALFRED — 800,000+ series, with first-release vintages |
+| **Dartmouth College** | Ken French Data Library — the Fama-French factors, from July 1926 |
+
+Official filings and central-bank releases, pulled live from the institutions that publish them. Not a scrape, not a CSV dump, not a mirror of someone else's mirror.
+
+---
+
 Free financial data exists and is scattered across twenty APIs with twenty shapes. Everyone rebuilds the same glue, badly, and quietly ends up backtesting on restated figures and survivor-only universes.
 
 Vintage is that glue, written once, served over [MCP](https://modelcontextprotocol.io). It hosts no data — it connects, normalizes, and preserves vintage.

@@ -45,6 +45,22 @@ h1{
 }
 .pitch b{color:var(--green);font-weight:700}
 
+/* ----------------------------------------------------------------- trust */
+.trust{
+  margin:28px 0 0;padding:17px 19px;border:1px solid var(--line);border-radius:11px;
+  background:linear-gradient(180deg,rgba(53,224,138,.05),transparent);
+}
+.tlabel{
+  display:block;color:var(--dim);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+  margin-bottom:12px;
+}
+.orgs{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:760px){.orgs{grid-template-columns:repeat(3,1fr)}}
+.org{display:block;padding-left:11px;border-left:2px solid var(--green)}
+.org b{display:block;color:var(--ink);font-size:13.5px;line-height:1.35;font-weight:700}
+.org i{display:block;color:var(--dim);font-size:11.5px;font-style:normal;margin-top:3px}
+.tnote{margin:14px 0 0;color:var(--dim);font-size:12.5px;line-height:1.6}
+
 /* -------------------------------------------------------------- terminal */
 .term{
   margin:34px 0 0; background:var(--panel); border:1px solid var(--line);
@@ -185,6 +201,17 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:16px}
     <p class="sub">POINT-IN-TIME RESEARCH TERMINAL &middot; MCP</p>
     <p class="pitch">A research terminal that costs <b>$0</b> and won't lie to you about your Sharpe.</p>
 
+    <div class="trust">
+      <span class="tlabel">Data filed with, published by, and computed at</span>
+      <div class="orgs">
+        <span class="org"><b>U.S. Securities &amp; Exchange Commission</b><i>EDGAR — the filings themselves</i></span>
+        <span class="org"><b>Federal Reserve Bank of St.&nbsp;Louis</b><i>FRED &amp; ALFRED — 800k series</i></span>
+        <span class="org"><b>Dartmouth College</b><i>Ken French Library — since 1926</i></span>
+      </div>
+      <p class="tnote">Official filings and central-bank releases, pulled live from the institutions
+      that publish them. Not a scrape, not a CSV dump, not a mirror of someone else's mirror.</p>
+    </div>
+
     <div class="term">
       <div class="bar">
         <span class="dot"></span><span class="dot"></span><span class="dot"></span>
@@ -192,7 +219,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:16px}
       </div>
       <div class="screen">
         <div class="row r0"><span class="prompt p-shell">$</span><span class="typed t0">claude mcp add vintage -s user -- uvx vintage-mcp</span><span class="caret k0"></span></div>
-        <div class="row r1 ok"><b>✓</b>vintage connected · 6 tools · 5 sources · 0 API keys</div>
+        <div class="row r1 ok"><b>✓</b>connected · sec edgar · fred · ken french · yahoo · 0 API keys</div>
         <div class="row r2"><span class="prompt p-user">❯</span><span class="typed t2">backtest 12-1 momentum on the dow 30 since 2010</span><span class="caret k2"></span></div>
         <div class="row r3 dim in1">reading 30 tickers from yahoo-finance, 3,914 sessions</div>
         <div class="row r4 dim in1">panel indexed on known_at — lookahead structurally impossible</div>
