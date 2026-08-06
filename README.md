@@ -25,24 +25,10 @@
   <a href="https://rezasoleymanifar.github.io/vintage/"><b>rezasoleymanifar.github.io/vintage</b></a>
 </p>
 
----
 
-### Data filed with, published by, and computed at
+Free financial data exists and is scattered across twenty APIs with twenty shapes. Everyone rebuilds the same glue, badly, and quietly ends up backtesting on restated figures and survivor biased universes.
 
-| | |
-|---|---|
-| **U.S. Securities & Exchange Commission** | EDGAR — the filings themselves, with accession numbers and acceptance timestamps |
-| **Federal Reserve Bank of St. Louis** | FRED & ALFRED — 800,000+ series, with first-release vintages |
-| **Dartmouth College** | Ken French Data Library — the Fama-French factors, from July 1926 |
-| **Open Source Asset Pricing** | Chen & Zimmermann — 331 published anomalies with the return and t-stat each paper claimed |
-
-Official filings and central-bank releases, pulled live from the institutions that publish them. Not a scrape, not a CSV dump, not a mirror of someone else's mirror.
-
----
-
-Free financial data exists and is scattered across twenty APIs with twenty shapes. Everyone rebuilds the same glue, badly, and quietly ends up backtesting on restated figures and survivor-only universes.
-
-Vintage is that glue, written once, served over [MCP](https://modelcontextprotocol.io). It hosts no data — it connects, normalizes, and preserves vintage.
+Vintage is that glue, written once, served over [MCP](https://modelcontextprotocol.io). It hosts no data. It connects, normalizes, and serves financial data from the web.
 
 ## What people use it for
 
@@ -53,8 +39,6 @@ Vintage is that glue, written once, served over [MCP](https://modelcontextprotoc
 <p align="center"><sub>Two of four scenes — <a href="https://rezasoleymanifar.github.io/vintage/">see the full reel on the site</a>.</sub></p>
 
 ## Install
-
-One line. Nothing to clone.
 
 **Claude Code**
 
@@ -75,7 +59,7 @@ claude mcp add vintage -s user -- uvx vintage-mcp
 }
 ```
 
-<sub>Claude Desktop config lives at `%APPDATA%\Claude\claude_desktop_config.json` (Windows) or `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS). Restart the app afterwards — MCP servers load once at startup.</sub>
+<sub>Claude Desktop config lives at `%APPDATA%\Claude\claude_desktop_config.json` (Windows) or `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS). Restart the app afterwards. MCP servers load once at startup.</sub>
 
 Needs [`uv`](https://docs.astral.sh/uv/getting-started/installation/). If you'd rather use pip: `pip install vintage-mcp` and set the command to `vintage`.
 
@@ -182,20 +166,10 @@ Source is a parameter, never a separate tool. Twenty more sources adds zero tool
 
 Plus `status` for cache size, keys, and how many specs you have tried.
 
-## The honesty engine
-
-A conversational backtester is an overfitting machine unless it counts how many times you asked. Every backtest returns:
+## Backtesting methodology
 
 - **Deflated Sharpe** ([Bailey & López de Prado, 2014](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551)) accounting for every spec tried this session
-- **The Sharpe noise would have produced** given that trial count
-- **First-half vs second-half Sharpe**
-- Costs always charged on turnover — there is no zero-cost mode
-- A standing survivorship warning until point-in-time universes land
-
-This is the part a paid terminal does not do for you.
-
-## The method
-
+- 
 Vintage implements the backtest-validation literature rather than inventing its own statistics. Execution realism is a different problem, already solved by [LEAN](https://www.quantconnect.com/lean) and [Nautilus Trader](https://nautilustrader.io/) — Vintage runs before that, at the stage where most ideas should die.
 
 | Technique | Source | Status |
@@ -229,6 +203,7 @@ Citations are references, not endorsements — none of these authors is affiliat
 
 **Most of these are the primary source** — not a reseller, not a scraper. The filings come from the regulator that receives them, the macro series from the central bank that publishes them, and the factors from the university that computes them.
 
+@remove all emojis and just print list of soruceswith icons for them. 
 | Source | Standing | Covers | Key | Point-in-time |
 |---|---|---|---|---|
 | **SEC EDGAR XBRL** | Primary · US regulator | Every concept every US filer has tagged, with accession number and filing date on each figure. Restatements arrive as rows, never as an overwrite. | none | ✅ native filing dates |
@@ -253,14 +228,6 @@ Citations are references, not endorsements — none of these authors is affiliat
 **[COVERAGE.md](COVERAGE.md) is the full field-by-field catalogue** — every prefix, every dataset, every signal, with measured coverage spans. It is generated from the registry, so it cannot drift from the code.
 
 Counts current as of August 2026. Vintage redistributes none of this — each upstream source keeps its own terms.
-
-### On Yahoo Finance
-
-It is the one third-party source here, and the weakest link: an undocumented endpoint with grey terms that can change without notice. It stays because it is the only free source of decades-deep daily prices, and prices are the spine of every backtest — Ken French gives factor returns, not individual securities.
-
-It is mitigated rather than hidden. Vintage fetches per user and redistributes nothing, every price row is flagged as retroactively adjusted, and the price layer is a single adapter, so a keyed alternative (Tiingo, Alpaca) can slot in behind the same `price:` prefix without touching anything else. Stooq was the intended spine — friendlier terms — but it now gates programmatic access behind a JavaScript check. That adapter stays in case the check lifts.
-
-See [`PRINCIPLES.md`](PRINCIPLES.md) for the rules that decide arguments, [`COVERAGE.md`](COVERAGE.md) for what is wired up today, [`DATA_SOURCES.md`](DATA_SOURCES.md) for the wider free-data landscape, [`DESIGN.md`](DESIGN.md) for the architecture, and [`INTEGRATIONS.md`](INTEGRATIONS.md) for the engines Vintage should feed next — LEAN and Alpaca, both open for contribution.
 
 ## Cache
 
