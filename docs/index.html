@@ -68,6 +68,34 @@ a:hover{text-decoration:underline}
   font-size:clamp(9.5px,1.32vh,12px);line-height:1.3}
 .fact .ic{color:var(--green);opacity:.8;flex:none}
 
+/* the engine panel: the diagram wide on top, the literature banded beneath */
+.split{flex:1;min-height:0;display:grid;grid-template-rows:minmax(0,1fr) auto;
+  gap:clamp(8px,1.3vh,16px)}
+.splitdia{min-width:0;min-height:0;display:flex}
+.splitdia .dia{flex:1;width:100%;height:100%}
+.methods{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:clamp(5px,.8vh,10px) clamp(10px,1.4vw,20px)}
+.mhead{grid-column:1/-1;display:flex;gap:16px;font-family:var(--mono);
+  letter-spacing:.11em;text-transform:uppercase;font-size:clamp(8px,1.05vh,9.5px)}
+.mhead .on{color:var(--green)}
+.mhead .off{color:var(--dim)}
+.mhead span{display:inline-flex;align-items:center;gap:6px}
+.mhead span::before{content:"";width:7px;height:7px;border-radius:50%;
+  background:currentColor;opacity:.85}
+.method{border-left:2px solid var(--line);padding:1px 0 1px 9px;min-width:0}
+.method b{display:block;color:var(--ink);font-size:clamp(9.5px,1.32vh,12px);
+  font-weight:700;line-height:1.25}
+.method span{display:block;color:var(--dim);font-size:clamp(8px,1.1vh,10px);
+  line-height:1.3}
+.method.on{border-left-color:rgba(47,213,135,.7)}
+.method.off b{color:var(--dim)}
+.mnote{grid-column:1/-1;margin:0;color:var(--dim);font-size:clamp(9px,1.2vh,11px);
+  line-height:1.45;padding-top:7px;border-top:1px solid var(--line)}
+
+@media(max-width:1039px),(max-height:639px){
+  .methods{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
 .cmd{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:9px;
   padding:11px 13px 11px 13px;color:var(--green);line-height:1.6;
   font-size:clamp(9.5px,1.3vh,12.5px);word-break:break-word}
@@ -527,6 +555,88 @@ a:hover{text-decoration:underline}
       </svg>
       </section>
 
+      <section class="panel" data-dwell="14">
+        <h2 class="ptitle">And a backtester that argues with you.</h2>
+        <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="2.2"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h4.5"/></svg>it counts how many times you asked</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5 12 14l3.5-3.5L21 16"/><path d="M21 11v5h-5"/></svg>the Sharpe is deflated for that count</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.3 2.9 7.6 7 9.5 4.1-1.9 7-5.2 7-9.5V6Z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg>published methods, cited on the page</span></div>
+        <div class="split">
+          <div class="splitdia"><svg class="dia" viewBox="0 0 1160 300" role="img" aria-label="41 specs feeding a trial ledger, collapsing a Sharpe of 2.14 to 0.09">
+      <rect class="d-box" x="20" y="50" width="330" height="210" rx="11"/>
+      <text class="d-ct" x="40" y="78">ONE RESEARCH SESSION</text>
+      <rect class="d-spec sp0" x="40" y="110" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp1" x="69" y="110" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp2" x="98" y="110" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp3" x="127" y="110" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp4" x="156" y="110" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp5" x="185" y="110" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp6" x="214" y="110" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp7" x="243" y="110" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp8" x="272" y="110" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp9" x="301" y="110" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp10" x="40" y="139" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp11" x="69" y="139" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp12" x="98" y="139" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp13" x="127" y="139" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp14" x="156" y="139" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp15" x="185" y="139" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp16" x="214" y="139" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp17" x="243" y="139" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp18" x="272" y="139" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp19" x="301" y="139" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp20" x="40" y="168" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp21" x="69" y="168" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp22" x="98" y="168" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp23" x="127" y="168" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp24" x="156" y="168" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp25" x="185" y="168" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp26" x="214" y="168" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp27" x="243" y="168" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp28" x="272" y="168" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp29" x="301" y="168" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp30" x="40" y="197" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp31" x="69" y="197" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp32" x="98" y="197" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp33" x="127" y="197" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp34" x="156" y="197" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp35" x="185" y="197" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp36" x="214" y="197" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp37" x="243" y="197" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp38" x="272" y="197" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp39" x="301" y="197" width="22" height="22" rx="4"/>
+      <rect class="d-spec sp40" x="40" y="226" width="22" height="22" rx="4"/>
+      <text class="d-fn" x="40" y="96">41 ideas tried, every one counted</text>
+      <rect class="d-stage" x="410" y="80" width="250" height="150" rx="11"/>
+      <text class="d-ct" x="430" y="108">TRIAL LEDGER</text>
+      <text class="d-big" x="430" y="150">n = 41</text>
+      <rect class="d-track" x="430" y="172" width="210" height="9" rx="5"/>
+      <rect class="d-fill ledbar" x="430" y="172" height="9" rx="5"/>
+      <text class="d-fn" x="430" y="206">kept per session, automatically</text>
+      <path class="d-wire" d="M350 155 L410 155"/>
+      <path class="d-flow" style="animation-delay:0.0s" d="M350 155 L410 155"/>
+      <path class="d-wire" d="M660 155 L720 155"/>
+      <path class="d-flow" style="animation-delay:-0.5s" d="M660 155 L720 155"/>
+      <rect class="d-box" x="720" y="50" width="420" height="210" rx="11"/>
+      <text class="d-ct" x="740" y="78">DEFLATED SHARPE &middot; BAILEY &amp; L&Oacute;PEZ DE PRADO (2014)</text>
+      <text class="d-big ok" x="740" y="122">2.14</text>
+      <rect class="d-track" x="812" y="110" width="308" height="12" rx="6"/>
+      <rect class="d-fill" x="812" y="110" width="287" height="12" rx="6"/>
+      <text class="d-fn" x="740" y="142">what your backtest reported</text>
+      <text class="d-mid" x="740" y="186">2.29</text>
+      <rect class="d-track" x="812" y="176" width="308" height="10" rx="5"/>
+      <rect class="d-fill amber" x="812" y="176" width="308" height="10" rx="5"/>
+      <text class="d-fn" x="740" y="204">what pure luck would have produced</text>
+      <g class="defnum"><text class="d-big bad" x="740" y="244">0.09</text></g>
+      <rect class="d-track" x="812" y="234" width="308" height="12" rx="6"/>
+      <rect class="d-fill bad defbar" x="812" y="234" height="12" rx="6"/>
+      <g class="defnum"><text class="d-fn" x="880" y="244">what is left once the 41 tries are priced in</text></g>
+      </svg></div>
+          <div class="methods">
+            <div class="mhead"><span class="on">in the code</span><span class="off">named, not yet built</span></div><div class="method on"><b>Point-in-time panel indexed on known_at</b><span>structural, no flag disables it</span></div><div class="method on"><b>Costs charged on turnover</b><span>there is no zero-cost mode</span></div><div class="method on"><b>Deflated Sharpe Ratio</b><span>Bailey &amp; L&oacute;pez de Prado, 2014</span></div><div class="method on"><b>Session trial ledger</b><span>every spec you tried, priced into the result</span></div><div class="method off"><b>Probability of Backtest Overfitting</b><span>Bailey, Borwein, L&oacute;pez de Prado &amp; Zhu, 2017</span></div><div class="method off"><b>Purged k-fold with embargo</b><span>Advances in Financial Machine Learning, ch. 7</span></div><div class="method off"><b>Minimum Backtest Length</b><span>Bailey, Borwein, L&oacute;pez de Prado &amp; Zhu, 2014</span></div><div class="method off"><b>Newey-West, square-root impact</b><span>Newey &amp; West 1987; Almgren 2005</span></div>
+            <p class="mnote">Nothing to install past the one line on the left. The engine
+            runs on the same six verbs, over the panel the federation already built.</p>
+          </div>
+        </div>
+      </section>
+
       <section class="panel" data-dwell="10">
         <h2 class="ptitle">A century of history, and six verbs that reach all of it.</h2>
         <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M11 14.5h2"/></svg>July 1926 to this morning</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M6.5 9.5 9.5 12l-3 2.5"/><path d="M12.5 15h5"/></svg>a source is a parameter</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 7.5 12 12l9-4.5Z"/><path d="M3 12.5 12 17l9-4.5"/><path d="M3 17 12 21.5 21 17"/></svg>more sources, same six verbs</span></div>
@@ -692,7 +802,7 @@ a:hover{text-decoration:underline}
 (function () {
   var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
   var chipbar = document.getElementById('chips');
-  var titles = ['What it is', 'What you get', 'Point-in-time', 'The experiment'];
+  var titles = ['What it is', 'The engine', 'What you get', 'Point-in-time', 'The experiment'];
   var timer, at = 0;
 
   var chips = titles.map(function (t, i) {

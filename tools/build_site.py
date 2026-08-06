@@ -1250,6 +1250,9 @@ FACTS = {
     "__F3__": [("wall", "nothing crosses the day marker"),
                ("calendar", "corrections add a row"),
                ("shield", "no honest date, no silent guess")],
+    "__F5__": [("ledger", "it counts how many times you asked"),
+               ("fall", "the Sharpe is deflated for that count"),
+               ("shield", "published methods, cited on the page")],
     "__F4__": [("ledger", "41 specs counted this session"),
                ("fall", "Sharpe 2.14 deflates to 0.09"),
                ("prompt", "every number reproducible")],
@@ -1266,6 +1269,29 @@ def build_steps() -> str:
     return "\n      ".join(
         f'<div class="step">{icon(g, 15)}<b>{n}</b><span>{w}</span></div>'
         for g, n, w in STEPS)
+
+
+# The backtest-validation literature, named rather than paraphrased, with what
+# is in the code separated from what is not. A terminal claim that cannot show
+# its methods is a slogan.
+METHODS = [
+    ("on", "Point-in-time panel indexed on known_at", "structural, no flag disables it"),
+    ("on", "Costs charged on turnover", "there is no zero-cost mode"),
+    ("on", "Deflated Sharpe Ratio", "Bailey &amp; L&oacute;pez de Prado, 2014"),
+    ("on", "Session trial ledger", "every spec you tried, priced into the result"),
+    ("off", "Probability of Backtest Overfitting", "Bailey, Borwein, L&oacute;pez de Prado &amp; Zhu, 2017"),
+    ("off", "Purged k-fold with embargo", "Advances in Financial Machine Learning, ch. 7"),
+    ("off", "Minimum Backtest Length", "Bailey, Borwein, L&oacute;pez de Prado &amp; Zhu, 2014"),
+    ("off", "Newey-West, square-root impact", "Newey &amp; West 1987; Almgren 2005"),
+]
+
+
+def build_methods() -> str:
+    rows = "".join(
+        f'<div class="method {state}"><b>{name}</b><span>{cite}</span></div>'
+        for state, name, cite in METHODS)
+    return (f'<div class="mhead"><span class="on">in the code</span>'
+            f'<span class="off">named, not yet built</span></div>{rows}')
 
 
 def build_facts(key: str) -> str:
@@ -1342,6 +1368,34 @@ a:hover{text-decoration:underline}
 .fact{display:inline-flex;align-items:center;gap:6px;color:var(--dim);
   font-size:clamp(9.5px,1.32vh,12px);line-height:1.3}
 .fact .ic{color:var(--green);opacity:.8;flex:none}
+
+/* the engine panel: the diagram wide on top, the literature banded beneath */
+.split{flex:1;min-height:0;display:grid;grid-template-rows:minmax(0,1fr) auto;
+  gap:clamp(8px,1.3vh,16px)}
+.splitdia{min-width:0;min-height:0;display:flex}
+.splitdia .dia{flex:1;width:100%;height:100%}
+.methods{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:clamp(5px,.8vh,10px) clamp(10px,1.4vw,20px)}
+.mhead{grid-column:1/-1;display:flex;gap:16px;font-family:var(--mono);
+  letter-spacing:.11em;text-transform:uppercase;font-size:clamp(8px,1.05vh,9.5px)}
+.mhead .on{color:var(--green)}
+.mhead .off{color:var(--dim)}
+.mhead span{display:inline-flex;align-items:center;gap:6px}
+.mhead span::before{content:"";width:7px;height:7px;border-radius:50%;
+  background:currentColor;opacity:.85}
+.method{border-left:2px solid var(--line);padding:1px 0 1px 9px;min-width:0}
+.method b{display:block;color:var(--ink);font-size:clamp(9.5px,1.32vh,12px);
+  font-weight:700;line-height:1.25}
+.method span{display:block;color:var(--dim);font-size:clamp(8px,1.1vh,10px);
+  line-height:1.3}
+.method.on{border-left-color:rgba(47,213,135,.7)}
+.method.off b{color:var(--dim)}
+.mnote{grid-column:1/-1;margin:0;color:var(--dim);font-size:clamp(9px,1.2vh,11px);
+  line-height:1.45;padding-top:7px;border-top:1px solid var(--line)}
+
+@media(max-width:1039px),(max-height:639px){
+  .methods{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 
 .cmd{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:9px;
   padding:11px 13px 11px 13px;color:var(--green);line-height:1.6;
@@ -1521,6 +1575,19 @@ __ONECSS__
         __DIA1__
       </section>
 
+      <section class="panel" data-dwell="14">
+        <h2 class="ptitle">And a backtester that argues with you.</h2>
+        __F5__
+        <div class="split">
+          <div class="splitdia">__DIA4__</div>
+          <div class="methods">
+            __METHODS__
+            <p class="mnote">Nothing to install past the one line on the left. The engine
+            runs on the same six verbs, over the panel the federation already built.</p>
+          </div>
+        </div>
+      </section>
+
       <section class="panel" data-dwell="10">
         <h2 class="ptitle">A century of history, and six verbs that reach all of it.</h2>
         __F2__
@@ -1555,7 +1622,7 @@ __ONECSS__
 (function () {
   var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
   var chipbar = document.getElementById('chips');
-  var titles = ['What it is', 'What you get', 'Point-in-time', 'The experiment'];
+  var titles = ['What it is', 'The engine', 'What you get', 'Point-in-time', 'The experiment'];
   var timer, at = 0;
 
   var chips = titles.map(function (t, i) {
@@ -1664,6 +1731,8 @@ def main() -> None:
         .replace("__DIA2__", cover)
         .replace("__DIA3__", dia2)
         .replace("__EXPROWS__", exp_rows)
+        .replace("__DIA4__", dia3)
+        .replace("__METHODS__", build_methods())
         .replace("__TILES__", build_tiles())
         .replace("__STEPS__", build_steps())
         .replace("__ONECSS__", diacss + "\n" + exp_anim)

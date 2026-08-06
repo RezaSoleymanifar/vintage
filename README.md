@@ -23,6 +23,10 @@
 
 <p align="center">
   <a href="https://rezasoleymanifar.github.io/vintage/"><b>rezasoleymanifar.github.io/vintage</b></a>
+  &nbsp;·&nbsp;
+  <a href="https://rezasoleymanifar.github.io/vintage/deep.html">the long version</a>
+  &nbsp;·&nbsp;
+  <a href="https://rezasoleymanifar.github.io/vintage/reel.html">the reel</a>
 </p>
 
 ---
@@ -43,6 +47,19 @@ Official filings and central-bank releases, pulled live from the institutions th
 Free financial data exists and is scattered across twenty APIs with twenty shapes. Everyone rebuilds the same glue, badly, and quietly ends up backtesting on restated figures and survivor-only universes.
 
 Vintage is that glue, written once, served over [MCP](https://modelcontextprotocol.io). It hosts no data. It connects, normalizes, and preserves vintage.
+
+### And a backtester, on top of it
+
+Terminal is not a figure of speech here. The same six verbs run a cross-sectional backtest over the panel the federation just built, with no setup past the install line and no data to download first. What comes back is not only a Sharpe:
+
+| In the code | From |
+|---|---|
+| Point-in-time panel indexed on `known_at` | structural, there is no flag that disables it |
+| Costs charged on turnover | there is no zero-cost mode |
+| Deflated Sharpe Ratio | [Bailey & López de Prado (2014)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551) |
+| Session trial ledger feeding that deflation | the same paper, applied to your session |
+
+Named and not yet built: PBO via CSCV, purged k-fold with embargo, minimum backtest length, Newey-West, square-root impact. The full list with citations and status is [below](#the-method), and the `backtest` response says which is which at runtime rather than in a footnote.
 
 ## What people use it for
 
@@ -116,17 +133,37 @@ including inside Jupyter where a loop is already running.
 ```python
 import vintage as v
 
+# prices and the cross-section
 v.prices("AAPL", start="2020-01-01")          # daily prices, with known_at
 v.panel(["AAPL", "MSFT", "JNJ"])              # dates x tickers
+v.returns(v.panel(["AAPL", "MSFT"]))          # so a notebook needn't reinvent it
+v.corporate_actions("AAPL")                   # every split and dividend, dated
+v.index("^GSPC"); v.crypto("BTC-USD")
+
+# filings
 v.fundamentals("AAPL", "us-gaap:Assets", as_of="2020-01-01")
 v.restatements("AAPL", "us-gaap:Assets")      # periods reported twice, differently
+v.filings("AAPL")                             # timeline, with acceptance timestamps
+v.cross_section("Assets", "CY2023Q1I")        # one concept, every filer, one call
+v.delistings(as_of="2010-01-01")              # Form 25: what a 2010 universe is missing
+v.survivorship_warning("2010-01-01")          # and how badly that flatters a backtest
+
+# macro, rates, factors, claims
 v.factors("ff3")                              # Ken French, wide
 v.macro("DGS10", as_of="2008-09-15")          # ALFRED first-release vintage
+v.treasury_yields("10y"); v.fx("EURUSD"); v.volatility("VIX")
+v.positioning("SP500")                        # CFTC Commitments of Traders
 v.claim("Mom12m")                             # what the paper claimed
 v.claims(price_only=True)                     # the 56 replicable with free data
-v.crypto("BTC-USD")
-v.short_volume("AAPL")
+
+# crowd and flow
+v.short_volume("AAPL")                        # FINRA daily short volume
 v.sentiment("wallstreetbets")
+
+# discovery, and the engine
+v.search("inflation expectations"); v.sources(); v.signals()
+v.backtest(["AAPL", "MSFT", "JNJ"], "momentum_12_1")
+v.trials()                                    # specs scored this session
 ```
 
 `known_at` is kept as a column on every frame rather than dropped for tidiness.
@@ -191,7 +228,8 @@ A conversational backtester is an overfitting machine unless it counts how many 
 - **The Sharpe noise would have produced** given that trial count
 - **First-half vs second-half Sharpe**
 - Costs always charged on turnover. There is no zero-cost mode
-- A standing survivorship warning until point-in-time universes land
+- A standing survivorship warning, because the universe is a list of names that exist today
+- Any ticker dropped for want of price history, named rather than silently skipped
 
 This is the part a paid terminal does not do for you.
 
@@ -261,7 +299,7 @@ It is the one third-party source here, and the weakest link: an undocumented end
 
 It is mitigated rather than hidden. Vintage fetches per user and redistributes nothing, every price row is flagged as retroactively adjusted, and the price layer is a single adapter, so a keyed alternative (Tiingo, Alpaca) can slot in behind the same `price:` prefix without touching anything else. Stooq was the intended spine (friendlier terms) but it now gates programmatic access behind a JavaScript check. That adapter stays in case the check lifts.
 
-See [`PRINCIPLES.md`](PRINCIPLES.md) for the rules that decide arguments, [`COVERAGE.md`](COVERAGE.md) for what is wired up today, [`DATA_SOURCES.md`](DATA_SOURCES.md) for the wider free-data landscape, [`DESIGN.md`](DESIGN.md) for the architecture, and [`INTEGRATIONS.md`](INTEGRATIONS.md) for the engines Vintage should feed next, LEAN and Alpaca, both open for contribution.
+See [`PRINCIPLES.md`](PRINCIPLES.md) for the rules that decide arguments, [`COVERAGE.md`](COVERAGE.md) for what is wired up today, [`DATA_SOURCES.md`](DATA_SOURCES.md) for the wider free-data landscape, [`DATA_ROADMAP.md`](DATA_ROADMAP.md) for what is queued next and the endpoint probes behind each candidate, [`DESIGN.md`](DESIGN.md) for the architecture, and [`INTEGRATIONS.md`](INTEGRATIONS.md) for the engines Vintage should feed next, LEAN and Alpaca, both open for contribution.
 
 ## Cache
 
@@ -273,7 +311,7 @@ Stated plainly, because the alternative is shipping a bad substitute:
 
 Data:
 
-- **Survivorship**, universes are current-listing only. Form 25 delistings are the next build and the backtester warns until then.
+- **Survivorship**, the delisting record ships but the backtester does not yet consume it. Form 25 gives you every name that left, dated, and `survivorship_warning()` tells you how many a universe built today is missing. The universe the backtester builds is still current-listing only, and it says so on every run.
 - **Analyst estimates**, no free source exists.
 - **Historical options chains**, paid everywhere.
 - **Point-in-time index membership**, licensed by S&P and MSCI.
