@@ -167,13 +167,15 @@ Citations are references, not endorsements — none of these authors is affiliat
 
 <table>
 <tr>
+<td align="center"><b>100</b><br><sub>years, July 1926 to this morning</sub></td>
 <td align="center"><b>10,398</b><br><sub>ticker-mapped US filers</sub></td>
 <td align="center"><b>800k+</b><br><sub>macro series with vintages</sub></td>
-<td align="center"><b>500+</b><br><sub>XBRL fields per large filer</sub></td>
 <td align="center"><b>0</b><br><sub>API keys required</sub></td>
 <td align="center"><b>$0</b><br><sub>forever</sub></td>
 </tr>
 </table>
+
+**A century of market history, five primary sources, zero API keys.** The Fama-French factors start in July 1926 and the SEC filing stream runs to this morning — Vintage covers both ends from the same six verbs.
 
 **Three of the five are the primary source** — not a reseller, not a scraper. The filings come from the regulator that receives them, the macro series from the central bank that publishes them, and the factors from the university that computes them.
 
@@ -229,4 +231,4 @@ uv run pytest
 
 MIT. Vintage redistributes no data; each upstream source keeps its own terms.
 
-<sub>mcp-name: io.github.rezasoleymanifar/vintage</sub>
+<sub>mcp-name: io.github.RezaSoleymanifar/vintage</sub>

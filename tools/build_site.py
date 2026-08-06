@@ -407,15 +407,18 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:16px}
 
   <section>
     <h2>Where the data comes from</h2>
+    <p class="lede"><span class="hl">A century of market history, five primary sources, zero API keys.</span>
+    The Fama-French factors start in July 1926 and the SEC filing stream runs to this morning —
+    Vintage covers both ends from the same six verbs.</p>
     <p class="lede">Three of the five are the primary source, not a reseller and not a scraper: the
     filings come from the regulator that receives them, the macro series come from the central bank
     that publishes them, and the factors come from the university that computes them. Vintage hosts
     none of it — it connects, normalizes, and preserves vintage.</p>
 
     <div class="stats">
+      <div><b>100</b><span>years, July 1926 to this morning</span></div>
       <div><b>10,398</b><span>ticker-mapped US filers</span></div>
       <div><b>800k+</b><span>macro series with vintages</span></div>
-      <div><b>500+</b><span>XBRL fields per large filer</span></div>
       <div><b>0</b><span>API keys required</span></div>
       <div><b>$0</b><span>forever</span></div>
     </div>

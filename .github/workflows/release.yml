@@ -61,6 +61,9 @@ jobs:
 
       - name: Upload
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          # A re-run after a later job fails should not wedge on "already exists".
+          skip-existing: true
 
   registry:
     name: publish to the MCP Registry
