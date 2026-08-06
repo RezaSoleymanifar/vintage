@@ -14,6 +14,10 @@
 </p>
 
 <p align="center">
+  <img src="assets/architecture.svg" alt="Eighteen free financial data sources — SEC EDGAR, Form 13F, FRED, ECB, US Treasury, BLS, BEA, CFTC, CBOE, FINRA, Coinbase, Ken French and more — federated behind one interface, with every row carrying both the date it describes and the date it became public" width="100%">
+</p>
+
+<p align="center">
   <a href="https://rezasoleymanifar.github.io/vintage/"><img src="assets/demo.gif" alt="A Claude session: install Vintage, backtest three signals, watch the deflated Sharpe collapse to 0.09" width="100%"></a>
 </p>
 

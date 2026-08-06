@@ -516,11 +516,11 @@ PAGE = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vintage — the free market research terminal</title>
-<meta name="description" content="Vintage federates the free, point-in-time financial data of the web: nine primary sources — SEC, FRED, Ken French, FINRA and more — behind one interface and six verbs. You only ever see what was public that day. No API keys, no cost.">
+<meta name="description" content="Vintage federates the free, point-in-time financial data of the web: eighteen primary sources — SEC EDGAR and Form 13F, FRED, US Treasury, BLS, BEA, ECB, CFTC, CBOE, Ken French and more — behind one interface and six verbs. You only ever see what was public that day. No API keys, no cost.">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Vintage — the free market research terminal">
-<meta property="og:description" content="Vintage federates the free, point-in-time financial data of the web. Nine primary sources, one interface, six verbs, $0.">
+<meta property="og:description" content="Vintage federates the free, point-in-time financial data of the web. Eighteen primary sources, one interface, six verbs, $0.">
 <meta property="og:url" content="https://rezasoleymanifar.github.io/vintage/">
 <meta property="og:image" content="https://rezasoleymanifar.github.io/vintage/og.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -567,6 +567,16 @@ h1{font-size:clamp(38px,8vw,74px);font-weight:700;letter-spacing:.16em;margin:0 
 .pitch{font-size:clamp(13.5px,2.5vw,15.5px);line-height:1.6;margin:18px 0 0;max-width:36em;color:var(--dim)}
 .pitch b{color:var(--ink);font-weight:700}
 
+/* The architecture diagram is a wide SVG. On a phone it scrolls sideways
+   rather than shrinking to unreadable, which is what the source labels need. */
+.arch{margin:30px 0 0;padding:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.arch img{display:block;width:100%;min-width:820px;height:auto;
+  border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.arch figcaption{color:var(--dim);font-size:11px;letter-spacing:.06em;
+  margin-top:10px;min-width:820px}
+@media (max-width:700px){
+  .arch img,.arch figcaption{min-width:760px}
+}
 .cta{margin:26px 0 0;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
 .ctanote{margin:0;color:var(--dim);font-size:12.5px}
 
@@ -773,6 +783,15 @@ __DIACSS__
     keeping track of when anything became known.
     <b>Vintage is the closest thing to a free terminal</b>: one pipeline, one schema, one interface.</p>
 
+    <figure class="arch">
+      <img src="architecture.svg" width="1280" height="700" alt="Eighteen free
+      financial data sources &mdash; SEC EDGAR, Form 13F, FRED, ECB, US Treasury, BLS, BEA,
+      CFTC, CBOE, FINRA, Coinbase, Ken French and more &mdash; federated behind one interface,
+      every row carrying both the date it describes and the date it became public">
+      <figcaption>Eighteen sources scattered across the internet, one interface,
+      every value dated twice.</figcaption>
+    </figure>
+
     <div class="cta">
       <pre class="one"><code>claude mcp add vintage -s user -- uvx vintage-mcp</code><button class="copy" aria-label="Copy">copy</button></pre>
       <p class="ctanote">Free forever &middot; no key &middot; no account</p>
@@ -781,7 +800,7 @@ __DIACSS__
     <div class="stats">
       <div><b>$0</b><span>total cost</span></div>
       <div><b>100</b><span>years of history</span></div>
-      <div><b>9</b><span>primary sources</span></div>
+      <div><b>18</b><span>primary sources</span></div>
       <div><b>6</b><span>verbs, that's the API</span></div>
       <div><b>800k+</b><span>macro series</span></div>
       <div><b>331</b><span>published anomalies</span></div>
