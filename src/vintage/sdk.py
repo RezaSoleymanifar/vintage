@@ -43,6 +43,7 @@ __all__ = [
     "prices", "panel", "returns", "fundamentals", "filings", "factors", "macro",
     "claim", "claims", "crypto", "short_volume", "sentiment",
     "resolve", "search", "sources", "signals", "backtest", "trials", "frame",
+    "corporate_actions",
 ]
 
 
@@ -102,26 +103,41 @@ def _window(df: pd.DataFrame, start: str | None, end: str | None) -> pd.DataFram
 
 
 def prices(ticker: str, *, field: str = "adjclose", start: str | None = None,
-           end: str | None = None, as_of: str | None = None) -> pd.DataFrame:
-    """Daily prices for one ticker."""
+           end: str | None = None, as_of: str | None = None,
+           point_in_time: bool = False) -> pd.DataFrame:
+    """Daily prices for one ticker.
+
+    With `point_in_time=True` the adjusted series is rebuilt from the raw close
+    using only the splits and dividends that had happened by `as_of`, so the
+    level is what a screen showed that day. Without it, `adjclose` is today's
+    adjusted series and `as_of` only trims the tail.
+    """
+    if point_in_time:
+        rows = _run(yahoo.pit_prices(ticker, as_of=as_of))
+        return _window(frame(rows, value="pit_adjclose"), start, end)
     rows = _asof(_run(yahoo.prices(ticker, field=field)), as_of)
     return _window(frame(rows, value=field), start, end)
 
 
+def corporate_actions(ticker: str) -> pd.DataFrame:
+    """Every split and dividend, dated. The raw material for point-in-time."""
+    return pd.DataFrame(_run(yahoo.corporate_actions(ticker)))
+
+
 def panel(tickers: Iterable[str], *, field: str = "adjclose", start: str | None = None,
           end: str | None = None, as_of: str | None = None,
-          progress: bool = False) -> pd.DataFrame:
+          point_in_time: bool = False, progress: bool = False) -> pd.DataFrame:
     """A dates-by-tickers frame, the shape a cross-sectional backtest wants."""
     series, missing = {}, []
     tickers = list(tickers)
     for i, t in enumerate(tickers, 1):
         try:
-            df = prices(t, field=field, as_of=as_of)
+            df = prices(t, field=field, as_of=as_of, point_in_time=point_in_time)
         except Exception:
             missing.append(t)
             continue
         if not df.empty:
-            series[t] = df[field]
+            series[t] = df["pit_adjclose" if point_in_time else field]
         else:
             missing.append(t)
         if progress and i % 20 == 0:

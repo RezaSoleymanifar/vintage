@@ -12,7 +12,7 @@ from typing import Any
 import pandas as pd
 from mcp.server import MCPServer
 
-from . import cache, envelope, registry
+from . import cache, envelope, pit, registry
 from .engine import backtest as bt
 from .engine import benchmark as bm
 from .engine import honesty
@@ -37,7 +37,7 @@ mcp = MCPServer(
         "returns a deflated Sharpe that accounts for how many specs were tried "
         "this session. Report it. Never present a raw Sharpe alone."
     ),
-    version="0.4.0",
+    version="0.5.0",
 )
 
 # Backtests keep their return series here so the model does not have to carry
@@ -230,7 +230,13 @@ async def fetch(
         elif source == "prices":
             if not entity:
                 return envelope.fail("fetch", "price fields need an `entity`, e.g. AAPL")
-            rows = await yahoo.prices(entity, field=field.split(":", 1)[1])
+            sub = field.split(":", 1)[1]
+            if sub in ("pit_adjclose", "pit"):
+                rows = await yahoo.pit_prices(entity, as_of=as_of)
+                warnings += pit.warnings_for(
+                    await yahoo.corporate_actions(entity), as_of)
+            else:
+                rows = await yahoo.prices(entity, field=sub)
         elif source == "sec-edgar-xbrl":
             if not entity:
                 return envelope.fail(

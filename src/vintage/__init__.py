@@ -8,12 +8,13 @@ Every function is documented in `vintage.sdk`. The MCP server lives in
 `vintage.server` and exposes the same data behind six verbs.
 """
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 
 from .sdk import (  # noqa: F401
     backtest,
     claim,
     claims,
+    corporate_actions,
     crypto,
     factors,
     filings,
@@ -34,7 +35,7 @@ from .sdk import (  # noqa: F401
 )
 
 __all__ = [
-    "prices", "panel", "returns", "crypto", "fundamentals", "restatements",
+    "prices", "panel", "returns", "crypto", "corporate_actions", "fundamentals", "restatements",
     "filings", "resolve", "factors", "macro", "claim", "claims", "short_volume",
     "sentiment", "search", "sources", "signals", "backtest", "trials", "frame",
     "__version__",
