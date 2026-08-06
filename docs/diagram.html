@@ -1,0 +1,597 @@
+<!doctype html><meta charset="utf-8"><title>Vintage federation diagram</title><style>body{margin:0;background:#0b0f16;display:flex;align-items:center;justify-content:center;min-height:100vh}body>svg.dia{width:1500px;height:auto;display:block}
+:root{
+  --bg:#080b11; --panel:#0c121c; --line:#1c2735; --ink:#e9f1ee; --dim:#657f92;
+  --green:#2fd587; --red:#ff6b5e; --amber:#f2c076; --blue:#7fb3ff;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);overflow:hidden;
+  background-image:radial-gradient(ellipse 90% 60% at 78% 0%,rgba(47,213,135,.07),transparent 70%);
+}
+a{color:var(--green);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.shell{height:100dvh;display:grid;grid-template-columns:1fr}
+@media(min-width:1040px) and (min-height:640px){
+  .shell{grid-template-columns:minmax(360px,31%) 1fr}
+}
+
+/* ------------------------------------------------------------- left rail */
+.rail{
+  padding:clamp(20px,3.4vh,44px) clamp(20px,2.6vw,40px);
+  display:flex;flex-direction:column;gap:clamp(12px,2.2vh,26px);
+  border-right:1px solid var(--line);min-width:0;
+}
+.brand{font-size:clamp(26px,4.4vh,44px);font-weight:700;letter-spacing:.17em;margin:0;line-height:1}
+.tag{color:var(--green);letter-spacing:.19em;text-transform:uppercase;font-weight:700;
+  font-size:clamp(9px,1.35vh,12px);margin:6px 0 0}
+.claim{font-size:clamp(14px,2.15vh,20px);line-height:1.4;margin:0;font-weight:700}
+.claim .g{color:var(--green)}
+.sub{color:var(--dim);font-size:clamp(11px,1.55vh,13.5px);line-height:1.55;margin:0}
+
+/* six numbers where six sentences used to be */
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.tile{background:var(--panel);padding:clamp(8px,1.35vh,13px) 9px;display:grid;
+  justify-items:center;gap:2px;text-align:center}
+.tile .ic{color:var(--green);opacity:.85}
+.tile b{color:var(--ink);font-size:clamp(13px,2vh,18px);line-height:1.1;font-weight:700}
+.tile span{color:var(--dim);font-size:clamp(8.5px,1.15vh,10.5px);line-height:1.25;
+  letter-spacing:.04em}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.step{display:grid;justify-items:center;gap:2px;text-align:center;
+  font-size:clamp(9px,1.2vh,11px)}
+.step .ic{color:var(--green);opacity:.8}
+.step b{color:var(--ink);font-weight:700;letter-spacing:.03em}
+.step span{color:var(--dim)}
+
+/* one line of evidence per panel, icon first */
+.facts{display:flex;flex-wrap:wrap;gap:7px 14px;margin:0 0 clamp(8px,1.3vh,14px)}
+.fact{display:inline-flex;align-items:center;gap:6px;color:var(--dim);
+  font-size:clamp(9.5px,1.32vh,12px);line-height:1.3}
+.fact .ic{color:var(--green);opacity:.8;flex:none}
+
+.cmd{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:9px;
+  padding:11px 13px 11px 13px;color:var(--green);line-height:1.6;
+  font-size:clamp(9.5px,1.3vh,12.5px);word-break:break-word}
+.cmd code{display:block;padding-right:56px}
+.copy{position:absolute;top:7px;right:7px;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.09em;color:var(--dim);background:#070b11;border:1px solid var(--line);
+  border-radius:6px;padding:4px 9px;cursor:pointer}
+.copy:hover{color:var(--green);border-color:var(--green)}
+.copy.done{color:var(--bg);background:var(--green);border-color:var(--green)}
+.rail .foot{margin-top:auto;display:flex;flex-wrap:wrap;gap:12px;font-size:11px;color:var(--dim)}
+
+/* ----------------------------------------------------------------- stage */
+.stage{position:relative;display:flex;flex-direction:column;min-width:0;min-height:0;
+  padding:clamp(16px,2.6vh,30px) clamp(16px,2.2vw,34px)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:clamp(10px,1.6vh,18px);flex:none}
+.chip{font-family:var(--mono);font-size:clamp(9px,1.28vh,11.5px);letter-spacing:.11em;
+  text-transform:uppercase;color:var(--dim);background:transparent;cursor:pointer;
+  border:1px solid var(--line);border-radius:99px;padding:6px 13px;position:relative;overflow:hidden}
+.chip:hover{color:var(--ink)}
+.chip.is-on{color:var(--ink);border-color:rgba(47,213,135,.5)}
+.chip.is-on::after{content:"";position:absolute;left:0;bottom:0;height:2px;background:var(--green);
+  width:100%;transform-origin:left;animation:tick var(--dwell,9s) linear forwards}
+@keyframes tick{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+.panels{position:relative;flex:1;min-height:0}
+.panel{position:absolute;inset:0;opacity:0;visibility:hidden;
+  transition:opacity .45s ease;display:flex;flex-direction:column;min-height:0}
+.panel.is-on{opacity:1;visibility:visible}
+.ptitle{font-size:clamp(13px,1.95vh,18px);font-weight:700;margin:0 0 4px}
+.pnote{color:var(--dim);font-size:clamp(10px,1.4vh,12.5px);line-height:1.5;
+  margin:0 0 clamp(8px,1.3vh,14px);max-width:70em}
+.pnote b{color:var(--ink)}
+.dia{flex:1;min-height:0;width:100%;height:100%}
+.dia text{font-family:var(--mono)}
+.d-orbring{fill:rgba(53,224,138,.07);stroke:var(--green);stroke-opacity:.32;stroke-width:1.1}
+.d-orb{color:var(--green);animation:orb 4.6s ease-in-out infinite}
+@keyframes orb{0%,100%{opacity:.6}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.d-orb{animation:none}}
+
+/* the terminal panel */
+.term{flex:0 1 auto;min-height:0;max-height:100%;background:var(--panel);
+  border:1px solid var(--line);border-radius:11px;
+  overflow:hidden;display:flex;flex-direction:column;
+  box-shadow:0 26px 70px -40px rgba(47,213,135,.4)}
+.bar{display:flex;align-items:center;gap:7px;padding:9px 13px;border-bottom:1px solid var(--line);
+  background:#070b11;flex:none}
+.tdot{width:9px;height:9px;border-radius:50%;background:#1e2b3a;opacity:1}
+.bar .who{margin-left:7px;color:var(--dim);font-size:11px;letter-spacing:.1em}
+.screen{padding:clamp(12px,2vh,22px);font-size:clamp(9px,1.85vh,17px);
+  flex:0 1 auto;min-height:0;overflow:hidden}
+.row{display:flex;align-items:baseline;flex-wrap:wrap;gap:0 7px;padding:1px 0;opacity:0}
+.in1{padding-left:1.5em}
+.prompt{font-weight:700}
+.p-shell{color:var(--dim)}
+.p-user{color:var(--green)}
+.typed{display:inline-block;overflow:hidden;white-space:nowrap;vertical-align:bottom;width:0}
+.caret{display:inline-block;width:.55em;height:1em;background:var(--green);
+  vertical-align:text-bottom;visibility:hidden}
+@keyframes blink{0%{opacity:1}50%{opacity:0}}
+.dim{color:var(--dim)}
+.ok{color:var(--green)}
+.ok b{margin-right:6px}
+.kv .k{color:var(--dim)}
+.kv .v{color:var(--ink);font-weight:700;margin-right:17px}
+.kv.big .v{color:var(--green);font-size:1.45em}
+.kv.mid .v{color:var(--ink)}
+.verdict{color:var(--amber);font-weight:700}
+.kicker{color:var(--dim)}
+.rule{color:var(--dim);letter-spacing:.2em;font-size:.8em;margin-top:9px;
+  text-transform:uppercase;gap:11px}
+.rule i{flex:1;height:1px;background:var(--line);min-width:12px}
+
+/* diagram vocabulary */
+.d-h{fill:var(--dim);font-size:11px;letter-spacing:.2em}
+.d-h.g{fill:var(--green)}
+.d-ct{fill:var(--dim);font-size:10.5px;letter-spacing:.18em}
+.d-it{fill:var(--ink);font-size:12.5px}
+.d-fn{fill:var(--dim);font-size:10.5px}
+.d-note{fill:var(--green);font-size:11.5px}
+.d-card{fill:rgba(255,255,255,.018);stroke:var(--line)}
+.d-box{fill:#070b11;stroke:var(--line)}
+.d-edge{fill:var(--green);opacity:.55}
+.d-pipe{fill:rgba(47,213,135,.05);stroke:rgba(47,213,135,.32)}
+.d-stage{fill:#070b11;stroke:var(--line)}
+.d-num{fill:none;stroke:var(--green);stroke-width:1.3}
+.d-numt{fill:var(--green);font-size:11.5px}
+.d-st{fill:var(--green);font-size:14.5px;font-weight:700}
+.d-ss{fill:var(--dim);font-size:11px}
+.d-verb{fill:#0c121c;stroke:rgba(47,213,135,.3)}
+.d-vt{fill:var(--green);font-size:13px}
+.d-bub{fill:#0c121c;stroke:var(--line)}
+.d-ok{fill:var(--green);font-size:13px;font-weight:700}
+.d-bad{fill:var(--red);font-size:13px;font-weight:700}
+.d-wire{stroke:#21303f;stroke-width:1.6;fill:none}
+.d-flow{stroke:var(--green);stroke-width:1.7;fill:none;stroke-dasharray:5 13;
+  stroke-linecap:round;animation:flow 1.5s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-36}}
+.d-arrow{fill:none;stroke:var(--green);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.d-axis,.d-tick{stroke:var(--line);stroke-width:1.5}
+.d-future{fill:rgba(255,107,94,.055)}
+.d-wallline{stroke:var(--red);stroke-width:1.6;stroke-dasharray:5 5}
+.d-walltag{fill:var(--red)}
+.d-walltxt{fill:#080b11;font-size:11px;font-weight:700}
+.d-ev{fill:#070b11;stroke:rgba(47,213,135,.34)}
+.d-evt{fill:var(--ink);font-size:12.5px;font-weight:700}
+.d-evdot{fill:var(--green)}
+.d-stem{stroke:#21303f;stroke-width:1.3;stroke-dasharray:3 4}
+.d-lag{stroke:var(--red);stroke-width:1.6;stroke-dasharray:4 4}
+.d-lagt{fill:var(--red);font-size:10.5px}
+.d-row{fill:#0c121c;stroke:var(--line)}
+.d-row.warn{stroke:rgba(242,192,118,.5)}
+.pit-wall{animation:sweep 11s linear infinite}
+@keyframes sweep{to{transform:translateX(920px)}}
+.d-track{fill:#0e1723}
+.tlb.gov{fill:var(--green)}
+.tlb.edu{fill:var(--blue)}
+.tlb.third{fill:#38536a}
+
+@media (prefers-reduced-motion:reduce){
+  .dia *,.row,.typed,.chip.is-on::after{animation:none!important;opacity:1!important}
+  .typed{width:auto!important}
+  .caret{display:none}
+  .d-future,.pit-wall{display:none}
+}
+
+/* a phone or a short window cannot be one screen, let those scroll */
+@media(max-width:1039px),(max-height:639px){
+  body{overflow:auto}
+  .shell{height:auto}
+  .rail{border-right:0;border-bottom:1px solid var(--line)}
+  .stage{min-height:88vh}
+  .panels{min-height:70vh}
+}
+@keyframes pev0{0%,20.60%{opacity:0.14}21.00%,100%{opacity:1}}
+.pe0{animation:pev0 11.0s linear infinite}
+@keyframes pev1{0%,38.00%{opacity:0.14}38.40%,100%{opacity:1}}
+.pe1{animation:pev1 11.0s linear infinite}
+@keyframes pev2{0%,90.10%{opacity:0.14}90.50%,100%{opacity:1}}
+.pe2{animation:pev2 11.0s linear infinite}
+@keyframes prow0{0%,20.60%{opacity:0.0}21.00%,100%{opacity:1}}
+.pr0{animation:prow0 11.0s linear infinite}
+@keyframes prow1{0%,38.00%{opacity:0.0}38.40%,100%{opacity:1}}
+.pr1{animation:prow1 11.0s linear infinite}
+@keyframes prow2{0%,90.10%{opacity:0.0}90.50%,100%{opacity:1}}
+.pr2{animation:prow2 11.0s linear infinite}
+@keyframes spec0{0%,3.60%{opacity:0.08}4.00%,100%{opacity:1}}
+.sp0{animation:spec0 9.0s linear infinite}
+@keyframes spec1{0%,4.95%{opacity:0.08}5.35%,100%{opacity:1}}
+.sp1{animation:spec1 9.0s linear infinite}
+@keyframes spec2{0%,6.30%{opacity:0.08}6.70%,100%{opacity:1}}
+.sp2{animation:spec2 9.0s linear infinite}
+@keyframes spec3{0%,7.65%{opacity:0.08}8.05%,100%{opacity:1}}
+.sp3{animation:spec3 9.0s linear infinite}
+@keyframes spec4{0%,9.00%{opacity:0.08}9.40%,100%{opacity:1}}
+.sp4{animation:spec4 9.0s linear infinite}
+@keyframes spec5{0%,10.35%{opacity:0.08}10.75%,100%{opacity:1}}
+.sp5{animation:spec5 9.0s linear infinite}
+@keyframes spec6{0%,11.70%{opacity:0.08}12.10%,100%{opacity:1}}
+.sp6{animation:spec6 9.0s linear infinite}
+@keyframes spec7{0%,13.05%{opacity:0.08}13.45%,100%{opacity:1}}
+.sp7{animation:spec7 9.0s linear infinite}
+@keyframes spec8{0%,14.40%{opacity:0.08}14.80%,100%{opacity:1}}
+.sp8{animation:spec8 9.0s linear infinite}
+@keyframes spec9{0%,15.75%{opacity:0.08}16.15%,100%{opacity:1}}
+.sp9{animation:spec9 9.0s linear infinite}
+@keyframes spec10{0%,17.10%{opacity:0.08}17.50%,100%{opacity:1}}
+.sp10{animation:spec10 9.0s linear infinite}
+@keyframes spec11{0%,18.45%{opacity:0.08}18.85%,100%{opacity:1}}
+.sp11{animation:spec11 9.0s linear infinite}
+@keyframes spec12{0%,19.80%{opacity:0.08}20.20%,100%{opacity:1}}
+.sp12{animation:spec12 9.0s linear infinite}
+@keyframes spec13{0%,21.15%{opacity:0.08}21.55%,100%{opacity:1}}
+.sp13{animation:spec13 9.0s linear infinite}
+@keyframes spec14{0%,22.50%{opacity:0.08}22.90%,100%{opacity:1}}
+.sp14{animation:spec14 9.0s linear infinite}
+@keyframes spec15{0%,23.85%{opacity:0.08}24.25%,100%{opacity:1}}
+.sp15{animation:spec15 9.0s linear infinite}
+@keyframes spec16{0%,25.20%{opacity:0.08}25.60%,100%{opacity:1}}
+.sp16{animation:spec16 9.0s linear infinite}
+@keyframes spec17{0%,26.55%{opacity:0.08}26.95%,100%{opacity:1}}
+.sp17{animation:spec17 9.0s linear infinite}
+@keyframes spec18{0%,27.90%{opacity:0.08}28.30%,100%{opacity:1}}
+.sp18{animation:spec18 9.0s linear infinite}
+@keyframes spec19{0%,29.25%{opacity:0.08}29.65%,100%{opacity:1}}
+.sp19{animation:spec19 9.0s linear infinite}
+@keyframes spec20{0%,30.60%{opacity:0.08}31.00%,100%{opacity:1}}
+.sp20{animation:spec20 9.0s linear infinite}
+@keyframes spec21{0%,31.95%{opacity:0.08}32.35%,100%{opacity:1}}
+.sp21{animation:spec21 9.0s linear infinite}
+@keyframes spec22{0%,33.30%{opacity:0.08}33.70%,100%{opacity:1}}
+.sp22{animation:spec22 9.0s linear infinite}
+@keyframes spec23{0%,34.65%{opacity:0.08}35.05%,100%{opacity:1}}
+.sp23{animation:spec23 9.0s linear infinite}
+@keyframes spec24{0%,36.00%{opacity:0.08}36.40%,100%{opacity:1}}
+.sp24{animation:spec24 9.0s linear infinite}
+@keyframes spec25{0%,37.35%{opacity:0.08}37.75%,100%{opacity:1}}
+.sp25{animation:spec25 9.0s linear infinite}
+@keyframes spec26{0%,38.70%{opacity:0.08}39.10%,100%{opacity:1}}
+.sp26{animation:spec26 9.0s linear infinite}
+@keyframes spec27{0%,40.05%{opacity:0.08}40.45%,100%{opacity:1}}
+.sp27{animation:spec27 9.0s linear infinite}
+@keyframes spec28{0%,41.40%{opacity:0.08}41.80%,100%{opacity:1}}
+.sp28{animation:spec28 9.0s linear infinite}
+@keyframes spec29{0%,42.75%{opacity:0.08}43.15%,100%{opacity:1}}
+.sp29{animation:spec29 9.0s linear infinite}
+@keyframes spec30{0%,44.10%{opacity:0.08}44.50%,100%{opacity:1}}
+.sp30{animation:spec30 9.0s linear infinite}
+@keyframes spec31{0%,45.45%{opacity:0.08}45.85%,100%{opacity:1}}
+.sp31{animation:spec31 9.0s linear infinite}
+@keyframes spec32{0%,46.80%{opacity:0.08}47.20%,100%{opacity:1}}
+.sp32{animation:spec32 9.0s linear infinite}
+@keyframes spec33{0%,48.15%{opacity:0.08}48.55%,100%{opacity:1}}
+.sp33{animation:spec33 9.0s linear infinite}
+@keyframes spec34{0%,49.50%{opacity:0.08}49.90%,100%{opacity:1}}
+.sp34{animation:spec34 9.0s linear infinite}
+@keyframes spec35{0%,50.85%{opacity:0.08}51.25%,100%{opacity:1}}
+.sp35{animation:spec35 9.0s linear infinite}
+@keyframes spec36{0%,52.20%{opacity:0.08}52.60%,100%{opacity:1}}
+.sp36{animation:spec36 9.0s linear infinite}
+@keyframes spec37{0%,53.55%{opacity:0.08}53.95%,100%{opacity:1}}
+.sp37{animation:spec37 9.0s linear infinite}
+@keyframes spec38{0%,54.90%{opacity:0.08}55.30%,100%{opacity:1}}
+.sp38{animation:spec38 9.0s linear infinite}
+@keyframes spec39{0%,56.25%{opacity:0.08}56.65%,100%{opacity:1}}
+.sp39{animation:spec39 9.0s linear infinite}
+@keyframes spec40{0%,57.60%{opacity:0.08}58.00%,100%{opacity:1}}
+.sp40{animation:spec40 9.0s linear infinite}
+@keyframes ledgrow{0%,62.00%{width:0}65.00%,100%{width:210.0px}}
+.ledbar{animation:ledgrow 9.0s linear infinite}
+@keyframes defgrow{0%,70.00%{width:0}73.00%,100%{width:12.0px}}
+.defbar{animation:defgrow 9.0s linear infinite}
+@keyframes defnum{0%,69.60%{opacity:0.0}70.00%,100%{opacity:1}}
+.defnum{animation:defnum 9.0s linear infinite}
+@keyframes ax0{0%,0.682%{opacity:0}0.909%,100%{opacity:1}}
+@keyframes wx0{0%,0.909%{width:0}7.727%,100%{width:49ch}}
+@keyframes cx0{0%,0.682%{visibility:hidden}0.909%,12.955%{visibility:visible}13.182%,100%{visibility:hidden}}
+.rx0{animation:ax0 22.0s infinite}
+.tx0{animation:wx0 22.0s steps(49,end) infinite}
+.kx0{animation:cx0 22.0s infinite,blink .9s steps(2,end) infinite}
+@keyframes ax1{0%,9.318%{opacity:0;transform:translateY(3px)}10.364%,100%{opacity:1;transform:none}}
+.rx1{animation:ax1 22.0s infinite}
+@keyframes ax2{0%,13.409%{opacity:0}13.636%,100%{opacity:1}}
+@keyframes wx2{0%,13.636%{width:0}21.818%,100%{width:57ch}}
+@keyframes cx2{0%,13.409%{visibility:hidden}13.636%,38.409%{visibility:visible}38.636%,100%{visibility:hidden}}
+.rx2{animation:ax2 22.0s infinite}
+.tx2{animation:wx2 22.0s steps(57,end) infinite}
+.kx2{animation:cx2 22.0s infinite,blink .9s steps(2,end) infinite}
+@keyframes ax3{0%,23.409%{opacity:0;transform:translateY(3px)}24.455%,100%{opacity:1;transform:none}}
+.rx3{animation:ax3 22.0s infinite}
+@keyframes ax4{0%,25.682%{opacity:0;transform:translateY(3px)}26.727%,100%{opacity:1;transform:none}}
+.rx4{animation:ax4 22.0s infinite}
+@keyframes ax5{0%,28.409%{opacity:0;transform:translateY(3px)}29.455%,100%{opacity:1;transform:none}}
+.rx5{animation:ax5 22.0s infinite}
+@keyframes ax6{0%,31.136%{opacity:0;transform:translateY(3px)}32.182%,100%{opacity:1;transform:none}}
+.rx6{animation:ax6 22.0s infinite}
+@keyframes ax7{0%,33.864%{opacity:0;transform:translateY(3px)}34.909%,100%{opacity:1;transform:none}}
+.rx7{animation:ax7 22.0s infinite}
+@keyframes ax8{0%,38.864%{opacity:0}39.091%,100%{opacity:1}}
+@keyframes wx8{0%,39.091%{width:0}43.182%,100%{width:15ch}}
+@keyframes cx8{0%,38.864%{visibility:hidden}39.091%,50.227%{visibility:visible}50.455%,100%{visibility:hidden}}
+.rx8{animation:ax8 22.0s infinite}
+.tx8{animation:wx8 22.0s steps(15,end) infinite}
+.kx8{animation:cx8 22.0s infinite,blink .9s steps(2,end) infinite}
+@keyframes ax9{0%,45.682%{opacity:0;transform:translateY(3px)}46.727%,100%{opacity:1;transform:none}}
+.rx9{animation:ax9 22.0s infinite}
+@keyframes ax10{0%,50.682%{opacity:0}50.909%,100%{opacity:1}}
+@keyframes wx10{0%,50.909%{width:0}55.909%,100%{width:23ch}}
+@keyframes cx10{0%,50.682%{visibility:hidden}50.909%,97.500%{visibility:visible}97.727%,100%{visibility:hidden}}
+.rx10{animation:ax10 22.0s infinite}
+.tx10{animation:wx10 22.0s steps(23,end) infinite}
+.kx10{animation:cx10 22.0s infinite,blink .9s steps(2,end) infinite}
+@keyframes ax11{0%,58.864%{opacity:0;transform:translateY(3px)}59.909%,100%{opacity:1;transform:none}}
+.rx11{animation:ax11 22.0s infinite}
+@keyframes ax12{0%,61.591%{opacity:0;transform:translateY(3px)}62.636%,100%{opacity:1;transform:none}}
+.rx12{animation:ax12 22.0s infinite}
+@keyframes ax13{0%,65.227%{opacity:0;transform:translateY(3px)}66.273%,100%{opacity:1;transform:none}}
+.rx13{animation:ax13 22.0s infinite}
+@keyframes ax14{0%,69.773%{opacity:0;transform:translateY(3px)}70.818%,100%{opacity:1;transform:none}}
+.rx14{animation:ax14 22.0s infinite}
+@keyframes ax15{0%,71.591%{opacity:0;transform:translateY(3px)}72.636%,100%{opacity:1;transform:none}}
+.rx15{animation:ax15 22.0s infinite}
+@keyframes ax16{0%,73.864%{opacity:0;transform:translateY(3px)}74.909%,100%{opacity:1;transform:none}}
+.rx16{animation:ax16 22.0s infinite}
+</style><svg class="dia" viewBox="0 0 1160 600" role="img" aria-label="Scattered free data sources federated through Vintage into six verbs">
+      <text class="d-h" x="20" y="40">THE WEB &middot; 18 FREE SOURCES</text>
+      <text class="d-h g" x="380" y="44">VINTAGE &middot; THE FEDERATION LAYER</text>
+      <text class="d-h" x="830" y="44">ONE INTERFACE</text>
+      <text class="d-ct" x="20" y="66">REGULATORS</text>
+      <g class="d-orb" transform="translate(22,76)" style="animation-delay:-0.00s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5h17"/><path d="M12 3 3.5 7.5h17Z"/><path d="M6.5 10.5v7"/><path d="M11 10.5v7"/><path d="M15.5 10.5v7"/><path d="M20 10.5v7"/></svg></g></g>
+      <text class="d-it" x="50" y="85">SEC XBRL</text>
+      <text class="d-fn" x="50" y="97">every tagged concept</text>
+      <g class="d-orb" transform="translate(190,76)" style="animation-delay:-0.37s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="2.2"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h4.5"/></svg></g></g>
+      <text class="d-it" x="218" y="85">SEC filings</text>
+      <text class="d-fn" x="218" y="97">8-K, 10-K, Form 4</text>
+      <g class="d-orb" transform="translate(22,110)" style="animation-delay:-0.74s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 7.5 12 12l9-4.5Z"/><path d="M3 12.5 12 17l9-4.5"/><path d="M3 17 12 21.5 21 17"/></svg></g></g>
+      <text class="d-it" x="50" y="119">SEC 13F</text>
+      <text class="d-fn" x="50" y="131">institutional holdings</text>
+      <g class="d-orb" transform="translate(190,110)" style="animation-delay:-1.11s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5 12 14l3.5-3.5L21 16"/><path d="M21 11v5h-5"/></svg></g></g>
+      <text class="d-it" x="218" y="119">SEC Form 25</text>
+      <text class="d-fn" x="218" y="131">36,830 delistings</text>
+      <g class="d-orb" transform="translate(22,144)" style="animation-delay:-1.48s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.5" cy="7" r="1.8"/><circle cx="12" cy="4.8" r="1.8"/><circle cx="18.5" cy="8.5" r="1.8"/><circle cx="7" cy="16.5" r="1.8"/><circle cx="16" cy="18" r="1.8"/><circle cx="11.5" cy="11.5" r="1.8"/></svg></g></g>
+      <text class="d-it" x="50" y="153">XBRL frames</text>
+      <text class="d-fn" x="50" y="165">6,289 filers at once</text>
+      <g class="d-orb" transform="translate(190,144)" style="animation-delay:-1.85s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.3 2.9 7.6 7 9.5 4.1-1.9 7-5.2 7-9.5V6Z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg></g></g>
+      <text class="d-it" x="218" y="153">FINRA</text>
+      <text class="d-fn" x="218" y="165">daily short volume</text>
+      <g class="d-orb" transform="translate(22,178)" style="animation-delay:-2.22s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v17"/><path d="M4 7.5h5"/><path d="M4 12h5"/><path d="M4 16.5h5"/><path d="M15.5 9.5h4.5"/><path d="M15.5 14.5h4.5"/></svg></g></g>
+      <text class="d-it" x="50" y="187">CFTC</text>
+      <text class="d-fn" x="50" y="199">weekly positioning</text>
+      <text class="d-ct" x="20" y="222">CENTRAL BANKS</text>
+      <g class="d-orb" transform="translate(22,232)" style="animation-delay:-1.85s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v10"/><path d="M14.6 9.2A2.8 2.8 0 0 0 12 8c-1.7 0-2.8.9-2.8 2s1 1.8 2.8 2 2.8.8 2.8 2-1.1 2-2.8 2a2.8 2.8 0 0 1-2.6-1.2"/></svg></g></g>
+      <text class="d-it" x="50" y="241">FRED</text>
+      <text class="d-fn" x="50" y="253">800k series, vintages</text>
+      <g class="d-orb" transform="translate(190,232)" style="animation-delay:-2.22s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20V4"/><path d="M3 20h18"/><path d="M6 15.5 10 10l3.5 3.5L20 6"/></svg></g></g>
+      <text class="d-it" x="218" y="241">US Treasury</text>
+      <text class="d-fn" x="218" y="253">14-tenor yield curve</text>
+      <g class="d-orb" transform="translate(22,266)" style="animation-delay:-2.59s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M11 14.5h2"/></svg></g></g>
+      <text class="d-it" x="50" y="275">ECB</text>
+      <text class="d-fn" x="50" y="287">FX rates since 1999</text>
+      <g class="d-orb" transform="translate(190,266)" style="animation-delay:-2.96s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.4l3.4 2"/></svg></g></g>
+      <text class="d-it" x="218" y="275">BLS</text>
+      <text class="d-fn" x="218" y="287">CPI, payrolls, JOLTS</text>
+      <g class="d-orb" transform="translate(22,300)" style="animation-delay:-3.33s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 4.5h17l-6.6 7.8v6.4l-3.8 2.3v-8.7Z"/></svg></g></g>
+      <text class="d-it" x="50" y="309">BEA</text>
+      <text class="d-fn" x="50" y="321">the national accounts</text>
+      <text class="d-ct" x="20" y="344">MARKETS</text>
+      <g class="d-orb" transform="translate(22,354)" style="animation-delay:-3.70s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M6.5 9.5 9.5 12l-3 2.5"/><path d="M12.5 15h5"/></svg></g></g>
+      <text class="d-it" x="50" y="363">Yahoo</text>
+      <text class="d-fn" x="50" y="375">daily OHLCV, decades</text>
+      <g class="d-orb" transform="translate(190,354)" style="animation-delay:-4.07s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 3v6.2L4.7 17.4A2 2 0 0 0 6.4 20.5h11.2a2 2 0 0 0 1.7-3.1L14.5 9.2V3"/><path d="M8.5 3h7"/><path d="M7.4 14h9.2"/></svg></g></g>
+      <text class="d-it" x="218" y="363">CBOE</text>
+      <text class="d-fn" x="218" y="375">VIX and the vol family</text>
+      <g class="d-orb" transform="translate(22,388)" style="animation-delay:-4.44s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v11"/><path d="M8 11l4 3.5 4-3.5"/><path d="M4.5 18.5h15"/></svg></g></g>
+      <text class="d-it" x="50" y="397">Coinbase</text>
+      <text class="d-fn" x="50" y="409">crypto, never restated</text>
+      <text class="d-ct" x="20" y="432">ACADEMIA</text>
+      <g class="d-orb" transform="translate(22,442)" style="animation-delay:-5.55s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5 2.5 8 12 12.5 21.5 8Z"/><path d="M6.5 10.2v5.3c0 1.9 2.5 3.2 5.5 3.2s5.5-1.3 5.5-3.2v-5.3"/><path d="M21.5 8v5"/></svg></g></g>
+      <text class="d-it" x="50" y="451">Ken French</text>
+      <text class="d-fn" x="50" y="463">factors from July 1926</text>
+      <g class="d-orb" transform="translate(190,442)" style="animation-delay:-5.92s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8 18.5 16 5.5"/></svg></g></g>
+      <text class="d-it" x="218" y="451">Open Source AP</text>
+      <text class="d-fn" x="218" y="463">331 published claims</text>
+      <g class="d-orb" transform="translate(22,476)" style="animation-delay:-6.29s"><circle class="d-orbring" cx="10" cy="10" r="11.5"/><g transform="translate(-2,-2)"><svg class="ic" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5a2 2 0 0 1-2 2H8l-4.5 4V5.5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2Z"/><path d="M8 8.5h8"/><path d="M8 12h5"/></svg></g></g>
+      <text class="d-it" x="50" y="485">ApeWisdom</text>
+      <text class="d-fn" x="50" y="497">forum mention ranks</text>
+      <rect class="d-pipe" x="380" y="70" width="380" height="490" rx="14"/>
+      <rect class="d-stage" x="400" y="96" width="340" height="84" rx="11"/>
+      <circle class="d-num" cx="428" cy="138" r="14"/>
+      <text class="d-numt" x="428" y="142" text-anchor="middle">1</text>
+      <text class="d-st" x="456" y="126">resolve</text>
+      <text class="d-ss" x="456" y="148">AAPL &middot; 0000320193 &middot; &ldquo;Apple Inc&rdquo;</text>
+      <text class="d-ss" x="456" y="166">&rarr; one entity key every source accepts</text>
+      <rect class="d-stage" x="400" y="192" width="340" height="84" rx="11"/>
+      <circle class="d-num" cx="428" cy="234" r="14"/>
+      <text class="d-numt" x="428" y="238" text-anchor="middle">2</text>
+      <text class="d-st" x="456" y="222">normalize</text>
+      <text class="d-ss" x="456" y="244">four wire formats, ten field vocabularies</text>
+      <text class="d-ss" x="456" y="262">&rarr; one schema, one unit convention</text>
+      <rect class="d-stage" x="400" y="288" width="340" height="84" rx="11"/>
+      <circle class="d-num" cx="428" cy="330" r="14"/>
+      <text class="d-numt" x="428" y="334" text-anchor="middle">3</text>
+      <text class="d-st" x="456" y="318">stamp vintage</text>
+      <text class="d-ss" x="456" y="340">every row gets observed_at + known_at</text>
+      <text class="d-ss" x="456" y="358">no honest date &rarr; flagged UNKNOWN_VINTAGE</text>
+      <rect class="d-stage" x="400" y="384" width="340" height="84" rx="11"/>
+      <circle class="d-num" cx="428" cy="426" r="14"/>
+      <text class="d-numt" x="428" y="430" text-anchor="middle">4</text>
+      <text class="d-st" x="456" y="414">index on known_at</text>
+      <text class="d-ss" x="456" y="436">the panel is point-in-time by construction</text>
+      <text class="d-ss" x="456" y="454">there is no flag that turns this off</text>
+      <text class="d-note" x="400" y="500">one schema &middot; one key &middot; two dates per row</text>
+      <text class="d-fn" x="400" y="524">nothing hosted &middot; nothing redistributed &middot; 16 of 18 need no key</text>
+      <path class="d-wire" d="M270 136 C322 136 330 138 380 138"/>
+      <path class="d-flow" style="animation-delay:-0.0s" d="M270 136 C322 136 330 138 380 138"/>
+      <path class="d-wire" d="M270 275 C322 275 330 234 380 234"/>
+      <path class="d-flow" style="animation-delay:-0.4s" d="M270 275 C322 275 330 234 380 234"/>
+      <path class="d-wire" d="M270 380 C322 380 330 330 380 330"/>
+      <path class="d-flow" style="animation-delay:-0.8s" d="M270 380 C322 380 330 330 380 330"/>
+      <path class="d-wire" d="M270 468 C322 468 330 426 380 426"/>
+      <path class="d-flow" style="animation-delay:-1.2s" d="M270 468 C322 468 330 426 380 426"/>
+      <rect class="d-box" x="830" y="70" width="310" height="250" rx="11"/>
+      <text class="d-ct" x="850" y="98">SIX VERBS</text>
+      <rect class="d-verb" x="850" y="114" width="134" height="44" rx="9"/>
+      <text class="d-vt" x="917" y="141" text-anchor="middle">resolve</text>
+      <rect class="d-verb" x="996" y="114" width="134" height="44" rx="9"/>
+      <text class="d-vt" x="1063" y="141" text-anchor="middle">discover</text>
+      <rect class="d-verb" x="850" y="168" width="134" height="44" rx="9"/>
+      <text class="d-vt" x="917" y="195" text-anchor="middle">fetch</text>
+      <rect class="d-verb" x="996" y="168" width="134" height="44" rx="9"/>
+      <text class="d-vt" x="1063" y="195" text-anchor="middle">events</text>
+      <rect class="d-verb" x="850" y="222" width="134" height="44" rx="9"/>
+      <text class="d-vt" x="917" y="249" text-anchor="middle">backtest</text>
+      <rect class="d-verb" x="996" y="222" width="134" height="44" rx="9"/>
+      <text class="d-vt" x="1063" y="249" text-anchor="middle">benchmark</text>
+      <text class="d-fn" x="850" y="300">source is a parameter, never a new tool</text>
+      <rect class="d-box" x="830" y="350" width="310" height="210" rx="11"/>
+      <text class="d-ct" x="850" y="378">YOUR AI CLIENT &middot; MCP</text>
+      <rect class="d-bub" x="850" y="394" width="270" height="52" rx="10"/>
+      <text class="d-it" x="866" y="416">backtest 12-1 momentum on the</text>
+      <text class="d-it" x="866" y="434">dow 30 since 2010</text>
+      <text class="d-ok" x="850" y="476">sharpe 2.14</text>
+      <text class="d-bad" x="850" y="500">deflated 0.09 after 41 tries</text>
+      <text class="d-fn" x="850" y="526">claude &middot; cursor &middot; chatgpt &middot; anything</text>
+      <path class="d-wire" d="M760 200 L830 195"/>
+      <path class="d-flow" style="animation-delay:0.0s" d="M760 200 L830 195"/>
+      <path class="d-wire" d="M985 320 L985 350"/>
+      <path class="d-flow" style="animation-delay:-0.8s" d="M985 320 L985 350"/>
+      <path class="d-arrow" d="M978 344 L985 352 L992 344"/>
+      </svg>
+      </section>
+
+      <section class="panel" data-dwell="10">
+        <h2 class="ptitle">A century of history, and six verbs that reach all of it.</h2>
+        <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M11 14.5h2"/></svg>July 1926 to this morning</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M6.5 9.5 9.5 12l-3 2.5"/><path d="M12.5 15h5"/></svg>a source is a parameter</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 7.5 12 12l9-4.5Z"/><path d="M3 12.5 12 17l9-4.5"/><path d="M3 17 12 21.5 21 17"/></svg>more sources, same six verbs</span></div>
+        <svg class="dia" viewBox="0 0 1160 600" role="img" aria-label="Coverage of each source from 1926 to today, and the six verbs">
+      <text class="d-h g" x="40" y="40">A CENTURY OF COVERAGE</text>
+      <text class="d-fn" x="300" y="70">1926</text>
+      <text class="d-fn" x="1000" y="70" text-anchor="end">today</text>
+      <line class="d-axis" x1="300" y1="78" x2="1000" y2="78"/>
+      <text class="d-it" x="40" y="111">SEC EDGAR XBRL</text>
+      <rect class="d-track" x="300" y="100" width="700" height="13" rx="6"/>
+      <rect class="tlb gov" x="881" y="100" width="119" height="13" rx="6"/>
+      <text class="d-fn" x="1150" y="111" text-anchor="end">2009 → today</text>
+      <text class="d-it" x="40" y="144">SEC filings stream</text>
+      <rect class="d-track" x="300" y="133" width="700" height="13" rx="6"/>
+      <rect class="tlb gov" x="769" y="133" width="231" height="13" rx="6"/>
+      <text class="d-fn" x="1150" y="144" text-anchor="end">1993 → today</text>
+      <text class="d-it" x="40" y="177">FRED</text>
+      <rect class="d-track" x="300" y="166" width="700" height="13" rx="6"/>
+      <rect class="tlb gov" x="447" y="166" width="553" height="13" rx="6"/>
+      <text class="d-fn" x="1150" y="177" text-anchor="end">1947 → today</text>
+      <text class="d-it" x="40" y="210">ALFRED vintages</text>
+      <rect class="d-track" x="300" y="199" width="700" height="13" rx="6"/>
+      <rect class="tlb gov" x="790" y="199" width="210" height="13" rx="6"/>
+      <text class="d-fn" x="1150" y="210" text-anchor="end">1996 → today</text>
+      <text class="d-it" x="40" y="243">Ken French Library</text>
+      <rect class="d-track" x="300" y="232" width="700" height="13" rx="6"/>
+      <rect class="tlb edu" x="300" y="232" width="700" height="13" rx="6"/>
+      <text class="d-fn" x="1150" y="243" text-anchor="end">Jul 1926 → today</text>
+      <text class="d-it" x="40" y="276">Open Source Asset Pricing</text>
+      <rect class="d-track" x="300" y="265" width="700" height="13" rx="6"/>
+      <rect class="tlb edu" x="300" y="265" width="679" height="13" rx="6"/>
+      <text class="d-fn" x="1150" y="276" text-anchor="end">1926 → 2023</text>
+      <text class="d-it" x="40" y="309">FINRA short volume</text>
+      <rect class="d-track" x="300" y="298" width="700" height="13" rx="6"/>
+      <rect class="tlb gov" x="881" y="298" width="119" height="13" rx="6"/>
+      <text class="d-fn" x="1150" y="309" text-anchor="end">2009 → today</text>
+      <text class="d-it" x="40" y="342">Coinbase Exchange</text>
+      <rect class="d-track" x="300" y="331" width="700" height="13" rx="6"/>
+      <rect class="tlb third" x="923" y="331" width="77" height="13" rx="6"/>
+      <text class="d-fn" x="1150" y="342" text-anchor="end">2015 → today</text>
+      <text class="d-it" x="40" y="375">Yahoo Finance</text>
+      <rect class="d-track" x="300" y="364" width="700" height="13" rx="6"/>
+      <rect class="tlb third" x="552" y="364" width="448" height="13" rx="6"/>
+      <text class="d-fn" x="1150" y="375" text-anchor="end">1962 → today</text>
+      <text class="d-it" x="40" y="408">ApeWisdom</text>
+      <rect class="d-track" x="300" y="397" width="700" height="13" rx="6"/>
+      <rect class="tlb third" x="993" y="397" width="9" height="13" rx="6"/>
+      <text class="d-fn" x="1150" y="408" text-anchor="end">live only, no history</text>
+      <text class="d-h g" x="40" y="470">SIX VERBS REACH ALL OF IT</text>
+      <rect class="d-verb" x="40" y="492" width="170" height="54" rx="10"/>
+      <text class="d-vt" x="125" y="524" text-anchor="middle">resolve</text>
+      <rect class="d-verb" x="224" y="492" width="170" height="54" rx="10"/>
+      <text class="d-vt" x="309" y="524" text-anchor="middle">discover</text>
+      <rect class="d-verb" x="408" y="492" width="170" height="54" rx="10"/>
+      <text class="d-vt" x="493" y="524" text-anchor="middle">fetch</text>
+      <rect class="d-verb" x="592" y="492" width="170" height="54" rx="10"/>
+      <text class="d-vt" x="677" y="524" text-anchor="middle">events</text>
+      <rect class="d-verb" x="776" y="492" width="170" height="54" rx="10"/>
+      <text class="d-vt" x="861" y="524" text-anchor="middle">backtest</text>
+      <rect class="d-verb" x="960" y="492" width="170" height="54" rx="10"/>
+      <text class="d-vt" x="1045" y="524" text-anchor="middle">benchmark</text>
+      <text class="d-fn" x="40" y="578">source is a parameter, never a new tool, twenty more sources adds zero verbs</text>
+      </svg>
+      </section>
+
+      <section class="panel" data-dwell="12">
+        <h2 class="ptitle">Point-in-time, in one picture.</h2>
+        <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v17"/><path d="M4 7.5h5"/><path d="M4 12h5"/><path d="M4 16.5h5"/><path d="M15.5 9.5h4.5"/><path d="M15.5 14.5h4.5"/></svg>nothing crosses the day marker</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M11 14.5h2"/></svg>corrections add a row</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.3 2.9 7.6 7 9.5 4.1-1.9 7-5.2 7-9.5V6Z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg>no honest date, no silent guess</span></div>
+        <svg class="dia" viewBox="0 0 1160 440" role="img" aria-label="An as-of wall sweeping a timeline, revealing filings only once they were public">
+      <defs><clipPath id="plot"><rect x="118" y="60" width="964" height="230"/></clipPath></defs>
+      <text class="d-h" x="20" y="40">TIME &rarr;</text>
+      <text class="d-fn" x="1082" y="326" text-anchor="end">the day you are pretending it is</text>
+      <g clip-path="url(#plot)"><g class="pit-wall"><rect class="d-future" x="140" y="60" width="960" height="230"/><line class="d-wallline" x1="140" y1="60" x2="140" y2="282"/></g></g>
+      <g class="pit-wall"><rect class="d-walltag" x="102" y="34" width="76" height="22" rx="6"/><text class="d-walltxt" x="140" y="49" text-anchor="middle">today</text></g>
+      <line class="d-axis" x1="118" y1="282" x2="1082" y2="282"/>
+      <line class="d-tick" x1="120" y1="278" x2="120" y2="290"/>
+      <text class="d-fn" x="120" y="308" text-anchor="middle">Jul 2019</text>
+      <line class="d-tick" x1="440" y1="278" x2="440" y2="290"/>
+      <text class="d-fn" x="440" y="308" text-anchor="middle">Jan 2020</text>
+      <line class="d-tick" x1="760" y1="278" x2="760" y2="290"/>
+      <text class="d-fn" x="760" y="308" text-anchor="middle">Jul 2020</text>
+      <line class="d-tick" x1="1080" y1="278" x2="1080" y2="290"/>
+      <text class="d-fn" x="1080" y="308" text-anchor="middle">Jan 2021</text>
+      <g class="pe0">
+      <line class="d-stem" x1="333" y1="222" x2="333" y2="278"/>
+      <circle class="d-evdot" cx="333" cy="282" r="5"/>
+      <rect class="d-ev" x="183" y="170" width="300" height="52" rx="10"/>
+      <text class="d-evt" x="333" y="192" text-anchor="middle">10-K FY2019 &middot; assets $338.5B</text>
+      <text class="d-fn" x="333" y="210" text-anchor="middle">public 31 Oct 2019</text>
+      </g>
+      <g class="pe1">
+      <line class="d-stem" x1="493" y1="152" x2="493" y2="278"/>
+      <circle class="d-evdot" cx="493" cy="282" r="5"/>
+      <rect class="d-ev" x="343" y="100" width="300" height="52" rx="10"/>
+      <text class="d-evt" x="493" y="122" text-anchor="middle">10-Q Q1 2020</text>
+      <text class="d-fn" x="493" y="140" text-anchor="middle">public 29 Jan 2020</text>
+      </g>
+      <g class="pe2">
+      <line class="d-stem" x1="973" y1="222" x2="973" y2="278"/>
+      <circle class="d-evdot" cx="973" cy="282" r="5"/>
+      <rect class="d-ev" x="823" y="170" width="300" height="52" rx="10"/>
+      <text class="d-evt" x="973" y="192" text-anchor="middle">FY2019 restated &middot; $323.9B</text>
+      <text class="d-fn" x="973" y="210" text-anchor="middle">public 30 Oct 2020</text>
+      </g>
+      <line class="d-lag" x1="245" y1="248" x2="333" y2="248"/>
+      <text class="d-lagt" x="289" y="240" text-anchor="middle">nobody knew yet</text>
+      <text class="d-fn" x="245" y="266" text-anchor="middle">period ends Sep 2019</text>
+      <rect class="d-box" x="20" y="330" width="1120" height="92" rx="11"/>
+      <text class="d-ct" x="40" y="356">WHAT YOUR BACKTEST IS ALLOWED TO SEE</text>
+      <g class="pr0">
+      <rect class="d-row ok" x="40" y="368" width="336" height="38" rx="8"/>
+      <text class="d-it" x="54" y="385">assets $338.5B</text>
+      <text class="d-fn" x="54" y="400">filed 31 Oct 2019</text>
+      </g>
+      <g class="pr1">
+      <rect class="d-row ok" x="412" y="368" width="336" height="38" rx="8"/>
+      <text class="d-it" x="426" y="385">Q1 2020 filed</text>
+      <text class="d-fn" x="426" y="400">filed 29 Jan 2020</text>
+      </g>
+      <g class="pr2">
+      <rect class="d-row warn" x="784" y="368" width="336" height="38" rx="8"/>
+      <text class="d-it" x="798" y="385">assets $323.9B &middot; restatement</text>
+      <text class="d-fn" x="798" y="400">filed 30 Oct 2020, row 1 stays</text>
+      </g>
+      </svg>
+      </section>
+
+      <section class="panel" data-dwell="23">
+        <h2 class="ptitle">Does Jegadeesh-Titman momentum still work?</h2>
+        <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="2.2"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h4.5"/></svg>41 specs counted this session</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5 12 14l3.5-3.5L21 16"/><path d="M21 11v5h-5"/></svg>Sharpe 2.14 deflates to 0.09</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M6.5 9.5 9.5 12l-3 2.5"/><path d="M12.5 15h5"/></svg>
