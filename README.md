@@ -104,6 +104,31 @@ Set them under `"env"` in the same config block:
 
 Your key stays in this file. It is read by the server process and is never passed through the model or written into the conversation.
 
+## Use it as a library
+
+The same data, without the server. Everything is synchronous and returns pandas,
+including inside Jupyter where a loop is already running.
+
+```python
+import vintage as v
+
+v.prices("AAPL", start="2020-01-01")          # daily prices, with known_at
+v.panel(["AAPL", "MSFT", "JNJ"])              # dates x tickers
+v.fundamentals("AAPL", "us-gaap:Assets", as_of="2020-01-01")
+v.restatements("AAPL", "us-gaap:Assets")      # periods reported twice, differently
+v.factors("ff3")                              # Ken French, wide
+v.macro("DGS10", as_of="2008-09-15")          # ALFRED first-release vintage
+v.claim("Mom12m")                             # what the paper claimed
+v.claims(price_only=True)                     # the 56 replicable with free data
+v.crypto("BTC-USD")
+v.short_volume("AAPL")
+v.sentiment("wallstreetbets")
+```
+
+`known_at` is kept as a column on every frame rather than dropped for tidiness —
+losing it is how a point-in-time dataset quietly becomes an ordinary one. Pass
+`as_of` and rows published after that date are gone before you see them.
+
 ## Try it
 
 Once installed, ask your assistant:

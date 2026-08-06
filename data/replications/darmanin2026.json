@@ -1,0 +1,145 @@
+{
+  "paper": "Darmanin2026",
+  "arxiv": "https://arxiv.org/abs/2607.20093",
+  "authors": "Adam Darmanin",
+  "year": 2026,
+  "delta_sharpe": 0.2,
+  "delta_cagr": 0.01,
+  "cost_bps_per_leg": 5.0,
+  "bootstrap": {
+    "draws": 2000,
+    "mean_block": 20,
+    "seed": 20260722
+  },
+  "families": [
+    {
+      "family": "calendar",
+      "label": "Sell-in-May",
+      "symbol": "SPY",
+      "obs": 8435,
+      "paper_obs": 8358,
+      "sample": "1993-01-29..2026-08-05",
+      "exposure": 0.4912,
+      "sharpe_gap": -0.0915,
+      "sharpe_ci": [
+        -0.3191,
+        0.1589
+      ],
+      "sharpe_gate": "REFUTED",
+      "paper_sharpe_ci": [
+        -0.618,
+        0.0
+      ],
+      "paper_sharpe_gate": "REFUTED",
+      "sharpe_ci_overlaps": true,
+      "cagr_gap": 0.0108,
+      "cagr_ci": [
+        -0.0183,
+        0.0406
+      ],
+      "cagr_gate": "INCONCLUSIVE",
+      "paper_cagr_ci": [
+        -0.131,
+        -0.026
+      ],
+      "paper_cagr_gate": "REFUTED",
+      "cagr_ci_overlaps": false,
+      "verdict": "DIVERGES \u2014 our gate classification differs from the paper's",
+      "perturbations": [
+        {
+          "params": "Nov-Apr",
+          "sharpe_gap": -0.0915,
+          "gate": "REFUTED"
+        },
+        {
+          "params": "Oct-Apr",
+          "sharpe_gap": -0.0316,
+          "gate": "REFUTED"
+        },
+        {
+          "params": "Nov-May",
+          "sharpe_gap": -0.0543,
+          "gate": "REFUTED"
+        },
+        {
+          "params": "Dec-Mar",
+          "sharpe_gap": -0.3674,
+          "gate": "REFUTED"
+        }
+      ],
+      "placebo": {
+        "runs": 12,
+        "mean_sharpe_gap": -0.6715,
+        "max_abs_sharpe_gap": 0.8858
+      }
+    },
+    {
+      "family": "trend",
+      "label": "Golden/death cross (50/200)",
+      "symbol": "^NDX",
+      "obs": 10289,
+      "paper_obs": 10331,
+      "sample": "1985-10-01..2026-08-05",
+      "exposure": 0.7361,
+      "sharpe_gap": 0.0439,
+      "sharpe_ci": [
+        -0.1706,
+        0.2672
+      ],
+      "sharpe_gate": "INCONCLUSIVE",
+      "paper_sharpe_ci": [
+        -0.234,
+        0.265
+      ],
+      "paper_sharpe_gate": "INCONCLUSIVE",
+      "sharpe_ci_overlaps": true,
+      "cagr_gap": 0.0122,
+      "cagr_ci": [
+        -0.0312,
+        0.0571
+      ],
+      "cagr_gate": "INCONCLUSIVE",
+      "paper_cagr_ci": [
+        -0.081,
+        0.024
+      ],
+      "paper_cagr_gate": "INCONCLUSIVE",
+      "cagr_ci_overlaps": true,
+      "verdict": "REPLICATED \u2014 same gate classification, and both intervals overlap the paper's",
+      "perturbations": [
+        {
+          "params": "20/100",
+          "sharpe_gap": -0.0282,
+          "gate": "REFUTED"
+        },
+        {
+          "params": "50/200",
+          "sharpe_gap": 0.0439,
+          "gate": "INCONCLUSIVE"
+        },
+        {
+          "params": "100/300",
+          "sharpe_gap": 0.0189,
+          "gate": "INCONCLUSIVE"
+        },
+        {
+          "params": "10/50",
+          "sharpe_gap": -0.0959,
+          "gate": "REFUTED"
+        }
+      ],
+      "placebo": {
+        "runs": 12,
+        "mean_sharpe_gap": -0.5376,
+        "max_abs_sharpe_gap": 0.655
+      }
+    }
+  ],
+  "not_attempted": [
+    "Oscillator (RSI) \u2014 NASDAQ-100, reproducible in principle, not yet run",
+    "Volume (OBV) \u2014 needs Russell 3000 point-in-time membership",
+    "Candlestick \u2014 needs Russell 3000 point-in-time membership",
+    "Momentum calibration \u2014 needs S&P 500 point-in-time membership"
+  ],
+  "generated_at": "2026-08-06T04:41:37+00:00"
+}

@@ -6,3 +6,6 @@ dist/
 build/
 *.egg-info/
 .pytest_cache/
+.screens/
+.playwright-mcp/
+bash.exe.stackdump
