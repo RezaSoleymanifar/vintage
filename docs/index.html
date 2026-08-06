@@ -79,6 +79,8 @@ a:hover{text-decoration:underline}
   gap:clamp(8px,1.3vh,16px)}
 .splitdia{min-width:0;min-height:0;display:flex}
 .splitdia .dia{flex:1;width:100%;height:100%}
+.archwrap{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+.archwrap img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain}
 .methods{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
   gap:clamp(5px,.8vh,10px) clamp(10px,1.4vw,20px)}
 .mhead{grid-column:1/-1;display:flex;gap:16px;font-family:var(--mono);
@@ -690,6 +692,16 @@ a:hover{text-decoration:underline}
       <text class="d-sb" x="904" y="529">index on known_at</text>
       <text class="d-fn" x="904" y="545">point-in-time by construction</text>
       </svg>
+      </section>
+
+      <section class="panel arch" data-dwell="14">
+        <h2 class="ptitle">The whole thing, on one page.</h2>
+        <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 7.5 12 12l9-4.5Z"/><path d="M3 12.5 12 17l9-4.5"/><path d="M3 17 12 21.5 21 17"/></svg>every publisher, its own mark</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 4.5h17l-6.6 7.8v6.4l-3.8 2.3v-8.7Z"/></svg>four families into one interface</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M11 14.5h2"/></svg>two dates on every row that leaves</span></div>
+        <div class="archwrap"><img src="architecture.svg" width="1280" height="930"
+          alt="Eighteen free financial data sources: SEC EDGAR, Form 13F, FRED, ECB,
+          US Treasury, BLS, BEA, CFTC, CBOE, FINRA, Coinbase, Ken French and more,
+          federated behind one interface, every row carrying both the date it
+          describes and the date it became public"></div>
       </section>
 
       <section class="panel" data-dwell="12">
@@ -1310,7 +1322,7 @@ a:hover{text-decoration:underline}
         <h2 class="ptitle">What the forums are saying, right now.</h2>
         <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5a2 2 0 0 1-2 2H8l-4.5 4V5.5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2Z"/><path d="M8 8.5h8"/><path d="M8 12h5"/></svg>fetched while this page was built</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.4l3.4 2"/></svg>stamped with the minute we read it</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5 12 14l3.5-3.5L21 16"/><path d="M21 11v5h-5"/></svg>no history upstream, so we keep one</span></div>
         <div class="fill">
-          <table class="forum"><thead><tr><th></th><th>ticker</th><th>name</th><th class="n">mentions</th><th class="n">24h change</th><th class="n">upvotes</th></tr></thead><tbody><tr><td class="rk">1</td><td class="tk">HTZ</td><td class="nm">Hertz</td><td class="n">1,155</td><td class="n up">+1,143</td><td class="n dimc">6,408</td></tr><tr><td class="rk">2</td><td class="tk">SPY</td><td class="nm">SPDR S&amp;P 500 ETF Trust</td><td class="n">433</td><td class="n down">-292</td><td class="n dimc">1,160</td></tr><tr><td class="rk">3</td><td class="tk">SPCX</td><td class="nm">SpaceX</td><td class="n">397</td><td class="n down">-61</td><td class="n dimc">1,133</td></tr><tr><td class="rk">4</td><td class="tk">SNDK</td><td class="nm">Sandisk</td><td class="n">350</td><td class="n down">-611</td><td class="n dimc">1,153</td></tr><tr><td class="rk">5</td><td class="tk">MU</td><td class="nm">Micron Technology</td><td class="n">240</td><td class="n down">-103</td><td class="n dimc">567</td></tr><tr><td class="rk">6</td><td class="tk">NVDA</td><td class="nm">NVIDIA</td><td class="n">157</td><td class="n down">-91</td><td class="n dimc">491</td></tr><tr><td class="rk">7</td><td class="tk">QQQ</td><td class="nm">Invesco QQQ ETF</td><td class="n">146</td><td class="n down">-17</td><td class="n dimc">309</td></tr><tr><td class="rk">8</td><td class="tk">MSFT</td><td class="nm">Microsoft</td><td class="n">119</td><td class="n up">+33</td><td class="n dimc">466</td></tr></tbody></table><p class="stamp">read from ApeWisdom at 2026-08-06 23:21 UTC &middot; <code>known_at</code> is that moment, not the moment the posts were written</p>
+          <table class="forum"><thead><tr><th></th><th>ticker</th><th>name</th><th class="n">mentions</th><th class="n">24h change</th><th class="n">upvotes</th></tr></thead><tbody><tr><td class="rk">1</td><td class="tk">HTZ</td><td class="nm">Hertz</td><td class="n">1,156</td><td class="n up">+1,144</td><td class="n dimc">6,416</td></tr><tr><td class="rk">2</td><td class="tk">SPY</td><td class="nm">SPDR S&amp;P 500 ETF Trust</td><td class="n">432</td><td class="n down">-293</td><td class="n dimc">1,158</td></tr><tr><td class="rk">3</td><td class="tk">SPCX</td><td class="nm">SpaceX</td><td class="n">397</td><td class="n down">-61</td><td class="n dimc">1,133</td></tr><tr><td class="rk">4</td><td class="tk">SNDK</td><td class="nm">Sandisk</td><td class="n">350</td><td class="n down">-611</td><td class="n dimc">1,153</td></tr><tr><td class="rk">5</td><td class="tk">MU</td><td class="nm">Micron Technology</td><td class="n">240</td><td class="n down">-103</td><td class="n dimc">567</td></tr><tr><td class="rk">6</td><td class="tk">NVDA</td><td class="nm">NVIDIA</td><td class="n">157</td><td class="n down">-91</td><td class="n dimc">491</td></tr><tr><td class="rk">7</td><td class="tk">QQQ</td><td class="nm">Invesco QQQ ETF</td><td class="n">145</td><td class="n down">-18</td><td class="n dimc">306</td></tr><tr><td class="rk">8</td><td class="tk">MSFT</td><td class="nm">Microsoft</td><td class="n">119</td><td class="n up">+33</td><td class="n dimc">469</td></tr></tbody></table><p class="stamp">read from ApeWisdom at 2026-08-06 23:24 UTC &middot; <code>known_at</code> is that moment, not the moment the posts were written</p>
         </div>
       </section>
 
@@ -1353,7 +1365,7 @@ a:hover{text-decoration:underline}
 (function () {
   var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
   var chipbar = document.getElementById('chips');
-  var titles = ['What it is', 'The taxonomy', 'The schema', 'What you get',
+  var titles = ['What it is', 'The map', 'The taxonomy', 'The schema', 'What you get',
                 'Point-in-time', 'The drift', 'The engine', 'The experiment',
                 'A session', 'The forums', 'Install'];
   var timer, at = 0, held = false;

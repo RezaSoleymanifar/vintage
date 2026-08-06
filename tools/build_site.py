@@ -1651,6 +1651,9 @@ FACTS = {
     "__F4__": [("prompt", "one prompt, claim to verdict"),
                ("ledger", "every spec counted this session"),
                ("shield", "every number on this screen reproducible")],
+    "__FMAP__": [("stack", "every publisher, its own mark"),
+                 ("funnel", "four families into one interface"),
+                 ("calendar", "two dates on every row that leaves")],
     "__F6__": [("funnel", "eighteen sources, one grammar"),
                ("prompt", "23 prefixes, six verbs"),
                ("stack", "a new source adds no new tool")],
@@ -1809,6 +1812,8 @@ a:hover{text-decoration:underline}
   gap:clamp(8px,1.3vh,16px)}
 .splitdia{min-width:0;min-height:0;display:flex}
 .splitdia .dia{flex:1;width:100%;height:100%}
+.archwrap{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+.archwrap img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain}
 .methods{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
   gap:clamp(5px,.8vh,10px) clamp(10px,1.4vw,20px)}
 .mhead{grid-column:1/-1;display:flex;gap:16px;font-family:var(--mono);
@@ -2082,6 +2087,16 @@ __ONECSS__
         __DIA1__
       </section>
 
+      <section class="panel arch" data-dwell="14">
+        <h2 class="ptitle">The whole thing, on one page.</h2>
+        __FMAP__
+        <div class="archwrap"><img src="architecture.svg" width="1280" height="930"
+          alt="Eighteen free financial data sources: SEC EDGAR, Form 13F, FRED, ECB,
+          US Treasury, BLS, BEA, CFTC, CBOE, FINRA, Coinbase, Ken French and more,
+          federated behind one interface, every row carrying both the date it
+          describes and the date it became public"></div>
+      </section>
+
       <section class="panel" data-dwell="12">
         <h2 class="ptitle">Then distilled into one grammar you can hold in your head.</h2>
         __F6__
@@ -2182,7 +2197,7 @@ __ONECSS__
 (function () {
   var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
   var chipbar = document.getElementById('chips');
-  var titles = ['What it is', 'The taxonomy', 'The schema', 'What you get',
+  var titles = ['What it is', 'The map', 'The taxonomy', 'The schema', 'What you get',
                 'Point-in-time', 'The drift', 'The engine', 'The experiment',
                 'A session', 'The forums', 'Install'];
   var timer, at = 0, held = false;
