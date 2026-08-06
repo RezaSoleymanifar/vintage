@@ -163,15 +163,29 @@ Vintage implements the backtest-validation literature rather than inventing its 
 
 Citations are references, not endorsements — none of these authors is affiliated with Vintage. Anything marked planned is not in the code yet, and the `backtest` response says so at runtime rather than in the footnotes.
 
-## Sources
+## Where the data comes from
 
-| Source | Covers | Key | Point-in-time |
-|---|---|---|---|
-| SEC EDGAR XBRL | All US filer fundamentals | none | ✅ native filing dates |
-| SEC filings stream | 8-K, 10-K/Q, Form 4, 13D/G | none | ✅ exact timestamps |
-| Yahoo Finance | Daily OHLCV + adjusted close | none | ⚠️ adjusted retroactively |
-| Ken French | FF3, FF5, momentum, industries | none | ❌ rebuilt each release |
-| FRED / ALFRED | 800k macro series with vintages | free | ✅ first-release dates |
+<table>
+<tr>
+<td align="center"><b>10,398</b><br><sub>ticker-mapped US filers</sub></td>
+<td align="center"><b>800k+</b><br><sub>macro series with vintages</sub></td>
+<td align="center"><b>500+</b><br><sub>XBRL fields per large filer</sub></td>
+<td align="center"><b>0</b><br><sub>API keys required</sub></td>
+<td align="center"><b>$0</b><br><sub>forever</sub></td>
+</tr>
+</table>
+
+**Three of the five are the primary source** — not a reseller, not a scraper. The filings come from the regulator that receives them, the macro series from the central bank that publishes them, and the factors from the university that computes them.
+
+| Source | Standing | Covers | Key | Point-in-time |
+|---|---|---|---|---|
+| **SEC EDGAR XBRL** | Primary · US regulator | Every concept every US filer has tagged, with accession number and filing date on each figure. Restatements arrive as rows, never as an overwrite. | none | ✅ native filing dates |
+| **SEC filings stream** | Primary · US regulator | 8-K, 10-K, 10-Q, Form 4, 13D/G — timestamped to the second EDGAR accepted them. | none | ✅ exact timestamps |
+| **FRED / ALFRED** | Primary · central bank | Federal Reserve Bank of St. Louis. ALFRED keeps first releases, so you can ask what CPI looked like *that morning*. | free | ✅ first-release vintages |
+| **Ken French Data Library** | Primary · academic | Dartmouth. FF3, FF5, momentum, daily FF3, 49 industry portfolios — from where the authors publish them. | none | ❌ rebuilt each release |
+| **Yahoo Finance** | Third party | Daily OHLCV and adjusted close, decades deep. | none | ⚠️ adjusted retroactively, flagged on every row |
+
+Counts current as of August 2026. Vintage redistributes none of this — each upstream source keeps its own terms.
 
 Stooq was the intended price spine — friendlier terms — but it now gates programmatic access behind a JavaScript check. The adapter stays in case that lifts.
 

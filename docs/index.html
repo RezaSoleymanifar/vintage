@@ -140,6 +140,27 @@ pre{
 .method .soon{color:var(--amber);white-space:nowrap}
 .soon{color:var(--amber)}
 
+.stats{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:1px;margin:22px 0 20px;
+  background:var(--line);border:1px solid var(--line);border-radius:11px;overflow:hidden;
+}
+@media(min-width:760px){.stats{grid-template-columns:repeat(5,1fr)}}
+.stats div{background:var(--panel);padding:17px 14px;text-align:center}
+.stats b{display:block;color:var(--green);font-size:clamp(21px,4vw,27px);letter-spacing:.02em}
+.stats span{display:block;color:var(--dim);font-size:11.5px;letter-spacing:.07em;margin-top:5px;line-height:1.4}
+
+.srcs{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:700px){.srcs{grid-template-columns:1fr 1fr}}
+.src h3{margin:9px 0 7px;font-size:15px;letter-spacing:.04em}
+.src p{font-size:13.5px}
+.badge{
+  display:inline-block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  padding:3px 8px;border-radius:5px;border:1px solid;
+}
+.badge.gov{color:var(--green);border-color:rgba(53,224,138,.4);background:rgba(53,224,138,.08)}
+.badge.edu{color:#7fb3ff;border-color:rgba(127,179,255,.4);background:rgba(127,179,255,.08)}
+.badge.third{color:var(--dim);border-color:var(--line);background:transparent}
+
 table{width:100%;border-collapse:collapse;margin-top:16px;font-size:13.5px}
 th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line)}
 th{color:var(--dim);font-weight:400;letter-spacing:.1em;font-size:11.5px;text-transform:uppercase}
@@ -220,6 +241,57 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:16px}
     <p class="after">Needs <a href="https://docs.astral.sh/uv/getting-started/installation/">uv</a>.
     Prefer pip? <code>pip install vintage-mcp</code>, then use <code>vintage</code> as the command.
     No API keys required for anything above.</p>
+  </section>
+
+  <section>
+    <h2>Where the data comes from</h2>
+    <p class="lede">Three of the five are the primary source, not a reseller and not a scraper: the
+    filings come from the regulator that receives them, the macro series come from the central bank
+    that publishes them, and the factors come from the university that computes them. Vintage hosts
+    none of it — it connects, normalizes, and preserves vintage.</p>
+
+    <div class="stats">
+      <div><b>10,398</b><span>ticker-mapped US filers</span></div>
+      <div><b>800k+</b><span>macro series with vintages</span></div>
+      <div><b>500+</b><span>XBRL fields per large filer</span></div>
+      <div><b>0</b><span>API keys required</span></div>
+      <div><b>$0</b><span>forever</span></div>
+    </div>
+
+    <div class="srcs">
+      <div class="card src">
+        <span class="badge gov">Primary · US regulator</span>
+        <h3>SEC EDGAR XBRL</h3>
+        <p>Every concept every US filer has ever tagged, with the accession number and filing date
+        attached to each figure. Restatements arrive as separate rows, not as an overwrite.</p>
+      </div>
+      <div class="card src">
+        <span class="badge gov">Primary · US regulator</span>
+        <h3>SEC filings stream</h3>
+        <p>8-K, 10-K, 10-Q, Form 4 and 13D/G, timestamped to the second EDGAR accepted them. This is
+        the clock the rest of the market runs on.</p>
+      </div>
+      <div class="card src">
+        <span class="badge gov">Primary · central bank</span>
+        <h3>FRED &amp; ALFRED</h3>
+        <p>Federal Reserve Bank of St. Louis. ALFRED is the rare archive that keeps first releases,
+        so you can ask what CPI looked like <i>that morning</i> rather than after the revisions.</p>
+      </div>
+      <div class="card src">
+        <span class="badge edu">Primary · academic</span>
+        <h3>Ken French Data Library</h3>
+        <p>Dartmouth. FF3, FF5, momentum, daily FF3, and the 49 industry portfolios — the same series
+        the papers are written against, from where the authors publish them.</p>
+      </div>
+      <div class="card src">
+        <span class="badge third">Third party</span>
+        <h3>Yahoo Finance</h3>
+        <p>Daily OHLCV and adjusted close, decades deep. Labelled honestly: adjustments are applied
+        retroactively, so price history is not fully point-in-time and Vintage says so on every row.</p>
+      </div>
+    </div>
+    <p class="after">Counts current as of August 2026. Each upstream source keeps its own terms —
+    Vintage redistributes none of it.</p>
   </section>
 
   <section>
