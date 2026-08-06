@@ -482,8 +482,10 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:16px}
         retroactively, so price history is not fully point-in-time and Vintage says so on every row.</p>
       </div>
     </div>
-    <p class="after">Counts current as of August 2026. Each upstream source keeps its own terms —
-    Vintage redistributes none of it.</p>
+    <p class="after"><a href="https://github.com/RezaSoleymanifar/vintage/blob/main/COVERAGE.md">The
+    full field-by-field catalogue</a> lists every prefix, dataset and signal with measured coverage
+    spans — generated from the registry, so it cannot drift from the code. Counts current as of
+    August 2026. Each upstream source keeps its own terms; Vintage redistributes none of it.</p>
   </section>
 
   <section>
@@ -587,7 +589,8 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:16px}
     <div class="links">
       <a href="https://github.com/RezaSoleymanifar/vintage">GitHub</a>
       <a href="https://pypi.org/project/vintage-mcp/">PyPI</a>
-      <a href="https://github.com/RezaSoleymanifar/vintage/blob/main/DATA_SOURCES.md">Data sources</a>
+      <a href="https://github.com/RezaSoleymanifar/vintage/blob/main/COVERAGE.md">Full data catalogue</a>
+      <a href="https://github.com/RezaSoleymanifar/vintage/blob/main/DATA_SOURCES.md">Data landscape</a>
       <a href="https://github.com/RezaSoleymanifar/vintage/blob/main/DESIGN.md">Design</a>
     </div>
     <p>MIT licensed. Vintage redistributes no data — SEC EDGAR, FRED, Yahoo Finance and the

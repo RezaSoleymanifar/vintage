@@ -199,11 +199,17 @@ Citations are references, not endorsements — none of these authors is affiliat
 | **Ken French Data Library** | Primary · academic | Dartmouth. FF3, FF5, momentum, daily FF3, 49 industry portfolios — from where the authors publish them. | none | ❌ rebuilt each release |
 | **Yahoo Finance** | Third party | Daily OHLCV and adjusted close, decades deep. | none | ⚠️ adjusted retroactively, flagged on every row |
 
+**[COVERAGE.md](COVERAGE.md) is the full field-by-field catalogue** — every prefix, every dataset, every signal, with measured coverage spans. It is generated from the registry, so it cannot drift from the code.
+
 Counts current as of August 2026. Vintage redistributes none of this — each upstream source keeps its own terms.
 
-Stooq was the intended price spine — friendlier terms — but it now gates programmatic access behind a JavaScript check. The adapter stays in case that lifts.
+### On Yahoo Finance
 
-See [`DATA_SOURCES.md`](DATA_SOURCES.md) for the full free-data landscape and [`DESIGN.md`](DESIGN.md) for the architecture.
+It is the one third-party source here, and the weakest link: an undocumented endpoint with grey terms that can change without notice. It stays because it is the only free source of decades-deep daily prices, and prices are the spine of every backtest — Ken French gives factor returns, not individual securities.
+
+It is mitigated rather than hidden. Vintage fetches per user and redistributes nothing, every price row is flagged as retroactively adjusted, and the price layer is a single adapter, so a keyed alternative (Tiingo, Alpaca) can slot in behind the same `price:` prefix without touching anything else. Stooq was the intended spine — friendlier terms — but it now gates programmatic access behind a JavaScript check. That adapter stays in case the check lifts.
+
+See [`COVERAGE.md`](COVERAGE.md) for what is wired up today, [`DATA_SOURCES.md`](DATA_SOURCES.md) for the wider free-data landscape, and [`DESIGN.md`](DESIGN.md) for the architecture.
 
 ## Cache
 
