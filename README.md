@@ -40,6 +40,14 @@ Free financial data exists and is scattered across twenty APIs with twenty shape
 
 Vintage is that glue, written once, served over [MCP](https://modelcontextprotocol.io). It hosts no data — it connects, normalizes, and preserves vintage.
 
+## What people use it for
+
+<p align="center">
+  <a href="https://rezasoleymanifar.github.io/vintage/"><img src="assets/showcase.gif" alt="Two questions answered: whether Apple restated its 2019 revenue, and a Sharpe of 2.14 collapsing to 0.09 once 41 trials are counted" width="100%"></a>
+</p>
+
+<p align="center"><sub>Two of four scenes — <a href="https://rezasoleymanifar.github.io/vintage/">see the full reel on the site</a>.</sub></p>
+
 ## Install
 
 One line. Nothing to clone.

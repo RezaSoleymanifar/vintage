@@ -15,6 +15,11 @@ from __future__ import annotations
 
 import html
 import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+import showcase
 from dataclasses import dataclass, field
 
 # --------------------------------------------------------------- the script
@@ -424,6 +429,11 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:16px}
   </header>
 
   <section>
+    <h2>What people use it for</h2>
+    <div class="reel">__REEL__</div>
+  </section>
+
+  <section>
     <h2>Install</h2>
     <div class="tabs">
       __TABS__
@@ -609,7 +619,8 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:16px}
 
 </div>
 
-<style>__ANIM__</style>
+<style>__ANIM__
+__REELCSS__</style>
 
 <script>
 document.querySelectorAll('.tab').forEach(function (tab) {
@@ -640,8 +651,11 @@ document.querySelectorAll('.copy').forEach(function (btn) {
 def main() -> None:
     rows, anim = build_terminal()
     tabs, panes = build_clients()
+    reel_html, reel_css = showcase.build()
     page = (
         PAGE.replace("__ROWS__", rows)
+        .replace("__REEL__", reel_html)
+        .replace("__REELCSS__", showcase.STYLE + "\n" + reel_css)
         .replace("__TABS__", tabs)
         .replace("__PANES__", panes)
         .replace("__ANIM__", anim)

@@ -242,6 +242,11 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:16px}
   </header>
 
   <section>
+    <h2>What people use it for</h2>
+    <div class="reel"><div class="stage"><div class="zoomer"><div class="scenes"><div class="scene sc0"><div class="ask"><span class="q">?</span><span class="asktext ask0">Did Apple ever restate its 2019 revenue?</span></div><div class="answer"><div class="brule b0_0">What Apple reported for FY2019</div><div class="brow b0_1"><span>$338.5 billion</span><b>filed 31 Oct 2019</b></div><div class="bstrike b0_2"><span>$323.9 billion</span><b>restated 30 Oct 2020</b></div><div class="bnote b0_3">Vintage keeps both, and the date of each.</div></div><div class="cap cap0">The number changed. Most data feeds only keep the second one.</div></div><div class="scene sc1"><div class="ask"><span class="q">?</span><span class="asktext ask1">What was actually public on 1 January 2020?</span></div><div class="answer"><div class="brule b1_0">Filings visible on 2020-01-01</div><div class="brow b1_1"><span>10-K, FY2019</span><b>31 Oct 2019</b></div><div class="brow b1_2"><span>8-K, earnings</span><b>30 Oct 2019</b></div><div class="brow b1_3"><span>10-Q, Q3</span><b>31 Jul 2019</b></div><div class="bbad b1_4"><span>10-Q, Q1 2020</span><b>hidden — filed 29 Jan 2020</b></div><div class="bnote b1_5">The future cannot leak in. There is no flag to turn it off.</div></div><div class="cap cap1">Everything after that date is invisible. By construction, not by setting.</div></div><div class="scene sc2"><div class="ask"><span class="q">?</span><span class="asktext ask2">Backtest momentum. Then let me try a few more ideas.</span></div><div class="answer"><div class="bbig b2_0"><span>Sharpe</span><b>2.14</b></div><div class="brow b2_1"><span>specs you tried</span><b>41</b></div><div class="brow b2_2"><span>Sharpe noise would produce</span><b>2.29</b></div><div class="bbad b2_3"><span>after adjustment</span><b>0.09</b></div><div class="bnote b2_4">The terminal you pay for does not tell you this.</div></div><div class="cap cap2">You asked 41 times. That is what noise looks like.</div></div><div class="scene sc3"><div class="ask"><span class="q">?</span><span class="asktext ask3">Does the published research actually hold up?</span></div><div class="answer"><div class="brule b3_0">Jegadeesh &amp; Titman, 1993</div><div class="brow b3_1"><span>claimed</span><b>1.31% per month</b></div><div class="brow b3_2"><span>t-statistic</span><b>3.74</b></div><div class="brow b3_3"><span>sample</span><b>1964–1989</b></div><div class="bnote b3_4">Now run it yourself, on data that stops where it should.</div></div><div class="cap cap3">331 published anomalies, each with the number to beat.</div></div></div><span class="rip rip0"></span><span class="rip rip1"></span><span class="rip rip2"></span><span class="rip rip3"></span></div><span class="ptr"></span><div class="dots"><span class="dot d0"></span><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span></div></div></div>
+  </section>
+
+  <section>
     <h2>Install</h2>
     <div class="tabs">
       <button class="tab is-on" data-pane="claude-code">Claude Code</button>
@@ -496,7 +501,156 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:16px}
 @keyframes a15{0%,77.632%{opacity:0;transform:translateY(3px)}78.842%,100%{opacity:1;transform:none}}
 .r15{animation:a15 19.0s infinite}
 @keyframes a16{0%,81.842%{opacity:0;transform:translateY(3px)}83.053%,100%{opacity:1;transform:none}}
-.r16{animation:a16 19.0s infinite}</style>
+.r16{animation:a16 19.0s infinite}
+
+.reel{margin:26px 0 0}
+.stage{
+  position:relative;width:100%;max-width:1000px;aspect-ratio:1000/520;
+  margin:0 auto;overflow:hidden;border:1px solid var(--line);border-radius:13px;
+  background:radial-gradient(120% 120% at 30% 10%,#101a26 0%,#0a0e14 60%);
+  container-type:inline-size;
+}
+.zoomer{
+  position:absolute;inset:0;animation:zoom 28.0s cubic-bezier(.55,.06,.32,1) infinite;
+  will-change:transform;
+}
+.scenes{position:absolute;inset:0}
+.scene{position:absolute;inset:0;opacity:0;padding:5cqw 12cqw 8.5cqw;display:flex;flex-direction:column}
+
+.ask{display:flex;align-items:baseline;gap:.7cqw;margin-bottom:2.6cqw}
+.ask .q{color:var(--green);font-weight:700;font-size:1.95cqw}
+.asktext{
+  display:inline-block;overflow:hidden;white-space:nowrap;width:0;
+  color:var(--ink);font-size:1.95cqw;font-weight:700;letter-spacing:.01em;
+}
+.answer{flex:1}
+.cap{margin-top:auto}
+.brule{
+  color:var(--dim);font-size:1.35cqw;letter-spacing:.22em;text-transform:uppercase;
+  padding-bottom:.9cqw;border-bottom:1px solid var(--line);margin-bottom:1.5cqw;opacity:0;
+}
+.brow,.bbad,.bstrike,.bbig{
+  display:flex;justify-content:space-between;align-items:baseline;gap:2cqw;
+  padding:.75cqw 0;opacity:0;
+}
+.brow span,.bbad span,.bstrike span,.bbig span{color:var(--dim);font-size:1.75cqw}
+.brow b{color:var(--ink);font-size:2.1cqw}
+.bbig span{font-size:1.9cqw}
+.bbig b{color:var(--green);font-size:4.4cqw;line-height:1}
+.bbad b{color:var(--red);font-size:3.1cqw;line-height:1}
+.bbad span{color:var(--red);opacity:.75}
+.bstrike b{color:var(--amber);font-size:2.1cqw}
+.bstrike span{color:var(--amber);opacity:.8}
+.bnote{margin-top:1.4cqw;color:var(--dim);font-size:1.6cqw;line-height:1.5;opacity:0}
+.cap{
+  opacity:0;color:var(--ink);font-size:1.9cqw;line-height:1.45;
+  border-left:2px solid var(--green);padding-left:1.4cqw;
+}
+
+.ptr{
+  position:absolute;left:0;top:0;width:1.6cqw;height:1.6cqw;pointer-events:none;z-index:5;
+  background:var(--ink);clip-path:polygon(0 0,0 78%,26% 60%,44% 96%,62% 88%,44% 52%,74% 50%);
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.65));
+  animation:cursor 28.0s cubic-bezier(.4,0,.2,1) infinite;
+}
+.rip{
+  position:absolute;width:5cqw;height:5cqw;margin:-2.5cqw 0 0 -2.5cqw;border-radius:50%;
+  border:2px solid var(--green);opacity:0;pointer-events:none;
+}
+.dots{position:absolute;left:0;right:0;bottom:2.2cqw;display:flex;justify-content:center;gap:.7cqw}
+.dot{height:7px;width:7px;border-radius:99px;background:var(--green);opacity:.25}
+
+@media (prefers-reduced-motion:reduce){
+  .zoomer,.ptr,.rip,.dot{animation:none!important;transform:none!important}
+  .scene{animation:none!important}
+  .scene:first-child{opacity:1}
+  .asktext{width:auto!important;animation:none!important}
+  .brow,.bbad,.bstrike,.bbig,.bnote,.brule,.cap{opacity:1!important;animation:none!important}
+  .ptr{display:none}
+}
+
+@keyframes rip0{0.000%{opacity:0;transform:scale(.2)}4.571%{opacity:0;transform:scale(.2)}4.786%{opacity:.85;transform:scale(.35)}6.964%{opacity:0;transform:scale(2.6)}99.964%{opacity:0;transform:scale(.2)}}
+.rip0{left:300px;top:250px;animation:rip0 28.0s infinite}
+@keyframes sc0{0.000%{opacity:0}1.071%{opacity:1}23.036%{opacity:1}24.821%{opacity:0}}
+.sc0{animation:sc0 28.0s infinite}
+@keyframes ask0{0.357%{width:0}4.286%{width:40ch}24.821%{width:40ch}}
+.ask0{animation:ask0 28.0s steps(40,end) infinite}
+@keyframes b0_0{5.714%{opacity:0;transform:translateY(6px)}6.786%{opacity:1;transform:none}23.929%{opacity:1;transform:none}}
+.b0_0{animation:b0_0 28.0s infinite}
+@keyframes b0_1{7.500%{opacity:0;transform:translateY(6px)}8.571%{opacity:1;transform:none}23.929%{opacity:1;transform:none}}
+.b0_1{animation:b0_1 28.0s infinite}
+@keyframes b0_2{10.000%{opacity:0;transform:translateY(6px)}11.071%{opacity:1;transform:none}23.929%{opacity:1;transform:none}}
+.b0_2{animation:b0_2 28.0s infinite}
+@keyframes b0_3{12.857%{opacity:0;transform:translateY(6px)}13.929%{opacity:1;transform:none}23.929%{opacity:1;transform:none}}
+.b0_3{animation:b0_3 28.0s infinite}
+@keyframes cap0{16.786%{opacity:0}18.393%{opacity:1}23.929%{opacity:1}24.821%{opacity:0}}
+.cap0{animation:cap0 28.0s infinite}
+@keyframes rip1{25.000%{opacity:0;transform:scale(.2)}29.571%{opacity:0;transform:scale(.2)}29.786%{opacity:.85;transform:scale(.35)}31.964%{opacity:0;transform:scale(2.6)}99.964%{opacity:0;transform:scale(.2)}}
+.rip1{left:600px;top:230px;animation:rip1 28.0s infinite}
+@keyframes sc1{23.750%{opacity:0}26.071%{opacity:1}48.036%{opacity:1}49.821%{opacity:0}}
+.sc1{animation:sc1 28.0s infinite}
+@keyframes ask1{25.357%{width:0}29.286%{width:43ch}49.821%{width:43ch}}
+.ask1{animation:ask1 28.0s steps(43,end) infinite}
+@keyframes b1_0{30.714%{opacity:0;transform:translateY(6px)}31.786%{opacity:1;transform:none}48.929%{opacity:1;transform:none}}
+.b1_0{animation:b1_0 28.0s infinite}
+@keyframes b1_1{32.143%{opacity:0;transform:translateY(6px)}33.214%{opacity:1;transform:none}48.929%{opacity:1;transform:none}}
+.b1_1{animation:b1_1 28.0s infinite}
+@keyframes b1_2{33.571%{opacity:0;transform:translateY(6px)}34.643%{opacity:1;transform:none}48.929%{opacity:1;transform:none}}
+.b1_2{animation:b1_2 28.0s infinite}
+@keyframes b1_3{35.000%{opacity:0;transform:translateY(6px)}36.071%{opacity:1;transform:none}48.929%{opacity:1;transform:none}}
+.b1_3{animation:b1_3 28.0s infinite}
+@keyframes b1_4{37.143%{opacity:0;transform:translateY(6px)}38.214%{opacity:1;transform:none}48.929%{opacity:1;transform:none}}
+.b1_4{animation:b1_4 28.0s infinite}
+@keyframes b1_5{39.643%{opacity:0;transform:translateY(6px)}40.714%{opacity:1;transform:none}48.929%{opacity:1;transform:none}}
+.b1_5{animation:b1_5 28.0s infinite}
+@keyframes cap1{41.786%{opacity:0}43.393%{opacity:1}48.929%{opacity:1}49.821%{opacity:0}}
+.cap1{animation:cap1 28.0s infinite}
+@keyframes rip2{50.000%{opacity:0;transform:scale(.2)}54.571%{opacity:0;transform:scale(.2)}54.786%{opacity:.85;transform:scale(.35)}56.964%{opacity:0;transform:scale(2.6)}99.964%{opacity:0;transform:scale(.2)}}
+.rip2{left:430px;top:280px;animation:rip2 28.0s infinite}
+@keyframes sc2{48.750%{opacity:0}51.071%{opacity:1}73.036%{opacity:1}74.821%{opacity:0}}
+.sc2{animation:sc2 28.0s infinite}
+@keyframes ask2{50.357%{width:0}54.286%{width:52ch}74.821%{width:52ch}}
+.ask2{animation:ask2 28.0s steps(52,end) infinite}
+@keyframes b2_0{55.357%{opacity:0;transform:translateY(6px)}56.429%{opacity:1;transform:none}73.929%{opacity:1;transform:none}}
+.b2_0{animation:b2_0 28.0s infinite}
+@keyframes b2_1{58.214%{opacity:0;transform:translateY(6px)}59.286%{opacity:1;transform:none}73.929%{opacity:1;transform:none}}
+.b2_1{animation:b2_1 28.0s infinite}
+@keyframes b2_2{60.357%{opacity:0;transform:translateY(6px)}61.429%{opacity:1;transform:none}73.929%{opacity:1;transform:none}}
+.b2_2{animation:b2_2 28.0s infinite}
+@keyframes b2_3{63.214%{opacity:0;transform:translateY(6px)}64.286%{opacity:1;transform:none}73.929%{opacity:1;transform:none}}
+.b2_3{animation:b2_3 28.0s infinite}
+@keyframes b2_4{66.071%{opacity:0;transform:translateY(6px)}67.143%{opacity:1;transform:none}73.929%{opacity:1;transform:none}}
+.b2_4{animation:b2_4 28.0s infinite}
+@keyframes cap2{66.786%{opacity:0}68.393%{opacity:1}73.929%{opacity:1}74.821%{opacity:0}}
+.cap2{animation:cap2 28.0s infinite}
+@keyframes rip3{75.000%{opacity:0;transform:scale(.2)}79.571%{opacity:0;transform:scale(.2)}79.786%{opacity:.85;transform:scale(.35)}81.964%{opacity:0;transform:scale(2.6)}99.964%{opacity:0;transform:scale(.2)}}
+.rip3{left:420px;top:240px;animation:rip3 28.0s infinite}
+@keyframes sc3{73.750%{opacity:0}76.071%{opacity:1}98.036%{opacity:1}99.821%{opacity:0}}
+.sc3{animation:sc3 28.0s infinite}
+@keyframes ask3{75.357%{width:0}79.286%{width:45ch}99.821%{width:45ch}}
+.ask3{animation:ask3 28.0s steps(45,end) infinite}
+@keyframes b3_0{80.714%{opacity:0;transform:translateY(6px)}81.786%{opacity:1;transform:none}98.929%{opacity:1;transform:none}}
+.b3_0{animation:b3_0 28.0s infinite}
+@keyframes b3_1{82.500%{opacity:0;transform:translateY(6px)}83.571%{opacity:1;transform:none}98.929%{opacity:1;transform:none}}
+.b3_1{animation:b3_1 28.0s infinite}
+@keyframes b3_2{84.286%{opacity:0;transform:translateY(6px)}85.357%{opacity:1;transform:none}98.929%{opacity:1;transform:none}}
+.b3_2{animation:b3_2 28.0s infinite}
+@keyframes b3_3{86.071%{opacity:0;transform:translateY(6px)}87.143%{opacity:1;transform:none}98.929%{opacity:1;transform:none}}
+.b3_3{animation:b3_3 28.0s infinite}
+@keyframes b3_4{88.929%{opacity:0;transform:translateY(6px)}90.000%{opacity:1;transform:none}98.929%{opacity:1;transform:none}}
+.b3_4{animation:b3_4 28.0s infinite}
+@keyframes cap3{91.786%{opacity:0}93.393%{opacity:1}98.929%{opacity:1}99.821%{opacity:0}}
+.cap3{animation:cap3 28.0s infinite}
+@keyframes cursor{0.000%{transform:translate(120px,120px)}4.464%{transform:translate(300px,250px)}20.000%{transform:translate(326px,264px)}23.393%{transform:translate(120px,120px)}25.000%{transform:translate(120px,120px)}29.464%{transform:translate(600px,230px)}45.000%{transform:translate(626px,244px)}48.393%{transform:translate(120px,120px)}50.000%{transform:translate(120px,120px)}54.464%{transform:translate(430px,280px)}70.000%{transform:translate(456px,294px)}73.393%{transform:translate(120px,120px)}75.000%{transform:translate(120px,120px)}79.464%{transform:translate(420px,240px)}95.000%{transform:translate(446px,254px)}98.393%{transform:translate(120px,120px)}100.000%{transform:translate(120px,120px)}}
+@keyframes zoom{0.000%{transform-origin:500px 250px;transform:scale(1)}4.643%{transform-origin:500px 250px;transform:scale(1)}7.500%{transform-origin:500px 250px;transform:scale(1.2)}19.821%{transform-origin:500px 250px;transform:scale(1.2)}22.679%{transform-origin:500px 250px;transform:scale(1)}25.000%{transform-origin:500px 255px;transform:scale(1)}29.643%{transform-origin:500px 255px;transform:scale(1)}32.500%{transform-origin:500px 255px;transform:scale(1.18)}44.821%{transform-origin:500px 255px;transform:scale(1.18)}47.679%{transform-origin:500px 255px;transform:scale(1)}50.000%{transform-origin:500px 262px;transform:scale(1)}54.643%{transform-origin:500px 262px;transform:scale(1)}57.500%{transform-origin:500px 262px;transform:scale(1.2)}69.821%{transform-origin:500px 262px;transform:scale(1.2)}72.679%{transform-origin:500px 262px;transform:scale(1)}75.000%{transform-origin:500px 250px;transform:scale(1)}79.643%{transform-origin:500px 250px;transform:scale(1)}82.500%{transform-origin:500px 250px;transform:scale(1.2)}94.821%{transform-origin:500px 250px;transform:scale(1.2)}97.679%{transform-origin:500px 250px;transform:scale(1)}100.000%{transform:scale(1)}}
+@keyframes dot0{0.000%{opacity:.25;width:7px}1.071%{opacity:1;width:22px}23.929%{opacity:1;width:22px}25.000%{opacity:.25;width:7px}}
+.d0{animation:dot0 28.0s infinite}
+@keyframes dot1{23.929%{opacity:.25;width:7px}26.071%{opacity:1;width:22px}48.929%{opacity:1;width:22px}50.000%{opacity:.25;width:7px}}
+.d1{animation:dot1 28.0s infinite}
+@keyframes dot2{48.929%{opacity:.25;width:7px}51.071%{opacity:1;width:22px}73.929%{opacity:1;width:22px}75.000%{opacity:.25;width:7px}}
+.d2{animation:dot2 28.0s infinite}
+@keyframes dot3{73.929%{opacity:.25;width:7px}76.071%{opacity:1;width:22px}98.929%{opacity:1;width:22px}100.000%{opacity:.25;width:7px}}
+.d3{animation:dot3 28.0s infinite}</style>
 
 <script>
 document.querySelectorAll('.tab').forEach(function (tab) {
