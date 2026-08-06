@@ -1690,7 +1690,7 @@ def build_badges() -> str:
 
     engine = "".join(pill(g, lab) for g, lab in ENGINE_BADGES)
     return (f'<p class="bline">A single MCP server for native quantitative research.</p>'
-            f'<p class="blab eng">Vintage API</p>'
+            f'<p class="blab eng">Backtest engine</p>'
             f'<div class="badges">{engine}</div>')
 
 
