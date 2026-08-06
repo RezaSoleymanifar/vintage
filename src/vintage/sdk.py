@@ -35,7 +35,8 @@ import pandas as pd
 from . import envelope, registry
 from .engine import backtest as _bt
 from .engine import honesty as _honesty
-from .sources import apewisdom, coinbase, edgar, finra, fred, french, openap, yahoo
+from .sources import (apewisdom, coinbase, delistings as _delistings, edgar,
+                      finra, fred, french, openap, yahoo)
 
 T = TypeVar("T")
 
@@ -43,6 +44,7 @@ __all__ = [
     "prices", "panel", "returns", "fundamentals", "filings", "factors", "macro",
     "claim", "claims", "crypto", "short_volume", "sentiment",
     "resolve", "search", "sources", "signals", "backtest", "trials", "frame",
+    "delistings", "survivorship_warning",
     "corporate_actions",
 ]
 
@@ -238,6 +240,25 @@ def short_volume(entity: str, *, days: int = 20,
 def sentiment(scope: str = "all-stocks", *, limit: int = 100) -> pd.DataFrame:
     """Forum mention ranks, stamped with the moment they were fetched."""
     return pd.DataFrame(_run(apewisdom.mentions(scope, limit=limit)))
+
+
+def delistings(*, start_year: int = 2003, as_of: str | None = None) -> pd.DataFrame:
+    """Every SEC Form 25 delisting, dated. The survivorship correction.
+
+    First call scans EDGAR's quarterly indexes and takes a couple of minutes;
+    closed quarters are immutable so it is cached after that. With `as_of`, only
+    companies that delisted *after* that date, which is exactly the set a
+    universe built today is missing.
+    """
+    rows = _delistings.load(start_year)
+    if as_of:
+        rows = [r for r in rows if r["known_at"] > as_of]
+    return frame(rows)
+
+
+def survivorship_warning(as_of: str | None = None) -> list[str]:
+    """How badly a universe built today misrepresents `as_of`."""
+    return _delistings.warnings_for(_delistings.load(), as_of)
 
 
 # ------------------------------------------------------------------- discovery

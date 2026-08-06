@@ -1,6 +1,6 @@
 [project]
 name = "vintage-mcp"
-version = "0.5.0"
+version = "0.6.0"
 description = "A research terminal that costs $0 and won't lie to you about your Sharpe — point-in-time financial data over MCP"
 readme = "README.md"
 requires-python = ">=3.11"

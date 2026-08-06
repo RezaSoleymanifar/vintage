@@ -37,7 +37,7 @@ mcp = MCPServer(
         "returns a deflated Sharpe that accounts for how many specs were tried "
         "this session. Report it. Never present a raw Sharpe alone."
     ),
-    version="0.5.0",
+    version="0.6.0",
 )
 
 # Backtests keep their return series here so the model does not have to carry

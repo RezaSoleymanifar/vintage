@@ -3,7 +3,7 @@
   "name": "io.github.RezaSoleymanifar/vintage",
   "title": "Vintage",
   "description": "Point-in-time financial data, and a backtester that deflates your Sharpe by how often you asked.",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "websiteUrl": "https://github.com/RezaSoleymanifar/vintage",
   "repository": {
     "url": "https://github.com/RezaSoleymanifar/vintage",
@@ -14,7 +14,7 @@
       "registryType": "pypi",
       "registryBaseUrl": "https://pypi.org",
       "identifier": "vintage-mcp",
-      "version": "0.5.0",
+      "version": "0.6.0",
       "transport": { "type": "stdio" },
       "environmentVariables": [
         {
