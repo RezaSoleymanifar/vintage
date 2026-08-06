@@ -1672,25 +1672,6 @@ FACTS = {
 }
 
 
-# What kind of data it is, in the words a desk would use, each tied to the
-# prefixes that actually serve it. `check_badges` fails the build if one of
-# them stops existing, so the rail cannot advertise a category the code dropped.
-DATA_BADGES = [
-    ("series", "prices", ("price:", "index:")),
-    ("coin", "crypto", ("crypto:",)),
-    ("stack", "filings", ("filing:", "dei:")),
-    ("gov", "fundamentals", ("us-gaap:", "ifrs-full:", "frame:", "srt:")),
-    ("bank", "macro", ("fred:", "bls:", "bea:")),
-    ("curve", "yields", ("ust:",)),
-    ("euro", "FX", ("fx:",)),
-    ("vol", "volatility", ("vol:",)),
-    ("book", "factors", ("french:", "openap:")),
-    ("short", "short volume", ("short:",)),
-    ("scales", "positioning", ("cot:", "13f:")),
-    ("delist", "delistings", ("delisting:",)),
-    ("ask", "forum sentiment", ("ape:",)),
-]
-
 # The half a quant checks before trusting a number. Worded as what the code
 # does, which is why survivorship says warned rather than solved.
 ENGINE_BADGES = [
@@ -1703,25 +1684,13 @@ ENGINE_BADGES = [
 ]
 
 
-def check_badges() -> None:
-    """A category may only be claimed if a prefix behind it still exists."""
-    live = set(registry.PREFIXES)
-    for _, label, prefixes in DATA_BADGES:
-        missing = [p for p in prefixes if p not in live]
-        if missing:
-            raise SystemExit(f"badge '{label}' names prefixes the registry dropped: {missing}")
-
-
 def build_badges() -> str:
-    check_badges()
+    def pill(glyph: str, label: str) -> str:
+        return f'<span class="badge">{icon(glyph, 21)}<b>{label}</b></span>'
 
-    def pill(glyph: str, label: str, kind: str) -> str:
-        return f'<span class="badge {kind}">{icon(glyph, 12)}{label}</span>'
-
-    data = "".join(pill(g, lab, "data") for g, lab, _ in DATA_BADGES)
-    engine = "".join(pill(g, lab, "eng") for g, lab in ENGINE_BADGES)
-    return (f'<div class="badges"><p class="blab">the data</p>{data}</div>'
-            f'<div class="badges"><p class="blab eng">the backtester</p>{engine}</div>')
+    engine = "".join(pill(g, lab) for g, lab in ENGINE_BADGES)
+    return (f'<p class="blab eng">Vintage Engine</p>'
+            f'<div class="badges">{engine}</div>')
 
 
 def build_tiles() -> str:
@@ -1812,19 +1781,15 @@ a:hover{text-decoration:underline}
   justify-items:center;gap:2px;text-align:center}
 .tile .ic{color:var(--green);opacity:.85}
 .tile b{color:var(--ink);font-size:clamp(13px,2vh,18px);line-height:1.1;font-weight:700}
-/* what kind of data, and what the backtester checks */
-.badges{display:flex;flex-wrap:wrap;gap:5px 6px;align-items:center}
-.blab{width:100%;margin:0;color:var(--dim);font-size:clamp(8px,1.05vh,9.5px);
-  letter-spacing:.16em;text-transform:uppercase}
-.blab.eng{color:var(--green)}
-.badge{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);
-  border-radius:99px;padding:3px 9px;font-size:clamp(8.5px,1.15vh,10.5px);
-  color:var(--dim);line-height:1.2;white-space:nowrap}
-.badge .ic{opacity:.8;flex:none}
-.badge.data{color:#a9c0cf}
-.badge.data .ic{color:var(--blue,#7fb3ff)}
-.badge.eng{color:var(--ink);border-color:rgba(47,213,135,.34)}
-.badge.eng .ic{color:var(--green)}
+/* what the engine guarantees, one property per badge */
+.badges{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.blab{margin:0 0 6px;color:var(--green);font-size:clamp(9px,1.2vh,11px);
+  letter-spacing:.16em;text-transform:uppercase;font-weight:700}
+.badge{display:flex;align-items:center;gap:9px;border:1px solid rgba(47,213,135,.28);
+  border-radius:9px;padding:7px 10px;background:var(--panel);min-width:0}
+.badge .ic{color:var(--green);opacity:.9;flex:none}
+.badge b{color:var(--ink);font-weight:700;line-height:1.2;
+  font-size:clamp(9.5px,1.3vh,11.5px)}
 
 .tile span{color:var(--dim);font-size:clamp(8.5px,1.15vh,10.5px);line-height:1.25;
   letter-spacing:.04em}
