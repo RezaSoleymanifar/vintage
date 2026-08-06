@@ -13,6 +13,14 @@
   <img alt="Python" src="https://img.shields.io/pypi/pyversions/vintage-mcp?labelColor=0b0f16">
 </p>
 
+<p align="center">
+  <a href="https://rezasoleymanifar.github.io/vintage/"><img src="assets/demo.gif" alt="A Claude session: install Vintage, backtest three signals, watch the deflated Sharpe collapse to 0.09" width="100%"></a>
+</p>
+
+<p align="center">
+  <a href="https://rezasoleymanifar.github.io/vintage/"><b>rezasoleymanifar.github.io/vintage</b></a>
+</p>
+
 ---
 
 Free financial data exists and is scattered across twenty APIs with twenty shapes. Everyone rebuilds the same glue, badly, and quietly ends up backtesting on restated figures and survivor-only universes.
