@@ -2054,7 +2054,7 @@ __ONECSS__
     </div>
 
     <p class="claim">Good financial data is already free. It&rsquo;s just scattered.
-    <span class="g">Vintage unifies the web&rsquo;s free financial data.</span></p>
+    <span class="g">Vintage unifies the web&rsquo;s free financial data in a single MCP server.</span></p>
 
     <div class="tiles">
       __TILES__
