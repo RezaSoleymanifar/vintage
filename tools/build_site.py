@@ -281,7 +281,6 @@ def diagram_federation() -> str:
              'central banks, markets and academia - all flowing down into Vintage, '
              'which resolves, normalizes, stamps and indexes them">')
 
-    p.append(txt(20, 30, "THE WEB &middot; 18 FREE SOURCES, FOUR FAMILIES", "d-h"))
     p.append(txt(1140, 30, "every one of them public, and free, right now", "d-fn", "end"))
 
     # ---- the grid: one column per family, one card per source
@@ -1722,10 +1721,7 @@ def build_badges() -> str:
     data = "".join(pill(g, lab, "data") for g, lab, _ in DATA_BADGES)
     engine = "".join(pill(g, lab, "eng") for g, lab in ENGINE_BADGES)
     return (f'<div class="badges"><p class="blab">the data</p>{data}</div>'
-            f'<div class="badges"><p class="blab eng">the backtester</p>{engine}'
-            f'<p class="bfoot">Deflated Sharpe and the trial ledger after '
-            f'L&oacute;pez de Prado. Every run says which checks are in the code '
-            f'and which are only cited.</p></div>')
+            f'<div class="badges"><p class="blab eng">the backtester</p>{engine}</div>')
 
 
 def build_tiles() -> str:
@@ -1829,8 +1825,6 @@ a:hover{text-decoration:underline}
 .badge.data .ic{color:var(--blue,#7fb3ff)}
 .badge.eng{color:var(--ink);border-color:rgba(47,213,135,.34)}
 .badge.eng .ic{color:var(--green)}
-.bfoot{width:100%;margin:2px 0 0;color:var(--dim);line-height:1.45;
-  font-size:clamp(8.5px,1.1vh,10px)}
 
 .tile span{color:var(--dim);font-size:clamp(8.5px,1.15vh,10.5px);line-height:1.25;
   letter-spacing:.04em}
@@ -2116,7 +2110,7 @@ __ONECSS__
     <div class="panels" id="panels">
 
       <section class="panel is-on" data-dwell="10">
-        <h2 class="ptitle">Twenty APIs, twenty shapes, and no shared clock.</h2>
+        <h2 class="ptitle">Sources</h2>
         __F1__
         __DIA1__
       </section>
