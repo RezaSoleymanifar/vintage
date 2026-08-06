@@ -9,12 +9,17 @@ from vintage.server import mcp, resolve, status
 
 VERBS = {"resolve", "discover", "fetch", "events", "backtest", "benchmark"}
 
+# Two tools that are not verbs: `status` reports the server's own state and
+# `capabilities` describes the surface. Neither is a data source, and the list
+# is closed — a new source must still add zero tools.
+META = {"status", "capabilities"}
+
 
 @pytest.mark.asyncio
-async def test_exactly_the_six_verbs_plus_status_are_exposed():
+async def test_exactly_the_six_verbs_plus_meta_are_exposed():
     """Adding a source must not add a tool. If this fails, that promise broke."""
     names = {tool.name for tool in await mcp.list_tools()}
-    assert names == VERBS | {"status"}
+    assert names == VERBS | META
 
 
 @pytest.mark.asyncio

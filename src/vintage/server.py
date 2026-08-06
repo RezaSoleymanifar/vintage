@@ -30,7 +30,11 @@ mcp = MCPServer(
         "rows whose known_at precedes the trade date, and that is enforced "
         "structurally rather than by a flag.\n\n"
         "Six verbs: resolve, discover, fetch, events, backtest, benchmark. "
-        "Source is a parameter, never a separate tool.\n\n"
+        "Source is a parameter, never a separate tool. Fields are prefixed — "
+        "`us-gaap:Assets`, `fred:CPIAUCSL`, `13f:value` — and `capabilities` "
+        "returns every prefix with the arguments it needs and an example that "
+        "runs as written. Call it once at the start of a session instead of "
+        "guessing field names; `discover` searches within it.\n\n"
         "Responses carry `warnings` and `suggested_next`. Surface warnings to "
         "the user — a restated figure or a missing delisted name is usually the "
         "most important thing in the answer. Follow suggested_next when it "
@@ -46,8 +50,95 @@ mcp = MCPServer(
 # thousands of numbers through the conversation to benchmark them.
 _runs: dict[str, pd.Series] = {}
 
+# The order the verbs are meant to be used in. Returned by `capabilities` so a
+# cold agent knows the shape of a session before it makes its first call.
+WORKFLOW = [
+    {"step": 1, "verb": "capabilities",
+     "why": "learn the field grammar once — every prefix, its arguments, an example"},
+    {"step": 2, "verb": "resolve",
+     "why": "turn whatever the user said into the entity key the other verbs accept"},
+    {"step": 3, "verb": "discover",
+     "why": "find the exact field name; with `entity` set it searches that filer's own concepts"},
+    {"step": 4, "verb": "fetch",
+     "why": "pull the rows, with `as_of` if the question is about a past date"},
+    {"step": 5, "verb": "events",
+     "why": "when the question is about timing rather than values — what was filed, and when"},
+    {"step": 6, "verb": "backtest",
+     "why": "cross-sectional signal to returns, costs charged, honesty report attached"},
+    {"step": 7, "verb": "benchmark",
+     "why": "take the run_id from backtest and price it against published factors"},
+]
+
+HOUSE_RULES = [
+    "Every row carries observed_at and known_at. Quote known_at whenever the "
+    "user asks what was knowable at a point in time.",
+    "Surface `warnings` verbatim. A restatement or a hidden row is usually the "
+    "most important part of the answer, not a footnote.",
+    "`suggested_next` arrives with arguments already filled in. Follow it "
+    "rather than re-deriving the next call.",
+    "Never report a raw Sharpe. Report the deflated one and the number of "
+    "specs tried this session alongside it.",
+    "A source with as_of='none' cannot be filtered point-in-time. Say so "
+    "instead of implying the number was knowable back then.",
+]
+
+
+def _needs_entity(field: str, hint: Any = None) -> str:
+    """One failure shape for 'you forgot the entity', with the fix attached."""
+    cap = registry.capability_for(field) or {}
+    return envelope.fail(
+        "fetch",
+        f"{field} needs an `entity`"
+        + (f", e.g. {cap['entity_example']}" if cap.get("entity_example") else ""),
+        did_you_mean=hint,
+        capability=cap or None,
+        suggested_next=[cap["example"]] if cap.get("example") else None,
+    )
+
+
+def _capability_payload() -> dict[str, Any]:
+    """The whole callable surface, in one object."""
+    caps = registry.capabilities()
+    return {
+        "verbs": WORKFLOW,
+        "field_grammar": "prefix:name — e.g. us-gaap:Assets, fred:CPIAUCSL, 13f:value",
+        "fields": caps,
+        "entity_required": sorted(c["prefix"] for c in caps if c["needs_entity"]),
+        "point_in_time_enforceable": sorted(
+            c["prefix"] for c in caps if c["as_of"] == "enforced"
+        ),
+        "needs_api_key": sorted(c["prefix"] for c in caps if c["key_required"]),
+        "house_rules": HOUSE_RULES,
+    }
+
 
 # ---------------------------------------------------------------- resolve
+
+
+@mcp.tool()
+async def capabilities() -> str:
+    """Everything Vintage can answer, with the arguments each field needs.
+
+    Call this first. It returns every field prefix, whether it needs an
+    `entity`, whether `as_of` can be enforced on it, which ones need a key,
+    and an example call per prefix that runs as written — so field names never
+    have to be guessed. `discover` searches inside this surface.
+    """
+    return envelope.respond(
+        "capabilities",
+        **_capability_payload(),
+        suggested_next=[
+            {"verb": "discover", "args": {"query": "what the user actually asked for"}},
+            {"verb": "resolve", "args": {"identifier": "the company or series they named"}},
+        ],
+    )
+
+
+@mcp.resource("vintage://capabilities")
+def capabilities_resource() -> str:
+    """The same surface as the `capabilities` tool, for clients that preload
+    resources instead of spending a tool call on orientation."""
+    return json.dumps(_capability_payload(), indent=2, default=str)
 
 
 @mcp.tool()
@@ -228,16 +319,12 @@ async def fetch(
             rows = await treasury.yields(field.split(":", 1)[1], start=start, end=end)
         elif source == "cftc":
             if not entity:
-                return envelope.fail("fetch", "cot fields need an `entity`, e.g. SP500",
-                                     did_you_mean=list(cftc.MARKETS))
+                return _needs_entity(field, hint=list(cftc.MARKETS))
             rows = await cftc.positioning(entity, measure=field.split(":", 1)[1])
             warnings += cftc.warnings_for()
         elif source == "thirteenf":
             if not entity:
-                return envelope.fail(
-                    "fetch", "13f fields need an `entity` — a manager, not a stock. "
-                             "Try BERKSHIRE, or any name EDGAR knows.",
-                    did_you_mean=sorted(thirteenf.MANAGERS))
+                return _needs_entity(field, hint=sorted(thirteenf.MANAGERS))
             # A 13F describes one quarter, not a span, so `quarter` selects and
             # start/end are left alone.
             rows = await thirteenf.holdings(
@@ -268,12 +355,12 @@ async def fetch(
             warnings += cboe.warnings_for(sym)
         elif source == "crypto":
             if not entity:
-                return envelope.fail("fetch", "crypto fields need an `entity`, e.g. BTC-USD")
+                return _needs_entity(field)
             rows = await coinbase.candles(entity, field=field.split(":", 1)[1], limit=limit)
             warnings += coinbase.warnings_for(entity)
         elif source == "finra":
             if not entity:
-                return envelope.fail("fetch", "short-volume fields need an `entity`, e.g. AAPL")
+                return _needs_entity(field)
             rows = await finra.short_volume(entity, field=field.split(":", 1)[1])
             warnings += finra.warnings_for(rows)
         elif source == "apewisdom":
@@ -289,7 +376,7 @@ async def fetch(
             )
         elif source == "prices":
             if not entity:
-                return envelope.fail("fetch", "price fields need an `entity`, e.g. AAPL")
+                return _needs_entity(field)
             sub = field.split(":", 1)[1]
             if sub in ("pit_adjclose", "pit"):
                 rows = await yahoo.pit_prices(entity, as_of=as_of)
@@ -299,9 +386,7 @@ async def fetch(
                 rows = await yahoo.prices(entity, field=sub)
         elif source == "sec-edgar-xbrl":
             if not entity:
-                return envelope.fail(
-                    "fetch", f"{field} is a company field and needs an `entity`"
-                )
+                return _needs_entity(field)
             hit = await edgar.resolve(entity)
             facts = await edgar.company_facts(hit["cik"])
             rows = edgar.to_rows(facts, field, hit["entity"], form=form)
@@ -312,11 +397,29 @@ async def fetch(
                     f"{hit['ticker']} reports no facts for {field!r}",
                     did_you_mean=nearby,
                 )
+        elif source == "sec-edgar-filings":
+            # `filing:` is a real prefix, but a filing is a timestamp rather
+            # than a value, so `events` owns it. Say that instead of failing.
+            return envelope.fail(
+                "fetch",
+                f"{field!r} is a filing, not a value — `events` returns the filing "
+                "stream with its exact public timestamps.",
+                did_you_mean=[registry.capability_for(field)],
+                suggested_next=[
+                    {"verb": "events", "args": {"entity": entity or "AAPL", "as_of": as_of}}
+                ],
+            )
         else:
+            cap = registry.capability_for(field)
             return envelope.fail(
                 "fetch",
                 f"No source answers for field {field!r}",
-                did_you_mean=[s["field_form"] for s in registry.SOURCES],
+                did_you_mean=registry.nearest_prefixes(field),
+                capability=cap,
+                suggested_next=[
+                    {"verb": "capabilities", "args": {}},
+                    {"verb": "discover", "args": {"query": field.split(":", 1)[-1]}},
+                ],
             )
     except SourceError as exc:
         return envelope.fail("fetch", str(exc))

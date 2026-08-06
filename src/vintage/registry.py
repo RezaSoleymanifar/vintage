@@ -6,6 +6,7 @@ instead of twenty tool names the model has to read.
 
 from __future__ import annotations
 
+import os
 from typing import Any
 
 from .sources import (apewisdom, bea, bls, cboe, cftc, ecb, fred, french,
@@ -199,6 +200,202 @@ def route(field: str) -> str | None:
         if field.startswith(prefix):
             return source
     return "sec-edgar-xbrl" if ":" not in field else None
+
+
+# --------------------------------------------------------------- capability
+
+# The adapters `fetch` actually branches on. A prefix routing to anything else
+# is not fetchable, whatever the router says — `test_capabilities` enforces it.
+FETCH_ADAPTERS = {
+    "sec-edgar-xbrl", "prices", "fred", "french", "openap", "apewisdom",
+    "crypto", "finra", "ecb", "cboe", "delistings", "frames", "treasury",
+    "cftc", "thirteenf", "bls", "bea",
+}
+
+# route() returns the adapter that answers; SOURCES names the publisher. They
+# are deliberately different vocabularies, so the join lives here rather than
+# being guessed at the call site.
+ADAPTER_SOURCE = {
+    "sec-edgar-xbrl": "sec-edgar-xbrl",
+    "sec-edgar-filings": "sec-edgar-filings",
+    "prices": "yahoo-finance",
+    "fred": "fred",
+    "french": "ken-french-data-library",
+    "openap": "open-source-asset-pricing",
+    "apewisdom": "apewisdom",
+    "crypto": "coinbase-exchange",
+    "finra": "finra-short-volume",
+    "ecb": "ecb-reference-rates",
+    "cboe": "cboe-indices",
+    "delistings": "sec-form-25",
+    "frames": "sec-xbrl-frames",
+    "treasury": "us-treasury",
+    "cftc": "cftc-cot",
+    "thirteenf": "sec-form-13f",
+    "bls": "bls",
+    "bea": "bea",
+}
+
+# One row per prefix: the verb that serves it, whether it needs an entity, and
+# an example that runs as written. This is the whole surface, machine-readable,
+# so an agent never has to infer the grammar from a docstring.
+#
+#   as_of: "enforced"  — rows filed after as_of are dropped
+#          "partial"   — filtered, but the source cannot date every row
+#          "none"      — the source carries no filing date at all
+PREFIX_SPECS: dict[str, dict[str, Any]] = {
+    "us-gaap:": dict(verb="fetch", answers="US GAAP fundamentals, any tagged concept",
+                     needs_entity=True, entity_example="AAPL",
+                     example_field="us-gaap:Assets", as_of="enforced"),
+    "dei:": dict(verb="fetch", answers="cover-page facts: shares outstanding, filer status",
+                 needs_entity=True, entity_example="AAPL",
+                 example_field="dei:EntityCommonStockSharesOutstanding", as_of="enforced"),
+    "ifrs-full:": dict(verb="fetch", answers="IFRS fundamentals, foreign private issuers",
+                       needs_entity=True, entity_example="RELX",
+                       example_field="ifrs-full:Assets", as_of="enforced",
+                       note="Only filers that report under IFRS. US filers use us-gaap:."),
+    "srt:": dict(verb="fetch", answers="SEC reporting taxonomy: segments, ranges, axes",
+                 needs_entity=True, entity_example="AAPL",
+                 example_field="srt:ScheduleOfEquityMethodInvestmentsTable", as_of="enforced"),
+    "invest:": dict(verb="fetch", answers="investment-company taxonomy concepts",
+                    needs_entity=True, entity_example="BRK-B",
+                    example_field="invest:InvestmentOwnedAtFairValue", as_of="enforced"),
+    "filing:": dict(verb="events", answers="the filing stream itself: 8-K, 10-K, Form 4, 13D/G",
+                    needs_entity=True, entity_example="AAPL",
+                    example_field="filing:8-K", as_of="enforced",
+                    note="Served by `events`, not `fetch` — a filing is a timestamp, not a value."),
+    "price:": dict(verb="fetch", answers="daily OHLCV and adjusted close",
+                   needs_entity=True, entity_example="AAPL",
+                   example_field="price:close", as_of="partial",
+                   note="price:pit_adjclose rebuilds the unadjusted series as of a date."),
+    "index:": dict(verb="fetch", answers="index levels — same adapter as price:",
+                   needs_entity=True, entity_example="^GSPC",
+                   example_field="index:close", as_of="partial"),
+    "fred:": dict(verb="fetch", answers="800k macro series with ALFRED first-release vintages",
+                  needs_entity=False, entity_example=None,
+                  example_field="fred:CPIAUCSL", as_of="enforced"),
+    "french:": dict(verb="fetch", answers="Fama-French factors, momentum, industry portfolios",
+                    needs_entity=False, entity_example=None,
+                    example_field="french:ff3", as_of="none"),
+    "openap:": dict(verb="fetch", answers="331 published anomalies with the claim each paper made",
+                    needs_entity=False, entity_example=None,
+                    example_field="openap:Mom12m", as_of="enforced",
+                    note="openap:* returns the whole scoreboard."),
+    "ape:": dict(verb="fetch", answers="retail forum mention ranks, right now",
+                 needs_entity=False, entity_example=None,
+                 example_field="ape:all-stocks", as_of="none",
+                 note="No upstream history. known_at is the moment Vintage fetched it."),
+    "crypto:": dict(verb="fetch", answers="crypto OHLCV from Coinbase",
+                    needs_entity=True, entity_example="BTC-USD",
+                    example_field="crypto:close", as_of="enforced"),
+    "short:": dict(verb="fetch", answers="daily short volume and short ratio",
+                   needs_entity=True, entity_example="AAPL",
+                   example_field="short:short_ratio", as_of="enforced"),
+    "fx:": dict(verb="fetch", answers="ECB daily reference rates and cross rates",
+                needs_entity=False, entity_example=None,
+                example_field="fx:EURUSD", as_of="enforced"),
+    "vol:": dict(verb="fetch", answers="the VIX family: term structure, VVIX, SKEW",
+                 needs_entity=False, entity_example=None,
+                 example_field="vol:VIX", as_of="enforced"),
+    "delisting:": dict(verb="fetch", answers="every Form 25 delisting since 2003",
+                       needs_entity=False, entity_example=None,
+                       example_field="delisting:form25", as_of="enforced",
+                       note="The survivorship correction for any historical universe."),
+    "frame:": dict(verb="fetch", answers="one concept across every filer at once",
+                   needs_entity=False, entity_example=None,
+                   example_field="frame:us-gaap/Assets/CY2023Q1I", as_of="none",
+                   note="Grammar is taxonomy/tag[/unit]/period. Fast, but undated."),
+    "ust:": dict(verb="fetch", answers="Treasury par yield curve, 14 tenors",
+                 needs_entity=False, entity_example=None,
+                 example_field="ust:10y", as_of="enforced"),
+    "cot:": dict(verb="fetch", answers="weekly futures positioning by trader class",
+                 needs_entity=True, entity_example="SP500",
+                 example_field="cot:noncommercial_net", as_of="enforced"),
+    "13f:": dict(verb="fetch", answers="institutional equity holdings, every manager over $100m",
+                 needs_entity=True, entity_example="BERKSHIRE",
+                 example_field="13f:value", as_of="enforced",
+                 note="Entity is a manager, not a stock. `quarter` selects the period."),
+    "bls:": dict(verb="fetch", answers="CPI to item level, payrolls, JOLTS, wages",
+                 needs_entity=False, entity_example=None,
+                 example_field="bls:CUUR0000SA0", as_of="none",
+                 note="25 queries a day without a key. Prefer fred: when vintage matters."),
+    "bea:": dict(verb="fetch", answers="the national accounts, a whole NIPA table at a time",
+                 needs_entity=False, entity_example=None,
+                 example_field="bea:T10101", as_of="none",
+                 note="Current estimate only. ALFRED via fred: has the first prints."),
+}
+
+
+def _source_meta(name: str) -> dict[str, Any]:
+    for s in SOURCES:
+        if s["source"] == name:
+            return s
+    return {}
+
+
+def capabilities() -> list[dict[str, Any]]:
+    """Every prefix an agent can call, with the arguments it needs.
+
+    Built by joining the router (PREFIXES), the per-prefix grammar
+    (PREFIX_SPECS) and the publisher metadata (SOURCES), so the map cannot
+    describe a prefix the router does not have or a source that does not exist.
+    """
+    out: list[dict[str, Any]] = []
+    for prefix, adapter in PREFIXES.items():
+        spec = PREFIX_SPECS[prefix]
+        source = ADAPTER_SOURCE[adapter]
+        meta = _source_meta(source)
+
+        args: dict[str, Any] = {"field": spec["example_field"]}
+        if spec["needs_entity"]:
+            args["entity"] = spec["entity_example"]
+
+        out.append({
+            "prefix": prefix,
+            "verb": spec["verb"],
+            "answers": spec["answers"],
+            "source": source,
+            "publisher_covers": meta.get("covers"),
+            "needs_entity": spec["needs_entity"],
+            "entity_example": spec["entity_example"],
+            "as_of": spec["as_of"],
+            "point_in_time": meta.get("point_in_time"),
+            "key_required": meta.get("key_required", False),
+            "example": {"verb": spec["verb"], "args": args},
+            "note": spec.get("note") or meta.get("note"),
+        })
+    return out
+
+
+def capability_for(field: str) -> dict[str, Any] | None:
+    """The capability row that owns `field`, if any."""
+    for cap in capabilities():
+        if field.startswith(cap["prefix"]):
+            return cap
+    return None
+
+
+def nearest_prefixes(field: str, limit: int = 4) -> list[dict[str, Any]]:
+    """Prefixes worth trying for a field that routed nowhere.
+
+    Scored on shared leading characters, then on whether any word of the field
+    appears in what the prefix answers — enough to turn a dead end into a next
+    call the model can actually make.
+    """
+    head = field.split(":", 1)[0].lower()
+    words = [w for w in head.replace("-", " ").replace("_", " ").split() if w]
+
+    def score(cap: dict[str, Any]) -> int:
+        p = cap["prefix"].rstrip(":").lower()
+        shared = len(os.path.commonprefix([p, head]))
+        hit = sum(2 for w in words if w in cap["answers"].lower())
+        return shared * 3 + hit
+
+    ranked = sorted(capabilities(), key=score, reverse=True)
+    return [
+        {"prefix": c["prefix"], "answers": c["answers"], "example": c["example"]}
+        for c in ranked[:limit]
+    ]
 
 
 # Index tickers route through the price adapter; they are listed so `discover`
