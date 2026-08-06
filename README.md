@@ -3,7 +3,8 @@
 </p>
 
 <p align="center">
-  <b>A research terminal that costs $0 and won't lie to you about your Sharpe.</b>
+  <b>The schema for the free financial data of the web.</b><br>
+  <sub>A research terminal that costs $0 and won't lie to you about your Sharpe.</sub>
 </p>
 
 <p align="center">
@@ -47,6 +48,33 @@ Official filings and central-bank releases, pulled live from the institutions th
 Free financial data exists and is scattered across twenty APIs with twenty shapes. Everyone rebuilds the same glue, badly, and quietly ends up backtesting on restated figures and survivor-only universes.
 
 Vintage is that glue, written once, served over [MCP](https://modelcontextprotocol.io). It hosts no data. It connects, normalizes, and preserves vintage.
+
+### The schema
+
+The free financial web has no schema. SEC EDGAR calls its dates `end` and `filed`, FRED puts the vintage in a third field called `realtime_start`, the Ken French library ships fixed-width columns with no header and no units, and Coinbase returns an unnamed array ordered by convention. Nothing joins to anything.
+
+Vintage is a schema for it. Every source, every field, every row normalizes to the same nine keys:
+
+| Key | Is |
+|---|---|
+| `entity` | one key, resolved from a ticker, a CIK or a name |
+| `field` | `prefix:name`, the same grammar across all eighteen sources |
+| `observed_at` | the date the value describes |
+| `known_at` | the date it first became public |
+| `value` | the number |
+| `unit` | USD, percent, index level, ratio |
+| `source` | which publisher it came from |
+| `source_url` | the exact endpoint it was read from |
+| `vintage` | `as-filed`, or `UNKNOWN_VINTAGE` when no honest date exists |
+
+```json
+{"entity": "CIK0000320193", "field": "us-gaap:Assets",
+ "observed_at": "2019-09-28", "known_at": "2019-10-31",
+ "value": 338516000000, "unit": "USD",
+ "source": "sec-edgar-xbrl", "vintage": "as-filed"}
+```
+
+Apple's balance sheet closed on 28 September 2019 and nobody could see it until 31 October. Both dates are on the row, so a backtest cannot accidentally use the first one. That is the whole idea, and it is why a new source adds a prefix rather than a tool.
 
 ### And a backtester, on top of it
 

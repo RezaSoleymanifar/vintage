@@ -408,6 +408,126 @@ def diagram_taxonomy() -> str:
     return "\n      ".join(p)
 
 
+# -------------------------------------------------------- diagram: the schema
+
+# The claim the whole project rests on: the free financial web has no schema, and
+# Vintage is one. Four publishers, four incompatible record shapes, none of them
+# agreeing on what a date is called or whether the number has a unit. The fix is
+# not a converter per pair; it is one row shape that all of them normalize into.
+#   (publisher, wire format, [lines of the raw shape], what the shape is missing)
+RAW_SHAPES = [
+    ("SEC EDGAR", "XBRL JSON",
+     ['"end":  …', '"val":  …', '"filed":  …', '"form":  …'],
+     "two dates, both named something else"),
+    ("FRED", "JSON",
+     ['"date":  …', '"value":  …', '"realtime_start":  …', '"units":  …'],
+     "the vintage lives in a third field"),
+    ("Ken French", "fixed-width text",
+     ['192607   …   …   …', '192608   …   …   …', '(no header row)', '(no units anywhere)'],
+     "columns identified by position"),
+    ("Coinbase", "JSON array",
+     ['[ 1717200000,', '  low, high,', '  open, close,', '  volume ]'],
+     "unnamed, and ordered by convention"),
+]
+
+# The nine keys of envelope.row(), in the order that function writes them.
+SCHEMA_FIELDS = [
+    ("entity",      "one key, resolved from ticker, CIK or name"),
+    ("field",       "prefix:name, the same grammar for all 18"),
+    ("observed_at", "the date the value describes"),
+    ("known_at",    "the date it first became public"),
+    ("value",       "the number itself"),
+    ("unit",        "USD, percent, index level, ratio"),
+    ("source",      "which publisher it came from"),
+    ("source_url",  "the exact endpoint it was read from"),
+    ("vintage",     "as-filed, or UNKNOWN_VINTAGE"),
+]
+
+# One real row, fetched from Vintage on 2026-08-06. Apple's FY2019 balance sheet,
+# the period ending 28 Sep 2019, which the market could not see until 31 Oct.
+SCHEMA_EXAMPLE = [
+    ("entity", "CIK0000320193"),
+    ("field", "us-gaap:Assets"),
+    ("observed_at", "2019-09-28"),
+    ("known_at", "2019-10-31"),
+    ("value", "338516000000"),
+    ("unit", "USD"),
+]
+
+SCHEMA_RULES = [
+    ("Two dates, always",  "A row without an honest known_at is flagged "
+                           "UNKNOWN_VINTAGE, never given a plausible date."),
+    ("One key, so joins work", "Nine publishers, one entity key, so a join across "
+                               "them is just a join."),
+    ("One grammar, so tools don't grow", "A new source is a new prefix, not a new "
+                                         "tool your agent has to learn."),
+]
+
+
+def diagram_schema() -> str:
+    """Four incompatible wire formats, and the one row shape they all become."""
+    p: list[str] = []
+    p.append('<svg class="dia" viewBox="0 0 1160 600" role="img" '
+             'aria-label="Four publishers with four incompatible record shapes, all '
+             'normalized into one nine-field row carrying both the date it describes '
+             'and the date it became public">')
+
+    p.append(txt(20, 30, "THE FREE FINANCIAL WEB HAS NO SCHEMA", "d-h"))
+    p.append(txt(1140, 30, "VINTAGE IS ONE", "d-h g", "end"))
+
+    for i, (who, fmt, lines, missing) in enumerate(RAW_SHAPES):
+        x = 20 + i * 282
+        p.append(card(x, 44, 272, 122, "d-src"))
+        p.append(txt(x + 14, 66, who, "d-it"))
+        p.append(txt(x + 258, 66, fmt, "d-fn", "end"))
+        for j, line in enumerate(lines):
+            p.append(txt(x + 14, 86 + j * 15, line, "d-raw"))
+        p.append(txt(x + 14, 156, missing, "d-miss"))
+
+        d = f"M{x + 136} 166 L{x + 136} 196"
+        p.append(f'<path class="d-wire" d="{d}"/>')
+        p.append(f'<path class="d-flow" style="animation-delay:{i * -0.4:.1f}s" d="{d}"/>')
+        p.append(f'<path class="d-arrow" d="M{x + 130} 188 L{x + 136} 196 L{x + 142} 188"/>')
+
+    p.append('<rect class="d-pipe" x="20" y="196" width="1120" height="238" rx="14"/>')
+    p.append(txt(38, 222, "THE ROW EVERY SOURCE NORMALIZES TO", "d-h g"))
+    p.append(txt(1122, 222, "nine fields, the same nine every time", "d-fn", "end"))
+
+    for i, (name, meaning) in enumerate(SCHEMA_FIELDS):
+        col, rw = i % 3, i // 3
+        x, y = 38 + col * 366, 254 + rw * 46
+        p.append(txt(x, y, name, "d-px"))
+        p.append(txt(x, y + 15, meaning, "d-fn"))
+
+    p.append('<rect class="d-bub" x="38" y="386" width="1084" height="34" rx="8"/>')
+    step = 1084 // len(SCHEMA_EXAMPLE)
+    for i, (key, val) in enumerate(SCHEMA_EXAMPLE):
+        x = 50 + i * step
+        p.append(txt(x, y_ex := 400, key, "d-exk"))
+        p.append(txt(x, y_ex + 13, val, "d-exv"))
+
+    for i, (head, body) in enumerate(SCHEMA_RULES):
+        x = 20 + i * 380
+        p.append(card(x, 456, 360, 92, "d-box"))
+        p.append(txt(x + 16, 482, head, "d-sb"))
+        words, line, lines = body.split(), "", []
+        for w in words:
+            if len(line) + len(w) + 1 > 44:
+                lines.append(line)
+                line = w
+            else:
+                line = f"{line} {w}".strip()
+        lines.append(line)
+        for j, ln in enumerate(lines[:3]):
+            p.append(txt(x + 16, 504 + j * 15, ln, "d-fn"))
+
+    p.append(txt(20, 578, "One real row, fetched on 2026-08-06: Apple's balance sheet closed "
+                          "28 Sep 2019 and nobody could see it until 31 Oct.", "d-fn"))
+
+    p.append("</svg>")
+    return "\n      ".join(p)
+
+
 # -------------------------------------------------- diagram 3: point-in-time
 
 # The point-in-time idea told as a newsstand, because everyone already knows
@@ -561,30 +681,18 @@ def diagram_honesty() -> str:
     return "\n      ".join(p)
 
 
-# ------------------------------------------------------------ coverage bars
-
-# (name, badge, coverage label, bar start %, bar end %), 1926 on the left.
-SOURCES = [
-    ("SEC EDGAR XBRL", "gov", "2009 → today", 83, 100),
-    ("SEC filings stream", "gov", "1993 → today", 67, 100),
-    ("FRED", "gov", "1947 → today", 21, 100),
-    ("ALFRED vintages", "gov", "1996 → today", 70, 100),
-    ("Ken French Library", "edu", "Jul 1926 → today", 0, 100),
-    ("Open Source Asset Pricing", "edu", "1926 → 2023", 0, 97),
-    ("FINRA short volume", "gov", "2009 → today", 83, 100),
-    ("Coinbase Exchange", "third", "2015 → today", 89, 100),
-    ("Yahoo Finance", "third", "1962 → today", 36, 100),
-    ("ApeWisdom", "third", "live only, no history", 99, 100),
-]
-
-
 def build_timeline() -> str:
+    """Every source as a banner with its span in words, matching the landing page.
+
+    This was a bar chart against a 1926-to-today axis. The bar encoded one number
+    as a length the reader then had to decode back into the year already printed
+    at the end of the row, so it was ink spent to say a thing twice.
+    """
     return "\n        ".join(
-        f'<div class="tl-row"><span class="tl-name">{name}</span>'
-        f'<span class="tl-track"><i class="tl-bar {badge}" '
-        f'style="left:{a}%;width:{max(b - a, 1.2):.1f}%"></i></span>'
+        f'<div class="tl-row {badge}"><span class="tl-name">{name}</span>'
+        f'<span class="tl-badge {badge}">{BADGE_WORD[badge]}</span>'
         f'<span class="tl-span">{span}</span></div>'
-        for name, badge, span, a, b in SOURCES
+        for name, badge, span in COVERAGE_BANNERS
     )
 
 
@@ -709,11 +817,7 @@ def build_clients() -> tuple[str, str]:
 
 # ----------------------------------------------------- installing it, played
 
-# Two clients that genuinely work today, each as a short loop. Claude web and
-# the iOS app are a third card rather than a third animation, because they only
-# accept a remote MCP server over HTTP and Vintage runs on your machine. Drawing
-# a connector flow that does not exist would be the one thing this site is about
-# not doing.
+# The two clients that work today, each as a short loop.
 
 INSTALL_LOOP = 15.0
 
@@ -742,12 +846,6 @@ INSTALL_DESKTOP: list = [
     Out(11.4, "the hammer icon in the composer now lists six verbs", cls="dim"),
 ]
 
-# 20x20, same grid as the rest of the marks on this site.
-PHONE = ('<path d="M6.4 2.4h7.2a1.8 1.8 0 0 1 1.8 1.8v11.6a1.8 1.8 0 0 1-1.8 1.8H6.4'
-         'a1.8 1.8 0 0 1-1.8-1.8V4.2a1.8 1.8 0 0 1 1.8-1.8Z"/>'
-         '<path d="M8.6 4.6h2.8"/><path d="M10 15.2h0.01"/>')
-
-
 def build_install_reels() -> tuple[str, str]:
     """Two playing terminals and one honest card, for the install section."""
     code_rows, code_css = build_session(INSTALL_CODE, INSTALL_LOOP, "ic")
@@ -759,24 +857,8 @@ def build_install_reels() -> tuple[str, str]:
                 f'<span class="tdot"></span><span class="who">{title}</span></div>'
                 f'<div class="screen">{rows}</div></div></div>')
 
-    phone = (
-        '<div class="reel later"><div class="term">'
-        '<div class="bar"><span class="tdot"></span><span class="tdot"></span>'
-        '<span class="tdot"></span><span class="who">claude web &middot; ios</span></div>'
-        '<div class="screen laterbody">'
-        '<svg viewBox="0 0 20 20" width="34" height="34" fill="none" stroke="currentColor" '
-        f'stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">{PHONE}</svg>'
-        '<p><b>Not yet, and the reason is the point.</b></p>'
-        '<p>Custom connectors there accept a remote MCP server over HTTP. Anthropic\'s '
-        'cloud calls it, which would mean <b>we</b> fetch from the SEC and Yahoo on your '
-        'behalf and hand you the result. That is redistribution, and it is what keeps '
-        '"free forever" honest that we do not.</p>'
-        '<p>Local first is the licence. A hosted endpoint is the paid tier, when it exists.</p>'
-        '</div></div></div>'
-    )
-
-    html_out = f'<div class="reels">{term("claude code", code_rows)}' \
-               f'{term("claude desktop &middot; config", desk_rows)}{phone}</div>'
+    html_out = (f'<div class="reels">{term("claude code", code_rows)}'
+                f'{term("claude desktop &middot; config", desk_rows)}</div>')
     return html_out, code_css + "\n" + desk_css
 
 
@@ -896,6 +978,10 @@ h2{font-size:clamp(19px,3.4vw,26px);color:var(--ink);margin:0 0 8px;font-weight:
 .d-src{fill:#0a111a;stroke:var(--line)}
 .d-cnt{fill:var(--green);font-size:13px;font-weight:700}
 .d-sb{fill:var(--green);font-size:13px;font-weight:700}
+.d-raw{fill:var(--dim);font-size:10px}
+.d-miss{fill:var(--red);font-size:10px}
+.d-exk{fill:var(--dim);font-size:9.5px;letter-spacing:.1em}
+.d-exv{fill:var(--green);font-size:11.5px;font-weight:700}
 .d-pill{fill:#0d1420;stroke:rgba(53,224,138,.22)}
 .d-ban{fill:#0a111a;stroke:var(--line)}
 .d-edgemark{opacity:.85}
@@ -963,14 +1049,18 @@ h2{font-size:clamp(19px,3.4vw,26px);color:var(--ink);margin:0 0 8px;font-weight:
 .tl{margin-top:18px;border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:18px 16px 14px}
 .tl-head{display:flex;justify-content:space-between;color:var(--dim);font-size:10.5px;
   letter-spacing:.18em;text-transform:uppercase;margin-bottom:14px}
-.tl-row{display:grid;grid-template-columns:1fr;gap:3px;margin-bottom:11px}
-@media(min-width:700px){.tl-row{grid-template-columns:15em 1fr 9em;gap:12px;align-items:center;margin-bottom:7px}}
+.tl-row{display:grid;grid-template-columns:1fr;gap:3px;margin-bottom:9px;
+  background:#0a111a;border:1px solid var(--line);border-left:3px solid var(--line);
+  border-radius:8px;padding:7px 12px}
+.tl-row.gov{border-left-color:var(--green)}
+.tl-row.edu{border-left-color:var(--blue)}
+.tl-row.third{border-left-color:#3b5468}
+@media(min-width:700px){.tl-row{grid-template-columns:16em 8em 1fr;gap:12px;align-items:center;margin-bottom:6px}}
 .tl-name{font-size:12.5px;color:var(--ink)}
-.tl-track{position:relative;display:block;height:9px;border-radius:5px;background:#101927;overflow:hidden}
-.tl-bar{position:absolute;top:0;height:9px;border-radius:5px;display:block}
-.tl-bar.gov{background:var(--green)}
-.tl-bar.edu{background:var(--blue)}
-.tl-bar.third{background:#3b5468}
+.tl-badge{font-size:10px;letter-spacing:.16em}
+.tl-badge.gov{color:var(--green)}
+.tl-badge.edu{color:var(--blue)}
+.tl-badge.third{color:#6b8299}
 .tl-span{font-size:11px;color:var(--dim)}
 @media(min-width:700px){.tl-span{text-align:right}}
 
@@ -1032,19 +1122,13 @@ h2{font-size:clamp(19px,3.4vw,26px);color:var(--ink);margin:0 0 8px;font-weight:
 
 /* --------------------------------------------------------------- install */
 /* the install reels: two clients playing, one card explaining the third */
-.reels{display:grid;grid-template-columns:1.12fr 1.12fr 1fr;gap:14px;margin:0 0 26px}
+.reels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:0 0 26px}
 .reels .term{height:100%}
-.reels .screen{font-size:10.5px;padding:14px 15px;min-height:236px;overflow:hidden}
+.reels .screen{font-size:12px;padding:16px 18px;min-height:236px;overflow:hidden}
 .reel{min-width:0}
 .reel .row{padding:1.5px 0}
 .reel .kv .v{margin-right:11px}
 .reel .kv .k{margin-right:3px}
-.laterbody{color:var(--dim);font-size:11.5px;line-height:1.5;
-  display:flex;flex-direction:column;gap:9px}
-.laterbody svg{color:var(--green);opacity:.75}
-.laterbody p{margin:0}
-.laterbody b{color:var(--ink)}
-.reel.later .term{border-style:dashed}
 @media(max-width:960px){.reels{grid-template-columns:1fr}}
 
 .tabs{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
@@ -1147,7 +1231,7 @@ __DIACSS__
     <p class="swipe">&larr; swipe the diagram sideways</p>
 
     <div class="tl">
-      <div class="tl-head"><span>1926</span><span>what that federation covers</span><span>today</span></div>
+      <div class="tl-head"><span>what that federation covers</span><span>standing</span><span>measured span</span></div>
       __TIMELINE__
     </div>
     <p class="after"><a href="https://github.com/RezaSoleymanifar/vintage/blob/main/COVERAGE.md">The
@@ -1558,6 +1642,9 @@ FACTS = {
     "__F6__": [("funnel", "eighteen sources, one grammar"),
                ("prompt", "23 prefixes, six verbs"),
                ("stack", "a new source adds no new tool")],
+    "__F7__": [("scatter", "four wire formats in, one row out"),
+               ("calendar", "two dates on every row, always"),
+               ("shield", "no honest date, no invented one")],
 }
 
 
@@ -1784,6 +1871,10 @@ a:hover{text-decoration:underline}
 .d-src{fill:#070b11;stroke:var(--line)}
 .d-cnt{fill:var(--green);font-size:13px;font-weight:700}
 .d-sb{fill:var(--green);font-size:13px;font-weight:700}
+.d-raw{fill:var(--dim);font-size:10px}
+.d-miss{fill:var(--red);font-size:10px}
+.d-exk{fill:var(--dim);font-size:9.5px;letter-spacing:.1em}
+.d-exv{fill:var(--green);font-size:11.5px;font-weight:700}
 .d-pill{fill:#0c121c;stroke:rgba(47,213,135,.22)}
 .d-px{fill:var(--green);font-size:12px;font-weight:700}
 .d-ans{fill:var(--dim);font-size:10.5px}
@@ -1837,9 +1928,6 @@ a:hover{text-decoration:underline}
 .d-big.ok{fill:var(--green)}
 .d-big.bad{fill:var(--red)}
 .d-mid{font-size:20px;font-weight:700;fill:var(--amber)}
-.tlb.gov{fill:var(--green)}
-.tlb.edu{fill:var(--blue)}
-.tlb.third{fill:#38536a}
 
 @media (prefers-reduced-motion:reduce){
   .dia *,.row,.typed,.chip.is-on::after{animation:none!important;opacity:1!important}
@@ -1868,9 +1956,10 @@ __ONECSS__
       <p class="tag">Free market research terminal</p>
     </div>
 
-    <p class="claim">Vintage <span class="g">federates the free, point-in-time financial data of
-    the web</span>.</p>
-    <p class="sub">You only ever see what was public on the day you are asking about.</p>
+    <p class="claim">Vintage is <span class="g">the schema for the free financial data of the
+    web</span>.</p>
+    <p class="sub">Eighteen publishers, one row shape, two dates on every row. You only ever
+    see what was public on the day you are asking about.</p>
 
     <div class="tiles">
       __TILES__
@@ -1905,6 +1994,12 @@ __ONECSS__
         <h2 class="ptitle">Then distilled into one grammar you can hold in your head.</h2>
         __F6__
         __DIA5__
+      </section>
+
+      <section class="panel" data-dwell="14">
+        <h2 class="ptitle">The free financial web has no schema. This is one.</h2>
+        __F7__
+        __DIA6__
       </section>
 
       <section class="panel" data-dwell="10">
@@ -1954,8 +2049,8 @@ __ONECSS__
 (function () {
   var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
   var chipbar = document.getElementById('chips');
-  var titles = ['What it is', 'The taxonomy', 'What you get', 'Point-in-time',
-                'The engine', 'The experiment'];
+  var titles = ['What it is', 'The taxonomy', 'The schema', 'What you get',
+                'Point-in-time', 'The engine', 'The experiment'];
   var timer, at = 0;
 
   var chips = titles.map(function (t, i) {
@@ -2057,6 +2152,7 @@ def main() -> None:
     # keyframes to DIA_CSS as a side effect, so both pages need the same block.
     dia1, dia2, dia3 = diagram_federation(), diagram_pit(), diagram_honesty()
     taxo = diagram_taxonomy()
+    schema = diagram_schema()
     cover = diagram_coverage()
     diacss = "\n".join(DIA_CSS)
 
@@ -2064,6 +2160,7 @@ def main() -> None:
     one = (
         ONE_PAGE.replace("__DIA1__", dia1)
         .replace("__DIA5__", taxo)
+        .replace("__DIA6__", schema)
         .replace("__DIA2__", cover)
         .replace("__DIA3__", dia2)
         .replace("__EXPROWS__", exp_rows)

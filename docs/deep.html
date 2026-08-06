@@ -112,6 +112,10 @@ h2{font-size:clamp(19px,3.4vw,26px);color:var(--ink);margin:0 0 8px;font-weight:
 .d-src{fill:#0a111a;stroke:var(--line)}
 .d-cnt{fill:var(--green);font-size:13px;font-weight:700}
 .d-sb{fill:var(--green);font-size:13px;font-weight:700}
+.d-raw{fill:var(--dim);font-size:10px}
+.d-miss{fill:var(--red);font-size:10px}
+.d-exk{fill:var(--dim);font-size:9.5px;letter-spacing:.1em}
+.d-exv{fill:var(--green);font-size:11.5px;font-weight:700}
 .d-pill{fill:#0d1420;stroke:rgba(53,224,138,.22)}
 .d-ban{fill:#0a111a;stroke:var(--line)}
 .d-edgemark{opacity:.85}
@@ -179,14 +183,18 @@ h2{font-size:clamp(19px,3.4vw,26px);color:var(--ink);margin:0 0 8px;font-weight:
 .tl{margin-top:18px;border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:18px 16px 14px}
 .tl-head{display:flex;justify-content:space-between;color:var(--dim);font-size:10.5px;
   letter-spacing:.18em;text-transform:uppercase;margin-bottom:14px}
-.tl-row{display:grid;grid-template-columns:1fr;gap:3px;margin-bottom:11px}
-@media(min-width:700px){.tl-row{grid-template-columns:15em 1fr 9em;gap:12px;align-items:center;margin-bottom:7px}}
+.tl-row{display:grid;grid-template-columns:1fr;gap:3px;margin-bottom:9px;
+  background:#0a111a;border:1px solid var(--line);border-left:3px solid var(--line);
+  border-radius:8px;padding:7px 12px}
+.tl-row.gov{border-left-color:var(--green)}
+.tl-row.edu{border-left-color:var(--blue)}
+.tl-row.third{border-left-color:#3b5468}
+@media(min-width:700px){.tl-row{grid-template-columns:16em 8em 1fr;gap:12px;align-items:center;margin-bottom:6px}}
 .tl-name{font-size:12.5px;color:var(--ink)}
-.tl-track{position:relative;display:block;height:9px;border-radius:5px;background:#101927;overflow:hidden}
-.tl-bar{position:absolute;top:0;height:9px;border-radius:5px;display:block}
-.tl-bar.gov{background:var(--green)}
-.tl-bar.edu{background:var(--blue)}
-.tl-bar.third{background:#3b5468}
+.tl-badge{font-size:10px;letter-spacing:.16em}
+.tl-badge.gov{color:var(--green)}
+.tl-badge.edu{color:var(--blue)}
+.tl-badge.third{color:#6b8299}
 .tl-span{font-size:11px;color:var(--dim)}
 @media(min-width:700px){.tl-span{text-align:right}}
 
@@ -248,19 +256,13 @@ h2{font-size:clamp(19px,3.4vw,26px);color:var(--ink);margin:0 0 8px;font-weight:
 
 /* --------------------------------------------------------------- install */
 /* the install reels: two clients playing, one card explaining the third */
-.reels{display:grid;grid-template-columns:1.12fr 1.12fr 1fr;gap:14px;margin:0 0 26px}
+.reels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:0 0 26px}
 .reels .term{height:100%}
-.reels .screen{font-size:10.5px;padding:14px 15px;min-height:236px;overflow:hidden}
+.reels .screen{font-size:12px;padding:16px 18px;min-height:236px;overflow:hidden}
 .reel{min-width:0}
 .reel .row{padding:1.5px 0}
 .reel .kv .v{margin-right:11px}
 .reel .kv .k{margin-right:3px}
-.laterbody{color:var(--dim);font-size:11.5px;line-height:1.5;
-  display:flex;flex-direction:column;gap:9px}
-.laterbody svg{color:var(--green);opacity:.75}
-.laterbody p{margin:0}
-.laterbody b{color:var(--ink)}
-.reel.later .term{border-style:dashed}
 @media(max-width:960px){.reels{grid-template-columns:1fr}}
 
 .tabs{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
@@ -637,17 +639,26 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:14px;font-size:
     <p class="swipe">&larr; swipe the diagram sideways</p>
 
     <div class="tl">
-      <div class="tl-head"><span>1926</span><span>what that federation covers</span><span>today</span></div>
-      <div class="tl-row"><span class="tl-name">SEC EDGAR XBRL</span><span class="tl-track"><i class="tl-bar gov" style="left:83%;width:17.0%"></i></span><span class="tl-span">2009 → today</span></div>
-        <div class="tl-row"><span class="tl-name">SEC filings stream</span><span class="tl-track"><i class="tl-bar gov" style="left:67%;width:33.0%"></i></span><span class="tl-span">1993 → today</span></div>
-        <div class="tl-row"><span class="tl-name">FRED</span><span class="tl-track"><i class="tl-bar gov" style="left:21%;width:79.0%"></i></span><span class="tl-span">1947 → today</span></div>
-        <div class="tl-row"><span class="tl-name">ALFRED vintages</span><span class="tl-track"><i class="tl-bar gov" style="left:70%;width:30.0%"></i></span><span class="tl-span">1996 → today</span></div>
-        <div class="tl-row"><span class="tl-name">Ken French Library</span><span class="tl-track"><i class="tl-bar edu" style="left:0%;width:100.0%"></i></span><span class="tl-span">Jul 1926 → today</span></div>
-        <div class="tl-row"><span class="tl-name">Open Source Asset Pricing</span><span class="tl-track"><i class="tl-bar edu" style="left:0%;width:97.0%"></i></span><span class="tl-span">1926 → 2023</span></div>
-        <div class="tl-row"><span class="tl-name">FINRA short volume</span><span class="tl-track"><i class="tl-bar gov" style="left:83%;width:17.0%"></i></span><span class="tl-span">2009 → today</span></div>
-        <div class="tl-row"><span class="tl-name">Coinbase Exchange</span><span class="tl-track"><i class="tl-bar third" style="left:89%;width:11.0%"></i></span><span class="tl-span">2015 → today</span></div>
-        <div class="tl-row"><span class="tl-name">Yahoo Finance</span><span class="tl-track"><i class="tl-bar third" style="left:36%;width:64.0%"></i></span><span class="tl-span">1962 → today</span></div>
-        <div class="tl-row"><span class="tl-name">ApeWisdom</span><span class="tl-track"><i class="tl-bar third" style="left:99%;width:1.2%"></i></span><span class="tl-span">live only, no history</span></div>
+      <div class="tl-head"><span>what that federation covers</span><span>standing</span><span>measured span</span></div>
+      <div class="tl-row gov"><span class="tl-name">SEC EDGAR XBRL</span><span class="tl-badge gov">PRIMARY</span><span class="tl-span">2009 &rarr; today</span></div>
+        <div class="tl-row gov"><span class="tl-name">SEC filings stream</span><span class="tl-badge gov">PRIMARY</span><span class="tl-span">1993 &rarr; today</span></div>
+        <div class="tl-row gov"><span class="tl-name">SEC Form 13F</span><span class="tl-badge gov">PRIMARY</span><span class="tl-span">by quarter, filed 45 days late</span></div>
+        <div class="tl-row gov"><span class="tl-name">SEC Form 25</span><span class="tl-badge gov">PRIMARY</span><span class="tl-span">2003 &rarr; today</span></div>
+        <div class="tl-row gov"><span class="tl-name">SEC XBRL frames</span><span class="tl-badge gov">PRIMARY</span><span class="tl-span">any quarter, all filers at once</span></div>
+        <div class="tl-row gov"><span class="tl-name">FINRA short volume</span><span class="tl-badge gov">PRIMARY</span><span class="tl-span">2009 &rarr; today</span></div>
+        <div class="tl-row gov"><span class="tl-name">CFTC positioning</span><span class="tl-badge gov">PRIMARY</span><span class="tl-span">2016 &rarr; today</span></div>
+        <div class="tl-row gov"><span class="tl-name">FRED</span><span class="tl-badge gov">PRIMARY</span><span class="tl-span">1947 &rarr; today</span></div>
+        <div class="tl-row gov"><span class="tl-name">ALFRED vintages</span><span class="tl-badge gov">PRIMARY</span><span class="tl-span">1996 &rarr; today</span></div>
+        <div class="tl-row gov"><span class="tl-name">US Treasury</span><span class="tl-badge gov">PRIMARY</span><span class="tl-span">1990 &rarr; today</span></div>
+        <div class="tl-row gov"><span class="tl-name">ECB reference rates</span><span class="tl-badge gov">PRIMARY</span><span class="tl-span">1999 &rarr; today</span></div>
+        <div class="tl-row gov"><span class="tl-name">BLS</span><span class="tl-badge gov">PRIMARY</span><span class="tl-span">3 years on the keyless tier</span></div>
+        <div class="tl-row gov"><span class="tl-name">BEA</span><span class="tl-badge gov">PRIMARY</span><span class="tl-span">the current estimate only</span></div>
+        <div class="tl-row gov"><span class="tl-name">CBOE volatility</span><span class="tl-badge gov">PRIMARY</span><span class="tl-span">1990 &rarr; today</span></div>
+        <div class="tl-row edu"><span class="tl-name">Ken French Library</span><span class="tl-badge edu">ACADEMIC</span><span class="tl-span">Jul 1926 &rarr; today</span></div>
+        <div class="tl-row edu"><span class="tl-name">Open Source AP</span><span class="tl-badge edu">ACADEMIC</span><span class="tl-span">1926 &rarr; 2023</span></div>
+        <div class="tl-row third"><span class="tl-name">Coinbase Exchange</span><span class="tl-badge third">THIRD PARTY</span><span class="tl-span">2015 &rarr; today</span></div>
+        <div class="tl-row third"><span class="tl-name">Yahoo Finance</span><span class="tl-badge third">THIRD PARTY</span><span class="tl-span">1962 &rarr; today</span></div>
+        <div class="tl-row third"><span class="tl-name">ApeWisdom</span><span class="tl-badge third">THIRD PARTY</span><span class="tl-span">live only, no history</span></div>
     </div>
     <p class="after"><a href="https://github.com/RezaSoleymanifar/vintage/blob/main/COVERAGE.md">The
     full field-by-field catalogue</a> is generated from the registry, so it cannot drift from the code.</p>
@@ -886,7 +897,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:14px;font-size:
     fifteen stock and crypto subreddits, and it publishes <span class="hl">only the present</span>
 . There is no history endpoint, and nobody can sell you last Tuesday's ranking honestly,
     because anyone claiming years of it re-scored old posts with today's model.</p>
-    <table class="forum"><thead><tr><th></th><th>ticker</th><th>name</th><th class="n">mentions</th><th class="n">24h change</th><th class="n">upvotes</th></tr></thead><tbody><tr><td class="rk">1</td><td class="tk">HTZ</td><td class="nm">Hertz</td><td class="n">1,049</td><td class="n up">+1,039</td><td class="n dimc">5,697</td></tr><tr><td class="rk">2</td><td class="tk">SPY</td><td class="nm">SPDR S&amp;P 500 ETF Trust</td><td class="n">443</td><td class="n down">-286</td><td class="n dimc">1,168</td></tr><tr><td class="rk">3</td><td class="tk">SPCX</td><td class="nm">SpaceX</td><td class="n">393</td><td class="n down">-64</td><td class="n dimc">1,081</td></tr><tr><td class="rk">4</td><td class="tk">SNDK</td><td class="nm">Sandisk</td><td class="n">373</td><td class="n down">-562</td><td class="n dimc">1,258</td></tr><tr><td class="rk">5</td><td class="tk">MU</td><td class="nm">Micron Technology</td><td class="n">248</td><td class="n down">-99</td><td class="n dimc">584</td></tr><tr><td class="rk">6</td><td class="tk">NVDA</td><td class="nm">NVIDIA</td><td class="n">159</td><td class="n down">-98</td><td class="n dimc">505</td></tr><tr><td class="rk">7</td><td class="tk">QQQ</td><td class="nm">Invesco QQQ ETF</td><td class="n">144</td><td class="n down">-18</td><td class="n dimc">297</td></tr><tr><td class="rk">8</td><td class="tk">MSFT</td><td class="nm">Microsoft</td><td class="n">119</td><td class="n up">+33</td><td class="n dimc">472</td></tr></tbody></table><p class="stamp">read from ApeWisdom at 2026-08-06 22:38 UTC &middot; <code>known_at</code> is that moment, not the moment the posts were written</p>
+    <table class="forum"><thead><tr><th></th><th>ticker</th><th>name</th><th class="n">mentions</th><th class="n">24h change</th><th class="n">upvotes</th></tr></thead><tbody><tr><td class="rk">1</td><td class="tk">HTZ</td><td class="nm">Hertz</td><td class="n">1,052</td><td class="n up">+1,042</td><td class="n dimc">5,769</td></tr><tr><td class="rk">2</td><td class="tk">SPY</td><td class="nm">SPDR S&amp;P 500 ETF Trust</td><td class="n">442</td><td class="n down">-287</td><td class="n dimc">1,170</td></tr><tr><td class="rk">3</td><td class="tk">SPCX</td><td class="nm">SpaceX</td><td class="n">390</td><td class="n down">-67</td><td class="n dimc">1,079</td></tr><tr><td class="rk">4</td><td class="tk">SNDK</td><td class="nm">Sandisk</td><td class="n">369</td><td class="n down">-566</td><td class="n dimc">1,234</td></tr><tr><td class="rk">5</td><td class="tk">MU</td><td class="nm">Micron Technology</td><td class="n">244</td><td class="n down">-103</td><td class="n dimc">561</td></tr><tr><td class="rk">6</td><td class="tk">NVDA</td><td class="nm">NVIDIA</td><td class="n">157</td><td class="n down">-100</td><td class="n dimc">501</td></tr><tr><td class="rk">7</td><td class="tk">QQQ</td><td class="nm">Invesco QQQ ETF</td><td class="n">145</td><td class="n down">-17</td><td class="n dimc">299</td></tr><tr><td class="rk">8</td><td class="tk">MSFT</td><td class="nm">Microsoft</td><td class="n">118</td><td class="n up">+32</td><td class="n dimc">467</td></tr></tbody></table><p class="stamp">read from ApeWisdom at 2026-08-06 22:45 UTC &middot; <code>known_at</code> is that moment, not the moment the posts were written</p>
     <p class="after">This is why the row is stamped rather than dated. Backtestable history starts the
     day you begin recording, which is the only version that survives contact with a
     <code>known_at</code> index.</p>
@@ -910,7 +921,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:14px;font-size:
         <div class="row rid4 dim">quit and reopen Claude Desktop</div>
         <div class="row rid5 ok"><b>✓</b>vintage connected</div>
         <div class="row rid6 kv"><span class="k">tools</span><span class="v">6</span><span class="k">sources</span><span class="v">18</span><span class="k">keys needed</span><span class="v">0</span></div>
-        <div class="row rid7 dim">the hammer icon in the composer now lists six verbs</div></div></div></div><div class="reel later"><div class="term"><div class="bar"><span class="tdot"></span><span class="tdot"></span><span class="tdot"></span><span class="who">claude web &middot; ios</span></div><div class="screen laterbody"><svg viewBox="0 0 20 20" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M6.4 2.4h7.2a1.8 1.8 0 0 1 1.8 1.8v11.6a1.8 1.8 0 0 1-1.8 1.8H6.4a1.8 1.8 0 0 1-1.8-1.8V4.2a1.8 1.8 0 0 1 1.8-1.8Z"/><path d="M8.6 4.6h2.8"/><path d="M10 15.2h0.01"/></svg><p><b>Not yet, and the reason is the point.</b></p><p>Custom connectors there accept a remote MCP server over HTTP. Anthropic's cloud calls it, which would mean <b>we</b> fetch from the SEC and Yahoo on your behalf and hand you the result. That is redistribution, and it is what keeps "free forever" honest that we do not.</p><p>Local first is the licence. A hosted endpoint is the paid tier, when it exists.</p></div></div></div></div>
+        <div class="row rid7 dim">the hammer icon in the composer now lists six verbs</div></div></div></div></div>
     <div class="tabs">
       <button class="tab is-on" data-pane="claude-code">Claude Code</button>
           <button class="tab" data-pane="claude-desktop">Claude Desktop</button>

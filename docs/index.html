@@ -181,6 +181,10 @@ a:hover{text-decoration:underline}
 .d-src{fill:#070b11;stroke:var(--line)}
 .d-cnt{fill:var(--green);font-size:13px;font-weight:700}
 .d-sb{fill:var(--green);font-size:13px;font-weight:700}
+.d-raw{fill:var(--dim);font-size:10px}
+.d-miss{fill:var(--red);font-size:10px}
+.d-exk{fill:var(--dim);font-size:9.5px;letter-spacing:.1em}
+.d-exv{fill:var(--green);font-size:11.5px;font-weight:700}
 .d-pill{fill:#0c121c;stroke:rgba(47,213,135,.22)}
 .d-px{fill:var(--green);font-size:12px;font-weight:700}
 .d-ans{fill:var(--dim);font-size:10.5px}
@@ -234,9 +238,6 @@ a:hover{text-decoration:underline}
 .d-big.ok{fill:var(--green)}
 .d-big.bad{fill:var(--red)}
 .d-mid{font-size:20px;font-weight:700;fill:var(--amber)}
-.tlb.gov{fill:var(--green)}
-.tlb.edu{fill:var(--blue)}
-.tlb.third{fill:#38536a}
 
 @media (prefers-reduced-motion:reduce){
   .dia *,.row,.typed,.chip.is-on::after{animation:none!important;opacity:1!important}
@@ -427,9 +428,10 @@ a:hover{text-decoration:underline}
       <p class="tag">Free market research terminal</p>
     </div>
 
-    <p class="claim">Vintage <span class="g">federates the free, point-in-time financial data of
-    the web</span>.</p>
-    <p class="sub">You only ever see what was public on the day you are asking about.</p>
+    <p class="claim">Vintage is <span class="g">the schema for the free financial data of the
+    web</span>.</p>
+    <p class="sub">Eighteen publishers, one row shape, two dates on every row. You only ever
+    see what was public on the day you are asking about.</p>
 
     <div class="tiles">
       <div class="tile"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 7.5 12 12l9-4.5Z"/><path d="M3 12.5 12 17l9-4.5"/><path d="M3 17 12 21.5 21 17"/></svg><b>18</b><span>free sources</span></div>
@@ -736,6 +738,107 @@ a:hover{text-decoration:underline}
       <rect class="d-verb" x="955" y="500" width="175" height="52" rx="10"/>
       <text class="d-vt" x="1042" y="532" text-anchor="middle">benchmark</text>
       <text class="d-fn" x="20" y="578">six verbs reach every prefix &middot; source is a parameter, never a new tool &middot; a bare field routes to EDGAR</text>
+      </svg>
+      </section>
+
+      <section class="panel" data-dwell="14">
+        <h2 class="ptitle">The free financial web has no schema. This is one.</h2>
+        <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.5" cy="7" r="1.8"/><circle cx="12" cy="4.8" r="1.8"/><circle cx="18.5" cy="8.5" r="1.8"/><circle cx="7" cy="16.5" r="1.8"/><circle cx="16" cy="18" r="1.8"/><circle cx="11.5" cy="11.5" r="1.8"/></svg>four wire formats in, one row out</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M11 14.5h2"/></svg>two dates on every row, always</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.3 2.9 7.6 7 9.5 4.1-1.9 7-5.2 7-9.5V6Z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg>no honest date, no invented one</span></div>
+        <svg class="dia" viewBox="0 0 1160 600" role="img" aria-label="Four publishers with four incompatible record shapes, all normalized into one nine-field row carrying both the date it describes and the date it became public">
+      <text class="d-h" x="20" y="30">THE FREE FINANCIAL WEB HAS NO SCHEMA</text>
+      <text class="d-h g" x="1140" y="30" text-anchor="end">VINTAGE IS ONE</text>
+      <rect class="d-src" x="20" y="44" width="272" height="122" rx="11"/>
+      <text class="d-it" x="34" y="66">SEC EDGAR</text>
+      <text class="d-fn" x="278" y="66" text-anchor="end">XBRL JSON</text>
+      <text class="d-raw" x="34" y="86">"end":  …</text>
+      <text class="d-raw" x="34" y="101">"val":  …</text>
+      <text class="d-raw" x="34" y="116">"filed":  …</text>
+      <text class="d-raw" x="34" y="131">"form":  …</text>
+      <text class="d-miss" x="34" y="156">two dates, both named something else</text>
+      <path class="d-wire" d="M156 166 L156 196"/>
+      <path class="d-flow" style="animation-delay:-0.0s" d="M156 166 L156 196"/>
+      <path class="d-arrow" d="M150 188 L156 196 L162 188"/>
+      <rect class="d-src" x="302" y="44" width="272" height="122" rx="11"/>
+      <text class="d-it" x="316" y="66">FRED</text>
+      <text class="d-fn" x="560" y="66" text-anchor="end">JSON</text>
+      <text class="d-raw" x="316" y="86">"date":  …</text>
+      <text class="d-raw" x="316" y="101">"value":  …</text>
+      <text class="d-raw" x="316" y="116">"realtime_start":  …</text>
+      <text class="d-raw" x="316" y="131">"units":  …</text>
+      <text class="d-miss" x="316" y="156">the vintage lives in a third field</text>
+      <path class="d-wire" d="M438 166 L438 196"/>
+      <path class="d-flow" style="animation-delay:-0.4s" d="M438 166 L438 196"/>
+      <path class="d-arrow" d="M432 188 L438 196 L444 188"/>
+      <rect class="d-src" x="584" y="44" width="272" height="122" rx="11"/>
+      <text class="d-it" x="598" y="66">Ken French</text>
+      <text class="d-fn" x="842" y="66" text-anchor="end">fixed-width text</text>
+      <text class="d-raw" x="598" y="86">192607   …   …   …</text>
+      <text class="d-raw" x="598" y="101">192608   …   …   …</text>
+      <text class="d-raw" x="598" y="116">(no header row)</text>
+      <text class="d-raw" x="598" y="131">(no units anywhere)</text>
+      <text class="d-miss" x="598" y="156">columns identified by position</text>
+      <path class="d-wire" d="M720 166 L720 196"/>
+      <path class="d-flow" style="animation-delay:-0.8s" d="M720 166 L720 196"/>
+      <path class="d-arrow" d="M714 188 L720 196 L726 188"/>
+      <rect class="d-src" x="866" y="44" width="272" height="122" rx="11"/>
+      <text class="d-it" x="880" y="66">Coinbase</text>
+      <text class="d-fn" x="1124" y="66" text-anchor="end">JSON array</text>
+      <text class="d-raw" x="880" y="86">[ 1717200000,</text>
+      <text class="d-raw" x="880" y="101">  low, high,</text>
+      <text class="d-raw" x="880" y="116">  open, close,</text>
+      <text class="d-raw" x="880" y="131">  volume ]</text>
+      <text class="d-miss" x="880" y="156">unnamed, and ordered by convention</text>
+      <path class="d-wire" d="M1002 166 L1002 196"/>
+      <path class="d-flow" style="animation-delay:-1.2s" d="M1002 166 L1002 196"/>
+      <path class="d-arrow" d="M996 188 L1002 196 L1008 188"/>
+      <rect class="d-pipe" x="20" y="196" width="1120" height="238" rx="14"/>
+      <text class="d-h g" x="38" y="222">THE ROW EVERY SOURCE NORMALIZES TO</text>
+      <text class="d-fn" x="1122" y="222" text-anchor="end">nine fields, the same nine every time</text>
+      <text class="d-px" x="38" y="254">entity</text>
+      <text class="d-fn" x="38" y="269">one key, resolved from ticker, CIK or name</text>
+      <text class="d-px" x="404" y="254">field</text>
+      <text class="d-fn" x="404" y="269">prefix:name, the same grammar for all 18</text>
+      <text class="d-px" x="770" y="254">observed_at</text>
+      <text class="d-fn" x="770" y="269">the date the value describes</text>
+      <text class="d-px" x="38" y="300">known_at</text>
+      <text class="d-fn" x="38" y="315">the date it first became public</text>
+      <text class="d-px" x="404" y="300">value</text>
+      <text class="d-fn" x="404" y="315">the number itself</text>
+      <text class="d-px" x="770" y="300">unit</text>
+      <text class="d-fn" x="770" y="315">USD, percent, index level, ratio</text>
+      <text class="d-px" x="38" y="346">source</text>
+      <text class="d-fn" x="38" y="361">which publisher it came from</text>
+      <text class="d-px" x="404" y="346">source_url</text>
+      <text class="d-fn" x="404" y="361">the exact endpoint it was read from</text>
+      <text class="d-px" x="770" y="346">vintage</text>
+      <text class="d-fn" x="770" y="361">as-filed, or UNKNOWN_VINTAGE</text>
+      <rect class="d-bub" x="38" y="386" width="1084" height="34" rx="8"/>
+      <text class="d-exk" x="50" y="400">entity</text>
+      <text class="d-exv" x="50" y="413">CIK0000320193</text>
+      <text class="d-exk" x="230" y="400">field</text>
+      <text class="d-exv" x="230" y="413">us-gaap:Assets</text>
+      <text class="d-exk" x="410" y="400">observed_at</text>
+      <text class="d-exv" x="410" y="413">2019-09-28</text>
+      <text class="d-exk" x="590" y="400">known_at</text>
+      <text class="d-exv" x="590" y="413">2019-10-31</text>
+      <text class="d-exk" x="770" y="400">value</text>
+      <text class="d-exv" x="770" y="413">338516000000</text>
+      <text class="d-exk" x="950" y="400">unit</text>
+      <text class="d-exv" x="950" y="413">USD</text>
+      <rect class="d-box" x="20" y="456" width="360" height="92" rx="11"/>
+      <text class="d-sb" x="36" y="482">Two dates, always</text>
+      <text class="d-fn" x="36" y="504">A row without an honest known_at is flagged</text>
+      <text class="d-fn" x="36" y="519">UNKNOWN_VINTAGE, never given a plausible</text>
+      <text class="d-fn" x="36" y="534">date.</text>
+      <rect class="d-box" x="400" y="456" width="360" height="92" rx="11"/>
+      <text class="d-sb" x="416" y="482">One key, so joins work</text>
+      <text class="d-fn" x="416" y="504">Nine publishers, one entity key, so a join</text>
+      <text class="d-fn" x="416" y="519">across them is just a join.</text>
+      <rect class="d-box" x="780" y="456" width="360" height="92" rx="11"/>
+      <text class="d-sb" x="796" y="482">One grammar, so tools don't grow</text>
+      <text class="d-fn" x="796" y="504">A new source is a new prefix, not a new tool</text>
+      <text class="d-fn" x="796" y="519">your agent has to learn.</text>
+      <text class="d-fn" x="20" y="578">One real row, fetched on 2026-08-06: Apple's balance sheet closed 28 Sep 2019 and nobody could see it until 31 Oct.</text>
       </svg>
       </section>
 
@@ -1071,8 +1174,8 @@ a:hover{text-decoration:underline}
 (function () {
   var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
   var chipbar = document.getElementById('chips');
-  var titles = ['What it is', 'The taxonomy', 'What you get', 'Point-in-time',
-                'The engine', 'The experiment'];
+  var titles = ['What it is', 'The taxonomy', 'The schema', 'What you get',
+                'Point-in-time', 'The engine', 'The experiment'];
   var timer, at = 0;
 
   var chips = titles.map(function (t, i) {
