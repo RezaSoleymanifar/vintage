@@ -55,12 +55,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
 
       - name: Validate against the MCP registry schema
         run: |
           curl -sSfL -o /tmp/server.schema.json \
             https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json
-          npx --yes ajv-cli@5 validate -s /tmp/server.schema.json -d server.json --spec=draft7
+          uv run --no-project --with jsonschema python - <<'PY'
+          import json, sys
+          from jsonschema import Draft7Validator
+
+          schema = json.load(open("/tmp/server.schema.json"))
+          doc = json.load(open("server.json"))
+          errors = sorted(Draft7Validator(schema).iter_errors(doc), key=lambda e: list(e.path))
+          for e in errors:
+              print(f"::error::server.json{list(e.path)}: {e.message}")
+          sys.exit(1 if errors else 0)
+          PY
         shell: bash
 
       - name: server.json version must match pyproject
