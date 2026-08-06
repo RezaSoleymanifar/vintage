@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from .sources import fred, french
+from .sources import apewisdom, fred, french
 
 # Field prefix -> source. This is the router.
 PREFIXES = {
@@ -16,6 +16,9 @@ PREFIXES = {
     "fred:": "fred",
     "french:": "french",
     "openap:": "openap",
+    "ape:": "apewisdom",
+    "crypto:": "crypto",
+    "short:": "finra",
     "filing:": "sec-edgar-filings",
     "us-gaap:": "sec-edgar-xbrl",
     "dei:": "sec-edgar-xbrl",
@@ -63,6 +66,29 @@ SOURCES = [
         "note": "Chen & Zimmermann. 56 of the 331 are price-only and replicable with Vintage today.",
     },
     {
+        "source": "coinbase-exchange",
+        "covers": "crypto OHLCV, every listed pair, no key",
+        "field_form": "crypto:close (needs an entity like BTC-USD)",
+        "point_in_time": "yes — trade prints are never restated",
+        "key_required": False,
+        "note": "Currently-listed products only; dead tokens are absent, so crypto survivorship is worse than equities.",
+    },
+    {
+        "source": "finra-short-volume",
+        "covers": "daily short volume and short ratio per symbol",
+        "field_form": "short:short_ratio (needs an entity)",
+        "point_in_time": "yes — published after the close, never revised",
+        "key_required": False,
+    },
+    {
+        "source": "apewisdom",
+        "covers": "retail forum mention ranks across ~15 stock and crypto subreddits",
+        "field_form": "ape:all-stocks, ape:wallstreetbets, ape:all-crypto",
+        "point_in_time": "only forward — known_at is when Vintage fetched it",
+        "key_required": False,
+        "note": "No history endpoint upstream. Backtestable history starts the day you record it.",
+    },
+    {
         "source": "fred",
         "covers": "800k macro series, with ALFRED first-release vintages",
         "field_form": "fred:CPIAUCSL",
@@ -96,7 +122,7 @@ def route(field: str) -> str | None:
 
 
 def static_catalog() -> list[dict[str, Any]]:
-    return french.catalog() + [
+    return french.catalog() + apewisdom.catalog() + [
         {**item, "source": "fred", "key_required": not fred.has_key()}
         for item in CURATED
     ]

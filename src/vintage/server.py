@@ -17,7 +17,7 @@ from .engine import backtest as bt
 from .engine import benchmark as bm
 from .engine import honesty
 from .http import SourceError
-from .sources import edgar, fred, french, openap, yahoo
+from .sources import apewisdom, coinbase, edgar, finra, fred, french, openap, yahoo
 
 mcp = MCPServer(
     "vintage",
@@ -37,7 +37,7 @@ mcp = MCPServer(
         "returns a deflated Sharpe that accounts for how many specs were tried "
         "this session. Report it. Never present a raw Sharpe alone."
     ),
-    version="0.2.0",
+    version="0.3.0",
 )
 
 # Backtests keep their return series here so the model does not have to carry
@@ -191,7 +191,9 @@ async def fetch(
 
     Field forms: "us-gaap:Assets" (needs entity), "price:close" (needs
     entity), "fred:CPIAUCSL", "french:ff3", "openap:Mom12m" (or "openap:*"
-    for all 331 published claims). Run discover first if unsure.
+    for all 331 published claims), "crypto:close" (needs an entity like
+    BTC-USD), "short:short_ratio" (needs an entity), "ape:all-stocks".
+    Run discover first if unsure.
 
     `as_of` is the point-in-time switch: it drops every row that was not
     public on that date, so you see what a researcher on that day saw,
@@ -204,6 +206,19 @@ async def fetch(
     try:
         if source == "french":
             rows = await french.load(field.split(":", 1)[1])
+        elif source == "crypto":
+            if not entity:
+                return envelope.fail("fetch", "crypto fields need an `entity`, e.g. BTC-USD")
+            rows = await coinbase.candles(entity, field=field.split(":", 1)[1], limit=limit)
+            warnings += coinbase.warnings_for(entity)
+        elif source == "finra":
+            if not entity:
+                return envelope.fail("fetch", "short-volume fields need an `entity`, e.g. AAPL")
+            rows = await finra.short_volume(entity, field=field.split(":", 1)[1])
+            warnings += finra.warnings_for(rows)
+        elif source == "apewisdom":
+            rows = await apewisdom.mentions(field.split(":", 1)[1], limit=limit)
+            warnings += apewisdom.warnings_for(rows)
         elif source == "openap":
             name = field.split(":", 1)[1]
             # "openap:*" is the whole scoreboard; a bare acronym is one claim.

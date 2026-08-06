@@ -30,6 +30,9 @@ Source is a parameter, never a separate tool.
 | **yahoo-finance** | daily OHLCV and adjusted close, full history unofficial endpoint; Stooq is blocked behind a JS check as of 2026-08 | `price:close / price:adjclose (needs an entity)` | partial — adjusted retroactively | none |
 | **ken-french-data-library** | Fama-French factors, momentum, industry portfolios | `french:ff3, french:ff5, french:momentum` | no — rebuilt on each release | none |
 | **open-source-asset-pricing** | 331 published anomalies with the return and t-stat each paper claimed Chen & Zimmermann. 56 of the 331 are price-only and replicable with Vintage today. | `openap:Mom12m, or openap:* for all of them` | yes — claims are dated to their publication year | none |
+| **coinbase-exchange** | crypto OHLCV, every listed pair, no key Currently-listed products only; dead tokens are absent, so crypto survivorship is worse than equities. | `crypto:close (needs an entity like BTC-USD)` | yes — trade prints are never restated | none |
+| **finra-short-volume** | daily short volume and short ratio per symbol | `short:short_ratio (needs an entity)` | yes — published after the close, never revised | none |
+| **apewisdom** | retail forum mention ranks across ~15 stock and crypto subreddits No history endpoint upstream. Backtestable history starts the day you record it. | `ape:all-stocks, ape:wallstreetbets, ape:all-crypto` | only forward — known_at is when Vintage fetched it | none |
 | **fred** | 800k macro series, with ALFRED first-release vintages | `fred:CPIAUCSL` | yes — real-time vintages | free key |
 
 ## Field prefixes
@@ -42,6 +45,9 @@ How a field name routes to a source.
 | `fred:` | fred | no |
 | `french:` | french | no |
 | `openap:` | openap | — |
+| `ape:` | apewisdom | — |
+| `crypto:` | crypto | — |
+| `short:` | finra | — |
 | `filing:` | sec-edgar-filings | yes |
 | `us-gaap:` | sec-edgar-xbrl | yes |
 | `dei:` | sec-edgar-xbrl | yes |
@@ -81,6 +87,47 @@ Federal Reserve Bank of St. Louis. These are hand-picked so `discover` answers w
 | `fred:SOFR` | Secured overnight financing rate |
 | `fred:M2SL` | M2 money stock |
 | `fred:INDPRO` | Industrial production |
+
+## Crypto
+
+Coinbase Exchange, no key. A trade print is never restated, so these rows are *more* honestly point-in-time than equity adjusted closes. Survivorship runs the other way: dead tokens are absent entirely, which is a worse bias than equities, not a milder one.
+
+Intervals: `1d`, `6h`, `1h`, `15m`, `5m`, `1m`. All crypto fields need an entity such as `BTC-USD`.
+
+| Field | Returns |
+|---|---|
+| `crypto:close` | close of each bar |
+| `crypto:high` | high of each bar |
+| `crypto:low` | low of each bar |
+| `crypto:open` | open of each bar |
+| `crypto:volume` | volume of each bar |
+
+## Short sale volume
+
+FINRA, published after each close and never revised. This is **short volume, not short interest** — shares sold short during the session, including market-maker hedging that is flat again by the close. A flow measure, not outstanding bearish positioning.
+
+| Field | Returns |
+|---|---|
+| `short:short_ratio` | short volume as a share of total reported volume |
+| `short:short_volume` | shares sold short |
+| `short:exempt_volume` | short-exempt shares |
+| `short:total_volume` | total reported volume |
+
+One HTTP request per trading day, so `days` defaults to 20 and caps at 90.
+
+## Forum sentiment (7 scopes)
+
+ApeWisdom. No key. **No history endpoint upstream** — every row is stamped `known_at` = the moment Vintage fetched it, so backtestable history begins the day you start recording. Vendors selling years of "historical sentiment" built it by re-scoring archived posts with a model that already knew what happened next.
+
+| Field | Scope |
+|---|---|
+| `ape:all-stocks` | every tracked stock subreddit |
+| `ape:all-crypto` | every tracked crypto subreddit |
+| `ape:wallstreetbets` | r/wallstreetbets only |
+| `ape:stocks` | r/stocks only |
+| `ape:investing` | r/investing only |
+| `ape:cryptocurrency` | r/CryptoCurrency only |
+| `ape:4chan` | 4chan /biz (beta) |
 
 ## SEC XBRL fields
 

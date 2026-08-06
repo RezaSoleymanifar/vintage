@@ -190,15 +190,15 @@ Citations are references, not endorsements — none of these authors is affiliat
 <tr>
 <td align="center"><b>100</b><br><sub>years, July 1926 to this morning</sub></td>
 <td align="center"><b>331</b><br><sub>published anomalies, with claims</sub></td>
+<td align="center"><b>9</b><br><sub>sources, six verbs</sub></td>
 <td align="center"><b>10,398</b><br><sub>ticker-mapped US filers</sub></td>
 <td align="center"><b>800k+</b><br><sub>macro series with vintages</sub></td>
-<td align="center"><b>0</b><br><sub>API keys required</sub></td>
 </tr>
 </table>
 
-**A century of market history, six sources, zero API keys.** The Fama-French factors start in July 1926 and the SEC filing stream runs to this morning — Vintage covers both ends from the same six verbs.
+**A century of market history, nine sources, zero API keys.** The Fama-French factors start in July 1926 and the SEC filing stream runs to this morning — Vintage covers both ends from the same six verbs.
 
-**Five of the six are the primary source** — not a reseller, not a scraper. The filings come from the regulator that receives them, the macro series from the central bank that publishes them, and the factors from the university that computes them.
+**Most of these are the primary source** — not a reseller, not a scraper. The filings come from the regulator that receives them, the macro series from the central bank that publishes them, and the factors from the university that computes them.
 
 | Source | Standing | Covers | Key | Point-in-time |
 |---|---|---|---|---|
@@ -207,6 +207,9 @@ Citations are references, not endorsements — none of these authors is affiliat
 | **FRED / ALFRED** | Primary · central bank | Federal Reserve Bank of St. Louis. ALFRED keeps first releases, so you can ask what CPI looked like *that morning*. | free | ✅ first-release vintages |
 | **Ken French Data Library** | Primary · academic | Dartmouth. FF3, FF5, momentum, daily FF3, 49 industry portfolios — from where the authors publish them. | none | ❌ rebuilt each release |
 | **Open Source Asset Pricing** | Primary · academic | Chen & Zimmermann. 331 published predictors with claimed return, t-stat, sample window and an implementable definition. `openap:Mom12m` returns Jegadeesh-Titman's 1.31%/mo, t=3.74. | none | ✅ claims dated to publication year |
+| **FINRA** | Primary · US regulator | Daily short sale volume per symbol, published after each close and never revised. Short *volume*, not short interest. | none | ✅ never revised |
+| **Coinbase Exchange** | Exchange | Crypto OHLCV, every listed pair. | none | ✅ trade prints are never restated |
+| **ApeWisdom** | Community | Forum mention ranks across ~15 subreddits. No history upstream — rows are stamped when Vintage fetched them. | none | ⏩ forward only, from the day you record |
 | **Yahoo Finance** | Third party | Daily OHLCV and adjusted close, decades deep. | none | ⚠️ adjusted retroactively, flagged on every row |
 
 **[COVERAGE.md](COVERAGE.md) is the full field-by-field catalogue** — every prefix, every dataset, every signal, with measured coverage spans. It is generated from the registry, so it cannot drift from the code.

@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(
 
 from vintage import registry  # noqa: E402
 from vintage.engine import backtest as bt  # noqa: E402
-from vintage.sources import french  # noqa: E402
+from vintage.sources import apewisdom, coinbase, finra, french  # noqa: E402
 
 HEADER = """# Coverage
 
@@ -114,6 +114,61 @@ def fred_table() -> str:
     return "\n".join(rows) + "\n"
 
 
+def sentiment_table() -> str:
+    rows = [
+        f"## Forum sentiment ({len(apewisdom.FILTERS)} scopes)\n",
+        "ApeWisdom. No key. **No history endpoint upstream** — every row is stamped "
+        "`known_at` = the moment Vintage fetched it, so backtestable history begins "
+        'the day you start recording. Vendors selling years of "historical sentiment" '
+        "built it by re-scoring archived posts with a model that already knew what "
+        "happened next.\n",
+        "| Field | Scope |",
+        "|---|---|",
+    ]
+    for key, label in apewisdom.FILTERS.items():
+        rows.append(f"| `ape:{key}` | {label} |")
+    rows.append("")
+    return "\n".join(rows) + "\n"
+
+
+def crypto_table() -> str:
+    intervals = ", ".join(f"`{g}`" for g in coinbase.GRANULARITY)
+    rows = [
+        "## Crypto\n",
+        "Coinbase Exchange, no key. A trade print is never restated, so these rows are "
+        "*more* honestly point-in-time than equity adjusted closes. Survivorship runs the "
+        "other way: dead tokens are absent entirely, which is a worse bias than equities, "
+        "not a milder one.\n",
+        f"Intervals: {intervals}. All crypto fields need an entity such as `BTC-USD`.\n",
+        "| Field | Returns |",
+        "|---|---|",
+    ]
+    for f in sorted(coinbase.FIELDS):
+        rows.append(f"| `crypto:{f}` | {f} of each bar |")
+    rows.append("")
+    return "\n".join(rows) + "\n"
+
+
+def short_table() -> str:
+    rows = [
+        "## Short sale volume\n",
+        "FINRA, published after each close and never revised. This is **short volume, "
+        "not short interest** — shares sold short during the session, including "
+        "market-maker hedging that is flat again by the close. A flow measure, not "
+        "outstanding bearish positioning.\n",
+        "| Field | Returns |",
+        "|---|---|",
+        "| `short:short_ratio` | short volume as a share of total reported volume |",
+        "| `short:short_volume` | shares sold short |",
+        "| `short:exempt_volume` | short-exempt shares |",
+        "| `short:total_volume` | total reported volume |",
+        "",
+        f"One HTTP request per trading day, so `days` defaults to {finra.DEFAULT_DAYS} "
+        f"and caps at {finra.MAX_DAYS}.\n",
+    ]
+    return "\n".join(rows) + "\n"
+
+
 def signals_table() -> str:
     rows = [f"## Backtest signals ({len(bt.SIGNALS)} built in)\n",
             "| Signal | Definition |", "|---|---|"]
@@ -152,6 +207,9 @@ def main() -> None:
         + field_routing()
         + french_table()
         + fred_table()
+        + crypto_table()
+        + short_table()
+        + sentiment_table()
         + xbrl_note()
         + signals_table()
         + "---\n\nCounts and coverage spans measured at generation time. "
