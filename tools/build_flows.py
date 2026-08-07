@@ -1,4 +1,4 @@
-"""The flow billboard: where two independent groups of money actually moved.
+"""The Late Tape: where two independent groups of money actually moved.
 
 One page, one claim, two clocks. The institutional half comes from Form 13F and
 changes four times a year; the congressional half comes from STOCK Act periodic
@@ -365,8 +365,8 @@ def build(inst, cong, matched, today):
 
     return f"""<meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Where the money moved — Vintage</title>
-<meta name="description" content="Two independent groups of money, 13F institutions and members of Congress, compared on the names they both traded. Built from primary filings, with every date shown.">
+<title>The Late Tape — Vintage</title>
+<meta name="description" content="The Late Tape: two independent groups of money, 13F institutions and members of Congress, compared on the names they both traded. Everything here was late by law before you read it.">
 <style>
 :root{{
   --bg:#0b0f16; --panel:#0d1420; --line:#1f2b3a; --ink:#e8f1ec;
@@ -383,6 +383,8 @@ h1 small{{display:block;font-size:15px;color:var(--dim);margin-top:12px;letter-s
 h2{{font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);
   font-weight:400;margin:44px 0 14px;border-bottom:1px solid var(--line);padding-bottom:9px}}
 .lede{{color:var(--dim);font-size:15px;max-width:62ch;margin:0 0 26px}}
+.brand{{margin:0 0 22px;font-size:13px;letter-spacing:.34em;color:var(--green)}}
+.brand span{{display:block;letter-spacing:.02em;color:var(--dim);font-size:12.5px;margin-top:7px}}
 .clocks{{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px;margin:0 0 10px}}
 .clock{{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:14px 16px}}
 .clock i{{font-style:normal;display:block;font-size:11px;letter-spacing:.16em;
@@ -440,6 +442,7 @@ footer a{{color:var(--green);text-decoration:none}}
 </style>
 
 <div class="wrap">
+<p class="brand">THE LATE TAPE<span>everything here was public before you read it, and late by law</span></p>
 <h1>Two groups of money.<br><em>{esc(claim)}</em><br><small>{esc(subclaim)}</small></h1>
 <p class="lede">Institutional managers file Form 13F once a quarter. Members of Congress
 file a report every time they trade. Neither can see the other's filing before it lands.
@@ -511,8 +514,9 @@ you read it.</li>
 </ul></div>
 
 <footer>
-Built {today:%d %B %Y} from SEC Form 13F, House STOCK Act periodic transaction
-reports and Senate EFD, by <a href="https://github.com/RezaSoleymanifar/vintage">Vintage</a>.
+<b>The Late Tape</b> · built {today:%d %B %Y} from SEC Form 13F, House STOCK Act
+periodic transaction reports and Senate EFD, by
+<a href="https://github.com/RezaSoleymanifar/vintage">Vintage</a>.
 Reports obtained under the Ethics in Government Act, which restricts commercial use.
 Regenerate with <code>python tools/build_flows.py</code>.
 </footer>
