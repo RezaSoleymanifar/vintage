@@ -215,8 +215,15 @@ def min_backtest_length(
                 "note": "a non-positive Sharpe needs no length to disbelieve"}
 
     years = 2.0 * math.log(trials) / (annual_sharpe ** 2)
+
+    # A Sharpe near zero sends this to millions of years, which is arithmetically
+    # right and useless to print. Past a century there is no such history to
+    # have, and saying that is more informative than the number.
+    beyond_available = years > 100.0
+
     return {
         "min_backtest_years": round(years, 2),
+        "beyond_any_available_history": beyond_available,
         "trials_considered": trials,
         "observed_annual_sharpe": round(annual_sharpe, 3),
         "expected_max_sharpe_from_noise": round(
@@ -227,6 +234,8 @@ def min_backtest_length(
             "Bailey, Borwein, Lopez de Prado & Zhu (2014). Below this many "
             "years, a Sharpe this high is expected from noise alone once the "
             "trial count is accounted for."
+            + (" No sample this long exists, so this Sharpe cannot be "
+               "distinguished from noise at this trial count." if beyond_available else "")
         ),
     }
 

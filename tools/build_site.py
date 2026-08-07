@@ -894,6 +894,7 @@ DEEP_PAGE = """<!doctype html>
   --ink:#e8f1ec; --dim:#5f7a8c; --green:#35e08a; --red:#ff6b5e; --amber:#ffc46b;
   --blue:#7fb3ff;
   --mono:"IBM Plex Mono",ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+  --sans:"Segoe UI Variable Display","Segoe UI",Inter,"Helvetica Neue",ui-sans-serif,system-ui,sans-serif;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -1688,17 +1689,19 @@ FACTS = {
 # says warned rather than solved: the delisting record ships, but the universe
 # the backtester builds is still current-listing only.
 ENGINE_BADGES = [
-    ("wall", "point-in-time panel"),
-    ("calendar", "restatements kept"),
-    ("shield", "survivorship warned"),
-    ("coin", "costs on turnover"),
-    ("fall", "deflated Sharpe"),
+    ("wall", "point-in-time"),
+    ("prompt", "no look-ahead"),
+    ("calendar", "restatements"),
+    ("shield", "survivorship"),
+    ("coin", "turnover cost"),
+    ("fall", "deflated SR"),
     ("ledger", "trial ledger"),
-    ("scatter", "purged k-fold, embargoed"),
+    ("stack", "multiple testing"),
+    ("scatter", "purged k-fold"),
     ("funnel", "PBO via CSCV"),
-    ("series", "Newey-West t-stat"),
-    ("flask", "square-root impact"),
-    ("clock", "min backtest length"),
+    ("series", "Newey-West t"),
+    ("flask", "sqrt impact"),
+    ("clock", "min length"),
 ]
 
 
@@ -1707,14 +1710,12 @@ def build_badges() -> str:
     # as eleven separate checks running rather than one thing blinking.
     def pill(glyph: str, label: str, i: int) -> str:
         return (f'<span class="badge" style="--d:{i * -0.42:.2f}s">'
-                f'{icon(glyph, 21)}<b>{label}</b></span>')
+                f'{icon(glyph, 19)}<b>{label}</b></span>')
 
     engine = "".join(pill(g, lab, i) for i, (g, lab) in enumerate(ENGINE_BADGES))
     return (f'<p class="bline">Pipe processed web market data straight into local AI '
             f'agents, on demand.</p>'
             f'<p class="blab eng">Quantitative research grade</p>'
-            f'<p class="bsub">point-in-time &middot; survivorship &middot; look-ahead bias '
-            f'&middot; multiple testing &middot; market impact</p>'
             f'<div class="badges">{engine}</div>')
 
 
@@ -1785,6 +1786,7 @@ ONE_PAGE = """<!doctype html>
   --bg:#080b11; --panel:#0c121c; --line:#1c2735; --ink:#e9f1ee; --dim:#657f92;
   --green:#2fd587; --red:#ff6b5e; --amber:#f2c076; --blue:#7fb3ff;
   --mono:"IBM Plex Mono",ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+  --sans:"Segoe UI Variable Display","Segoe UI",Inter,"Helvetica Neue",ui-sans-serif,system-ui,sans-serif;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -1802,11 +1804,15 @@ a:hover{text-decoration:underline}
 
 /* ------------------------------------------------------------- left rail */
 .rail{
-  padding:clamp(20px,3.4vh,44px) clamp(20px,2.6vw,40px);
-  display:flex;flex-direction:column;gap:clamp(12px,2.2vh,26px);
+  padding:clamp(16px,2.4vh,32px) clamp(20px,2.6vw,40px);
+  display:flex;flex-direction:column;gap:clamp(9px,1.5vh,17px);
   border-right:1px solid var(--line);min-width:0;
 }
-.brand{font-size:clamp(26px,4.4vh,44px);font-weight:700;letter-spacing:.17em;margin:0;line-height:1}
+/* The wordmark was mono at 0.17em tracking, which spaced the letters so far
+   apart they stopped reading as one word. A tight, heavy grotesque is the
+   register a research terminal masthead actually wants. */
+.brand{font-family:var(--sans);font-size:clamp(28px,4.8vh,48px);font-weight:800;
+  letter-spacing:-.022em;margin:0;line-height:.95;font-variant-ligatures:none}
 .tag{color:var(--green);letter-spacing:.19em;text-transform:uppercase;font-weight:700;
   font-size:clamp(9px,1.35vh,12px);margin:6px 0 0}
 .claim{font-size:clamp(14px,2.15vh,20px);line-height:1.4;margin:0;font-weight:700}
@@ -1821,14 +1827,14 @@ a:hover{text-decoration:underline}
 .tile .ic{color:var(--green);opacity:.85}
 .tile b{color:var(--ink);font-size:clamp(13px,2vh,18px);line-height:1.1;font-weight:700}
 /* what the engine guarantees, one property per badge */
-.badges{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.badges{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
 .bline{margin:0 0 9px;color:var(--ink);font-size:clamp(10.5px,1.45vh,13px);
   line-height:1.45;font-weight:700}
-.blab{margin:0 0 6px;color:var(--green);font-size:clamp(9px,1.2vh,11px);
+.blab{margin:0 0 4px;color:var(--green);font-size:clamp(9px,1.2vh,11px);
   letter-spacing:.16em;text-transform:uppercase;font-weight:700}
-.bsub{margin:-2px 0 8px;color:var(--dim);font-size:clamp(8.5px,1.14vh,10.5px);
+.bsub{margin:-3px 0 6px;color:var(--dim);font-size:clamp(8.5px,1.14vh,10.5px);
   line-height:1.4}
-.badge{display:flex;align-items:center;gap:9px;border:1px solid rgba(47,213,135,.28);
+.badge{display:flex;align-items:center;gap:9px;white-space:nowrap;border:1px solid rgba(47,213,135,.28);
   border-radius:9px;padding:7px 10px;background:var(--panel);min-width:0;
   position:relative;overflow:hidden}
 /* Each badge is a check the engine runs, so the mark breathes and a faint sweep
@@ -1847,8 +1853,8 @@ a:hover{text-decoration:underline}
   .badge::after{display:none}
   .badge .ic{animation:none;opacity:.9;transform:none}
 }
-.badge b{color:var(--ink);font-weight:700;line-height:1.2;
-  font-size:clamp(9.5px,1.3vh,11.5px)}
+.badge b{color:var(--ink);font-weight:700;line-height:1.2;min-width:0;
+  font-size:clamp(10px,1.42vh,13px)}
 
 .tile span{color:var(--dim);font-size:clamp(8.5px,1.15vh,10.5px);line-height:1.25;
   letter-spacing:.04em}
@@ -1966,15 +1972,14 @@ a:hover{text-decoration:underline}
 .pane pre code{font-family:var(--mono);font-size:clamp(10.5px,1.65vh,14px);
   color:var(--ink);white-space:pre}
 
-/* The map slide narrows the rail rather than dropping it. Everything on that
-   slide is a scaled drawing, so width is the only thing deciding how big the
-   labels land, and the rail at 31% was most of the budget. Taking it to 20%
-   hands the diagram about 250px and keeps the pane, the pitch and the install
-   line on screen where they belong. */
-@media(min-width:1040px) and (min-height:640px){
-  .shell.wide{grid-template-columns:minmax(310px,24%) 1fr}
-}
-.shell.wide .rail{transition:none}
+
+.cmd.hot{position:relative;overflow:hidden;border-color:rgba(47,213,135,.45)}
+.cmd.hot::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(105deg,transparent 40%,rgba(47,213,135,.22) 50%,transparent 60%);
+  transform:translateX(-100%);animation:cmdflash 4.6s ease-in-out infinite}
+@keyframes cmdflash{0%,58%{transform:translateX(-100%)}
+  76%{transform:translateX(100%)}100%{transform:translateX(100%)}}
+@media (prefers-reduced-motion:reduce){.cmd.hot::after{display:none}}
 
 .panels{position:relative;flex:1;min-height:0}
 .panel{position:absolute;inset:0;opacity:0;visibility:hidden;
@@ -2124,13 +2129,13 @@ __ONECSS__
     <p class="claim">Good financial data is already free. It&rsquo;s just scattered.
     <span class="g">Vintage unifies the web&rsquo;s free financial data in a single MCP server.</span></p>
 
+    <div class="cmd hot"><code>claude mcp add vintage -s user -- uvx vintage-mcp</code><button class="copy" aria-label="Copy">copy</button></div>
+
     <div class="tiles">
       __TILES__
     </div>
 
     __BADGES__
-
-    <div class="cmd"><code>claude mcp add vintage -s user -- uvx vintage-mcp</code><button class="copy" aria-label="Copy">copy</button></div>
 
     <div class="foot">
       <a href="https://github.com/RezaSoleymanifar/vintage">GitHub</a>
@@ -2285,8 +2290,7 @@ __ONECSS__
   function show(i) {
     at = i;
     panels.forEach(function (p, n) { p.classList.toggle('is-on', n === i); });
-    document.querySelector('.shell').classList.toggle(
-      'wide', panels[i].classList.contains('arch'));
+    document.querySelector('.shell').classList.remove('wide');
     var dwell = (parseFloat(panels[i].dataset.dwell) || 9) * 1000;
     chips.forEach(function (c) {
       c.classList.remove('is-on');
@@ -2353,6 +2357,7 @@ REEL_PAGE = """<!doctype html>
   --bg:#0b0f16; --panel:#0d1420; --line:#1f2b3a;
   --ink:#e8f1ec; --dim:#5f7a8c; --green:#35e08a; --red:#ff6b5e; --amber:#ffc46b;
   --mono:"IBM Plex Mono",ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+  --sans:"Segoe UI Variable Display","Segoe UI",Inter,"Helvetica Neue",ui-sans-serif,system-ui,sans-serif;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono)}
