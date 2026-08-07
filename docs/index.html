@@ -46,21 +46,21 @@ a:hover{text-decoration:underline}
   letter-spacing:-.022em;margin:0;line-height:.95;font-variant-ligatures:none;
   display:flex;align-items:center;gap:.34em}
 
-/* Tree rings. A vintage is a dated layer, and rings are the oldest
-   point-in-time record there is: one per year, still legible a century later.
-   The rings light from the core outward, so the newest reads last. */
-.brand .mark{width:1.05em;height:1.05em;flex:0 0 auto;overflow:visible}
-.brand .r{fill:none;stroke:var(--green);stroke-width:1.7;opacity:.28;
-  transform-origin:50% 50%;animation:ring 5.2s ease-in-out infinite}
-.brand .r2{animation-delay:.34s}
-.brand .r3{animation-delay:.68s}
-.brand .r4{animation-delay:1.02s}
-.brand .core{fill:var(--green)}
-.brand .cut{stroke:var(--green);stroke-width:1.7;stroke-linecap:round;opacity:.5}
-@keyframes ring{
-  0%,72%,100%{opacity:.26}
-  36%{opacity:1;filter:drop-shadow(0 0 5px var(--green))}}
-@media (prefers-reduced-motion:reduce){.brand .r{animation:none;opacity:.55}}
+/* A bottle, because that is what a vintage is named after. The label is the
+   dated part, and the year mark on it pulses the way the rings used to: the
+   thing being claimed is the date, not the wine. */
+.brand .mark{width:.92em;height:.92em;flex:0 0 auto;overflow:visible}
+.brand .glass{fill:rgba(53,224,138,.09);stroke:var(--green);stroke-width:1.9;
+  stroke-linejoin:round}
+.brand .cork{fill:none;stroke:var(--green);stroke-width:1.9;stroke-linecap:round}
+.brand .label{fill:var(--green);fill-opacity:.16;stroke:var(--green);stroke-width:1.4}
+.brand .year{stroke:var(--green);stroke-width:2.2;stroke-linecap:round;
+  animation:vintage 4.4s ease-in-out infinite}
+.brand .wine{fill:none;stroke:var(--green);stroke-width:1.5;opacity:.45}
+@keyframes vintage{
+  0%,100%{opacity:.45}
+  45%{opacity:1;filter:drop-shadow(0 0 4px var(--green))}}
+@media (prefers-reduced-motion:reduce){.brand .year{animation:none;opacity:.9}}
 .tag{color:var(--green);letter-spacing:.19em;text-transform:uppercase;font-weight:700;
   font-size:clamp(9px,1.35vh,12px);margin:6px 0 0}
 .claim{font-size:clamp(14px,2.15vh,20px);line-height:1.4;margin:0;font-weight:700}
@@ -638,7 +638,7 @@ a:hover{text-decoration:underline}
 
   <aside class="rail">
     <div>
-      <h1 class="brand"><svg class="mark" viewBox="0 0 44 44" aria-hidden="true"><circle class="r r1" cx="22" cy="22" r="19"/><circle class="r r2" cx="22" cy="22" r="14.5"/><circle class="r r3" cx="22" cy="22" r="10"/><circle class="r r4" cx="22" cy="22" r="5.5"/><circle class="core" cx="22" cy="22" r="2.2"/><path class="cut" d="M22 22 L22 3"/></svg><span>VINTAGE</span></h1>
+      <h1 class="brand"><svg class="mark" viewBox="0 0 44 44" aria-hidden="true"><path class="glass" d="M18.5 4h7v9.4c0 1.9.7 2.7 2 4.1 2.4 2.6 3.4 4.6 3.4 8V38a2 2 0 0 1-2 2H15.1a2 2 0 0 1-2-2V25.5c0-3.4 1-5.4 3.4-8 1.3-1.4 2-2.2 2-4.1Z"/><path class="cork" d="M18.6 4.2V2.2h6.8v2"/><rect class="label" x="14.2" y="26.5" width="15.6" height="9.2" rx="1.6"/><path class="year" d="M17.4 31.2h9.2"/><path class="wine" d="M13.4 24.5c2.2-1.1 4.4-1.1 6.6 0s4.4 1.1 6.6 0 4.4-1.1 4.3 0"/></svg><span>VINTAGE</span></h1>
     </div>
 
     <p class="claim">Good financial data is already free. It&rsquo;s just scattered.
@@ -1147,7 +1147,7 @@ a:hover{text-decoration:underline}
         <h2 class="ptitle">What the forums are saying, right now.</h2>
         <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5a2 2 0 0 1-2 2H8l-4.5 4V5.5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2Z"/><path d="M8 8.5h8"/><path d="M8 12h5"/></svg>fetched while this page was built</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.4l3.4 2"/></svg>stamped with the minute we read it</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5 12 14l3.5-3.5L21 16"/><path d="M21 11v5h-5"/></svg>no history upstream, so we keep one</span></div>
         <div class="fill">
-          <table class="forum"><thead><tr><th></th><th>ticker</th><th>name</th><th class="n">mentions</th><th class="n">24h change</th><th class="n">upvotes</th></tr></thead><tbody><tr><td class="rk">1</td><td class="tk">HTZ</td><td class="nm">Hertz</td><td class="n">1,399</td><td class="n up">+1,385</td><td class="n dimc">7,720</td></tr><tr><td class="rk">2</td><td class="tk">SPY</td><td class="nm">SPDR S&amp;P 500 ETF Trust</td><td class="n">414</td><td class="n down">-300</td><td class="n dimc">1,017</td></tr><tr><td class="rk">3</td><td class="tk">SPCX</td><td class="nm">SpaceX</td><td class="n">397</td><td class="n down">-49</td><td class="n dimc">1,505</td></tr><tr><td class="rk">4</td><td class="tk">SNDK</td><td class="nm">Sandisk</td><td class="n">285</td><td class="n down">-739</td><td class="n dimc">898</td></tr><tr><td class="rk">5</td><td class="tk">MU</td><td class="nm">Micron Technology</td><td class="n">222</td><td class="n down">-138</td><td class="n dimc">499</td></tr><tr><td class="rk">6</td><td class="tk">NVDA</td><td class="nm">NVIDIA</td><td class="n">153</td><td class="n down">-72</td><td class="n dimc">503</td></tr><tr><td class="rk">7</td><td class="tk">QQQ</td><td class="nm">Invesco QQQ ETF</td><td class="n">138</td><td class="n down">-22</td><td class="n dimc">315</td></tr><tr><td class="rk">8</td><td class="tk">MSFT</td><td class="nm">Microsoft</td><td class="n">116</td><td class="n up">+29</td><td class="n dimc">495</td></tr></tbody></table><p class="stamp">read from ApeWisdom at 2026-08-07 01:53 UTC &middot; <code>known_at</code> is that moment, not the moment the posts were written</p>
+          <table class="forum"><thead><tr><th></th><th>ticker</th><th>name</th><th class="n">mentions</th><th class="n">24h change</th><th class="n">upvotes</th></tr></thead><tbody><tr><td class="rk">1</td><td class="tk">HTZ</td><td class="nm">Hertz</td><td class="n">1,399</td><td class="n up">+1,385</td><td class="n dimc">7,720</td></tr><tr><td class="rk">2</td><td class="tk">SPY</td><td class="nm">SPDR S&amp;P 500 ETF Trust</td><td class="n">414</td><td class="n down">-300</td><td class="n dimc">1,017</td></tr><tr><td class="rk">3</td><td class="tk">SPCX</td><td class="nm">SpaceX</td><td class="n">396</td><td class="n down">-50</td><td class="n dimc">1,503</td></tr><tr><td class="rk">4</td><td class="tk">SNDK</td><td class="nm">Sandisk</td><td class="n">285</td><td class="n down">-739</td><td class="n dimc">898</td></tr><tr><td class="rk">5</td><td class="tk">MU</td><td class="nm">Micron Technology</td><td class="n">222</td><td class="n down">-138</td><td class="n dimc">499</td></tr><tr><td class="rk">6</td><td class="tk">NVDA</td><td class="nm">NVIDIA</td><td class="n">153</td><td class="n down">-72</td><td class="n dimc">503</td></tr><tr><td class="rk">7</td><td class="tk">QQQ</td><td class="nm">Invesco QQQ ETF</td><td class="n">138</td><td class="n down">-22</td><td class="n dimc">315</td></tr><tr><td class="rk">8</td><td class="tk">MSFT</td><td class="nm">Microsoft</td><td class="n">116</td><td class="n up">+29</td><td class="n dimc">495</td></tr></tbody></table><p class="stamp">read from ApeWisdom at 2026-08-07 01:55 UTC &middot; <code>known_at</code> is that moment, not the moment the posts were written</p>
         </div>
       </section>
 

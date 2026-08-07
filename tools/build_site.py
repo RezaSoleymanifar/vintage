@@ -1866,21 +1866,21 @@ a:hover{text-decoration:underline}
   letter-spacing:-.022em;margin:0;line-height:.95;font-variant-ligatures:none;
   display:flex;align-items:center;gap:.34em}
 
-/* Tree rings. A vintage is a dated layer, and rings are the oldest
-   point-in-time record there is: one per year, still legible a century later.
-   The rings light from the core outward, so the newest reads last. */
-.brand .mark{width:1.05em;height:1.05em;flex:0 0 auto;overflow:visible}
-.brand .r{fill:none;stroke:var(--green);stroke-width:1.7;opacity:.28;
-  transform-origin:50% 50%;animation:ring 5.2s ease-in-out infinite}
-.brand .r2{animation-delay:.34s}
-.brand .r3{animation-delay:.68s}
-.brand .r4{animation-delay:1.02s}
-.brand .core{fill:var(--green)}
-.brand .cut{stroke:var(--green);stroke-width:1.7;stroke-linecap:round;opacity:.5}
-@keyframes ring{
-  0%,72%,100%{opacity:.26}
-  36%{opacity:1;filter:drop-shadow(0 0 5px var(--green))}}
-@media (prefers-reduced-motion:reduce){.brand .r{animation:none;opacity:.55}}
+/* A bottle, because that is what a vintage is named after. The label is the
+   dated part, and the year mark on it pulses the way the rings used to: the
+   thing being claimed is the date, not the wine. */
+.brand .mark{width:.92em;height:.92em;flex:0 0 auto;overflow:visible}
+.brand .glass{fill:rgba(53,224,138,.09);stroke:var(--green);stroke-width:1.9;
+  stroke-linejoin:round}
+.brand .cork{fill:none;stroke:var(--green);stroke-width:1.9;stroke-linecap:round}
+.brand .label{fill:var(--green);fill-opacity:.16;stroke:var(--green);stroke-width:1.4}
+.brand .year{stroke:var(--green);stroke-width:2.2;stroke-linecap:round;
+  animation:vintage 4.4s ease-in-out infinite}
+.brand .wine{fill:none;stroke:var(--green);stroke-width:1.5;opacity:.45}
+@keyframes vintage{
+  0%,100%{opacity:.45}
+  45%{opacity:1;filter:drop-shadow(0 0 4px var(--green))}}
+@media (prefers-reduced-motion:reduce){.brand .year{animation:none;opacity:.9}}
 .tag{color:var(--green);letter-spacing:.19em;text-transform:uppercase;font-weight:700;
   font-size:clamp(9px,1.35vh,12px);margin:6px 0 0}
 .claim{font-size:clamp(14px,2.15vh,20px);line-height:1.4;margin:0;font-weight:700}
@@ -2246,7 +2246,7 @@ __ONECSS__
 
   <aside class="rail">
     <div>
-      <h1 class="brand"><svg class="mark" viewBox="0 0 44 44" aria-hidden="true"><circle class="r r1" cx="22" cy="22" r="19"/><circle class="r r2" cx="22" cy="22" r="14.5"/><circle class="r r3" cx="22" cy="22" r="10"/><circle class="r r4" cx="22" cy="22" r="5.5"/><circle class="core" cx="22" cy="22" r="2.2"/><path class="cut" d="M22 22 L22 3"/></svg><span>VINTAGE</span></h1>
+      <h1 class="brand"><svg class="mark" viewBox="0 0 44 44" aria-hidden="true"><path class="glass" d="M18.5 4h7v9.4c0 1.9.7 2.7 2 4.1 2.4 2.6 3.4 4.6 3.4 8V38a2 2 0 0 1-2 2H15.1a2 2 0 0 1-2-2V25.5c0-3.4 1-5.4 3.4-8 1.3-1.4 2-2.2 2-4.1Z"/><path class="cork" d="M18.6 4.2V2.2h6.8v2"/><rect class="label" x="14.2" y="26.5" width="15.6" height="9.2" rx="1.6"/><path class="year" d="M17.4 31.2h9.2"/><path class="wine" d="M13.4 24.5c2.2-1.1 4.4-1.1 6.6 0s4.4 1.1 6.6 0 4.4-1.1 4.3 0"/></svg><span>VINTAGE</span></h1>
     </div>
 
     <p class="claim">Good financial data is already free. It&rsquo;s just scattered.
