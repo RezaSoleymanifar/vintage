@@ -187,6 +187,8 @@ v.claims(price_only=True)                     # the 56 replicable with free data
 v.short_volume("AAPL")                        # FINRA daily short volume
 v.sentiment("wallstreetbets")
 v.sectors(["AAPL", "JPM", "XOM"])              # SIC label per name, for neutralizing
+v.splits(2000, combinatorial=True)            # purged, embargoed train/test blocks
+v.overfitting_probability()                   # did picking this session's winner hold up?
 
 # discovery, and the engine
 v.search("inflation expectations"); v.sources(); v.signals()
@@ -271,14 +273,14 @@ Vintage implements the backtest-validation literature rather than inventing its 
 | Costs charged on turnover, always | no zero-cost mode exists | shipped |
 | Deflated Sharpe Ratio | [Bailey & López de Prado (2014)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551) | shipped |
 | Session trial ledger feeding the deflation | Bailey & López de Prado (2014) | shipped |
-| Probability of Backtest Overfitting, via CSCV | [Bailey, Borwein, López de Prado & Zhu (2017)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2326253) | planned |
-| Purged k-fold CV with embargo | *Advances in Financial Machine Learning*, ch. 7 | planned |
-| Combinatorial purged cross-validation | *Advances in Financial Machine Learning*, ch. 12 | planned |
-| Minimum Backtest Length | [Bailey, Borwein, López de Prado & Zhu (2014)](https://www.ams.org/notices/201405/rnoti-p458.pdf) | planned |
-| Newey-West adjustment for autocorrelated returns | Newey & West (1987) | planned |
-| Square-root market impact | Almgren et al. (2005) | planned |
+| Probability of Backtest Overfitting, via CSCV | [Bailey, Borwein, López de Prado & Zhu (2017)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2326253) | shipped |
+| Purged k-fold CV with embargo | *Advances in Financial Machine Learning*, ch. 7 | shipped |
+| Combinatorial purged cross-validation | *Advances in Financial Machine Learning*, ch. 12 | shipped |
+| Minimum Backtest Length | [Bailey, Borwein, López de Prado & Zhu (2014)](https://www.ams.org/notices/201405/rnoti-p458.pdf) | shipped |
+| Newey-West adjustment for autocorrelated returns | Newey & West (1987) | shipped |
+| Square-root market impact | Almgren et al. (2005) | shipped |
 
-Citations are references, not endorsements. None of these authors is affiliated with Vintage. Anything marked planned is not in the code yet, and the `backtest` response says so at runtime rather than in the footnotes.
+Citations are references, not endorsements. None of these authors is affiliated with Vintage. Every row above is in the code, and the `backtest` response carries each one rather than leaving it in the footnotes.
 
 ## Where the data comes from
 

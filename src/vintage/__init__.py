@@ -34,6 +34,8 @@ from .sdk import (  # noqa: F401
     returns,
     search,
     sectors,
+    splits,
+    overfitting_probability,
     sentiment,
     short_volume,
     signals,
@@ -48,6 +50,6 @@ __all__ = [
     "filings", "resolve", "factors", "macro", "claim", "claims", "short_volume",
     "sentiment", "search", "sources", "signals", "backtest", "trials", "frame",
     "delistings", "survivorship_warning", "fx", "volatility", "index",
-    "cross_section", "treasury_yields", "positioning", "sectors",
+    "cross_section", "treasury_yields", "positioning", "sectors", "splits", "overfitting_probability",
     "__version__",
 ]

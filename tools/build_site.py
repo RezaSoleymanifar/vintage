@@ -1276,17 +1276,18 @@ __DIACSS__
       <span class="paper on"><b>shipped</b> · costs on turnover</span>
       <span class="paper on"><b>shipped</b> · deflated Sharpe</span>
       <span class="paper on"><b>shipped</b> · session trial ledger</span>
-      <span class="paper off"><b>planned</b> · PBO via CSCV</span>
-      <span class="paper off"><b>planned</b> · purged k-fold + embargo</span>
-      <span class="paper off"><b>planned</b> · minimum backtest length</span>
-      <span class="paper off"><b>planned</b> · Newey-West</span>
-      <span class="paper off"><b>planned</b> · square-root impact</span>
+      <span class="paper on"><b>shipped</b> · PBO via CSCV</span>
+      <span class="paper on"><b>shipped</b> · purged k-fold + embargo</span>
+      <span class="paper on"><b>shipped</b> · combinatorial purged CV</span>
+      <span class="paper on"><b>shipped</b> · minimum backtest length</span>
+      <span class="paper on"><b>shipped</b> · Newey-West</span>
+      <span class="paper on"><b>shipped</b> · square-root impact</span>
     </div>
     <p class="after">Execution realism is a different problem, already solved by
     <a href="https://www.quantconnect.com/lean">LEAN</a> and
     <a href="https://nautilustrader.io/">Nautilus Trader</a>. Vintage runs before that, where most
-    ideas should die. Citations are references, not endorsements; anything marked planned is not in
-    the code yet, and the <code>backtest</code> response says so at runtime.</p>
+    ideas should die. Citations are references, not endorsements; every method above is in the
+    code, and the <code>backtest</code> response carries each one at runtime.</p>
   </section>
 
   <section>
@@ -1680,8 +1681,12 @@ FACTS = {
 }
 
 
-# The half a quant checks before trusting a number. Worded as what the code
-# does, which is why survivorship says warned rather than solved.
+# What a quant checks before trusting a number. Every one of these is in the
+# backtest response today: the first six were always there, and the last five
+# arrived with engine/validation.py, which is why the README's "planned" list is
+# now shorter. Worded as what the code does, which is why survivorship still
+# says warned rather than solved: the delisting record ships, but the universe
+# the backtester builds is still current-listing only.
 ENGINE_BADGES = [
     ("wall", "point-in-time panel"),
     ("calendar", "restatements kept"),
@@ -1689,16 +1694,27 @@ ENGINE_BADGES = [
     ("coin", "costs on turnover"),
     ("fall", "deflated Sharpe"),
     ("ledger", "trial ledger"),
+    ("scatter", "purged k-fold, embargoed"),
+    ("funnel", "PBO via CSCV"),
+    ("series", "Newey-West t-stat"),
+    ("flask", "square-root impact"),
+    ("clock", "min backtest length"),
 ]
 
 
 def build_badges() -> str:
-    def pill(glyph: str, label: str) -> str:
-        return f'<span class="badge">{icon(glyph, 21)}<b>{label}</b></span>'
+    # The stagger is per badge rather than one shared loop, so the column reads
+    # as eleven separate checks running rather than one thing blinking.
+    def pill(glyph: str, label: str, i: int) -> str:
+        return (f'<span class="badge" style="--d:{i * -0.42:.2f}s">'
+                f'{icon(glyph, 21)}<b>{label}</b></span>')
 
-    engine = "".join(pill(g, lab) for g, lab in ENGINE_BADGES)
-    return (f'<p class="bline">A single MCP server for native quantitative research.</p>'
-            f'<p class="blab eng">Backtest engine</p>'
+    engine = "".join(pill(g, lab, i) for i, (g, lab) in enumerate(ENGINE_BADGES))
+    return (f'<p class="bline">Pipe processed web market data straight into local AI '
+            f'agents, on demand.</p>'
+            f'<p class="blab eng">Quantitative research grade</p>'
+            f'<p class="bsub">point-in-time &middot; survivorship &middot; look-ahead bias '
+            f'&middot; multiple testing &middot; market impact</p>'
             f'<div class="badges">{engine}</div>')
 
 
@@ -1728,10 +1744,12 @@ METHODS = [
     ("on", "Costs charged on turnover", "there is no zero-cost mode"),
     ("on", "Deflated Sharpe Ratio", "Bailey &amp; L&oacute;pez de Prado, 2014"),
     ("on", "Session trial ledger", "every spec you tried, priced into the result"),
-    ("off", "Probability of Backtest Overfitting", "Bailey, Borwein, L&oacute;pez de Prado &amp; Zhu, 2017"),
-    ("off", "Purged k-fold with embargo", "Advances in Financial Machine Learning, ch. 7"),
-    ("off", "Minimum Backtest Length", "Bailey, Borwein, L&oacute;pez de Prado &amp; Zhu, 2014"),
-    ("off", "Newey-West, square-root impact", "Newey &amp; West 1987; Almgren 2005"),
+    ("on", "Probability of Backtest Overfitting", "Bailey, Borwein, L&oacute;pez de Prado &amp; Zhu, 2017"),
+    ("on", "Purged k-fold with embargo", "Advances in Financial Machine Learning, ch. 7"),
+    ("on", "Combinatorial purged CV", "Advances in Financial Machine Learning, ch. 12"),
+    ("on", "Minimum Backtest Length", "Bailey, Borwein, L&oacute;pez de Prado &amp; Zhu, 2014"),
+    ("on", "Newey-West t-statistic", "Newey &amp; West, 1987"),
+    ("on", "Square-root market impact", "Almgren, Thum, Hauptmann &amp; Li, 2005"),
 ]
 
 
@@ -1739,8 +1757,8 @@ def build_methods() -> str:
     rows = "".join(
         f'<div class="method {state}"><b>{name}</b><span>{cite}</span></div>'
         for state, name, cite in METHODS)
-    return (f'<div class="mhead"><span class="on">in the code</span>'
-            f'<span class="off">named, not yet built</span></div>{rows}')
+    return (f'<div class="mhead"><span class="on">in the code, cited</span>'
+            f'</div>{rows}')
 
 
 def build_facts(key: str) -> str:
@@ -1808,9 +1826,27 @@ a:hover{text-decoration:underline}
   line-height:1.45;font-weight:700}
 .blab{margin:0 0 6px;color:var(--green);font-size:clamp(9px,1.2vh,11px);
   letter-spacing:.16em;text-transform:uppercase;font-weight:700}
+.bsub{margin:-2px 0 8px;color:var(--dim);font-size:clamp(8.5px,1.14vh,10.5px);
+  line-height:1.4}
 .badge{display:flex;align-items:center;gap:9px;border:1px solid rgba(47,213,135,.28);
-  border-radius:9px;padding:7px 10px;background:var(--panel);min-width:0}
-.badge .ic{color:var(--green);opacity:.9;flex:none}
+  border-radius:9px;padding:7px 10px;background:var(--panel);min-width:0;
+  position:relative;overflow:hidden}
+/* Each badge is a check the engine runs, so the mark breathes and a faint sweep
+   crosses the pill, staggered by --d. It reads as eleven things working rather
+   than eleven things printed. */
+.badge::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(105deg,transparent 38%,rgba(47,213,135,.13) 50%,transparent 62%);
+  transform:translateX(-100%);animation:bsweep 7s ease-in-out infinite var(--d,0s)}
+@keyframes bsweep{0%,62%{transform:translateX(-100%)}
+  78%{transform:translateX(100%)}100%{transform:translateX(100%)}}
+.badge .ic{color:var(--green);opacity:.9;flex:none;transform-origin:50% 50%;
+  animation:bpulse 3.8s ease-in-out infinite var(--d,0s)}
+@keyframes bpulse{0%,100%{opacity:.5;transform:scale(.92)}
+  50%{opacity:1;transform:scale(1.08)}}
+@media (prefers-reduced-motion:reduce){
+  .badge::after{display:none}
+  .badge .ic{animation:none;opacity:.9;transform:none}
+}
 .badge b{color:var(--ink);font-weight:700;line-height:1.2;
   font-size:clamp(9.5px,1.3vh,11.5px)}
 
@@ -1929,6 +1965,16 @@ a:hover{text-decoration:underline}
   border-radius:10px;padding:clamp(12px,1.8vh,20px);overflow:auto;max-height:44vh}
 .pane pre code{font-family:var(--mono);font-size:clamp(10.5px,1.65vh,14px);
   color:var(--ink);white-space:pre}
+
+/* The map slide narrows the rail rather than dropping it. Everything on that
+   slide is a scaled drawing, so width is the only thing deciding how big the
+   labels land, and the rail at 31% was most of the budget. Taking it to 20%
+   hands the diagram about 250px and keeps the pane, the pitch and the install
+   line on screen where they belong. */
+@media(min-width:1040px) and (min-height:640px){
+  .shell.wide{grid-template-columns:minmax(310px,24%) 1fr}
+}
+.shell.wide .rail{transition:none}
 
 .panels{position:relative;flex:1;min-height:0}
 .panel{position:absolute;inset:0;opacity:0;visibility:hidden;
@@ -2101,7 +2147,7 @@ __ONECSS__
       <section class="panel arch is-on" data-dwell="14">
         <h2 class="ptitle">The whole thing, on one page.</h2>
         __FMAP__
-        <div class="archwrap"><img src="__ARCHSRC__" width="1280" height="1030"
+        <div class="archwrap"><img src="__ARCHSRC__" width="1616" height="980"
           alt="Eighteen free financial data sources: SEC EDGAR, Form 13F, FRED, ECB,
           US Treasury, BLS, BEA, CFTC, CBOE, FINRA, Coinbase, Ken French and more,
           federated behind one interface, every row carrying both the date it
@@ -2239,6 +2285,8 @@ __ONECSS__
   function show(i) {
     at = i;
     panels.forEach(function (p, n) { p.classList.toggle('is-on', n === i); });
+    document.querySelector('.shell').classList.toggle(
+      'wide', panels[i].classList.contains('arch'));
     var dwell = (parseFloat(panels[i].dataset.dwell) || 9) * 1000;
     chips.forEach(function (c) {
       c.classList.remove('is-on');

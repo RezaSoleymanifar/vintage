@@ -35,6 +35,7 @@ import pandas as pd
 from . import envelope, registry
 from .engine import backtest as _bt
 from .engine import honesty as _honesty
+from .engine import validation as _validation
 from .sources import (apewisdom, cboe, cftc, coinbase,
                       delistings as _delistings, ecb, edgar, finra,
                       frames as _frames, fred, french, openap,
@@ -48,7 +49,7 @@ __all__ = [
     "claim", "claims", "crypto", "short_volume", "sentiment",
     "resolve", "search", "sources", "signals", "backtest", "trials", "frame",
     "delistings", "survivorship_warning", "fx", "volatility", "index",
-    "sectors",
+    "sectors", "splits", "overfitting_probability",
     "cross_section", "treasury_yields", "positioning",
     "corporate_actions",
 ]
@@ -187,6 +188,46 @@ def sectors(entities: Iterable[str]) -> pd.DataFrame:
     return pd.DataFrame(rows)[
         ["entity", "ticker", "name", "sic", "sic_description", "division", "vintage"]
     ] if rows else pd.DataFrame()
+
+
+
+def splits(n_obs: int, *, folds: int = 5, horizon: int = 1,
+           embargo_pct: float = 0.01, combinatorial: bool = False,
+           groups: int = 6, test_groups: int = 2) -> list[tuple[list[int], list[int]]]:
+    """Purged, embargoed train/test splits as integer positions.
+
+    For fitting anything on a financial series outside the backtester. Ordinary
+    k-fold leaks: a label computed over the next `horizon` days spans the
+    boundary, and serial correlation makes the days just after a test block
+    near-copies of it. This purges the first and embargoes the second.
+
+    `combinatorial=True` returns every combination of held-out blocks instead
+    of one pass, which is what turns a single out-of-sample number into a
+    distribution (Lopez de Prado, AFML ch. 7 and 12).
+    """
+    if combinatorial:
+        return _validation.combinatorial_purged(
+            n_obs, n_groups=groups, n_test_groups=test_groups,
+            horizon=horizon, embargo_pct=embargo_pct)
+    return _validation.purged_kfold(
+        n_obs, n_splits=folds, horizon=horizon, embargo_pct=embargo_pct)
+
+
+def overfitting_probability(columns: dict[str, dict[str, float]] | None = None,
+                            *, blocks: int = 8) -> dict[str, Any]:
+    """How often the best-looking configuration failed out of sample.
+
+    Pass a mapping of name -> {date: return}. With nothing passed it uses the
+    backtests run this session, which is usually what you want: the question is
+    whether picking the winner from what *you* tried would have held up.
+    """
+    series = list(columns.values()) if columns else _honesty.trial_series()
+    if len(series) < 2:
+        return {"pbo": None, "note": "needs at least two return series to compare"}
+    dates, matrix = _validation.align(series)
+    out = _validation.probability_of_overfitting(matrix, n_blocks=blocks)
+    out["overlapping_days"] = len(dates)
+    return out
 
 
 def treasury_yields(tenor: str = "10y", *, start: str | None = None,

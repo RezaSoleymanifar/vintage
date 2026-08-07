@@ -67,13 +67,20 @@ def on_pypi() -> str:
 
 
 def on_registry() -> str | None:
+    """The newest version the registry serves.
+
+    It returns every version ever published, oldest first. Taking the first
+    match read 0.1.1 back for eight releases and reported the registry behind
+    when it was current, which is a checker that cries wolf until nobody reads
+    it.
+    """
     payload = get(REGISTRY)
-    servers = payload.get("servers") or []
-    for entry in servers:
+    found = []
+    for entry in payload.get("servers") or []:
         server = entry.get("server", entry)
-        if "vintage" in (server.get("name") or ""):
-            return server.get("version")
-    return None
+        if "vintage" in (server.get("name") or "") and server.get("version"):
+            found.append(server["version"])
+    return max(found, key=as_tuple) if found else None
 
 
 def main() -> None:

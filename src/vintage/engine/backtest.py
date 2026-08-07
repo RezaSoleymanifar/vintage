@@ -15,7 +15,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from . import honesty
+from . import honesty, validation
 
 TRADING_DAYS = 252
 
@@ -71,6 +71,8 @@ def run(
     cost_bps: float = 10.0,
     start: str | None = None,
     end: str | None = None,
+    notional: float | None = None,
+    average_daily_volume: float | None = None,
 ) -> dict[str, Any]:
     """Rank, hold, rebalance, charge costs. Returns stats plus an honesty report."""
     if prices.empty:
@@ -165,7 +167,8 @@ def run(
     per_obs_sharpe = (
         float(net.mean() / net.std()) if float(net.std()) > 0 else 0.0
     )
-    trials = honesty.record_trial(spec, per_obs_sharpe)
+    series = {str(d.date()): float(v) for d, v in net.items()}
+    trials = honesty.record_trial(spec, per_obs_sharpe, returns=series)
 
     report = honesty.deflated_sharpe(
         per_obs_sharpe,
@@ -181,12 +184,105 @@ def run(
     report["first_half_sharpe"] = _stats(net.iloc[:split])["sharpe"]
     report["second_half_sharpe"] = _stats(net.iloc[split:])["sharpe"]
 
+    values = [float(v) for v in net.values]
+
+    # A t-statistic that does not pretend daily returns are independent.
+    report["newey_west"] = validation.newey_west_t(values)
+
+    # How long the sample would have to be for this Sharpe to mean anything,
+    # given how many specs have been tried to find it.
+    report["min_backtest_length"] = validation.min_backtest_length(
+        trials, stats["sharpe"]
+    )
+
+    # Out-of-sample behaviour across every combination of held-out blocks,
+    # rather than the single arbitrary split that first-half/second-half is.
+    report["combinatorial_purged_cv"] = _cpcv(net)
+
+    # And whether picking the best spec of the session would have held up.
+    report["probability_of_backtest_overfitting"] = _pbo()
+
+    report["impact"] = validation.impact_report(
+        stats["average_turnover_per_rebalance"],
+        rebalances_per_year=len(turnover_log) / max(len(net) / TRADING_DAYS, 1e-9),
+        notional=notional,
+        average_daily_volume=average_daily_volume,
+        daily_volatility=float(net.std()),
+    )
+
     return {
         "spec": spec,
         "stats": stats,
         "honesty": report,
         "returns": {str(d.date()): round(float(v), 6) for d, v in net.items()},
     }
+
+
+
+def _cpcv(net: pd.Series, *, n_groups: int = 6, n_test_groups: int = 2) -> dict[str, Any]:
+    """Sharpe on each held-out combination of blocks, purged and embargoed.
+
+    The strategy fits nothing, so there is no parameter leaking across the
+    boundary. What leaks is the reader's attention: quoting one split invites
+    picking the flattering one. Every combination is quoted instead, and the
+    spread is the answer.
+    """
+    n_obs = len(net)
+    if n_obs < 120:
+        return {"paths": None, "note": "too few observations to split into blocks"}
+    try:
+        splits = validation.combinatorial_purged(
+            n_obs, n_groups=n_groups, n_test_groups=n_test_groups,
+            horizon=1, embargo_pct=0.01,
+        )
+    except ValueError as exc:
+        return {"paths": None, "note": str(exc)}
+
+    values = net.values
+    sharpes = []
+    for _, test in splits:
+        window = pd.Series(values[test])
+        stats = _stats(window)
+        sharpes.append(stats["sharpe"])
+
+    sharpes.sort()
+    mid = len(sharpes) // 2
+    return {
+        "paths": len(sharpes),
+        "median_sharpe": round(sharpes[mid], 3),
+        "worst_sharpe": round(sharpes[0], 3),
+        "best_sharpe": round(sharpes[-1], 3),
+        "share_of_paths_positive": round(
+            sum(1 for s in sharpes if s > 0) / len(sharpes), 3
+        ),
+        "note": (
+            "Lopez de Prado, AFML ch. 12. Each path is a distinct set of "
+            "held-out blocks, with training rows purged and embargoed around "
+            "them. The worst path is the one worth reading."
+        ),
+    }
+
+
+def _pbo() -> dict[str, Any]:
+    """PBO across the specs tried this session, if there are enough of them."""
+    series = honesty.trial_series()
+    if len(series) < 2:
+        return {
+            "pbo": None,
+            "note": "needs at least two backtests this session to compare",
+        }
+    dates, matrix = validation.align(series)
+    if len(dates) < 32:
+        return {
+            "pbo": None,
+            "note": (
+                f"the {len(series)} specs tried this session share only "
+                f"{len(dates)} dates, too few to cross-validate"
+            ),
+        }
+    out = validation.probability_of_overfitting(matrix)
+    out["overlapping_days"] = len(dates)
+    return out
 
 
 def _annualized(returns: pd.Series) -> float:

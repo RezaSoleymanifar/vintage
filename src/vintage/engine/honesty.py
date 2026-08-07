@@ -20,9 +20,29 @@ EULER = 0.5772156649015329
 _trials: list[dict[str, Any]] = []
 
 
-def record_trial(spec: dict[str, Any], sharpe: float) -> int:
-    _trials.append({"spec": spec, "sharpe": sharpe})
+# How many trials keep their return series. PBO needs the series, not just the
+# Sharpe, and a session that ran hundreds of specs should not hold all of them
+# in memory. The most recent ones are the ones being compared.
+KEEP_SERIES = 64
+
+
+def record_trial(spec: dict[str, Any], sharpe: float,
+                 returns: dict[str, float] | None = None) -> int:
+    """Log one attempt. `returns` is date -> return, kept so PBO can run.
+
+    The Sharpe alone answers "was this good". The series answers "would picking
+    this one have held up", which is a different and harder question.
+    """
+    _trials.append({"spec": spec, "sharpe": sharpe, "returns": returns})
+    kept = [t for t in _trials if t.get("returns")]
+    for trial in kept[:-KEEP_SERIES]:
+        trial["returns"] = None
     return len(_trials)
+
+
+def trial_series() -> list[dict[str, float]]:
+    """The return series still held, oldest first."""
+    return [t["returns"] for t in _trials if t.get("returns")]
 
 
 def trial_count() -> int:
