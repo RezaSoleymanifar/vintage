@@ -29,7 +29,7 @@ W, H = 1616, 980
 
 # Panel metrics, kept together because the vertical layout is derived from them
 # and the lanes have to fit between the header and footer rules.
-ROW_H = 36
+ROW_H = 30
 PANEL_HEAD = 50
 LANE_GAP = 10
 TOP_RULE, BOTTOM_RULE = 72, H - 44
@@ -42,6 +42,8 @@ DIM = "#5f7a8c"
 GREEN = "#35e08a"
 BLUE = "#7fb3ff"
 AMBER = "#ffc46b"
+TEAL = "#5fd9d0"
+VIOLET = "#b79bff"
 MONO = "ui-monospace,'SF Mono','Cascadia Mono',Menlo,Consolas,monospace"
 
 # Which registry source belongs in which lane. Every source must appear exactly
@@ -59,28 +61,28 @@ LANES = [
         "title": "MARKET SUPERVISORS",
         "note": "primary · US regulator",
         "icon": "shield",
-        "accent": GREEN,
+        "accent": BLUE,
         "sources": ["finra-short-volume", "cftc-cot"],
     },
     {
         "title": "CENTRAL BANKS & AGENCIES",
         "note": "primary · statistical",
         "icon": "bank",
-        "accent": GREEN,
+        "accent": AMBER,
         "sources": ["fred", "ecb-reference-rates", "us-treasury", "bls", "bea"],
     },
     {
         "title": "EXCHANGES & PRICES",
         "note": "exchange · third party",
         "icon": "candle",
-        "accent": GREEN,
+        "accent": TEAL,
         "sources": ["cboe-indices", "coinbase-exchange", "yahoo-finance"],
     },
     {
         "title": "ACADEMIC & COMMUNITY",
         "note": "primary · academic",
         "icon": "cap",
-        "accent": GREEN,
+        "accent": VIOLET,
         "sources": ["ken-french-data-library", "open-source-asset-pricing",
                     "apewisdom"],
     },
@@ -297,19 +299,19 @@ def lane_panel(lane: dict, x: float, y: float, w: float, index: int) -> tuple[st
         cx0 = x + 10 + col * col_w
         row_y = y + PANEL_HEAD + 15 + row * ROW_H
         who, what = SHORT[name]
-        parts.append(icon(name, cx0 + 6, row_y - 18, accent,
-                          (index * 5 + i) * 0.31, 1.58, SOURCE_ICONS))
-        parts.append(text(cx0 + 48, row_y - 2, who, size=17.5, fill=INK, weight=700))
-        parts.append(text(cx0 + 48, row_y + 15, what, size=15, fill="#8ea6b8"))
+        parts.append(icon(name, cx0 + 6, row_y - 15, accent,
+                          (index * 5 + i) * 0.31, 1.15, SOURCE_ICONS))
+        parts.append(text(cx0 + 42, row_y - 2, who, size=12.5, fill=INK, weight=700))
+        parts.append(text(cx0 + 42, row_y + 13, what, size=10.5, fill="#8ea6b8"))
     return "".join(parts), h
 
 
 def build() -> str:
     check_lanes()
 
-    lane_x, lane_w = 36, 600
-    core_x, core_w = 690, 200
-    right_x, right_w = 950, 630
+    lane_x, lane_w = 20, 580
+    core_x, core_w = 656, 300
+    right_x, right_w = 1020, 576
 
     # Lay the lanes out down the left edge, centred in the space between the
     # two rules rather than in the canvas, so nothing rides over the header.
@@ -400,9 +402,9 @@ def build() -> str:
                      size=19.5, fill=INK, weight=700, spacing="0.1em"))
     body.append(text(right_x + 26, env_y + 82, "observed_at", size=18.75, fill=DIM,
                      spacing="0.06em"))
-    body.append(text(right_x + 26 + 219, env_y + 82, "known_at", size=18.75,
+    body.append(text(right_x + 26 + 190, env_y + 82, "known_at", size=18.75,
                      fill=GREEN, spacing="0.06em"))
-    body.append(text(right_x + 26 + 402, env_y + 82, "field", size=18.75, fill=DIM,
+    body.append(text(right_x + 26 + 342, env_y + 82, "field", size=18.75, fill=DIM,
                      spacing="0.06em"))
     for i, (field, observed, known) in enumerate(ENVELOPE):
         row_y = env_y + 128 + i * 52
@@ -413,8 +415,8 @@ def build() -> str:
             f'begin="{i * 1.6}s" repeatCount="indefinite"/></rect>'
         )
         body.append(text(right_x + 26, row_y, observed, size=21.75, fill="#a9c0cf"))
-        body.append(text(right_x + 26 + 219, row_y, known, size=21.75, fill=GREEN))
-        body.append(text(right_x + 26 + 402, row_y, field, size=18.75, fill=DIM))
+        body.append(text(right_x + 26 + 190, row_y, known, size=21.75, fill=GREEN))
+        body.append(text(right_x + 26 + 342, row_y, field, size=16.5, fill=DIM))
     body.append(text(right_x + 26, env_y + 278,
                      "a backtest never sees a row before known_at",
                      size=18.75, fill=AMBER, opacity="0.85"))
@@ -427,13 +429,13 @@ def build() -> str:
                      size=19.5, fill=INK, weight=700, spacing="0.1em"))
     for i, verb in enumerate(VERBS):
         col, row = i % 3, i // 3
-        vx = right_x + 26 + col * 196
+        vx = right_x + 26 + col * 176
         vy = verb_y + 74 + row * 56
         body.append(
-            f'<rect x="{vx}" y="{vy}" width="182" height="43" rx="5" fill="#0b111b" '
+            f'<rect x="{vx}" y="{vy}" width="164" height="43" rx="5" fill="#0b111b" '
             f'stroke="{LINE}"/>'
         )
-        body.append(text(vx + 91, vy + 29, verb, size=20.25, fill=GREEN,
+        body.append(text(vx + 82, vy + 29, verb, size=18.5, fill=GREEN,
                          anchor="middle"))
 
     body.append(
@@ -444,7 +446,7 @@ def build() -> str:
                      fill=INK, weight=700, spacing="0.1em"))
     for i, client in enumerate(CLIENTS):
         col, row = i % 2, i // 2
-        vx = right_x + 26 + col * 292
+        vx = right_x + 26 + col * 264
         vy = out_y + 78 + row * 50
         body.append(
             f'<circle cx="{vx + 8}" cy="{vy + 13}" r="4.6" fill="{BLUE}" '

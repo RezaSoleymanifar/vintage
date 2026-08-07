@@ -440,7 +440,7 @@ RAW_SHAPES = [
 # The nine keys of envelope.row(), in the order that function writes them.
 SCHEMA_FIELDS = [
     ("entity",      "one key, resolved from ticker, CIK or name"),
-    ("field",       "prefix:name, the same grammar for all 18"),
+    ("field",       "prefix:name, the same grammar for all 19"),
     ("observed_at", "the date the value describes"),
     ("known_at",    "the date it first became public"),
     ("value",       "the number itself"),
@@ -479,22 +479,27 @@ def diagram_schema() -> str:
              'normalized into one nine-field row carrying both the date it describes '
              'and the date it became public">')
 
-    p.append(txt(20, 30, "THE FREE FINANCIAL WEB HAS NO SCHEMA", "d-h"))
-    p.append(txt(1140, 30, "VINTAGE IS ONE", "d-h g", "end"))
+    p.append(txt(20, 30, "24 PREFIXES, FOUR FAMILIES", "d-h"))
+    p.append(txt(1140, 30, "AND ONE ROW SHAPE UNDER ALL OF THEM", "d-h g", "end"))
 
-    for i, (who, fmt, lines, missing) in enumerate(RAW_SHAPES):
-        x = 20 + i * 282
-        p.append(card(x, 44, 272, 122, "d-src"))
-        p.append(txt(x + 14, 66, who, "d-it"))
-        p.append(txt(x + 258, 66, fmt, "d-fn", "end"))
-        for j, line in enumerate(lines):
-            p.append(txt(x + 14, 86 + j * 15, line, "d-raw"))
-        p.append(txt(x + 14, 156, missing, "d-miss"))
+    for gi, (family, prefixes) in enumerate(TAXONOMY):
+        x = COL_X[gi]
+        p.append(f'<rect class="d-fam" x="{x}" y="44" width="{COL_W}" height="122" rx="12"/>')
+        p.append(txt(x + 14, 66, family, "d-ct"))
+        p.append(txt(x + COL_W - 14, 66, f"{len(prefixes)}", "d-cnt", "end"))
+        shown = ", ".join(pref for pref, _ in prefixes[:4])
+        rest = f" +{len(prefixes) - 4} more" if len(prefixes) > 4 else ""
+        p.append(txt(x + 14, 92, shown, "d-px"))
+        if rest:
+            p.append(txt(x + 14, 112, rest.strip(), "d-fn"))
+        p.append(txt(x + 14, 140, prefixes[0][1], "d-fn"))
+        p.append(txt(x + 14, 156, "one grammar, any source", "d-fn"))
 
-        d = f"M{x + 136} 166 L{x + 136} 196"
+        cx = x + COL_W // 2
+        d = f"M{cx} 166 L{cx} 196"
         p.append(f'<path class="d-wire" d="{d}"/>')
-        p.append(f'<path class="d-flow" style="animation-delay:{i * -0.4:.1f}s" d="{d}"/>')
-        p.append(f'<path class="d-arrow" d="M{x + 130} 188 L{x + 136} 196 L{x + 142} 188"/>')
+        p.append(f'<path class="d-flow" style="animation-delay:{gi * -0.4:.1f}s" d="{d}"/>')
+        p.append(f'<path class="d-arrow" d="M{cx - 6} 188 L{cx} 196 L{cx + 6} 188"/>')
 
     p.append('<rect class="d-pipe" x="20" y="196" width="1120" height="238" rx="14"/>')
     p.append(txt(38, 222, "THE ROW EVERY SOURCE NORMALIZES TO", "d-h g"))
@@ -576,7 +581,6 @@ def diagram_pit() -> str:
     )
 
     p.append(txt(20, 40, "THE NEWSSTAND", "d-h"))
-    p.append(txt(1140, 40, "you may read what was already printed", "d-h g", "end"))
 
     # today, sweeping. Everything to its right has not been printed yet.
     p.append('<g class="pit-wall">'
@@ -997,6 +1001,8 @@ h2{font-size:clamp(19px,3.4vw,26px);color:var(--ink);margin:0 0 8px;font-weight:
 .d-edgemark.edu{fill:#2fd587}
 .d-edgemark.third{fill:#3b5468}
 .d-bdg{font-size:10px;letter-spacing:.16em}
+.d-rank{fill:var(--dim);font-size:10px;letter-spacing:.08em}
+.d-yrs{fill:var(--ink);font-size:12px;font-weight:700}
 .d-bdg.gov{fill:var(--green)}
 .d-bdg.edu{fill:#2fd587}
 .d-bdg.third{fill:#6b8299}
@@ -1493,8 +1499,8 @@ def build_session(script: list, loop: float, prefix: str) -> tuple[str, str]:
 # kept, and the reader is trusted to know that 1926 is before 1962.
 COVERAGE_STATS = [
     ("100",     "years, Jul 1926 on"),
-    ("18",      "free sources"),
-    ("23",      "field prefixes"),
+    ("19",      "primary sources"),
+    ("24",      "field prefixes"),
     ("331",     "published claims"),
     ("800k+",   "macro series"),
 ]
@@ -1503,26 +1509,34 @@ COVERAGE_STATS = [
 # from the source or quoted from its own documentation. Nothing is estimated: a
 # source whose start date Vintage cannot establish says what it does instead.
 COVERAGE_BANNERS = [
-    ("SEC EDGAR XBRL",     "gov",   "2009 &rarr; today"),
-    ("SEC filings stream", "gov",   "1993 &rarr; today"),
-    ("SEC Form 13F",       "gov",   "by quarter, filed 45 days late"),
-    ("SEC Form 25",        "gov",   "2003 &rarr; today"),
-    ("SEC XBRL frames",    "gov",   "any quarter, all filers at once"),
-    ("FINRA short volume", "gov",   "2009 &rarr; today"),
-    ("CFTC positioning",   "gov",   "2016 &rarr; today"),
-    ("FRED",               "gov",   "1947 &rarr; today"),
-    ("ALFRED vintages",    "gov",   "1996 &rarr; today"),
-    ("US Treasury",        "gov",   "1990 &rarr; today"),
-    ("ECB reference rates", "gov",  "1999 &rarr; today"),
-    ("BLS",                "gov",   "3 years on the keyless tier"),
-    ("BEA",                "gov",   "the current estimate only"),
-    ("CBOE volatility",    "gov",   "1990 &rarr; today"),
-    ("Ken French Library", "edu",   "Jul 1926 &rarr; today"),
-    ("Open Source AP",     "edu",   "1926 &rarr; 2023"),
-    ("Coinbase Exchange",  "third", "2015 &rarr; today"),
-    ("Yahoo Finance",      "third", "1962 &rarr; today"),
-    ("ApeWisdom",          "third", "live only, no history"),
+    # (name, standing, span in words, first year on record or None)
+    # Ranked by depth of history, deepest first, because that is the question a
+    # backtest actually asks of a source. Every year here is either measured from
+    # the source or quoted from its own documentation; the four with no year are
+    # cross-sections or live feeds, where a start date is not the right measure,
+    # and they sort to the bottom rather than being given an invented one.
+    ("Ken French Library",  "edu",   "Jul 1926 &rarr; today", 1926),
+    ("Open Source AP",      "edu",   "1926 &rarr; 2023", 1926),
+    ("FRED",                "gov",   "1947 &rarr; today", 1947),
+    ("Yahoo Finance",       "third", "1962 &rarr; today", 1962),
+    ("US Treasury",         "gov",   "1990 &rarr; today", 1990),
+    ("CBOE volatility",     "gov",   "1990 &rarr; today", 1990),
+    ("SEC filings stream",  "gov",   "1993 &rarr; today", 1993),
+    ("ALFRED vintages",     "gov",   "1996 &rarr; today", 1996),
+    ("ECB reference rates", "gov",   "1999 &rarr; today", 1999),
+    ("SEC Form 25",         "gov",   "2003 &rarr; today", 2003),
+    ("SEC EDGAR XBRL",      "gov",   "2009 &rarr; today", 2009),
+    ("FINRA short volume",  "gov",   "2009 &rarr; today", 2009),
+    ("Coinbase Exchange",   "third", "2015 &rarr; today", 2015),
+    ("CFTC positioning",    "gov",   "2016 &rarr; today", 2016),
+    ("BLS",                 "gov",   "2024 &rarr; today, keyless", 2024),
+    ("SEC Form 13F",        "gov",   "by quarter, filed 45 days late", None),
+    ("SEC XBRL frames",     "gov",   "any quarter, all filers at once", None),
+    ("BEA",                 "gov",   "the current estimate only", None),
+    ("ApeWisdom",           "third", "live only, no history", None),
 ]
+
+THIS_YEAR = 2026
 
 BADGE_WORD = {"gov": "PRIMARY", "edu": "ACADEMIC", "third": "THIRD PARTY"}
 
@@ -1544,14 +1558,17 @@ def diagram_coverage() -> str:
         p.append(txt(x + 106, 114, label, "d-fn", "middle"))
 
     half = (len(COVERAGE_BANNERS) + 1) // 2
-    for i, (name, badge, span) in enumerate(COVERAGE_BANNERS):
+    for i, (name, badge, span, start) in enumerate(COVERAGE_BANNERS):
         col, row = i // half, i % half
         x = 20 + col * 570
         y = 154 + row * 36
         p.append(f'<rect class="d-ban" x="{x}" y="{y}" width="550" height="30" rx="8"/>')
         p.append(f'<rect class="d-edgemark {badge}" x="{x}" y="{y}" width="4" height="30"/>')
-        p.append(txt(x + 18, y + 20, name, "d-it"))
-        p.append(txt(x + 250, y + 20, BADGE_WORD[badge], f"d-bdg {badge}"))
+        p.append(txt(x + 16, y + 20, f"{i + 1:02d}", "d-rank"))
+        p.append(txt(x + 46, y + 20, name, "d-it"))
+        p.append(txt(x + 268, y + 20, BADGE_WORD[badge], f"d-bdg {badge}"))
+        if start:
+            p.append(txt(x + 400, y + 20, f"{THIS_YEAR - start} yr", "d-yrs"))
         p.append(txt(x + 536, y + 20, span, "d-fn", "end"))
 
     p.append(txt(20, 560, "Primary means the institution that receives or computes the number, "
@@ -1634,10 +1651,14 @@ def icon(name: str, size: int = 15) -> str:
 
 # The rail used to say all of this in sentences. Six numbers say it faster.
 TILES = [
-    ("clock", "100", "years deep"),
-    ("prompt", "6", "verbs, whole API"),
-    ("zero", "$0", "forever"),
-    ("series", "800k", "macro series"),
+    ("clock", "100", "years, Jul 1926 on"),
+    ("stack", "19", "primary sources"),
+    ("scatter", "6", "asset classes"),
+    ("gov", "10,398", "tickers mapped"),
+    ("series", "800k+", "macro series"),
+    ("prompt", "24", "field prefixes"),
+    ("zero", "331", "published claims"),
+    ("fall", "36,830", "delistings on record"),
 ]
 
 
@@ -1688,20 +1709,42 @@ FACTS = {
 # now shorter. Worded as what the code does, which is why survivorship still
 # says warned rather than solved: the delisting record ships, but the universe
 # the backtester builds is still current-listing only.
-ENGINE_BADGES = [
+# The rail keeps the four properties of the data itself. The nine properties of
+# the backtester moved to the engine slide, where their citations already live,
+# so neither list repeats the other.
+RAIL_BADGES = [
     ("wall", "point-in-time"),
     ("prompt", "no look-ahead"),
     ("calendar", "restatements"),
     ("shield", "survivorship"),
-    ("coin", "turnover cost"),
-    ("fall", "deflated SR"),
-    ("ledger", "trial ledger"),
-    ("stack", "multiple testing"),
-    ("scatter", "purged k-fold"),
-    ("funnel", "PBO via CSCV"),
-    ("series", "Newey-West t"),
-    ("flask", "sqrt impact"),
-    ("clock", "min length"),
+]
+
+# (glyph, label, what it means on hover). A badge is a claim, and a claim the
+# reader cannot unpack is decoration, so each one says what it does in a sentence.
+ENGINE_BADGES = [
+    ("coin", "turnover cost",
+     "Costs charged on every unit of turnover. There is no zero-cost mode to switch on."),
+    ("fall", "deflated SR",
+     "The Sharpe discounted for how many specifications you tried, "
+     "after Bailey and López de Prado (2014)."),
+    ("ledger", "trial ledger",
+     "Every spec scored this session is counted, and that count is what feeds the deflation."),
+    ("stack", "multiple testing",
+     "The more ideas you try, the higher the bar a result has to clear to mean anything."),
+    ("scatter", "purged k-fold",
+     "Train and test folds separated by an embargo, so overlapping label windows "
+     "cannot leak across the split."),
+    ("funnel", "PBO via CSCV",
+     "The probability that the best spec in sample is not the best out of sample, "
+     "by combinatorially symmetric cross-validation."),
+    ("series", "Newey-West t",
+     "A t-statistic corrected for autocorrelated and heteroskedastic returns, "
+     "which most monthly strategy returns are."),
+    ("flask", "sqrt impact",
+     "Market impact that grows with the square root of participation rather than "
+     "linearly, so size is not free."),
+    ("clock", "min length",
+     "How long a backtest has to run before its Sharpe carries any information at all."),
 ]
 
 
@@ -1712,10 +1755,10 @@ def build_badges() -> str:
         return (f'<span class="badge" style="--d:{i * -0.42:.2f}s">'
                 f'{icon(glyph, 19)}<b>{label}</b></span>')
 
-    engine = "".join(pill(g, lab, i) for i, (g, lab) in enumerate(ENGINE_BADGES))
+    engine = "".join(pill(g, lab, i) for i, (g, lab) in enumerate(RAIL_BADGES))
     return (f'<p class="bline">Pipe processed web market data straight into local AI '
             f'agents, on demand.</p>'
-            f'<p class="blab eng">Quantitative research grade</p>'
+            f'<p class="blab eng">Data quality, by construction</p>'
             f'<div class="badges">{engine}</div>')
 
 
@@ -1760,6 +1803,14 @@ def build_methods() -> str:
         for state, name, cite in METHODS)
     return (f'<div class="mhead"><span class="on">in the code, cited</span>'
             f'</div>{rows}')
+
+
+def build_engine_badges() -> str:
+    return '<div class="ebadges">' + "".join(
+        f'<span class="badge tip" style="--d:{i * -0.42:.2f}s" '
+        f'data-tip="{html.escape(tip, quote=True)}" tabindex="0">'
+        f'{icon(g, 18)}<b>{lab}</b></span>'
+        for i, (g, lab, tip) in enumerate(ENGINE_BADGES)) + '</div>'
 
 
 def build_facts(key: str) -> str:
@@ -1812,7 +1863,24 @@ a:hover{text-decoration:underline}
    apart they stopped reading as one word. A tight, heavy grotesque is the
    register a research terminal masthead actually wants. */
 .brand{font-family:var(--sans);font-size:clamp(28px,4.8vh,48px);font-weight:800;
-  letter-spacing:-.022em;margin:0;line-height:.95;font-variant-ligatures:none}
+  letter-spacing:-.022em;margin:0;line-height:.95;font-variant-ligatures:none;
+  display:flex;align-items:center;gap:.34em}
+
+/* Tree rings. A vintage is a dated layer, and rings are the oldest
+   point-in-time record there is: one per year, still legible a century later.
+   The rings light from the core outward, so the newest reads last. */
+.brand .mark{width:1.05em;height:1.05em;flex:0 0 auto;overflow:visible}
+.brand .r{fill:none;stroke:var(--green);stroke-width:1.7;opacity:.28;
+  transform-origin:50% 50%;animation:ring 5.2s ease-in-out infinite}
+.brand .r2{animation-delay:.34s}
+.brand .r3{animation-delay:.68s}
+.brand .r4{animation-delay:1.02s}
+.brand .core{fill:var(--green)}
+.brand .cut{stroke:var(--green);stroke-width:1.7;stroke-linecap:round;opacity:.5}
+@keyframes ring{
+  0%,72%,100%{opacity:.26}
+  36%{opacity:1;filter:drop-shadow(0 0 5px var(--green))}}
+@media (prefers-reduced-motion:reduce){.brand .r{animation:none;opacity:.55}}
 .tag{color:var(--green);letter-spacing:.19em;text-transform:uppercase;font-weight:700;
   font-size:clamp(9px,1.35vh,12px);margin:6px 0 0}
 .claim{font-size:clamp(14px,2.15vh,20px);line-height:1.4;margin:0;font-weight:700}
@@ -1820,9 +1888,9 @@ a:hover{text-decoration:underline}
 .sub{color:var(--dim);font-size:clamp(11px,1.55vh,13.5px);line-height:1.55;margin:0}
 
 /* six numbers where six sentences used to be */
-.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
   border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.tile{background:var(--panel);padding:clamp(8px,1.35vh,13px) 9px;display:grid;
+.tile{background:var(--panel);padding:clamp(6px,1.1vh,11px) 6px;display:grid;
   justify-items:center;gap:2px;text-align:center}
 .tile .ic{color:var(--green);opacity:.85}
 .tile b{color:var(--ink);font-size:clamp(13px,2vh,18px);line-height:1.1;font-weight:700}
@@ -1837,20 +1905,14 @@ a:hover{text-decoration:underline}
 .badge{display:flex;align-items:center;gap:9px;white-space:nowrap;border:1px solid rgba(47,213,135,.28);
   border-radius:9px;padding:7px 10px;background:var(--panel);min-width:0;
   position:relative;overflow:hidden}
-/* Each badge is a check the engine runs, so the mark breathes and a faint sweep
-   crosses the pill, staggered by --d. It reads as eleven things working rather
-   than eleven things printed. */
-.badge::after{content:"";position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(105deg,transparent 38%,rgba(47,213,135,.13) 50%,transparent 62%);
-  transform:translateX(-100%);animation:bsweep 7s ease-in-out infinite var(--d,0s)}
-@keyframes bsweep{0%,62%{transform:translateX(-100%)}
-  78%{transform:translateX(100%)}100%{transform:translateX(100%)}}
+/* Each badge is a check the engine runs, so the mark breathes, staggered by --d.
+   The pill used to carry a left-to-right sweep as well; two moving things per
+   badge was one too many, and the sweep is now the install line's alone. */
 .badge .ic{color:var(--green);opacity:.9;flex:none;transform-origin:50% 50%;
   animation:bpulse 3.8s ease-in-out infinite var(--d,0s)}
 @keyframes bpulse{0%,100%{opacity:.5;transform:scale(.92)}
   50%{opacity:1;transform:scale(1.08)}}
 @media (prefers-reduced-motion:reduce){
-  .badge::after{display:none}
   .badge .ic{animation:none;opacity:.9;transform:none}
 }
 .badge b{color:var(--ink);font-weight:700;line-height:1.2;min-width:0;
@@ -1883,14 +1945,29 @@ a:hover{text-decoration:underline}
 .mhead span::before{content:"";width:7px;height:7px;border-radius:50%;
   background:currentColor;opacity:.85}
 .method{border-left:2px solid var(--line);padding:1px 0 1px 9px;min-width:0}
-.method b{display:block;color:var(--ink);font-size:clamp(9.5px,1.32vh,12px);
-  font-weight:700;line-height:1.25}
-.method span{display:block;color:var(--dim);font-size:clamp(8px,1.1vh,10px);
-  line-height:1.3}
+.method b{display:block;color:var(--ink);font-size:clamp(11px,1.62vh,15px);
+  font-weight:700;line-height:1.3}
+.method span{display:block;color:var(--dim);font-size:clamp(9px,1.3vh,12px);
+  line-height:1.35}
 .method.on{border-left-color:rgba(47,213,135,.7)}
 .method.off b{color:var(--dim)}
-.mnote{grid-column:1/-1;margin:0;color:var(--dim);font-size:clamp(9px,1.2vh,11px);
-  line-height:1.45;padding-top:7px;border-top:1px solid var(--line)}
+.mnote{grid-column:1/-1;margin:0;color:var(--dim);font-size:clamp(8px,1.02vh,9.5px);
+  line-height:1.4;padding-top:6px;border-top:1px solid var(--line);opacity:.8}
+.badge.tip{cursor:help}
+.badge.tip::before{content:attr(data-tip);position:absolute;left:50%;bottom:calc(100% + 9px);
+  transform:translateX(-50%) translateY(4px);width:max-content;max-width:270px;
+  white-space:normal;text-align:left;background:#0b1220;color:var(--ink);
+  border:1px solid rgba(47,213,135,.4);border-radius:9px;padding:9px 11px;
+  font-size:11.5px;font-weight:400;line-height:1.45;letter-spacing:0;
+  box-shadow:0 10px 26px rgba(0,0,0,.55);opacity:0;visibility:hidden;
+  transition:opacity .16s ease,transform .16s ease;z-index:40;pointer-events:none}
+.badge.tip:hover::before,.badge.tip:focus-visible::before{
+  opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.ebadges .badge{overflow:visible}
+
+.ebadges{grid-column:1/-1;display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(4px,.7vh,8px);
+  margin-bottom:clamp(4px,.7vh,9px)}
 
 @media(max-width:1039px),(max-height:639px){
   .methods{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -1934,6 +2011,7 @@ a:hover{text-decoration:underline}
 /* Slides whose content is a table or a code block, rather than a diagram sized
    to the box, would otherwise sit at the top of a mostly empty screen. */
 .fill{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center}
+.panel.inst .fill{justify-content:flex-start;gap:clamp(6px,1vh,12px)}
 .drift{display:flex;flex-direction:column;justify-content:center;
   border:1px solid rgba(53,224,138,.22);border-left:3px solid var(--green);border-radius:10px;
   background:var(--panel);padding:clamp(10px,1.8vh,20px) clamp(12px,1.4vw,20px)}
@@ -1973,6 +2051,25 @@ a:hover{text-decoration:underline}
   color:var(--ink);white-space:pre}
 
 
+/* the install steps, numbered, beside the client tabs */
+.steps{list-style:none;counter-reset:st;margin:0 0 clamp(10px,1.6vh,18px);padding:0;
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(6px,1.1vh,12px)}
+.steps li{counter-increment:st;display:grid;grid-template-columns:auto 1fr;
+  gap:2px 11px;align-items:baseline}
+.steps li::before{content:counter(st);grid-row:span 2;align-self:center;
+  width:26px;height:26px;border-radius:50%;border:1px solid rgba(47,213,135,.45);
+  color:var(--green);font-size:12px;font-weight:700;display:grid;place-items:center}
+.steps b{color:var(--ink);font-size:clamp(11px,1.5vh,14px)}
+.steps span{color:var(--dim);font-size:clamp(9.5px,1.3vh,12px);line-height:1.45}
+.steps code{color:var(--green)}
+
+/* the drift markers now sit under the point-in-time sweep */
+.pit .drifts{display:grid;grid-template-columns:repeat(6,1fr);gap:clamp(5px,0.9vh,10px);
+  flex:none;margin-top:clamp(8px,1.3vh,16px)}
+.pit .drift{padding:clamp(6px,1vh,11px) clamp(7px,0.8vw,12px)}
+.pit .drift b{font-size:clamp(10px,1.4vh,13px)}
+.pit .drift i{font-size:clamp(8.5px,1.15vh,11px);margin-top:3px}
+
 .cmd.hot{position:relative;overflow:hidden;border-color:rgba(47,213,135,.45)}
 .cmd.hot::after{content:"";position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(105deg,transparent 40%,rgba(47,213,135,.22) 50%,transparent 60%);
@@ -1982,9 +2079,33 @@ a:hover{text-decoration:underline}
 @media (prefers-reduced-motion:reduce){.cmd.hot::after{display:none}}
 
 .panels{position:relative;flex:1;min-height:0}
+/* Slides travel in the direction you asked for: the incoming panel enters from
+   the side you are moving towards and the outgoing one leaves the other way, so
+   the deck reads as one strip rather than a stack of cross-fades. --x is set per
+   panel by show(), which is what carries the direction. */
 .panel{position:absolute;inset:0;opacity:0;visibility:hidden;
-  transition:opacity .45s ease;display:flex;flex-direction:column;min-height:0}
-.panel.is-on{opacity:1;visibility:visible}
+  display:flex;flex-direction:column;min-height:0;will-change:transform,opacity}
+/* Keyframes rather than a transition: a transition needs the start state to have
+   been rendered, and these panels start at visibility:hidden, so the browser was
+   skipping straight to the end. An animation has no such requirement. */
+.panel.is-on{opacity:1;visibility:visible;
+  animation:slidein .5s cubic-bezier(.22,.61,.36,1) forwards}
+@keyframes slidein{
+  from{opacity:0;transform:translate3d(var(--x,26px),0,0)}
+  to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes slideout{
+  from{opacity:1;transform:translate3d(0,0,0)}
+  to{opacity:0;transform:translate3d(var(--x,-26px),0,0)}}
+/* Both halves of the move have to be painted or the browser skips the
+   transition: an element at visibility:hidden has no rendered start state, so it
+   jumps straight to the end. `.enter` puts the incoming panel on screen at its
+   offset for one frame first, and `.out` keeps the outgoing one painted while it
+   leaves. */
+.panel.out{visibility:visible;opacity:0;
+  animation:slideout .5s cubic-bezier(.22,.61,.36,1) forwards}
+@media (prefers-reduced-motion:reduce){
+  .panel.is-on,.panel.out{animation:none}
+}
 .ptitle{font-size:clamp(13px,1.95vh,18px);font-weight:700;margin:0 0 4px}
 .pnote{color:var(--dim);font-size:clamp(10px,1.4vh,12.5px);line-height:1.5;
   margin:0 0 clamp(8px,1.3vh,14px);max-width:70em}
@@ -2055,6 +2176,8 @@ a:hover{text-decoration:underline}
 .d-edgemark.edu{fill:#2fd587}
 .d-edgemark.third{fill:#3b5468}
 .d-bdg{font-size:10px;letter-spacing:.16em}
+.d-rank{fill:var(--dim);font-size:10px;letter-spacing:.08em}
+.d-yrs{fill:var(--ink);font-size:12px;font-weight:700}
 .d-bdg.gov{fill:var(--green)}
 .d-bdg.edu{fill:#2fd587}
 .d-bdg.third{fill:#6b8299}
@@ -2123,11 +2246,11 @@ __ONECSS__
 
   <aside class="rail">
     <div>
-      <h1 class="brand">VINTAGE</h1>
+      <h1 class="brand"><svg class="mark" viewBox="0 0 44 44" aria-hidden="true"><circle class="r r1" cx="22" cy="22" r="19"/><circle class="r r2" cx="22" cy="22" r="14.5"/><circle class="r r3" cx="22" cy="22" r="10"/><circle class="r r4" cx="22" cy="22" r="5.5"/><circle class="core" cx="22" cy="22" r="2.2"/><path class="cut" d="M22 22 L22 3"/></svg><span>VINTAGE</span></h1>
     </div>
 
     <p class="claim">Good financial data is already free. It&rsquo;s just scattered.
-    <span class="g">Vintage unifies the web&rsquo;s free financial data in a single MCP server.</span></p>
+    <span class="g">Vintage federates the web&rsquo;s free financial data in a single MCP server.</span></p>
 
     <div class="cmd hot"><code>claude mcp add vintage -s user -- uvx vintage-mcp</code><button class="copy" aria-label="Copy">copy</button></div>
 
@@ -2159,14 +2282,8 @@ __ONECSS__
           describes and the date it became public"></div>
       </section>
 
-      <section class="panel" data-dwell="12">
-        <h2 class="ptitle">Then distilled into one grammar you can hold in your head.</h2>
-        __F6__
-        __DIA5__
-      </section>
-
       <section class="panel" data-dwell="14">
-        <h2 class="ptitle">The free financial web has no schema. This is one.</h2>
+        <h2 class="ptitle">One grammar to name a field, one shape for every row.</h2>
         __F7__
         __DIA6__
       </section>
@@ -2177,15 +2294,10 @@ __ONECSS__
         __DIA2__
       </section>
 
-      <section class="panel" data-dwell="12">
-        <h2 class="ptitle">Point-in-time, in one picture.</h2>
+      <section class="panel pit" data-dwell="18">
+        <h2 class="ptitle">Point-in-time, and the six ways data moves underneath you.</h2>
         __F3__
         __DIA3__
-      </section>
-
-      <section class="panel" data-dwell="12">
-        <h2 class="ptitle">Six ways yesterday's data changed underneath you.</h2>
-        __F8__
         <div class="drifts">
           __DRIFT__
         </div>
@@ -2197,9 +2309,10 @@ __ONECSS__
         <div class="split">
           <div class="splitdia">__DIA4__</div>
           <div class="methods">
+            __EBADGES__
             __METHODS__
-            <p class="mnote">Nothing to install past the one line on the left. The engine
-            runs on the same six verbs, over the panel the federation already built.</p>
+            <p class="mnote">Nothing to install past the one line on the left, and the
+            engine runs on the same six verbs.</p>
           </div>
         </div>
       </section>
@@ -2218,20 +2331,6 @@ __ONECSS__
         </div>
       </section>
 
-      <section class="panel" data-dwell="20">
-        <h2 class="ptitle">What it feels like.</h2>
-        __F9__
-        <div class="term">
-          <div class="bar">
-            <span class="tdot"></span><span class="tdot"></span><span class="tdot"></span>
-            <span class="who">claude, vintage</span>
-          </div>
-          <div class="screen">
-        __ROWS__
-          </div>
-        </div>
-      </section>
-
       <section class="panel" data-dwell="14">
         <h2 class="ptitle">What the forums are saying, right now.</h2>
         __F10__
@@ -2240,10 +2339,20 @@ __ONECSS__
         </div>
       </section>
 
-      <section class="panel" data-dwell="16">
-        <h2 class="ptitle">One line, in whichever client you already use.</h2>
+      <section class="panel inst" data-dwell="16">
+        <h2 class="ptitle">Installed in four steps, none of them a signup.</h2>
         __F11__
         <div class="fill">
+          <ol class="steps">
+            <li><b>Get <code>uv</code></b><span>One installer, no Python setup.
+              <code>pip install uv</code> works too.</span></li>
+            <li><b>Add the server</b><span>The line below. Nothing to clone, nothing
+              to build, no repository to keep current.</span></li>
+            <li><b>Restart the client</b><span>MCP servers load once at startup, so
+              a running client will not see it until then.</span></li>
+            <li><b>Ask a question</b><span>&ldquo;What were Apple's total assets as of
+              January 2020, and has it been restated since?&rdquo;</span></li>
+          </ol>
           <div class="tabs">
             __TABS__
           </div>
@@ -2259,9 +2368,9 @@ __ONECSS__
 (function () {
   var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
   var chipbar = document.getElementById('chips');
-  var titles = ['The map', 'The taxonomy', 'The schema', 'What you get',
-                'Point-in-time', 'The drift', 'The engine', 'The experiment',
-                'A session', 'The forums', 'Install'];
+  var titles = ['The map', 'The schema', 'What you get',
+                'Point-in-time', 'The engine', 'The experiment', 'The forums',
+                'Install'];
   var timer, at = 0, held = false;
 
   var chips = titles.map(function (t, i) {
@@ -2288,8 +2397,31 @@ __ONECSS__
   }
 
   function show(i) {
+    // Wrapping from the last slide to the first still reads as "forward", so the
+    // loop does not lurch backwards once per cycle.
+    var last = panels.length - 1;
+    var dir = (i === 0 && at === last) ? 1
+            : (i === last && at === 0) ? -1
+            : (i > at ? 1 : -1);
+    var shift = 26;
     at = i;
-    panels.forEach(function (p, n) { p.classList.toggle('is-on', n === i); });
+    panels.forEach(function (p, n) {
+      if (n === i) {
+        p.classList.remove('out');
+        p.style.setProperty('--x', (dir * shift) + 'px');
+        // Restart the animation even when the same class is re-applied, which
+        // is what makes a repeated jump to the same slide still animate.
+        p.classList.remove('is-on');
+        void p.offsetWidth;
+        p.classList.add('is-on');
+      } else if (p.classList.contains('is-on')) {
+        p.classList.remove('is-on');
+        p.style.setProperty('--x', (-dir * shift) + 'px');
+        p.classList.add('out');
+      } else {
+        p.classList.remove('out');
+      }
+    });
     document.querySelector('.shell').classList.remove('wide');
     var dwell = (parseFloat(panels[i].dataset.dwell) || 9) * 1000;
     chips.forEach(function (c) {
@@ -2413,6 +2545,7 @@ def main() -> None:
         .replace("__FORUMS__", build_forums())
         .replace("__TABS__", tabs)
         .replace("__PANES__", panes)
+        .replace("__EBADGES__", build_engine_badges())
         .replace("__METHODS__", build_methods())
         .replace("__ARCHSRC__", arch_src())
         .replace("__TILES__", build_tiles())
