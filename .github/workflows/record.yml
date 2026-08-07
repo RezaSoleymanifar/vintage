@@ -1,0 +1,76 @@
+name: record
+
+# The archive is only worth what it has been running for. A missed window is
+# permanent: nothing can be backfilled from a source that publishes only the
+# present, which is the entire reason those sources are worth recording.
+#
+# Cadences are separate jobs rather than one job that decides, so an hourly
+# failure cannot take the weekly one down with it.
+
+on:
+  schedule:
+    - cron: "7 * * * *"      # hourly, at :07 to avoid the top-of-hour crowd
+    - cron: "23 6 * * *"     # daily, after the US close has settled
+    - cron: "41 7 * * 1"     # weekly, Monday
+  workflow_dispatch:
+    inputs:
+      cadence:
+        description: which cadence to run
+        default: daily
+        type: choice
+        options: [hourly, daily, weekly, monthly]
+
+concurrency:
+  # Never two writers on the same archive. A queued run is fine; a concurrent
+  # one would interleave appends and race the state file.
+  group: record-archive
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Work out what is due
+        id: due
+        run: |
+          case "${{ github.event.schedule }}" in
+            "41 7 * * 1")  echo "cadence=weekly" >> "$GITHUB_OUTPUT" ;;
+            "23 6 * * *")  echo "cadence=daily"  >> "$GITHUB_OUTPUT" ;;
+            "7 * * * *")   echo "cadence=hourly" >> "$GITHUB_OUTPUT" ;;
+            *)             echo "cadence=${{ inputs.cadence || 'daily' }}" >> "$GITHUB_OUTPUT" ;;
+          esac
+
+      - name: Record
+        env:
+          # SEC asks for a real contact on every request and blocks anonymous
+          # traffic, so this is not optional.
+          VINTAGE_USER_AGENT: ${{ secrets.VINTAGE_USER_AGENT }}
+          VINTAGE_ARCHIVE_DIR: ${{ github.workspace }}/data/archive
+        run: uv run python tools/record.py --cadence "${{ steps.due.outputs.cadence }}"
+
+      - name: What is held now
+        if: always()
+        env:
+          VINTAGE_ARCHIVE_DIR: ${{ github.workspace }}/data/archive
+        run: uv run python tools/record.py --stats
+
+      - name: Commit the day's rows
+        if: always()
+        run: |
+          git config user.name  "vintage-recorder"
+          git config user.email "noreply@github.com"
+          git add data/archive
+          # Nothing changed is a normal outcome, not a failure: change-only
+          # writing means a quiet hour writes nothing at all.
+          git diff --staged --quiet && echo "nothing new" && exit 0
+          git commit -m "archive: ${{ steps.due.outputs.cadence }} $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push

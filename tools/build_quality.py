@@ -289,8 +289,9 @@ def grade(row: dict[str, Any]) -> tuple[str, list[str]]:
 
 
 def table(rows: list[dict[str, Any]]) -> str:
-    head = ("| Source | Prefix | Rows | Median lag | p90 | Max | No `known_at` | "
-            "Stale | Gaps | Longest gap |\n|---|---|---|---|---|---|---|---|---|---|")
+    head = ("| Source | Prefix | Freq | Rows | Median lag | p90 | Max | No `known_at` | "
+            "Stale | Gap runs | Longest | Grade |\n"
+            "|---|---|---|---|---|---|---|---|---|---|---|---|")
     out = [head]
     for r in rows:
         if r.get("failed"):

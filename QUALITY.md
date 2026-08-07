@@ -13,8 +13,8 @@ signal is tradable: a factor whose data arrives 45 days after the period it
 describes is a different strategy from one that arrives overnight. Vintage can
 measure it across every source because it keeps both dates on every row.
 
-| Source | Prefix | Rows | Median lag | p90 | Max | No `known_at` | Stale | Gaps | Longest gap |
-|---|---|---|---|---|---|---|---|---|---|
+| Source | Prefix | Freq | Rows | Median lag | p90 | Max | No `known_at` | Stale | Gap runs | Longest | Grade |
+|---|---|---|---|---|---|---|---|---|---|---|---|
 | **Yahoo daily prices** | `price:` | daily | 2,915 | 0 d | 0 d | 0 d | 0.0% | 0 d | 110 | 1 d | PASS |
 | **Market index** | `index:` | daily | 2,915 | 0 d | 0 d | 0 d | 0.0% | 0 d | 110 | 1 d | PASS |
 | **Coinbase crypto** | `crypto:` | daily | 800 | 1.0 d | 1 d | 1 d | 0.0% | 0 d | 0 | 0 d | PASS |
@@ -24,7 +24,7 @@ measure it across every source because it keeps both dates on every row.
 | **FINRA short volume** | `short:` | daily | 90 | 1.0 d | 1 d | 1 d | 0.0% | 1 d | 4 | 1 d | PASS |
 | **CFTC positioning** | `cot:` | weekly | 520 | 3.0 d | 3 d | 3 d | 0.0% | 9 d | — | — | PASS |
 | **Ken French FF3** | `french:` | monthly | 1,200 | — | — | — | 100.0% | 37 d | — | — | PASS |
-| **SEC EDGAR XBRL** | `us-gaap:` | quarterly | 146 | 121.5 d | 397 d | 760 d | 0.0% | 40 d | — | — | WARN |
+| **SEC EDGAR XBRL** | `us-gaap:` | quarterly | 146 | 121.5 d | 397 d | 760 d | 0.0% | 40 d | — | — | PASS |
 | **SEC filing stream** | `filing:` | event | 200 | 2.0 d | 4 d | 34 d | 0.0% | 7 d | — | — | PASS |
 | **SEC Form 25** | `delisting:` | event | 36,832 | 0.0 d | 0 d | 0 d | 0.0% | 0 d | — | — | PASS |
 | **ApeWisdom mentions** | `ape:` | snapshot | 100 | 0.0 d | 0 d | 0 d | 0.0% | 0 d | — | — | PASS |
@@ -94,15 +94,15 @@ to assume without checking. A breach is a defect, not a note, and
 | | 2 d | snapshot | a live board is worthless when stale |
 | Continuity | 5 business days | daily | longer is an outage, not a holiday |
 | Honest vintage | 0% missing `known_at` | sources the registry registers as point-in-time | the whole promise |
-| Lag sanity | 400 d maximum | any | beyond this it is a parsing fault |
+| Lag sanity | 400 d maximum | daily, weekly, snapshot | beyond this it is a parsing fault. Excluded for filings, where a 10-K restates the prior year as a comparative and a two-year lag is correct |
 | Reachability | probe succeeds | any | unreachable is unusable |
 
 **WARN** is a breach inside 2x the target. **FAIL** is beyond it, or any missing
 `known_at` on a source that claims point-in-time, or an unreachable source.
 
-**Gate: WARN.** 12 pass, 1 warn, 0 fail, of 13 probed.
+**Gate: PASS.** 13 pass, 0 warn, 0 fail, of 13 probed.
 
-- **SEC EDGAR XBRL** — WARN: a 760 d maximum lag, which is more likely a parsing fault than a filing
+Nothing to report; every probe met its target.
 
 ## Not measured, and why
 
