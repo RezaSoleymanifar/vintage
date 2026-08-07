@@ -165,6 +165,64 @@ TICKERS = {
 }
 
 
+# Themes are a hand-written map from issuer name to a bucket, and they are the
+# one editorial act on this page. A clustering would be worse: it would move
+# names between buckets on each rebuild and nobody could tell whether the theme
+# rotated or the algorithm did. Substrings are matched against the 13F issuer
+# name, longest first, so "TAIWAN SEMICONDUCTOR" wins over "SEMICONDUCTOR".
+THEMES = {
+    "Memory & storage": ["MICRON", "SANDISK", "WESTERN DIGITAL", "SEAGATE"],
+    "Semi-cap & foundry": ["TAIWAN SEMICONDUCTOR", "ASML", "APPLIED MATL",
+                           "LAM RESEARCH", "KLA "],
+    "AI compute": ["NVIDIA", "BROADCOM", "ADVANCED MICRO", "MARVELL",
+                   "SUPER MICRO", "ARM HLDGS"],
+    "Megacap platforms": ["APPLE", "MICROSOFT", "ALPHABET", "AMAZON",
+                          "META PLATFORMS"],
+    "Banks & payments": ["BANK AMER", "BANK AMERICA", "US BANCORP", "SCHWAB",
+                         "VISA", "MASTERCARD", "CAPITAL ONE", "ALLY",
+                         "JPMORGAN", "WELLS FARGO", "CITIGROUP"],
+    "Energy": ["CHEVRON", "OCCIDENTAL", "HESS", "EXXON", "CONOCO"],
+    "Housing & builders": ["LENNAR", "NVR", "D R HORTON", "PULTE",
+                           "LOUISIANA PAC"],
+    "Insurance": ["CHUBB", "PROGRESSIVE", "TRAVELERS", "AON ", "MARSH"],
+    "Healthcare": ["JOHNSON & JOHNSON", "ELI LILLY", "UNITEDHEALTH", "AMGEN",
+                   "BRISTOL-MYERS", "MERCK", "PFIZER", "DAVITA"],
+    "Consumer staples": ["COCA COLA", "PEPSICO", "KRAFT HEINZ", "PROCTER",
+                         "PHILIP MORRIS", "MONDELEZ", "KEURIG", "KROGER"],
+}
+
+
+def theme_of(issuer: str) -> str | None:
+    upper = issuer.upper()
+    best = None
+    for theme, needles in THEMES.items():
+        for needle in needles:
+            if needle in upper and (best is None or len(needle) > best[1]):
+                best = (theme, len(needle))
+    return best[0] if best else None
+
+
+def themes(inst):
+    """Net dollars traded per theme, biggest absolute move first."""
+    totals: dict[str, float] = defaultdict(float)
+    names: dict[str, set] = defaultdict(set)
+    managers: dict[str, set] = defaultdict(set)
+    for cusip, dollars in inst["flow"].items():
+        issuer = inst["names"].get(cusip, "")
+        theme = theme_of(issuer)
+        if not theme:
+            continue
+        totals[theme] += dollars
+        names[theme].add(issuer.title())
+        managers[theme] |= inst["holders"][cusip]
+
+    return sorted(
+        ({"theme": t, "dollars": v, "names": sorted(names[t]),
+          "managers": len(managers[t])} for t, v in totals.items()),
+        key=lambda r: -abs(r["dollars"]),
+    )
+
+
 def compare(inst, cong):
     """Names where both groups traded, with the direction each one went."""
     out = []
@@ -216,15 +274,32 @@ def build(inst, cong, matched, today):
     # turned net seller on Alphabet while the institutions kept buying. A
     # billboard whose claim outlives its data is the exact failure this project
     # exists to argue against.
-    if agree:
-        top = sorted(agree, key=lambda r: -abs(r["dollars"]))[:2]
-        claim = " ".join(
-            f"They both {'bought' if r['verdict'] == 'Buy' else 'sold'} "
-            f"{r['issuer'].split()[0]}." for r in top)
+    theme_rows = themes(inst)
+    # Explicit max and min. `theme_rows` is sorted by absolute size, so walking
+    # it from either end and taking the first sign match picks by magnitude in
+    # one direction and against it in the other: the first draft named consumer
+    # staples at -$1.1B as the outflow while banks were leaking -$12.5B.
+    inflows = [t for t in theme_rows if t["dollars"] > 0]
+    outflows = [t for t in theme_rows if t["dollars"] < 0]
+    into = max(inflows, key=lambda t: t["dollars"], default=None)
+    out_of = min(outflows, key=lambda t: t["dollars"], default=None)
+
+    gross_in = sum(v for v in inst["flow"].values() if v > 0)
+    gross_out = sum(v for v in inst["flow"].values() if v < 0)
+    net = gross_in + gross_out
+    widest = max(matched, key=lambda r: r["managers"], default=None)
+
+    if into and out_of:
+        claim = f"Out of {out_of['theme'].lower()}. Into {into['theme'].lower()}."
+    elif into:
+        claim = f"Into {into['theme'].lower()}."
     else:
-        claim = "They agreed on nothing this quarter."
-    subclaim = (f"{len(agree)} names in common, {len(disagree)} where they split."
-                if matched else "No overlapping names this quarter.")
+        claim = "No theme moved on net this quarter."
+    subclaim = (
+        f"{money(net)} added on net. "
+        + (f"{widest['managers']} of {len(inst['covered'])} managers moved "
+           f"{widest['issuer'].split()[0]} the same way." if widest else "")
+    )
 
     ranked = sorted(inst["flow"].items(), key=lambda kv: -kv[1])
     inst_only = [(inst["names"][c], v, len(inst["holders"][c]))
@@ -260,6 +335,24 @@ def build(inst, cong, matched, today):
             f'{r["buys"] - r["sells"]:+d} net<s>{r["members"]} members</s></td>'
             f'<td class="v split">Split</td></tr>'
             for r in disagree)
+
+    def rows_theme():
+        span = max((abs(t["dollars"]) for t in theme_rows), default=1) or 1
+        out = []
+        for t in theme_rows:
+            # Halved: the rail is a diverging axis with zero at its midpoint, so
+            # the widest bar reaches one edge, not one and a half.
+            pct = abs(t["dollars"]) / span * 50
+            side = "up" if t["dollars"] > 0 else "dn"
+            bar = (f'<i class="bar {side}" style="width:{pct:.1f}%"></i>')
+            out.append(
+                f'<tr><td class="n">{esc(t["theme"])}'
+                f'<s>{esc(", ".join(n[:22] for n in t["names"][:4]))}'
+                f'{" …" if len(t["names"]) > 4 else ""}</s></td>'
+                f'<td class="track"><div class="rail {side}">{bar}</div></td>'
+                f'<td class="num {side}">{money(t["dollars"])}'
+                f'<s>{t["managers"]} managers</s></td></tr>')
+        return "\n".join(out)
 
     def li(items, kind):
         if kind == "inst":
@@ -316,6 +409,25 @@ li{{display:flex;justify-content:space-between;gap:14px;padding:7px 0;
   border-bottom:1px solid rgba(31,43,58,.55);font-size:13px}}
 li:last-child{{border-bottom:0}}
 li span{{color:var(--dim);white-space:nowrap;font-size:12px}}
+.flowstrip{{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:12px;margin:30px 0 4px}}
+.flowstrip div{{background:var(--panel);border:1px solid var(--line);
+  border-radius:11px;padding:14px 16px}}
+.flowstrip i{{font-style:normal;display:block;font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--dim);margin-bottom:6px}}
+.flowstrip b{{font-size:23px;font-variant-numeric:tabular-nums}}
+table.themes td{{padding:11px 10px}}
+table.themes td.num{{width:130px}}
+.track{{width:38%;padding:11px 18px}}
+.rail{{height:9px;border-radius:5px;background:rgba(31,43,58,.7);position:relative}}
+.bar{{position:absolute;top:0;height:9px;border-radius:5px;display:block}}
+.rail.up .bar{{left:50%;background:var(--green)}}
+.rail.dn .bar{{right:50%;background:var(--red)}}
+.rail::after{{content:"";position:absolute;left:50%;top:-4px;width:1px;height:17px;
+  background:var(--line)}}
+td.n s{{display:block;text-decoration:none;color:var(--dim);font-size:11.5px;margin-top:4px}}
+.foot{{color:var(--dim);font-size:12.5px;margin:12px 0 0;max-width:70ch}}
+.foot code{{color:var(--ink)}}
 .warn{{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--amber);
   border-radius:11px;padding:18px 22px;margin-top:14px}}
 .warn ul li{{display:list-item;border:0;padding:5px 0;color:var(--dim);font-size:13.5px}}
@@ -343,6 +455,21 @@ Below is every name both groups touched.</p>
   <div class="clock"><i>Congressional data moves</i><b>Continuously</b>
     <s>median {cong['median_lag']}-day disclosure lag</s></div>
 </div>
+
+<div class="flowstrip">
+  <div><i>Gross bought</i><b class="up">{money(gross_in)}</b></div>
+  <div><i>Gross sold</i><b class="dn">{money(gross_out)}</b></div>
+  <div><i>Net</i><b class="{'up' if net > 0 else 'dn'}">{money(net)}</b></div>
+  <div><i>Names moved</i><b>{len(inst['flow']):,}</b></div>
+</div>
+
+<h2>Which themes the money left, and where it went</h2>
+<table class="themes"><tbody>
+{rows_theme()}
+</tbody></table>
+<p class="foot">Themes are a fixed map from issuer name to bucket, listed in
+<code>tools/build_flows.py</code>. A clustering would reshuffle names between
+rebuilds and you could not tell a rotation from an algorithm change.</p>
 
 <h2>Where both groups went the same way</h2>
 <table><thead><tr><th>Name</th><th class="num">{len(inst['covered'])} institutions</th>

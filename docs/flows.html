@@ -44,6 +44,25 @@ li{display:flex;justify-content:space-between;gap:14px;padding:7px 0;
   border-bottom:1px solid rgba(31,43,58,.55);font-size:13px}
 li:last-child{border-bottom:0}
 li span{color:var(--dim);white-space:nowrap;font-size:12px}
+.flowstrip{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:12px;margin:30px 0 4px}
+.flowstrip div{background:var(--panel);border:1px solid var(--line);
+  border-radius:11px;padding:14px 16px}
+.flowstrip i{font-style:normal;display:block;font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.flowstrip b{font-size:23px;font-variant-numeric:tabular-nums}
+table.themes td{padding:11px 10px}
+table.themes td.num{width:130px}
+.track{width:38%;padding:11px 18px}
+.rail{height:9px;border-radius:5px;background:rgba(31,43,58,.7);position:relative}
+.bar{position:absolute;top:0;height:9px;border-radius:5px;display:block}
+.rail.up .bar{left:50%;background:var(--green)}
+.rail.dn .bar{right:50%;background:var(--red)}
+.rail::after{content:"";position:absolute;left:50%;top:-4px;width:1px;height:17px;
+  background:var(--line)}
+td.n s{display:block;text-decoration:none;color:var(--dim);font-size:11.5px;margin-top:4px}
+.foot{color:var(--dim);font-size:12.5px;margin:12px 0 0;max-width:70ch}
+.foot code{color:var(--ink)}
 .warn{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--amber);
   border-radius:11px;padding:18px 22px;margin-top:14px}
 .warn ul li{display:list-item;border:0;padding:5px 0;color:var(--dim);font-size:13.5px}
@@ -56,7 +75,7 @@ footer a{color:var(--green);text-decoration:none}
 </style>
 
 <div class="wrap">
-<h1>Two groups of money.<br><em>They both sold Apple. They both bought Micron.</em><br><small>6 names in common, 7 where they split.</small></h1>
+<h1>Two groups of money.<br><em>Out of banks &amp; payments. Into memory &amp; storage.</em><br><small>+$133.7B added on net. 19 of 22 managers moved Alphabet the same way.</small></h1>
 <p class="lede">Institutional managers file Form 13F once a quarter. Members of Congress
 file a report every time they trade. Neither can see the other's filing before it lands.
 Below is every name both groups touched.</p>
@@ -71,6 +90,30 @@ Below is every name both groups touched.</p>
   <div class="clock"><i>Congressional data moves</i><b>Continuously</b>
     <s>median 24-day disclosure lag</s></div>
 </div>
+
+<div class="flowstrip">
+  <div><i>Gross bought</i><b class="up">+$298.6B</b></div>
+  <div><i>Gross sold</i><b class="dn">−$164.9B</b></div>
+  <div><i>Net</i><b class="up">+$133.7B</b></div>
+  <div><i>Names moved</i><b>1,900</b></div>
+</div>
+
+<h2>Which themes the money left, and where it went</h2>
+<table class="themes"><tbody>
+<tr><td class="n">Memory &amp; storage<s>Micron Technology Inc, Sandisk Corp, Seagate Hdd Cayman, Seagate Technology Hld …</s></td><td class="track"><div class="rail up"><i class="bar up" style="width:50.0%"></i></div></td><td class="num up">+$13.0B<s>13 managers</s></td></tr>
+<tr><td class="n">Banks &amp; payments<s>Ally Finl Inc, Bank America Corp, Capital One Finl Corp, Citigroup Inc …</s></td><td class="track"><div class="rail dn"><i class="bar dn" style="width:48.1%"></i></div></td><td class="num dn">−$12.5B<s>17 managers</s></td></tr>
+<tr><td class="n">AI compute<s>Advanced Micro Devices, Broadcom Inc, Marvell    Technology , Nvidia Corporation …</s></td><td class="track"><div class="rail up"><i class="bar up" style="width:38.6%"></i></div></td><td class="num up">+$10.1B<s>16 managers</s></td></tr>
+<tr><td class="n">Megacap platforms<s>Alphabet Inc, Amazon Com Inc, Apple Inc, Meta Platforms Inc …</s></td><td class="track"><div class="rail up"><i class="bar up" style="width:34.7%"></i></div></td><td class="num up">+$9.0B<s>20 managers</s></td></tr>
+<tr><td class="n">Semi-cap &amp; foundry<s>Applied Matls Inc, Asml Hldg Nv, Kla Corp, Lam Research Corp …</s></td><td class="track"><div class="rail up"><i class="bar up" style="width:29.9%"></i></div></td><td class="num up">+$7.8B<s>17 managers</s></td></tr>
+<tr><td class="n">Energy<s>Chevron Corporation, Conocophillips, Exxon     Mobil      C, Hess Corp …</s></td><td class="track"><div class="rail dn"><i class="bar dn" style="width:23.7%"></i></div></td><td class="num dn">−$6.2B<s>10 managers</s></td></tr>
+<tr><td class="n">Insurance<s>Aon Plc, Chubb Ltd Switz, Marsh &amp; Mclennan Cos I, Progressive Corp …</s></td><td class="track"><div class="rail up"><i class="bar up" style="width:14.0%"></i></div></td><td class="num up">+$3.6B<s>11 managers</s></td></tr>
+<tr><td class="n">Consumer staples<s>Coca Cola Co, Coca Cola Cons Inc, Keurig Dr Pepper Inc, Kraft Heinz Co/T …</s></td><td class="track"><div class="rail dn"><i class="bar dn" style="width:4.3%"></i></div></td><td class="num dn">−$1.1B<s>14 managers</s></td></tr>
+<tr><td class="n">Housing &amp; builders<s>D R Horton Inc, Lennar Corp, Louisiana Pac Corp, Nvr Inc …</s></td><td class="track"><div class="rail up"><i class="bar up" style="width:0.6%"></i></div></td><td class="num up">+$0.2B<s>10 managers</s></td></tr>
+<tr><td class="n">Healthcare<s>Amgen Inc, Bristol-Myers Squibb C, Davita Inc, Eli Lilly &amp; Co …</s></td><td class="track"><div class="rail up"><i class="bar up" style="width:0.5%"></i></div></td><td class="num up">+$0.1B<s>17 managers</s></td></tr>
+</tbody></table>
+<p class="foot">Themes are a fixed map from issuer name to bucket, listed in
+<code>tools/build_flows.py</code>. A clustering would reshuffle names between
+rebuilds and you could not tell a rotation from an algorithm change.</p>
 
 <h2>Where both groups went the same way</h2>
 <table><thead><tr><th>Name</th><th class="num">22 institutions</th>
@@ -122,7 +165,7 @@ Below is every name both groups touched.</p>
 <li><b>LPLA</b><span>+8 net · 2 members</span></li>
 <li><b>ENTG</b><span>+8 net · 1 members</span></li>
 <li><b>SPCX</b><span>+7 net · 6 members</span></li>
-<li><b>BEP</b><span>+7 net · 1 members</span></li></ul></div>
+<li><b>FSV</b><span>+7 net · 1 members</span></li></ul></div>
   <div class="card"><h3>Congress sold</h3><ul><li><b>TSCO</b><span>-13 net · 4 members</span></li>
 <li><b>SCI</b><span>-12 net · 1 members</span></li>
 <li><b>FLEX</b><span>-10 net · 1 members</span></li>
