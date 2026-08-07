@@ -41,11 +41,22 @@ async def main():
     if not run.get("ok"):
         print("FAIL:", run.get("error"))
         return
-    print(json.dumps({"spec": run["spec"], "stats": run["stats"], "honesty": run["honesty"]}, indent=2))
+    print(json.dumps(
+        {"spec": run["spec"], "stats": run["stats"], "validation": run["validation"]},
+        indent=2,
+    ))
 
     print("\n===== second spec (trial count should rise) =====")
     run2 = json.loads(await backtest(UNIVERSE, signal="reversal_1m", start="2010-01-01"))
-    print(json.dumps(run2.get("honesty", {}), indent=2))
+    print(json.dumps(run2.get("validation", {}), indent=2))
+
+    print("\n===== third spec, unrelated question (count should be back to 1) =====")
+    run3 = json.loads(await backtest(
+        UNIVERSE, signal="low_volatility", start="2010-01-01", reset_trials=True
+    ))
+    print(json.dumps(
+        run3.get("validation", {}).get("multiple_testing", {}), indent=2
+    ))
 
     show("benchmark run1 vs ff3", await benchmark(run["run_id"], "ff3"), ["result"], chars=1200)
 

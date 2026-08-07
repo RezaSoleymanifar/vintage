@@ -38,6 +38,7 @@ Source is a parameter, never a separate tool.
 | **sec-form-25** | every delisting on record: 36,830 filings, 11,614 companies, 2003 on The survivorship correction. Complete from April 2006, partial before. | `delisting:form25` | yes, filing dates, never revised | none |
 | **sec-xbrl-frames** | one concept across every filer in one call, the cross-section 6,289 filers in one 840KB request. Use fetch per entity when the date matters. | `frame:us-gaap/Assets/CY2023Q1I` | no, carries the accession but not its filing date | none |
 | **us-treasury** | par yield curve, 14 tenors from 1 month to 30 years | `ust:10y, ust:2y, ust:all` | yes, published daily and never revised | none |
+| **open-source-asset-pricing-ports** | the monthly long-short return each replicated predictor produced What Chen & Zimmermann got, beside openap: which is what the paper claimed. The series to calibrate an implementation against. | `openapret:Mom12m` | no, the file is rebuilt on each release and old months can change | none |
 | **sec-edgar-sic** | the industry a filer files under: SIC code, SEC description, division The label a cross-sectional neutralizer needs. Current only, so group today's cross-section with it rather than backdating it. | `sector:sic, sector:name (needs an entity)` | no, EDGAR states the current code with no date of change | none |
 | **cftc-cot** | weekly futures positioning by trader class | `cot:noncommercial_net (needs an entity like SP500)` | yes, Tuesday positions, released Friday, lag preserved | none |
 | **sec-form-13f** | institutional equity holdings for every manager over $100m Long US equity only. Values normalised across the 2023 thousands-to-dollars change. | `13f:value, 13f:shares (needs an entity like BERKSHIRE)` | yes, quarter end and filing date, up to 45 days apart | none |
@@ -55,6 +56,7 @@ How a field name routes to a source.
 | `fred:` | fred | no |
 | `french:` | french | no |
 | `openap:` | openap | ,  |
+| `openapret:` | openap_ports | ,  |
 | `ape:` | apewisdom | ,  |
 | `crypto:` | crypto | ,  |
 | `short:` | finra | ,  |

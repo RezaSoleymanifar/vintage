@@ -198,6 +198,8 @@ UNIVERSE = [
     ("scatter",  "XBRL frames",    "6,289 filers at once",   "REGULATORS"),
     ("shield",   "FINRA",          "daily short volume",     "REGULATORS"),
     ("wall",     "CFTC",           "weekly positioning",     "REGULATORS"),
+    ("scales",   "House STOCK Act", "member trades, dated",  "REGULATORS"),
+    ("bank",     "Senate EFD",     "member trades, dated",   "REGULATORS"),
 
     ("coin",     "FRED",           "800k series, vintages",  "CENTRAL BANKS"),
     ("series",   "US Treasury",    "14-tenor yield curve",   "CENTRAL BANKS"),
@@ -213,6 +215,22 @@ UNIVERSE = [
     ("zero",     "Open Source AP", "331 published claims",   "ACADEMIA"),
     ("ask",      "ApeWisdom",      "forum mention ranks",    "ACADEMIA"),
 ]
+
+# The source count is read off the registry, never typed. Three places on this
+# page used to carry it as a literal and they had drifted to three different
+# numbers, all of them wrong. A number that describes the code belongs to the
+# code.
+SOURCE_COUNT = len(registry.SOURCES)
+KEYLESS_COUNT = sum(1 for s in registry.SOURCES if not s["key_required"])
+PREFIX_COUNT = len(registry.PREFIXES)
+
+WORDS = {18: "eighteen", 19: "nineteen", 20: "twenty", 21: "twenty-one",
+         22: "twenty-two", 23: "twenty-three", 24: "twenty-four"}
+
+
+def source_word(n: int) -> str:
+    return WORDS.get(n, str(n))
+
 
 GROUP_ORDER = ["REGULATORS", "CENTRAL BANKS", "MARKETS", "ACADEMIA"]
 
@@ -343,6 +361,8 @@ TAXONOMY = [
         ("filing:",    "8-K, 10-K, Form 4"),
         ("frame:",     "one concept, all filers"),
         ("13f:",       "institutional holdings"),
+        ("congress:",  "House and Senate trades"),
+        ("insider:",   "Form 4, with the code"),
         ("delisting:", "Form 25, every exit"),
     ]),
     ("MACRO &amp; RATES", [
@@ -365,7 +385,7 @@ def diagram_taxonomy() -> str:
     """The same Vintage block, opened out into the field taxonomy it produces."""
     p: list[str] = []
     p.append('<svg class="dia" viewBox="0 0 1160 600" role="img" '
-             'aria-label="Vintage distilling eighteen sources into twenty-three field '
+             'aria-label="Vintage distilling twenty-two sources into twenty-five field '
              'prefixes, grouped into prices, filings, macro and research, all reachable '
              'through the same six verbs">')
 
@@ -373,10 +393,10 @@ def diagram_taxonomy() -> str:
     # This used to read "the same block the last panel ended on", which was true
     # while the source grid was the slide before it. That slide is gone, so the
     # bar has to introduce itself instead of pointing back at nothing.
-    vintage_bar(p, 16, lede="eighteen sources in, one grammar out")
+    vintage_bar(p, 16, lede=f"{source_word(SOURCE_COUNT)} sources in, one grammar out")
 
     p.append(txt(20, 132, "ONE TAXONOMY", "d-h g"))
-    p.append(txt(1140, 132, "23 PREFIXES", "d-h", "end"))
+    p.append(txt(1140, 132, f"{PREFIX_COUNT} PREFIXES", "d-h", "end"))
 
     for i in range(4):
         cx = COL_X[i] + COL_W // 2
@@ -1227,7 +1247,7 @@ __DIACSS__
     <div class="stats">
       <div><b>$0</b><span>total cost</span></div>
       <div><b>100</b><span>years of history</span></div>
-      <div><b>18</b><span>primary sources</span></div>
+      <div><b>22</b><span>primary sources</span></div>
       <div><b>6</b><span>verbs, that's the API</span></div>
       <div><b>800k+</b><span>macro series</span></div>
       <div><b>331</b><span>published anomalies</span></div>
@@ -1499,8 +1519,8 @@ def build_session(script: list, loop: float, prefix: str) -> tuple[str, str]:
 # kept, and the reader is trusted to know that 1926 is before 1962.
 COVERAGE_STATS = [
     ("100",     "years, Jul 1926 on"),
-    ("19",      "primary sources"),
-    ("24",      "field prefixes"),
+    (str(SOURCE_COUNT), "primary sources"),
+    (str(PREFIX_COUNT), "field prefixes"),
     ("331",     "published claims"),
     ("800k+",   "macro series"),
 ]
@@ -1529,6 +1549,9 @@ COVERAGE_BANNERS = [
     ("FINRA short volume",  "gov",   "2009 &rarr; today", 2009),
     ("Coinbase Exchange",   "third", "2015 &rarr; today", 2015),
     ("CFTC positioning",    "gov",   "2016 &rarr; today", 2016),
+    ("House STOCK Act",     "gov",   "2008 &rarr; today", 2008),
+    ("Senate EFD",          "gov",   "2012 &rarr; today", 2012),
+    ("SEC Form 4 insiders",  "gov",   "2003 &rarr; today", 2003),
     ("BLS",                 "gov",   "2024 &rarr; today, keyless", 2024),
     ("SEC Form 13F",        "gov",   "by quarter, filed 45 days late", None),
     ("SEC XBRL frames",     "gov",   "any quarter, all filers at once", None),
@@ -1545,7 +1568,7 @@ def diagram_coverage() -> str:
     """A century of coverage, said in words and banners rather than bars."""
     p: list[str] = []
     p.append('<svg class="dia" viewBox="0 0 1160 600" role="img" '
-             'aria-label="A hundred years of coverage across nineteen datasets, each '
+             'aria-label="A hundred years of coverage across every wired dataset, each '
              'with the years it spans and whether it comes from the primary publisher">')
 
     p.append(txt(20, 30, "A CENTURY OF COVERAGE", "d-h g"))
@@ -1652,11 +1675,11 @@ def icon(name: str, size: int = 15) -> str:
 # The rail used to say all of this in sentences. Six numbers say it faster.
 TILES = [
     ("clock", "100", "years, Jul 1926 on"),
-    ("stack", "19", "primary sources"),
+    ("stack", str(SOURCE_COUNT), "primary sources"),
     ("scatter", "6", "asset classes"),
     ("gov", "10,398", "tickers mapped"),
     ("series", "800k+", "macro series"),
-    ("prompt", "24", "field prefixes"),
+    ("prompt", str(PREFIX_COUNT), "field prefixes"),
     ("zero", "331", "published claims"),
     ("fall", "36,830", "delistings on record"),
 ]
@@ -2261,6 +2284,7 @@ __ONECSS__
       <a href="https://pypi.org/project/vintage-mcp/">PyPI</a>
       <a href="https://github.com/RezaSoleymanifar/vintage/blob/main/COVERAGE.md">Full catalogue</a>
       <a href="reel.html">Demo reel</a>
+      <a href="flows.html">The Late Tape</a>
     </div>
   </aside>
 

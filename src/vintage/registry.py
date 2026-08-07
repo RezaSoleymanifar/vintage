@@ -9,8 +9,9 @@ from __future__ import annotations
 import os
 from typing import Any
 
-from .sources import (apewisdom, bea, bls, cboe, cftc, ecb, fred, french,
-                      sector, thirteenf, treasury)
+from .sources import (apewisdom, bea, bls, cboe, cftc, congress, ecb, fred,
+                      french, insider, openap_ports, sector, thirteenf,
+                      treasury)
 
 # Field prefix -> source. This is the router.
 PREFIXES = {
@@ -18,6 +19,7 @@ PREFIXES = {
     "fred:": "fred",
     "french:": "french",
     "openap:": "openap",
+    "openapret:": "openap_ports",
     "ape:": "apewisdom",
     "crypto:": "crypto",
     "short:": "finra",
@@ -27,6 +29,8 @@ PREFIXES = {
     "frame:": "frames",
     "ust:": "treasury",
     "cot:": "cftc",
+    "congress:": "congress",
+    "insider:": "insider",
     "sector:": "sector",
     "13f:": "thirteenf",
     "bls:": "bls",
@@ -140,6 +144,15 @@ SOURCES = [
         "key_required": False,
     },
     {
+        "source": "open-source-asset-pricing-ports",
+        "covers": "the monthly long-short return each replicated predictor produced",
+        "field_form": "openapret:Mom12m",
+        "point_in_time": "no, the file is rebuilt on each release and old months can change",
+        "key_required": False,
+        "note": "What Chen & Zimmermann got, beside openap: which is what the paper "
+                "claimed. The series to calibrate an implementation against.",
+    },
+    {
         "source": "sec-edgar-sic",
         "covers": "the industry a filer files under: SIC code, SEC description, division",
         "field_form": "sector:sic, sector:name (needs an entity)",
@@ -154,6 +167,33 @@ SOURCES = [
         "field_form": "cot:noncommercial_net (needs an entity like SP500)",
         "point_in_time": "yes, Tuesday positions, released Friday, lag preserved",
         "key_required": False,
+    },
+    {
+        "source": "house-stock-watcher",
+        "covers": "US House stock trades, STOCK Act periodic transaction reports",
+        "field_form": "congress:house",
+        "point_in_time": "yes, trade date and disclosure date both kept",
+        "key_required": False,
+        "note": "Amounts are disclosed bands, never figures.",
+    },
+    {
+        "source": "sec-form-4",
+        "covers": "insider transactions, with the code that says whether anyone chose",
+        "field_form": "insider:trades, or insider:open_market (needs an entity)",
+        "point_in_time": "yes, trade date and SEC acceptance both kept",
+        "key_required": False,
+        "note": "Due within two business days. 13F says the same kind of thing 45 days late.",
+    },
+    {
+        "source": "senate-efd",
+        "covers": "US Senate stock trades, STOCK Act periodic transaction reports",
+        "field_form": "congress:senate, or congress:trades for both chambers",
+        "point_in_time": "yes, trade date and disclosure date both kept",
+        "key_required": False,
+        "note": (
+            "Behind a click-through agreement quoting the Ethics in Government "
+            "Act, which bars commercial use of these reports."
+        ),
     },
     {
         "source": "sec-form-13f",
@@ -219,7 +259,7 @@ def route(field: str) -> str | None:
 FETCH_ADAPTERS = {
     "sec-edgar-xbrl", "prices", "fred", "french", "openap", "apewisdom",
     "crypto", "finra", "ecb", "cboe", "delistings", "frames", "treasury",
-    "cftc", "thirteenf", "bls", "bea", "sector",
+    "cftc", "congress", "insider", "thirteenf", "bls", "bea", "sector", "openap_ports",
 }
 
 # route() returns the adapter that answers; SOURCES names the publisher. They
@@ -232,6 +272,7 @@ ADAPTER_SOURCE = {
     "fred": "fred",
     "french": "ken-french-data-library",
     "openap": "open-source-asset-pricing",
+    "openap_ports": "open-source-asset-pricing-ports",
     "apewisdom": "apewisdom",
     "crypto": "coinbase-exchange",
     "finra": "finra-short-volume",
@@ -241,6 +282,8 @@ ADAPTER_SOURCE = {
     "frames": "sec-xbrl-frames",
     "treasury": "us-treasury",
     "cftc": "cftc-cot",
+    "congress": "house-stock-watcher",
+    "insider": "sec-form-4",
     "sector": "sec-edgar-sic",
     "thirteenf": "sec-form-13f",
     "bls": "bls",
@@ -299,6 +342,11 @@ PREFIX_SPECS: dict[str, dict[str, Any]] = {
     "crypto:": dict(verb="fetch", answers="crypto OHLCV from Coinbase",
                     needs_entity=True, entity_example="BTC-USD",
                     example_field="crypto:close", as_of="enforced"),
+    "openapret:": dict(verb="fetch",
+                       answers="the monthly long-short return the OSAP replication "
+                               "produced for a predictor",
+                       needs_entity=False, entity_example=None,
+                       example_field="openapret:Mom12m", as_of="none"),
     "sector:": dict(verb="fetch",
                     answers="the industry a company files under, SIC code and description",
                     needs_entity=True, entity_example="AAPL",
@@ -326,6 +374,18 @@ PREFIX_SPECS: dict[str, dict[str, Any]] = {
     "cot:": dict(verb="fetch", answers="weekly futures positioning by trader class",
                  needs_entity=True, entity_example="SP500",
                  example_field="cot:noncommercial_net", as_of="enforced"),
+    "congress:": dict(verb="fetch", answers="US House stock trades, disclosed under the STOCK Act",
+                      needs_entity=False, entity_example=None,
+                      example_field="congress:trades", as_of="enforced",
+                      note=("known_at is the disclosure date, not the trade date, and "
+                            "the two are weeks apart. Amounts are bands; `value` is a "
+                            "midpoint for sorting, never a flow. House only.")),
+    "insider:": dict(verb="fetch", answers="Form 4 insider transactions, with the transaction code",
+                     needs_entity=True, entity_example="AAPL",
+                     example_field="insider:open_market", as_of="enforced",
+                     note=("Read transaction_code. P and S are decisions; A, M and F "
+                           "are a grant vesting and the tax withheld on it. "
+                           "insider:open_market keeps only the discretionary ones.")),
     "13f:": dict(verb="fetch", answers="institutional equity holdings, every manager over $100m",
                  needs_entity=True, entity_example="BERKSHIRE",
                  example_field="13f:value", as_of="enforced",
@@ -458,6 +518,7 @@ def capability_catalog() -> list[dict[str, Any]]:
 def static_catalog() -> list[dict[str, Any]]:
     items = (french.catalog() + apewisdom.catalog() + ecb.catalog()
              + cboe.catalog() + treasury.catalog() + cftc.catalog()
+             + congress.catalog() + insider.catalog()
              + thirteenf.catalog() + bls.catalog() + bea.catalog()) + [
         {**item, "source": "yahoo-finance", "kind": "index"} for item in INDICES
     ] + [

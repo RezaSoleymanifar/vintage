@@ -1,0 +1,298 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Late Tape — Vintage</title>
+<meta name="description" content="The Late Tape: two independent groups of money, 13F institutions and members of Congress, compared on the names they both traded. Everything here was late by law before you read it.">
+<style>
+:root{
+  --bg:#080b11; --panel:#0c121c; --line:#1c2735; --ink:#e9f1ee; --dim:#657f92;
+  --green:#35e08a; --red:#ff6b5e; --amber:#ffc46b;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);
+  line-height:1.45;-webkit-font-smoothing:antialiased}
+.shell{height:100%;display:flex;flex-direction:column;
+  padding:clamp(10px,2vh,22px) clamp(12px,2.4vw,34px) clamp(8px,1.6vh,16px)}
+
+.top{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+  padding-bottom:clamp(6px,1.2vh,12px);border-bottom:1px solid var(--line)}
+.brand{font-size:clamp(12px,1.8vh,15px);letter-spacing:.3em;color:var(--green);margin:0}
+.tag{font-size:clamp(9px,1.3vh,12px);color:var(--dim)}
+.stamp{margin-left:auto;font-size:clamp(9px,1.3vh,12px);color:var(--dim)}
+
+#chips{display:flex;flex-wrap:wrap;gap:6px;margin:clamp(8px,1.4vh,14px) 0}
+.chip{font-family:var(--mono);font-size:clamp(9px,1.4vh,12px);color:var(--dim);
+  cursor:pointer;background:transparent;border:1px solid var(--line);
+  border-radius:999px;padding:clamp(3px,.7vh,6px) clamp(8px,1.1vw,14px)}
+.chip:hover{color:var(--ink)}
+.chip.on{color:var(--bg);background:var(--green);border-color:var(--green);font-weight:700}
+
+#track{position:relative;flex:1;min-height:0}
+.panel{position:absolute;inset:0;opacity:0;pointer-events:none;
+  transition:opacity .35s ease;overflow:hidden;display:flex;flex-direction:column}
+.panel.on{opacity:1;pointer-events:auto}
+h2{font-size:clamp(10px,1.4vh,12px);letter-spacing:.22em;text-transform:uppercase;
+  color:var(--dim);font-weight:400;margin:0 0 clamp(6px,1.2vh,12px)}
+
+h1{font-size:clamp(20px,4.6vh,44px);line-height:1.1;margin:0 0 clamp(6px,1.2vh,14px);
+  letter-spacing:-.02em}
+h1 em{font-style:normal;color:var(--green)}
+.sub{color:var(--ink);font-size:clamp(11px,1.8vh,16px);margin:0 0 clamp(8px,1.4vh,16px)}
+.lede{color:var(--dim);font-size:clamp(10px,1.5vh,13.5px);max-width:64ch;margin:0}
+
+.grid{display:grid;gap:clamp(6px,1vh,11px);
+  grid-template-columns:repeat(auto-fit,minmax(clamp(130px,15vw,190px),1fr))}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:clamp(7px,1.2vh,14px) clamp(9px,1vw,16px)}
+.box i{font-style:normal;display:block;font-size:clamp(8px,1.1vh,10.5px);
+  letter-spacing:.15em;text-transform:uppercase;color:var(--dim);margin-bottom:5px}
+.box b{display:block;font-size:clamp(13px,2.4vh,22px);font-variant-numeric:tabular-nums}
+.box s{display:block;text-decoration:none;color:var(--dim);
+  font-size:clamp(8px,1.1vh,11px);margin-top:3px}
+
+.scroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden}
+table{width:100%;border-collapse:collapse;font-size:clamp(10px,1.5vh,13.5px)}
+th{text-align:left;font-weight:400;font-size:clamp(8px,1.1vh,10.5px);letter-spacing:.13em;
+  text-transform:uppercase;color:var(--dim);padding:0 8px 7px;border-bottom:1px solid var(--line);
+  position:sticky;top:0;background:var(--bg)}
+td{padding:clamp(6px,1.1vh,12px) 8px;border-bottom:1px solid var(--line);vertical-align:top}
+td.n{font-size:clamp(11px,1.7vh,15px)}
+td.n s,.num s,.v s{display:block;text-decoration:none;color:var(--dim);
+  font-size:clamp(8px,1.1vh,11px);margin-top:3px}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;width:120px}
+.up{color:var(--green)} .dn{color:var(--red)}
+.v{text-align:right;width:70px} .v.split{color:var(--amber)}
+.none{color:var(--dim)}
+table.themes{table-layout:fixed}
+table.themes td.track2{width:30%}
+table.themes td.num{width:clamp(88px,9vw,124px)}
+table.themes td.n{overflow:hidden}
+.track2{padding:clamp(6px,1.1vh,12px) 16px}
+.rail{height:8px;border-radius:4px;background:rgba(28,39,53,.85);position:relative}
+.bar{position:absolute;top:0;height:8px;border-radius:4px;display:block}
+.rail.up .bar{left:50%;background:var(--green)}
+.rail.dn .bar{right:50%;background:var(--red)}
+.rail::after{content:"";position:absolute;left:50%;top:-4px;width:1px;height:16px;
+  background:var(--line)}
+
+.cols{display:grid;gap:clamp(7px,1.1vh,14px);flex:1;min-height:0;
+  grid-template-columns:repeat(auto-fit,minmax(clamp(180px,20vw,260px),1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:11px;
+  padding:clamp(8px,1.2vh,15px) clamp(10px,1vw,17px);overflow-y:auto;min-height:0}
+.card h3{margin:0 0 8px;font-size:clamp(8px,1.1vh,10.5px);letter-spacing:.15em;
+  text-transform:uppercase;color:var(--dim);font-weight:400}
+ul{list-style:none;margin:0;padding:0}
+.card li{display:flex;justify-content:space-between;gap:10px;
+  padding:clamp(3px,.6vh,7px) 0;border-bottom:1px solid rgba(28,39,53,.6);
+  font-size:clamp(9px,1.3vh,12.5px)}
+.card li:last-child{border-bottom:0}
+.card li span{color:var(--dim);white-space:nowrap;font-size:clamp(8px,1.1vh,11px)}
+
+.warn{background:var(--panel);border:1px solid var(--line);
+  border-left:3px solid var(--amber);border-radius:10px;
+  padding:clamp(10px,1.6vh,20px) clamp(14px,1.4vw,24px);overflow-y:auto}
+.warn ul{padding-left:18px;list-style:disc}
+.warn li{padding:clamp(3px,.7vh,7px) 0;color:var(--dim);
+  font-size:clamp(10px,1.5vh,13.5px)}
+.warn b{color:var(--ink)}
+.foot{color:var(--dim);font-size:clamp(9px,1.2vh,11.5px);margin:8px 0 0;max-width:76ch}
+.foot code,.foot b{color:var(--ink)}
+.bottom{padding-top:clamp(5px,1vh,10px);border-top:1px solid var(--line);
+  color:var(--dim);font-size:clamp(8px,1.2vh,11.5px);margin-top:clamp(6px,1vh,12px)}
+.bottom a{color:var(--green);text-decoration:none}
+@media(max-width:640px){
+  html,body{overflow:auto}
+  .panel{position:static;opacity:1;pointer-events:auto;display:none}
+  .panel.on{display:flex}
+  #track{min-height:70vh}
+}
+</style>
+
+<div class="shell">
+  <div class="top">
+    <p class="brand">THE LATE TAPE</p>
+    <span class="tag">everything here was public before you read it, and late by law</span>
+    <span class="stamp">built 07 Aug 2026</span>
+  </div>
+
+  <div id="chips"></div>
+
+  <div id="track">
+
+    <section class="panel on">
+      <h1>Two groups of money.<br><em>Out of banks &amp; payments. Into memory &amp; storage.</em></h1>
+      <p class="sub">+$133.7B added on net. 19 of 22 managers moved Alphabet the same way.</p>
+      <p class="lede">Institutional managers file Form 13F once a quarter. Members of
+      Congress file a report every time they trade. Neither can see the other's
+      filing before it lands.</p>
+      <div class="grid" style="margin-top:auto">
+        <div class="box"><i>Institutions as of</i><b>31 Mar 2026</b>
+          <s>22 managers · filed 2026-05-15</s></div>
+        <div class="box"><i>Congress as of</i><b>2026-08-06</b>
+          <s>65 members · 1,800 transactions</s></div>
+        <div class="box"><i>Institutions next move</i><b>14 Aug 2026</b>
+          <s>7 days · Q2 2026 13F deadline</s></div>
+        <div class="box"><i>Congress moves</i><b>Continuously</b>
+          <s>median 24-day lag</s></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>The net</h2>
+      <div class="grid">
+        <div class="box"><i>Gross bought</i><b class="up">+$298.6B</b></div>
+        <div class="box"><i>Gross sold</i><b class="dn">−$164.9B</b></div>
+        <div class="box"><i>Net</i><b class="up">+$133.7B</b></div>
+        <div class="box"><i>Names moved</i><b>1,900</b></div>
+      </div>
+      <h2 style="margin-top:clamp(10px,1.8vh,20px)">Which themes the money left, and where it went</h2>
+      <div class="scroll"><table class="themes">
+      <tbody>
+      <tr><td class="n">Memory &amp; storage<s>Micron Technology Inc, Sandisk Corp, Seagate Hdd Cayman, Seagate Technology Hld …</s></td><td class="track"><div class="rail up"><i class="bar up" style="width:50.0%"></i></div></td><td class="num up">+$13.0B<s>13 managers</s></td></tr>
+<tr><td class="n">Banks &amp; payments<s>Ally Finl Inc, Bank America Corp, Capital One Finl Corp, Citigroup Inc …</s></td><td class="track"><div class="rail dn"><i class="bar dn" style="width:48.1%"></i></div></td><td class="num dn">−$12.5B<s>17 managers</s></td></tr>
+<tr><td class="n">AI compute<s>Advanced Micro Devices, Broadcom Inc, Marvell    Technology , Nvidia Corporation …</s></td><td class="track"><div class="rail up"><i class="bar up" style="width:38.6%"></i></div></td><td class="num up">+$10.1B<s>16 managers</s></td></tr>
+<tr><td class="n">Megacap platforms<s>Alphabet Inc, Amazon Com Inc, Apple Inc, Meta Platforms Inc …</s></td><td class="track"><div class="rail up"><i class="bar up" style="width:34.7%"></i></div></td><td class="num up">+$9.0B<s>20 managers</s></td></tr>
+<tr><td class="n">Semi-cap &amp; foundry<s>Applied Matls Inc, Asml Hldg Nv, Kla Corp, Lam Research Corp …</s></td><td class="track"><div class="rail up"><i class="bar up" style="width:29.9%"></i></div></td><td class="num up">+$7.8B<s>17 managers</s></td></tr>
+<tr><td class="n">Energy<s>Chevron Corporation, Conocophillips, Exxon     Mobil      C, Hess Corp …</s></td><td class="track"><div class="rail dn"><i class="bar dn" style="width:23.7%"></i></div></td><td class="num dn">−$6.2B<s>10 managers</s></td></tr>
+<tr><td class="n">Insurance<s>Aon Plc, Chubb Ltd Switz, Marsh &amp; Mclennan Cos I, Progressive Corp …</s></td><td class="track"><div class="rail up"><i class="bar up" style="width:14.0%"></i></div></td><td class="num up">+$3.6B<s>11 managers</s></td></tr>
+<tr><td class="n">Consumer staples<s>Coca Cola Co, Coca Cola Cons Inc, Keurig Dr Pepper Inc, Kraft Heinz Co/T …</s></td><td class="track"><div class="rail dn"><i class="bar dn" style="width:4.3%"></i></div></td><td class="num dn">−$1.1B<s>14 managers</s></td></tr>
+<tr><td class="n">Housing &amp; builders<s>D R Horton Inc, Lennar Corp, Louisiana Pac Corp, Nvr Inc …</s></td><td class="track"><div class="rail up"><i class="bar up" style="width:0.6%"></i></div></td><td class="num up">+$0.2B<s>10 managers</s></td></tr>
+<tr><td class="n">Healthcare<s>Amgen Inc, Bristol-Myers Squibb C, Davita Inc, Eli Lilly &amp; Co …</s></td><td class="track"><div class="rail up"><i class="bar up" style="width:0.5%"></i></div></td><td class="num up">+$0.1B<s>17 managers</s></td></tr>
+      </tbody></table></div>
+      <p class="foot">Themes are a fixed map from issuer name to bucket, listed in
+      <code>tools/build_flows.py</code>. A clustering would reshuffle names between
+      rebuilds and you could not tell a rotation from an algorithm change.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Where both groups went the same way</h2>
+      <div class="scroll"><table>
+      <thead><tr><th>Name</th><th class="num">22 institutions</th>
+      <th class="num">65 in Congress</th><th class="v">Verdict</th></tr></thead>
+      <tbody>
+      <tr><td class="n">Apple Inc</td><td class="num dn">−$12.4B<s>11 of 22 managers</s></td><td class="num dn">-9 net<s>13 members</s></td><td class="v dn">Sell</td></tr>
+<tr><td class="n">Micron Technology Inc</td><td class="num up">+$5.7B<s>12 of 22 managers</s></td><td class="num up">+2 net<s>6 members</s></td><td class="v up">Buy</td></tr>
+<tr><td class="n">Microsoft Corp</td><td class="num up">+$3.5B<s>17 of 22 managers</s></td><td class="num up">+4 net<s>15 members</s></td><td class="v up">Buy</td></tr>
+<tr><td class="n">Mastercard Incorporated</td><td class="num dn">−$1.4B<s>11 of 22 managers</s></td><td class="num dn">-5 net<s>3 members</s></td><td class="v dn">Sell</td></tr>
+<tr><td class="n">Tesla Inc</td><td class="num up">+$1.2B<s>13 of 22 managers</s></td><td class="num up">+3 net<s>2 members</s></td><td class="v up">Buy</td></tr>
+<tr><td class="n">Palantir Technologies Inc</td><td class="num dn">−$0.7B<s>9 of 22 managers</s></td><td class="num dn">-1 net<s>2 members</s></td><td class="v dn">Sell</td></tr>
+      </tbody></table></div>
+      <p class="foot">Neither group can read the other's filing before it lands, so
+      agreement here is two independent decisions rather than one being copied.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Where they disagreed</h2>
+      <div class="scroll"><table>
+      <thead><tr><th>Name</th><th class="num">Institutions</th>
+      <th class="num">Congress</th><th class="v"></th></tr></thead>
+      <tbody>
+      <tr><td class="n">Alphabet Inc</td><td class="num up">+$16.6B<s>19 managers</s></td><td class="num dn">-6 net<s>11 members</s></td><td class="v split">Split</td></tr>
+<tr><td class="n">Nvidia Corporation</td><td class="num up">+$9.0B<s>15 managers</s></td><td class="num dn">-4 net<s>11 members</s></td><td class="v split">Split</td></tr>
+<tr><td class="n">Chevron Corporation</td><td class="num dn">−$5.1B<s>9 managers</s></td><td class="num up">+2 net<s>4 members</s></td><td class="v split">Split</td></tr>
+<tr><td class="n">Amazon Com Inc</td><td class="num up">+$3.6B<s>19 managers</s></td><td class="num dn">-1 net<s>7 members</s></td><td class="v split">Split</td></tr>
+<tr><td class="n">Meta Platforms Inc</td><td class="num dn">−$2.2B<s>17 managers</s></td><td class="num up">+2 net<s>5 members</s></td><td class="v split">Split</td></tr>
+<tr><td class="n">Advanced Micro Devices Inc</td><td class="num dn">−$2.0B<s>12 managers</s></td><td class="num up">+6 net<s>4 members</s></td><td class="v split">Split</td></tr>
+<tr><td class="n">Johnson &amp; Johnson</td><td class="num up">+$0.2B<s>7 managers</s></td><td class="num dn">-4 net<s>5 members</s></td><td class="v split">Split</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="panel">
+      <h2>What only one group traded</h2>
+      <div class="cols">
+        <div class="card"><h3>Institutions bought</h3><ul><li><b>Alphabet Inc</b><span>+$15.9B · 16 mgrs</span></li>
+<li><b>Nvidia Corporation</b><span>+$9.0B · 15 mgrs</span></li>
+<li><b>Ishares Tr</b><span>+$7.2B · 6 mgrs</span></li>
+<li><b>Micron Technology Inc</b><span>+$5.7B · 12 mgrs</span></li>
+<li><b>Spdr Series Trust</b><span>+$5.4B · 3 mgrs</span></li>
+<li><b>Amazon Com Inc</b><span>+$3.6B · 19 mgrs</span></li>
+<li><b>Microsoft Corp</b><span>+$3.5B · 17 mgrs</span></li>
+<li><b>Taiwan Semiconductor Manufac</b><span>+$3.4B · 16 mgrs</span></li></ul></div>
+        <div class="card"><h3>Institutions sold</h3><ul><li><b>Meta Platforms Inc</b><span>−$2.2B · 17 mgrs</span></li>
+<li><b>Schwab Charles Corp</b><span>−$2.3B · 9 mgrs</span></li>
+<li><b>Alibaba  Group        Hldg  </b><span>−$2.3B · 8 mgrs</span></li>
+<li><b>Flutter Entmt Plc</b><span>−$2.4B · 10 mgrs</span></li>
+<li><b>Intuit</b><span>−$3.5B · 10 mgrs</span></li>
+<li><b>Chevron Corporation</b><span>−$5.1B · 9 mgrs</span></li>
+<li><b>Bank America Corp</b><span>−$7.0B · 10 mgrs</span></li>
+<li><b>Apple Inc</b><span>−$12.4B · 11 mgrs</span></li></ul></div>
+        <div class="card"><h3>Congress bought</h3><ul><li><b>HUBB</b><span>+13 net · 2 members</span></li>
+<li><b>TDG</b><span>+12 net · 3 members</span></li>
+<li><b>T</b><span>+9 net · 5 members</span></li>
+<li><b>LTH</b><span>+9 net · 1 members</span></li>
+<li><b>LPLA</b><span>+8 net · 2 members</span></li>
+<li><b>ENTG</b><span>+8 net · 1 members</span></li>
+<li><b>SPCX</b><span>+7 net · 6 members</span></li>
+<li><b>BEP</b><span>+7 net · 1 members</span></li></ul></div>
+        <div class="card"><h3>Congress sold</h3><ul><li><b>TSCO</b><span>-13 net · 4 members</span></li>
+<li><b>SCI</b><span>-12 net · 1 members</span></li>
+<li><b>FLEX</b><span>-10 net · 1 members</span></li>
+<li><b>AAPL</b><span>-9 net · 13 members</span></li>
+<li><b>GOOGL</b><span>-9 net · 7 members</span></li>
+<li><b>WRB</b><span>-8 net · 1 members</span></li>
+<li><b>CPAY</b><span>-7 net · 1 members</span></li>
+<li><b>INTU</b><span>-6 net · 6 members</span></li></ul></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>What this is not</h2>
+      <div class="warn"><ul>
+      <li><b>65 members is not Congress</b>, and
+      22 managers is not the market. Both are the subset that
+      filed comparable reports in this window.</li>
+      <li><b>Congressional amounts are bands</b>, not figures. Direction and count
+      are the only honest measures, so no dollar total is shown for that half.</li>
+      <li><b>Institutional figures are share-count changes</b> priced at the later
+      quarter, so a position that merely appreciated does not appear as a purchase.</li>
+      <li><b>Everything here was late by construction.</b> 13F lands 45 days after
+      the quarter; 546 of 1,800 congressional transactions
+      (30%) were disclosed past the
+      45-day statutory deadline, the worst by 880 days.</li>
+      <li><b>Nothing here is advice</b>, and every position was public knowledge
+      before you read it.</li>
+      </ul></div>
+    </section>
+
+  </div>
+
+  <div class="bottom">
+    <b>The Late Tape</b> · SEC Form 13F, House STOCK Act periodic transaction reports
+    and Senate EFD, via <a href="https://github.com/RezaSoleymanifar/vintage">Vintage</a>
+    · reports obtained under the Ethics in Government Act, which restricts commercial use
+    · rebuild with <code>python tools/build_flows.py</code>
+  </div>
+</div>
+
+<script>
+(function () {
+  var panels = [].slice.call(document.querySelectorAll('.panel'));
+  var bar = document.getElementById('chips');
+  var titles = ['The claim', 'The net', 'They agreed', 'They split',
+                'One group only', 'What this is not'];
+  var at = 0;
+
+  var chips = titles.map(function (t, i) {
+    var b = document.createElement('button');
+    b.className = 'chip' + (i === 0 ? ' on' : '');
+    b.textContent = t;
+    b.addEventListener('click', function () { show(i); });
+    bar.appendChild(b);
+    return b;
+  });
+
+  function show(i) {
+    at = (i + panels.length) % panels.length;
+    panels.forEach(function (p, k) { p.classList.toggle('on', k === at); });
+    chips.forEach(function (c, k) { c.classList.toggle('on', k === at); });
+  }
+
+  // Arrow keys, because a deck that only responds to clicking a pill is a
+  // slideshow nobody drives.
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') show(at + 1);
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') show(at - 1);
+  });
+})();
+</script>

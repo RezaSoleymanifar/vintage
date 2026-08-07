@@ -32,7 +32,9 @@ The one-screen rebuild lost two things that were correct before.
 
 - `assets/architecture.svg`, the animated source diagram, is no longer on the
   page at all.
-- Three places still say "Nine primary sources". It is eighteen.
+- Three places still say "Nine primary sources". It is twenty-two. The
+  "eighteen" that replaced it here was also wrong; count `registry.SOURCES`
+  rather than a number written down at some point in the past.
 
 ## 4. In flight
 

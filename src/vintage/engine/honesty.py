@@ -1,11 +1,15 @@
-"""The part that makes a backtest engine trustworthy instead of dangerous.
-
-A conversational backtester is an overfitting machine unless it counts how
-many times you asked. This module keeps that count for the session and
-deflates the Sharpe accordingly.
+"""Deflated Sharpe, and the session trial log it reads from.
 
 Deflated Sharpe follows Bailey & Lopez de Prado (2014). No scipy, the normal
 CDF and its inverse are implemented directly.
+
+This module reports a number. It does not render a judgement on it, and the
+engine no longer leads with it. The multiple-testing correction assumes you
+are quoting the best of N attempts on one question; a session that runs six
+unrelated ideas is not that, and the count cannot tell the difference. Reset
+it with `reset_trials()` whenever the thread of enquiry changes. The
+out-of-sample work in `validation` -- purged CV across every held-out
+combination -- answers the same worry without needing to guess at intent.
 """
 
 from __future__ import annotations
@@ -137,22 +141,9 @@ def deflated_sharpe(
         "per_observation_sharpe": round(sharpe, 5),
         "per_observation_sharpe_to_beat": round(threshold, 5),
         "trials_considered": trials,
-        "verdict": _verdict(probability, trials),
         "note": (
-            "Sharpe figures in this block are per observation, not annualized, "
-            "that is the frequency the deflation is defined at."
+            "Sharpe figures here are per observation, not annualized. Trials "
+            "counts every spec run since the last reset, which only bears on "
+            "this result if they were attempts at the same question."
         ),
     }
-
-
-def _verdict(probability: float, trials: int) -> str:
-    if probability >= 0.95:
-        return "survives multiple-testing adjustment"
-    if probability >= 0.90:
-        return "marginal, would not survive a stricter trial count"
-    if trials > 1:
-        return (
-            f"does not survive. After {trials} trials this session, a Sharpe this "
-            "high is what noise produces."
-        )
-    return "not significant even before adjusting for multiple testing"

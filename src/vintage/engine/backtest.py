@@ -74,7 +74,7 @@ def run(
     notional: float | None = None,
     average_daily_volume: float | None = None,
 ) -> dict[str, Any]:
-    """Rank, hold, rebalance, charge costs. Returns stats plus an honesty report."""
+    """Rank, hold, rebalance, charge costs. Returns stats plus validation."""
     if prices.empty:
         raise ValueError("No price data, nothing to backtest")
 
@@ -170,37 +170,38 @@ def run(
     series = {str(d.date()): float(v) for d, v in net.items()}
     trials = honesty.record_trial(spec, per_obs_sharpe, returns=series)
 
-    report = honesty.deflated_sharpe(
+    values = [float(v) for v in net.values]
+    split = len(net) // 2
+
+    # Held-out behaviour leads, because it is the only thing here that
+    # perturbs the sample rather than reasoning about how the sample was
+    # chosen. Every combination of held-out blocks, purged and embargoed.
+    report: dict[str, Any] = {
+        "annualized_sharpe": stats["sharpe"],
+        "combinatorial_purged_cv": _cpcv(net),
+        "first_half_sharpe": _stats(net.iloc[:split])["sharpe"],
+        "second_half_sharpe": _stats(net.iloc[split:])["sharpe"],
+        # A t-statistic that does not pretend daily returns are independent.
+        "newey_west": validation.newey_west_t(values),
+    }
+
+    # The multiple-testing block, reported plainly and last. It is only
+    # meaningful when the trials really were attempts at one question, which
+    # the engine cannot know, so it states the count and leaves the reading to
+    # whoever ran them. `reset_trials()` clears it.
+    deflation = honesty.deflated_sharpe(
         per_obs_sharpe,
         n_obs=len(net),
         skew=float(net.skew()),
         kurtosis=float(net.kurtosis() + 3.0),
         trials=trials,
     )
-    report["specs_tried_this_session"] = trials
-    report["annualized_sharpe"] = stats["sharpe"]
-
-    split = len(net) // 2
-    report["first_half_sharpe"] = _stats(net.iloc[:split])["sharpe"]
-    report["second_half_sharpe"] = _stats(net.iloc[split:])["sharpe"]
-
-    values = [float(v) for v in net.values]
-
-    # A t-statistic that does not pretend daily returns are independent.
-    report["newey_west"] = validation.newey_west_t(values)
-
-    # How long the sample would have to be for this Sharpe to mean anything,
-    # given how many specs have been tried to find it.
-    report["min_backtest_length"] = validation.min_backtest_length(
+    deflation["specs_tried_since_reset"] = trials
+    deflation["min_backtest_length"] = validation.min_backtest_length(
         trials, stats["sharpe"]
     )
-
-    # Out-of-sample behaviour across every combination of held-out blocks,
-    # rather than the single arbitrary split that first-half/second-half is.
-    report["combinatorial_purged_cv"] = _cpcv(net)
-
-    # And whether picking the best spec of the session would have held up.
-    report["probability_of_backtest_overfitting"] = _pbo()
+    deflation["probability_of_backtest_overfitting"] = _pbo()
+    report["multiple_testing"] = deflation
 
     report["impact"] = validation.impact_report(
         stats["average_turnover_per_rebalance"],
@@ -213,7 +214,7 @@ def run(
     return {
         "spec": spec,
         "stats": stats,
-        "honesty": report,
+        "validation": report,
         "returns": {str(d.date()): round(float(v), 6) for d, v in net.items()},
     }
 

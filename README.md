@@ -18,7 +18,7 @@ Vintage is that glue, written once, served over [MCP](https://modelcontextprotoc
 </p>
 
 <p align="center">
-  <img src="assets/architecture.svg" alt="Eighteen free financial data sources — SEC EDGAR, Form 13F, FRED, ECB, US Treasury, BLS, BEA, CFTC, CBOE, FINRA, Coinbase, Ken French and more — federated behind one interface, with every row carrying both the date it describes and the date it became public" width="100%">
+  <img src="assets/architecture.svg" alt="Twenty-two free financial data sources — SEC EDGAR, Form 13F, House and Senate STOCK Act disclosures, FRED, ECB, US Treasury, BLS, BEA, CFTC, CBOE, FINRA, Coinbase, Ken French and more — federated behind one interface, with every row carrying both the date it describes and the date it became public" width="100%">
 </p>
 
 <p align="center">
@@ -127,7 +127,8 @@ Once installed, ask your assistant:
 >
 > *"Now try short-term reversal instead. Did the alpha survive?"*
 
-The third question is the one that matters. Watch the deflated Sharpe fall as you keep asking.
+The third question is the one that matters. Every answer carries the worst
+held-out path next to the headline Sharpe.
 
 ## The two dates
 
@@ -161,7 +162,7 @@ Source is a parameter, never a separate tool. Twenty more sources adds zero tool
 | `discover` | Plain-English search across every source's catalog |
 | `fetch` | The workhorse. Any field, any source, with `as_of` |
 | `events` | Filing timeline with exact public timestamps |
-| `backtest` | Cross-sectional signal → returns, costs, honesty report |
+| `backtest` | Cross-sectional signal → returns, costs, held-out paths |
 | `benchmark` | Your returns → correlation and alpha vs published factors |
 
 Plus `status` for cache size, keys, and how many specs you have tried.
@@ -201,7 +202,7 @@ Citations are references, not endorsements — none of these authors is affiliat
 </tr>
 </table>
 
-**A century of market history, eighteen sources, and sixteen of them need no key at all.** The Fama-French factors start in July 1926 and the SEC filing stream runs to this morning — Vintage covers both ends from the same six verbs.
+**A century of market history, twenty-two sources, and twenty of them need no key at all.** The Fama-French factors start in July 1926 and the SEC filing stream runs to this morning — Vintage covers both ends from the same six verbs.
 
 **Most of these are the primary source** — not a reseller, not a scraper. The filings come from the regulator that receives them, the macro series from the central bank that publishes them, and the factors from the university that computes them.
 
@@ -251,7 +252,7 @@ Engine — the backtester is vectorized and cross-sectional, which is a rung bel
 - **No purging or embargo** — overlapping label windows can leak across a train/test split ([López de Prado, AFML](https://www.wiley.com/en-us/Advances+in+Financial+Machine+Learning-p-9781119482086) ch. 7). Deflation catches selection bias, not leakage.
 - **No market impact** — costs are a flat charge on turnover, so large-notional results are optimistic.
 - **No PBO** — deflated Sharpe covers multiple testing; the Probability of Backtest Overfitting via combinatorially symmetric cross-validation would be the stronger test.
-- **Trial count resets each session** — ask forty things today and forty tomorrow, and tomorrow starts from zero.
+- **Trial count is session-scoped and resettable** — `reset_trials=True` zeroes it mid-conversation. Deliberate: the correction only applies to repeated attempts at one question, and the engine cannot tell those from unrelated ones.
 - **Sharpe is per observation, not annualized** — that is the frequency the deflation is defined at, and the response says so.
 
 ## Development

@@ -18,8 +18,9 @@ from .engine import backtest as bt
 from .engine import benchmark as bm
 from .engine import honesty
 from .http import SourceError
-from .sources import (apewisdom, bea, bls, cboe, cftc, coinbase, delistings,
+from .sources import (apewisdom, bea, bls, cboe, cftc, coinbase, congress, delistings, insider,
                       ecb, edgar, finra, frames, fred, french, openap,
+                      openap_ports,
                       sector, thirteenf, treasury, yahoo)
 
 mcp = MCPServer(
@@ -40,9 +41,13 @@ mcp = MCPServer(
         "the user. A restated figure or a missing delisted name is usually the "
         "most important thing in the answer. Follow suggested_next when it "
         "would deepen the analysis.\n\n"
-        "Backtesting conversationally is an overfitting risk. Every backtest "
-        "returns a deflated Sharpe that accounts for how many specs were tried "
-        "this session. Report it. Never present a raw Sharpe alone."
+        "Backtests return a `validation` block: purged cross-validation across "
+        "every held-out combination, a Newey-West t, and a `multiple_testing` "
+        "sub-block carrying the deflated Sharpe and the running spec count. "
+        "Report the worst purged-CV path; it is the number that perturbs the "
+        "sample rather than reasoning about intent. The trial count only bears "
+        "on a result when the specs were attempts at the same question, so "
+        "pass `reset_trials=True` when the thread of enquiry changes."
     ),
     version="0.9.0",
 )
@@ -65,7 +70,7 @@ WORKFLOW = [
     {"step": 5, "verb": "events",
      "why": "when the question is about timing rather than values, what was filed, and when"},
     {"step": 6, "verb": "backtest",
-     "why": "cross-sectional signal to returns, costs charged, honesty report attached"},
+     "why": "cross-sectional signal to returns, costs charged, held-out paths attached"},
     {"step": 7, "verb": "benchmark",
      "why": "take the run_id from backtest and price it against published factors"},
 ]
@@ -77,8 +82,9 @@ HOUSE_RULES = [
     "most important part of the answer, not a footnote.",
     "`suggested_next` arrives with arguments already filled in. Follow it "
     "rather than re-deriving the next call.",
-    "Never report a raw Sharpe. Report the deflated one and the number of "
-    "specs tried this session alongside it.",
+    "Quote the worst purged-CV path next to the headline Sharpe. The trial "
+    "count in `multiple_testing` only applies when the specs were attempts at "
+    "one question; reset it when the subject changes.",
     "A source with as_of='none' cannot be filtered point-in-time. Say so "
     "instead of implying the number was knowable back then.",
 ]
@@ -318,6 +324,9 @@ async def fetch(
             warnings += frames.warnings_for(period, rows)
         elif source == "treasury":
             rows = await treasury.yields(field.split(":", 1)[1], start=start, end=end)
+        elif source == "openap_ports":
+            rows = await openap_ports.returns(field.split(":", 1)[1], limit=limit)
+            warnings += openap_ports.warnings_for()
         elif source == "sector":
             if not entity:
                 return _needs_entity(field, hint=["AAPL", "JPM", "XOM"])
@@ -332,6 +341,28 @@ async def fetch(
                 return _needs_entity(field, hint=list(cftc.MARKETS))
             rows = await cftc.positioning(entity, measure=field.split(":", 1)[1])
             warnings += cftc.warnings_for()
+        elif source == "insider":
+            if not entity:
+                return _needs_entity(field, hint=["AAPL", "NVDA", "JPM"])
+            rows = await insider.trades(
+                entity, limit=limit,
+                open_market_only=field.split(":", 1)[1].lower() == "open_market",
+            )
+            warnings += insider.warnings_for(rows)
+        elif source == "congress":
+            # `start` picks the disclosure year; `entity` narrows to a member,
+            # since a ticker filter is better served by reading the rows back.
+            year = int(start[:4]) if start else None
+            chamber = field.split(":", 1)[1].lower()
+            if chamber == "senate":
+                rows = await congress.senate_trades(
+                    f"{year}-01-01" if year else None, limit=limit, member=entity
+                )
+            elif chamber == "house":
+                rows = await congress.trades(year, limit=limit, member=entity)
+            else:
+                rows = await congress.both(year, limit=limit, member=entity)
+            warnings += congress.warnings_for(rows)
         elif source == "thirteenf":
             if not entity:
                 return _needs_entity(field, hint=sorted(thirteenf.MANAGERS))
@@ -535,18 +566,24 @@ async def backtest(
     short_pct: float = 0.0,
     cost_bps: float = 10.0,
     rebalance: str = "ME",
+    reset_trials: bool = False,
 ) -> str:
     """Run a cross-sectional backtest. Point-in-time and costed by construction.
 
     At each rebalance the engine sees only data knowable strictly before that
     date. Costs are always charged on turnover; there is no zero-cost mode.
 
-    The result includes a deflated Sharpe that accounts for how many specs
-    have been tried this session. Always report it alongside the raw Sharpe.
-    A conversational backtester is an overfitting machine without it.
+    The `validation` block leads with purged cross-validation across every
+    held-out combination of blocks. Its `multiple_testing` sub-block carries
+    the deflated Sharpe and the count of specs run since the last reset. That
+    correction assumes the specs were attempts at one question; if this run
+    starts an unrelated line of enquiry, pass `reset_trials=True` to zero the
+    count first.
 
     Signals: momentum_12_1, momentum_6_1, reversal_1m, low_volatility, trend_200d.
     """
+    if reset_trials:
+        honesty.reset_trials()
     if len(universe) < 4:
         return envelope.fail(
             "backtest",
@@ -624,7 +661,7 @@ async def backtest(
         run_id=run_id,
         spec=result["spec"],
         stats=result["stats"],
-        honesty=result["honesty"],
+        validation=result["validation"],
         annual_returns=annual,
         excluded=missing,
         warnings=warnings,
@@ -693,7 +730,7 @@ async def status() -> str:
         cache=cache.stats(),
         sources=registry.SOURCES,
         fred_key_configured=fred.has_key(),
-        specs_tried_this_session=honesty.trial_count(),
+        specs_tried_since_reset=honesty.trial_count(),
         backtests_in_memory=list(_runs),
     )
 

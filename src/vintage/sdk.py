@@ -47,7 +47,8 @@ T = TypeVar("T")
 __all__ = [
     "prices", "panel", "returns", "fundamentals", "filings", "factors", "macro",
     "claim", "claims", "crypto", "short_volume", "sentiment",
-    "resolve", "search", "sources", "signals", "backtest", "trials", "frame",
+    "resolve", "search", "sources", "signals", "backtest", "trials",
+    "reset_trials", "frame",
     "delistings", "survivorship_warning", "fx", "volatility", "index",
     "sectors", "splits", "overfitting_probability",
     "cross_section", "treasury_yields", "positioning",
@@ -401,11 +402,13 @@ def backtest(universe: Iterable[str], signal: str = "momentum_12_1", *,
              start: str | None = None, end: str | None = None,
              cost_bps: float = 10.0, long_pct: float = 0.2,
              short_pct: float = 0.0, rebalance: str = "ME") -> dict[str, Any]:
-    """Run a built-in signal and get the honesty report with it.
+    """Run a built-in signal and get the validation block with it.
 
-    The deflated Sharpe counts every specification tried in this session, so
-    calling this in a loop makes the bar rise. That is deliberate, and
-    `trials()` shows the running count.
+    Purged cross-validation leads; the deflated Sharpe sits under
+    `multiple_testing` with the count of specs run since the last reset. That
+    count only bears on a result when the specs were attempts at one question,
+    so `reset_trials()` clears it when the subject changes. `trials()` shows
+    where it stands.
     """
     px = panel(universe, start=start, end=end)
     return _bt.run(px, signal=signal, cost_bps=cost_bps, long_pct=long_pct,
@@ -413,5 +416,16 @@ def backtest(universe: Iterable[str], signal: str = "momentum_12_1", *,
 
 
 def trials() -> int:
-    """How many specifications have been scored this session."""
+    """How many specifications have been scored since the last reset."""
     return _honesty.trial_count()
+
+
+def reset_trials() -> int:
+    """Clear the trial log and return what the count was.
+
+    Call this when the next backtest starts an unrelated question. The
+    multiple-testing correction is about picking the best of N attempts at one
+    hypothesis, and carrying a count across unrelated ideas only makes the
+    number harder to read.
+    """
+    return _honesty.reset_trials()
