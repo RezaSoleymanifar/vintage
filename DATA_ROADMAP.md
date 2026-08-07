@@ -196,3 +196,80 @@ Recording these matters as much as the additions. They are the rule doing work.
 
 Every step above is a new prefix behind the same six verbs. Rule 6 holds: the
 tool count stays at six no matter how far this list runs.
+
+---
+
+## Verified-live candidates, open for contribution
+
+Probed 2026-08-07. Each returned a real payload, not a landing page. Sizes are
+what the endpoint actually served.
+
+### Robert Shiller's long-run series, `shiller:`
+
+`http://www.econ.yale.edu/~shiller/data/ie_data.xls`, **200, 1.6 MB.**
+
+Monthly S&P price, dividends, earnings, CPI and the long rate **back to 1871**,
+plus CAPE. This is the single biggest history extension available to us: Ken
+French starts in July 1926 and this reaches fifty-five years further. Yale
+publishes it, so it satisfies the not-resold rule.
+
+Vintage on point-in-time: it does not have any. Shiller reconstructs the early
+series from historical sources, so it is `UNKNOWN_VINTAGE` and must say so. It
+is for describing regimes a century back, not for backtesting into them.
+
+### Welch-Goyal predictors, `wg:`
+
+Google Sheets export, **200, 475 KB.**
+
+The standard equity-premium predictability dataset: dividend and earnings
+yields, book to market, default and term spreads, bill rate, net issuance,
+inflation, monthly from 1871. Essentially every return-predictability paper of
+the last twenty years is scored against it.
+
+It is embarrassing that this is not already wired up. The first Alpha Archive
+replication had to fetch it by hand, which is exactly the glue Vintage exists
+to remove.
+
+### Economic Policy Uncertainty, `epu:`
+
+`https://www.policyuncertainty.com/media/All_Daily_Policy_Data.csv`, **200, 249 KB.**
+
+Baker, Bloom and Davis. Daily since 1985, built from newspaper coverage.
+
+Worth contrasting with ApeWisdom, which has no history at all and is stamped
+forward-only. EPU is the opposite: decades of it, computed once from an archive
+that does not move. It is the sentiment series a backtest can actually use, with
+the honest caveat that the index was constructed after the fact.
+
+### SEC financial statement data sets, `fsds:`
+
+`https://www.sec.gov/files/dera/data/financial-statement-data-sets/{year}q{q}.zip`,
+**200, 124 MB per quarter.**
+
+Every number from every XBRL filing in a quarter, as flat tables, with the
+filing date attached. This is the bulk complement to `frame:`, which serves one
+concept across all filers but carries no `known_at`. These files do carry it,
+which would close the one honest gap in the frames source.
+
+Large, so it wants the streaming treatment `delistings.py` already uses.
+
+### Damodaran datasets, `nyu:`
+
+`https://pages.stern.nyu.edu/~adamodar/pc/datasets/histimpl.xls`, **200, 113 KB.**
+
+Implied equity risk premium by year, plus industry betas, costs of capital and
+margins. NYU publishes it. Useful as a denominator: a strategy's excess return
+means more against a contemporaneous ERP than against zero.
+
+### Probed and not yet viable
+
+| Source | What happened |
+|---|---|
+| AAII sentiment survey | 403, blocked to programmatic access |
+| EIA open data | 403, needs a free key, so it is a `key_required` source |
+| SEC N-PORT fund holdings | 404 at the guessed path, the dataset exists and the URL needs finding |
+| SEC fails-to-deliver | 404 at the guessed path, same |
+
+The last two are worth someone's afternoon. N-PORT is monthly ETF and mutual
+fund holdings, free, from the regulator, which would be the second holdings
+source after 13F and the only one covering funds rather than managers.
