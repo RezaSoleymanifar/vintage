@@ -65,8 +65,14 @@ def test_deflated_sharpe_refuses_tiny_samples():
     assert "too few observations" in result["note"]
 
 
-def test_verdict_names_the_trial_count_when_it_fails():
+def test_report_states_the_count_without_passing_judgement():
+    """The number is reported; the reading is left to whoever ran the specs.
+
+    An engine cannot tell six attempts at one hypothesis from six unrelated
+    ideas, so it must not label either one a failure.
+    """
     result = honesty.deflated_sharpe(
         0.01, 1000, trials=99, trial_sharpes=[0.01, 0.2, 0.4]
     )
-    assert "99 trials" in result["verdict"]
+    assert result["trials_considered"] == 99
+    assert "verdict" not in result

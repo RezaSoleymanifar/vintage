@@ -41,7 +41,7 @@ def test_instructions_state_the_two_date_contract():
 async def test_status_reports_without_touching_the_network():
     body = json.loads(await status())
     assert body["ok"] is True
-    assert body["specs_tried_this_session"] == 0
+    assert body["specs_tried_since_reset"] == 0
     assert isinstance(body["fred_key_configured"], bool)
     assert {s["source"] for s in body["sources"]} >= {"fred", "sec-edgar-xbrl"}
 

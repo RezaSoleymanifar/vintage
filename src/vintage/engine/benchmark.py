@@ -27,6 +27,10 @@ def compare(
 
     Returns alpha, betas, R-squared, and the single most correlated factor.
     Which is usually the honest answer to "what did I actually build?"
+
+    Every coefficient carries a t-statistic, because a 0.4%/month alpha and a
+    0.9%/month alpha look alike until you know which one the data can tell
+    apart from zero.
     """
     monthly = _to_monthly(strategy).dropna()
     factors = factors.copy()
@@ -60,6 +64,15 @@ def compare(
 
     best = max(correlations, key=lambda k: abs(correlations[k])) if correlations else None
 
+    # Standard errors, so an alpha comes with the one number that says whether
+    # to believe it. A point estimate alone makes 0.39%/mo and 0.90%/mo look
+    # equally real when one is noise and the other is not.
+    errors = _standard_errors(design, residual)
+    t_stats = (
+        [c / e if e > 0 else None for c, e in zip(coefficients, errors)]
+        if errors is not None else [None] * len(coefficients)
+    )
+
     return {
         "months_compared": len(joined),
         "correlations": correlations,
@@ -67,13 +80,50 @@ def compare(
         "closest_correlation": correlations.get(best) if best else None,
         "alpha_monthly": round(float(coefficients[0]), 5),
         "alpha_annualized": round(float((1 + coefficients[0]) ** 12 - 1), 4),
+        "alpha_t_stat": _round(t_stats[0]),
+        "alpha_standard_error": _round(errors[0] if errors is not None else None, 5),
         "betas": {
             name: round(float(value), 4)
             for name, value in zip(exposures, coefficients[1:])
         },
+        "beta_t_stats": {
+            name: _round(t)
+            for name, t in zip(exposures, t_stats[1:])
+        },
         "r_squared": round(r_squared, 4),
+        "degrees_of_freedom": max(0, len(joined) - design.shape[1]),
         "reading": _reading(best, correlations.get(best) if best else None, r_squared),
+        "significance_note": (
+            "t is the estimate over its standard error. Above 2 is the "
+            "conventional line; Harvey, Liu & Zhu (2016) argue 3 is the honest "
+            "one for anything found by searching. t rises with the square root "
+            "of the sample, so a long history flatters it."
+        ),
     }
+
+
+def _round(value: float | None, places: int = 3) -> float | None:
+    return None if value is None else round(float(value), places)
+
+
+def _standard_errors(design: np.ndarray, residual: np.ndarray) -> np.ndarray | None:
+    """Classical OLS standard errors: sqrt of the diagonal of s^2 (X'X)^-1.
+
+    Returns None when the design is rank deficient or there are no degrees of
+    freedom left, rather than handing back an infinite t-statistic.
+    """
+    n, k = design.shape
+    if n <= k:
+        return None
+    sigma_squared = float((residual**2).sum()) / (n - k)
+    try:
+        covariance = np.linalg.inv(design.T @ design) * sigma_squared
+    except np.linalg.LinAlgError:
+        return None
+    diagonal = np.diag(covariance)
+    if np.any(diagonal < 0):
+        return None
+    return np.sqrt(diagonal)
 
 
 def _reading(best: str | None, correlation: float | None, r_squared: float) -> str:

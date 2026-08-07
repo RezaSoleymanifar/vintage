@@ -1,0 +1,159 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Where the money moved — Vintage</title>
+<meta name="description" content="Two independent groups of money, 13F institutions and members of Congress, compared on the names they both traded. Built from primary filings, with every date shown.">
+<style>
+:root{
+  --bg:#0b0f16; --panel:#0d1420; --line:#1f2b3a; --ink:#e8f1ec;
+  --dim:#5f7a8c; --green:#35e08a; --red:#ff6b5e; --amber:#ffc46b;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);
+  line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:40px 20px 80px}
+h1{font-size:clamp(26px,4.4vw,46px);line-height:1.12;margin:0 0 14px;letter-spacing:-.02em}
+h1 em{font-style:normal;color:var(--green)}
+h1 small{display:block;font-size:15px;color:var(--dim);margin-top:12px;letter-spacing:0}
+h2{font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);
+  font-weight:400;margin:44px 0 14px;border-bottom:1px solid var(--line);padding-bottom:9px}
+.lede{color:var(--dim);font-size:15px;max-width:62ch;margin:0 0 26px}
+.clocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px;margin:0 0 10px}
+.clock{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:14px 16px}
+.clock i{font-style:normal;display:block;font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--dim);margin-bottom:7px}
+.clock b{display:block;font-size:19px}
+.clock s{display:block;text-decoration:none;color:var(--dim);font-size:12px;margin-top:4px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-weight:400;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);padding:0 10px 9px;border-bottom:1px solid var(--line)}
+td{padding:13px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+td.n{font-size:16px}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.num s,.v s{display:block;text-decoration:none;color:var(--dim);font-size:11px;margin-top:3px}
+.up{color:var(--green)} .dn{color:var(--red)}
+.v{text-align:right;font-size:15px}
+.v.split{color:var(--amber)}
+.none{color:var(--dim);text-align:left}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+.card h3{margin:0 0 12px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--dim);font-weight:400}
+ul{list-style:none;margin:0;padding:0}
+li{display:flex;justify-content:space-between;gap:14px;padding:7px 0;
+  border-bottom:1px solid rgba(31,43,58,.55);font-size:13px}
+li:last-child{border-bottom:0}
+li span{color:var(--dim);white-space:nowrap;font-size:12px}
+.warn{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--amber);
+  border-radius:11px;padding:18px 22px;margin-top:14px}
+.warn ul li{display:list-item;border:0;padding:5px 0;color:var(--dim);font-size:13.5px}
+.warn ul{padding-left:18px;list-style:disc}
+.warn b{color:var(--ink)}
+footer{margin-top:52px;padding-top:20px;border-top:1px solid var(--line);
+  color:var(--dim);font-size:12.5px}
+footer a{color:var(--green);text-decoration:none}
+@media(max-width:620px){td.n{font-size:14px} .num,.v{font-size:13px}}
+</style>
+
+<div class="wrap">
+<h1>Two groups of money.<br><em>They both sold Apple. They both bought Micron.</em><br><small>6 names in common, 7 where they split.</small></h1>
+<p class="lede">Institutional managers file Form 13F once a quarter. Members of Congress
+file a report every time they trade. Neither can see the other's filing before it lands.
+Below is every name both groups touched.</p>
+
+<div class="clocks">
+  <div class="clock"><i>Institutions as of</i><b>31 Mar 2026</b>
+    <s>22 managers · filed 2026-05-15</s></div>
+  <div class="clock"><i>Congress as of</i><b>2026-08-06</b>
+    <s>65 members · 1,800 transactions</s></div>
+  <div class="clock"><i>Institutional data next moves</i>
+    <b>14 Aug 2026</b><s>7 days · Q2 2026 13F deadline</s></div>
+  <div class="clock"><i>Congressional data moves</i><b>Continuously</b>
+    <s>median 24-day disclosure lag</s></div>
+</div>
+
+<h2>Where both groups went the same way</h2>
+<table><thead><tr><th>Name</th><th class="num">22 institutions</th>
+<th class="num">65 members of Congress</th><th class="v">Verdict</th></tr></thead>
+<tbody>
+<tr><td class="n">Apple Inc</td><td class="num dn">−$12.4B<s>11 of 22 managers</s></td><td class="num dn">-9 net<s>13 members</s></td><td class="v dn">Sell</td></tr>
+<tr><td class="n">Micron Technology Inc</td><td class="num up">+$5.7B<s>12 of 22 managers</s></td><td class="num up">+2 net<s>6 members</s></td><td class="v up">Buy</td></tr>
+<tr><td class="n">Microsoft Corp</td><td class="num up">+$3.5B<s>17 of 22 managers</s></td><td class="num up">+4 net<s>15 members</s></td><td class="v up">Buy</td></tr>
+<tr><td class="n">Mastercard Incorporated</td><td class="num dn">−$1.4B<s>11 of 22 managers</s></td><td class="num dn">-5 net<s>3 members</s></td><td class="v dn">Sell</td></tr>
+<tr><td class="n">Tesla Inc</td><td class="num up">+$1.2B<s>13 of 22 managers</s></td><td class="num up">+3 net<s>2 members</s></td><td class="v up">Buy</td></tr>
+<tr><td class="n">Palantir Technologies Inc</td><td class="num dn">−$0.7B<s>9 of 22 managers</s></td><td class="num dn">-1 net<s>2 members</s></td><td class="v dn">Sell</td></tr>
+</tbody></table>
+
+<h2>Where they disagreed</h2>
+<table><thead><tr><th>Name</th><th class="num">Institutions</th>
+<th class="num">Congress</th><th class="v"></th></tr></thead>
+<tbody>
+<tr><td class="n">Alphabet Inc</td><td class="num up">+$16.6B<s>19 managers</s></td><td class="num dn">-6 net<s>11 members</s></td><td class="v split">Split</td></tr>
+<tr><td class="n">Nvidia Corporation</td><td class="num up">+$9.0B<s>15 managers</s></td><td class="num dn">-4 net<s>11 members</s></td><td class="v split">Split</td></tr>
+<tr><td class="n">Chevron Corporation</td><td class="num dn">−$5.1B<s>9 managers</s></td><td class="num up">+2 net<s>4 members</s></td><td class="v split">Split</td></tr>
+<tr><td class="n">Amazon Com Inc</td><td class="num up">+$3.6B<s>19 managers</s></td><td class="num dn">-1 net<s>7 members</s></td><td class="v split">Split</td></tr>
+<tr><td class="n">Meta Platforms Inc</td><td class="num dn">−$2.2B<s>17 managers</s></td><td class="num up">+2 net<s>5 members</s></td><td class="v split">Split</td></tr>
+<tr><td class="n">Advanced Micro Devices Inc</td><td class="num dn">−$2.0B<s>12 managers</s></td><td class="num up">+6 net<s>4 members</s></td><td class="v split">Split</td></tr>
+<tr><td class="n">Johnson &amp; Johnson</td><td class="num up">+$0.2B<s>7 managers</s></td><td class="num dn">-4 net<s>5 members</s></td><td class="v split">Split</td></tr>
+</tbody></table>
+
+<h2>What only one group traded</h2>
+<div class="cols">
+  <div class="card"><h3>Institutions bought</h3><ul><li><b>Alphabet Inc</b><span>+$15.9B · 16 mgrs</span></li>
+<li><b>Nvidia Corporation</b><span>+$9.0B · 15 mgrs</span></li>
+<li><b>Ishares Tr</b><span>+$7.2B · 6 mgrs</span></li>
+<li><b>Micron Technology Inc</b><span>+$5.7B · 12 mgrs</span></li>
+<li><b>Spdr Series Trust</b><span>+$5.4B · 3 mgrs</span></li>
+<li><b>Amazon Com Inc</b><span>+$3.6B · 19 mgrs</span></li>
+<li><b>Microsoft Corp</b><span>+$3.5B · 17 mgrs</span></li>
+<li><b>Taiwan Semiconductor Manufac</b><span>+$3.4B · 16 mgrs</span></li></ul></div>
+  <div class="card"><h3>Institutions sold</h3><ul><li><b>Meta Platforms Inc</b><span>−$2.2B · 17 mgrs</span></li>
+<li><b>Schwab Charles Corp</b><span>−$2.3B · 9 mgrs</span></li>
+<li><b>Alibaba  Group        Hldg  </b><span>−$2.3B · 8 mgrs</span></li>
+<li><b>Flutter Entmt Plc</b><span>−$2.4B · 10 mgrs</span></li>
+<li><b>Intuit</b><span>−$3.5B · 10 mgrs</span></li>
+<li><b>Chevron Corporation</b><span>−$5.1B · 9 mgrs</span></li>
+<li><b>Bank America Corp</b><span>−$7.0B · 10 mgrs</span></li>
+<li><b>Apple Inc</b><span>−$12.4B · 11 mgrs</span></li></ul></div>
+  <div class="card"><h3>Congress bought</h3><ul><li><b>HUBB</b><span>+13 net · 2 members</span></li>
+<li><b>TDG</b><span>+12 net · 3 members</span></li>
+<li><b>T</b><span>+9 net · 5 members</span></li>
+<li><b>LTH</b><span>+9 net · 1 members</span></li>
+<li><b>LPLA</b><span>+8 net · 2 members</span></li>
+<li><b>ENTG</b><span>+8 net · 1 members</span></li>
+<li><b>SPCX</b><span>+7 net · 6 members</span></li>
+<li><b>BEP</b><span>+7 net · 1 members</span></li></ul></div>
+  <div class="card"><h3>Congress sold</h3><ul><li><b>TSCO</b><span>-13 net · 4 members</span></li>
+<li><b>SCI</b><span>-12 net · 1 members</span></li>
+<li><b>FLEX</b><span>-10 net · 1 members</span></li>
+<li><b>AAPL</b><span>-9 net · 13 members</span></li>
+<li><b>GOOGL</b><span>-9 net · 7 members</span></li>
+<li><b>WRB</b><span>-8 net · 1 members</span></li>
+<li><b>CPAY</b><span>-7 net · 1 members</span></li>
+<li><b>INTU</b><span>-6 net · 6 members</span></li></ul></div>
+</div>
+
+<h2>What this is not</h2>
+<div class="warn"><ul>
+<li><b>65 members is not Congress</b>, and
+22 managers is not the market. Both are the subset that filed
+comparable reports in this window.</li>
+<li><b>Congressional amounts are bands</b>, not figures. Direction and count are
+the only honest measures, so no dollar total is shown for that half.</li>
+<li><b>Institutional figures are share-count changes</b> priced at the later
+quarter, so a position that merely appreciated does not appear as a purchase.</li>
+<li><b>Everything here was late by construction.</b> 13F lands 45 days after the
+quarter; 546 of 1,800 congressional transactions
+(30%) were disclosed past the 45-day
+statutory deadline, the worst by 880 days.</li>
+<li><b>Nothing here is advice</b>, and every position was public knowledge before
+you read it.</li>
+</ul></div>
+
+<footer>
+Built 07 August 2026 from SEC Form 13F, House STOCK Act periodic transaction
+reports and Senate EFD, by <a href="https://github.com/RezaSoleymanifar/vintage">Vintage</a>.
+Reports obtained under the Ethics in Government Act, which restricts commercial use.
+Regenerate with <code>python tools/build_flows.py</code>.
+</footer>
+</div>

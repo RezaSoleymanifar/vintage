@@ -40,15 +40,24 @@ this, because a flag is a thing people set to zero at 2am.
 
 There is no zero-cost mode. A zero-cost backtest is not a backtest.
 
-## 5. The trial counter is not optional
+## 5. Perturb the sample; do not moralize about it
 
-Every backtest deflates its Sharpe by how many specifications were tried. A user
-cannot turn this off, and no feature may be built that optimizes toward a higher
-Sharpe. That would be building the disease and the cure in one package.
+Every backtest holds data out. Purged cross-validation across every combination
+of held-out blocks is the headline number, because it is the only one that tests
+the result against data rather than against a guess at the researcher's intent.
+The worst path is quoted, not the median.
 
-Honesty outputs (deflated Sharpe, warnings, verdicts, vintage flags) are
-constants. They are never tuned, never softened, and never learned from user
-behaviour, even when softening them would measurably improve engagement.
+The deflated Sharpe ships alongside it, stated plainly and last. It is a real
+correction with a real paper behind it, but it assumes you are quoting the best
+of N attempts at one hypothesis. An engine cannot tell that from six unrelated
+ideas asked in one sitting, so it reports the count and passes no verdict.
+`reset_trials` exists for exactly that reason and is not a loophole: an
+accounting figure the researcher can scope is worth more than one they learn to
+ignore.
+
+No feature may optimize toward a higher Sharpe. That would be building the
+disease and the cure in one package. Warnings and vintage flags are constants,
+never tuned, never softened, never learned from user behaviour.
 
 ## 6. Source is a parameter, never a tool
 
