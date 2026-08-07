@@ -369,158 +369,250 @@ def build(inst, cong, matched, today):
 <meta name="description" content="The Late Tape: two independent groups of money, 13F institutions and members of Congress, compared on the names they both traded. Everything here was late by law before you read it.">
 <style>
 :root{{
-  --bg:#0b0f16; --panel:#0d1420; --line:#1f2b3a; --ink:#e8f1ec;
-  --dim:#5f7a8c; --green:#35e08a; --red:#ff6b5e; --amber:#ffc46b;
+  --bg:#080b11; --panel:#0c121c; --line:#1c2735; --ink:#e9f1ee; --dim:#657f92;
+  --green:#35e08a; --red:#ff6b5e; --amber:#ffc46b;
   --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
 }}
 *{{box-sizing:border-box}}
+html,body{{height:100%;overflow:hidden}}
 body{{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);
-  line-height:1.5;-webkit-font-smoothing:antialiased}}
-.wrap{{max-width:1080px;margin:0 auto;padding:40px 20px 80px}}
-h1{{font-size:clamp(26px,4.4vw,46px);line-height:1.12;margin:0 0 14px;letter-spacing:-.02em}}
+  line-height:1.45;-webkit-font-smoothing:antialiased}}
+.shell{{height:100%;display:flex;flex-direction:column;
+  padding:clamp(10px,2vh,22px) clamp(12px,2.4vw,34px) clamp(8px,1.6vh,16px)}}
+
+.top{{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+  padding-bottom:clamp(6px,1.2vh,12px);border-bottom:1px solid var(--line)}}
+.brand{{font-size:clamp(12px,1.8vh,15px);letter-spacing:.3em;color:var(--green);margin:0}}
+.tag{{font-size:clamp(9px,1.3vh,12px);color:var(--dim)}}
+.stamp{{margin-left:auto;font-size:clamp(9px,1.3vh,12px);color:var(--dim)}}
+
+#chips{{display:flex;flex-wrap:wrap;gap:6px;margin:clamp(8px,1.4vh,14px) 0}}
+.chip{{font-family:var(--mono);font-size:clamp(9px,1.4vh,12px);color:var(--dim);
+  cursor:pointer;background:transparent;border:1px solid var(--line);
+  border-radius:999px;padding:clamp(3px,.7vh,6px) clamp(8px,1.1vw,14px)}}
+.chip:hover{{color:var(--ink)}}
+.chip.on{{color:var(--bg);background:var(--green);border-color:var(--green);font-weight:700}}
+
+#track{{position:relative;flex:1;min-height:0}}
+.panel{{position:absolute;inset:0;opacity:0;pointer-events:none;
+  transition:opacity .35s ease;overflow:hidden;display:flex;flex-direction:column}}
+.panel.on{{opacity:1;pointer-events:auto}}
+h2{{font-size:clamp(10px,1.4vh,12px);letter-spacing:.22em;text-transform:uppercase;
+  color:var(--dim);font-weight:400;margin:0 0 clamp(6px,1.2vh,12px)}}
+
+h1{{font-size:clamp(20px,4.6vh,44px);line-height:1.1;margin:0 0 clamp(6px,1.2vh,14px);
+  letter-spacing:-.02em}}
 h1 em{{font-style:normal;color:var(--green)}}
-h1 small{{display:block;font-size:15px;color:var(--dim);margin-top:12px;letter-spacing:0}}
-h2{{font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);
-  font-weight:400;margin:44px 0 14px;border-bottom:1px solid var(--line);padding-bottom:9px}}
-.lede{{color:var(--dim);font-size:15px;max-width:62ch;margin:0 0 26px}}
-.brand{{margin:0 0 22px;font-size:13px;letter-spacing:.34em;color:var(--green)}}
-.brand span{{display:block;letter-spacing:.02em;color:var(--dim);font-size:12.5px;margin-top:7px}}
-.clocks{{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px;margin:0 0 10px}}
-.clock{{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:14px 16px}}
-.clock i{{font-style:normal;display:block;font-size:11px;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--dim);margin-bottom:7px}}
-.clock b{{display:block;font-size:19px}}
-.clock s{{display:block;text-decoration:none;color:var(--dim);font-size:12px;margin-top:4px}}
-table{{width:100%;border-collapse:collapse;font-size:14px}}
-th{{text-align:left;font-weight:400;font-size:11px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--dim);padding:0 10px 9px;border-bottom:1px solid var(--line)}}
-td{{padding:13px 10px;border-bottom:1px solid var(--line);vertical-align:top}}
-td.n{{font-size:16px}}
-.num{{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}}
-.num s,.v s{{display:block;text-decoration:none;color:var(--dim);font-size:11px;margin-top:3px}}
+.sub{{color:var(--ink);font-size:clamp(11px,1.8vh,16px);margin:0 0 clamp(8px,1.4vh,16px)}}
+.lede{{color:var(--dim);font-size:clamp(10px,1.5vh,13.5px);max-width:64ch;margin:0}}
+
+.grid{{display:grid;gap:clamp(6px,1vh,11px);
+  grid-template-columns:repeat(auto-fit,minmax(clamp(130px,15vw,190px),1fr))}}
+.box{{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:clamp(7px,1.2vh,14px) clamp(9px,1vw,16px)}}
+.box i{{font-style:normal;display:block;font-size:clamp(8px,1.1vh,10.5px);
+  letter-spacing:.15em;text-transform:uppercase;color:var(--dim);margin-bottom:5px}}
+.box b{{display:block;font-size:clamp(13px,2.4vh,22px);font-variant-numeric:tabular-nums}}
+.box s{{display:block;text-decoration:none;color:var(--dim);
+  font-size:clamp(8px,1.1vh,11px);margin-top:3px}}
+
+.scroll{{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden}}
+table{{width:100%;border-collapse:collapse;font-size:clamp(10px,1.5vh,13.5px)}}
+th{{text-align:left;font-weight:400;font-size:clamp(8px,1.1vh,10.5px);letter-spacing:.13em;
+  text-transform:uppercase;color:var(--dim);padding:0 8px 7px;border-bottom:1px solid var(--line);
+  position:sticky;top:0;background:var(--bg)}}
+td{{padding:clamp(6px,1.1vh,12px) 8px;border-bottom:1px solid var(--line);vertical-align:top}}
+td.n{{font-size:clamp(11px,1.7vh,15px)}}
+td.n s,.num s,.v s{{display:block;text-decoration:none;color:var(--dim);
+  font-size:clamp(8px,1.1vh,11px);margin-top:3px}}
+.num{{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;width:120px}}
 .up{{color:var(--green)}} .dn{{color:var(--red)}}
-.v{{text-align:right;font-size:15px}}
-.v.split{{color:var(--amber)}}
-.none{{color:var(--dim);text-align:left}}
-.cols{{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:20px}}
-.card{{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px}}
-.card h3{{margin:0 0 12px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--dim);font-weight:400}}
-ul{{list-style:none;margin:0;padding:0}}
-li{{display:flex;justify-content:space-between;gap:14px;padding:7px 0;
-  border-bottom:1px solid rgba(31,43,58,.55);font-size:13px}}
-li:last-child{{border-bottom:0}}
-li span{{color:var(--dim);white-space:nowrap;font-size:12px}}
-.flowstrip{{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-  gap:12px;margin:30px 0 4px}}
-.flowstrip div{{background:var(--panel);border:1px solid var(--line);
-  border-radius:11px;padding:14px 16px}}
-.flowstrip i{{font-style:normal;display:block;font-size:11px;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--dim);margin-bottom:6px}}
-.flowstrip b{{font-size:23px;font-variant-numeric:tabular-nums}}
-table.themes td{{padding:11px 10px}}
-table.themes td.num{{width:130px}}
-.track{{width:38%;padding:11px 18px}}
-.rail{{height:9px;border-radius:5px;background:rgba(31,43,58,.7);position:relative}}
-.bar{{position:absolute;top:0;height:9px;border-radius:5px;display:block}}
+.v{{text-align:right;width:70px}} .v.split{{color:var(--amber)}}
+.none{{color:var(--dim)}}
+table.themes{{table-layout:fixed}}
+table.themes td.track2{{width:30%}}
+table.themes td.num{{width:clamp(88px,9vw,124px)}}
+table.themes td.n{{overflow:hidden}}
+.track2{{padding:clamp(6px,1.1vh,12px) 16px}}
+.rail{{height:8px;border-radius:4px;background:rgba(28,39,53,.85);position:relative}}
+.bar{{position:absolute;top:0;height:8px;border-radius:4px;display:block}}
 .rail.up .bar{{left:50%;background:var(--green)}}
 .rail.dn .bar{{right:50%;background:var(--red)}}
-.rail::after{{content:"";position:absolute;left:50%;top:-4px;width:1px;height:17px;
+.rail::after{{content:"";position:absolute;left:50%;top:-4px;width:1px;height:16px;
   background:var(--line)}}
-td.n s{{display:block;text-decoration:none;color:var(--dim);font-size:11.5px;margin-top:4px}}
-.foot{{color:var(--dim);font-size:12.5px;margin:12px 0 0;max-width:70ch}}
-.foot code{{color:var(--ink)}}
-.warn{{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--amber);
-  border-radius:11px;padding:18px 22px;margin-top:14px}}
-.warn ul li{{display:list-item;border:0;padding:5px 0;color:var(--dim);font-size:13.5px}}
+
+.cols{{display:grid;gap:clamp(7px,1.1vh,14px);flex:1;min-height:0;
+  grid-template-columns:repeat(auto-fit,minmax(clamp(180px,20vw,260px),1fr))}}
+.card{{background:var(--panel);border:1px solid var(--line);border-radius:11px;
+  padding:clamp(8px,1.2vh,15px) clamp(10px,1vw,17px);overflow-y:auto;min-height:0}}
+.card h3{{margin:0 0 8px;font-size:clamp(8px,1.1vh,10.5px);letter-spacing:.15em;
+  text-transform:uppercase;color:var(--dim);font-weight:400}}
+ul{{list-style:none;margin:0;padding:0}}
+.card li{{display:flex;justify-content:space-between;gap:10px;
+  padding:clamp(3px,.6vh,7px) 0;border-bottom:1px solid rgba(28,39,53,.6);
+  font-size:clamp(9px,1.3vh,12.5px)}}
+.card li:last-child{{border-bottom:0}}
+.card li span{{color:var(--dim);white-space:nowrap;font-size:clamp(8px,1.1vh,11px)}}
+
+.warn{{background:var(--panel);border:1px solid var(--line);
+  border-left:3px solid var(--amber);border-radius:10px;
+  padding:clamp(10px,1.6vh,20px) clamp(14px,1.4vw,24px);overflow-y:auto}}
 .warn ul{{padding-left:18px;list-style:disc}}
+.warn li{{padding:clamp(3px,.7vh,7px) 0;color:var(--dim);
+  font-size:clamp(10px,1.5vh,13.5px)}}
 .warn b{{color:var(--ink)}}
-footer{{margin-top:52px;padding-top:20px;border-top:1px solid var(--line);
-  color:var(--dim);font-size:12.5px}}
-footer a{{color:var(--green);text-decoration:none}}
-@media(max-width:620px){{td.n{{font-size:14px}} .num,.v{{font-size:13px}}}}
+.foot{{color:var(--dim);font-size:clamp(9px,1.2vh,11.5px);margin:8px 0 0;max-width:76ch}}
+.foot code,.foot b{{color:var(--ink)}}
+.bottom{{padding-top:clamp(5px,1vh,10px);border-top:1px solid var(--line);
+  color:var(--dim);font-size:clamp(8px,1.2vh,11.5px);margin-top:clamp(6px,1vh,12px)}}
+.bottom a{{color:var(--green);text-decoration:none}}
+@media(max-width:640px){{
+  html,body{{overflow:auto}}
+  .panel{{position:static;opacity:1;pointer-events:auto;display:none}}
+  .panel.on{{display:flex}}
+  #track{{min-height:70vh}}
+}}
 </style>
 
-<div class="wrap">
-<p class="brand">THE LATE TAPE<span>everything here was public before you read it, and late by law</span></p>
-<h1>Two groups of money.<br><em>{esc(claim)}</em><br><small>{esc(subclaim)}</small></h1>
-<p class="lede">Institutional managers file Form 13F once a quarter. Members of Congress
-file a report every time they trade. Neither can see the other's filing before it lands.
-Below is every name both groups touched.</p>
+<div class="shell">
+  <div class="top">
+    <p class="brand">THE LATE TAPE</p>
+    <span class="tag">everything here was public before you read it, and late by law</span>
+    <span class="stamp">built {today:%d %b %Y}</span>
+  </div>
 
-<div class="clocks">
-  <div class="clock"><i>Institutions as of</i><b>{inst_asof:%d %b %Y}</b>
-    <s>{len(inst['covered'])} managers · filed {NOW_Q[:4]}-05-15</s></div>
-  <div class="clock"><i>Congress as of</i><b>{esc(cong['latest_known'] or '—')}</b>
-    <s>{len(cong['all_members'])} members · {len(cong['rows']):,} transactions</s></div>
-  <div class="clock"><i>Institutional data next moves</i>
-    <b>{next_due:%d %b %Y}</b><s>{days} days · Q2 2026 13F deadline</s></div>
-  <div class="clock"><i>Congressional data moves</i><b>Continuously</b>
-    <s>median {cong['median_lag']}-day disclosure lag</s></div>
+  <div id="chips"></div>
+
+  <div id="track">
+
+    <section class="panel on">
+      <h1>Two groups of money.<br><em>{esc(claim)}</em></h1>
+      <p class="sub">{esc(subclaim)}</p>
+      <p class="lede">Institutional managers file Form 13F once a quarter. Members of
+      Congress file a report every time they trade. Neither can see the other's
+      filing before it lands.</p>
+      <div class="grid" style="margin-top:auto">
+        <div class="box"><i>Institutions as of</i><b>{inst_asof:%d %b %Y}</b>
+          <s>{len(inst['covered'])} managers · filed {NOW_Q[:4]}-05-15</s></div>
+        <div class="box"><i>Congress as of</i><b>{esc(cong['latest_known'] or '—')}</b>
+          <s>{len(cong['all_members'])} members · {len(cong['rows']):,} transactions</s></div>
+        <div class="box"><i>Institutions next move</i><b>{next_due:%d %b %Y}</b>
+          <s>{days} days · Q2 2026 13F deadline</s></div>
+        <div class="box"><i>Congress moves</i><b>Continuously</b>
+          <s>median {cong['median_lag']}-day lag</s></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>The net</h2>
+      <div class="grid">
+        <div class="box"><i>Gross bought</i><b class="up">{money(gross_in)}</b></div>
+        <div class="box"><i>Gross sold</i><b class="dn">{money(gross_out)}</b></div>
+        <div class="box"><i>Net</i><b class="{'up' if net > 0 else 'dn'}">{money(net)}</b></div>
+        <div class="box"><i>Names moved</i><b>{len(inst['flow']):,}</b></div>
+      </div>
+      <h2 style="margin-top:clamp(10px,1.8vh,20px)">Which themes the money left, and where it went</h2>
+      <div class="scroll"><table class="themes">
+      <tbody>
+      {rows_theme()}
+      </tbody></table></div>
+      <p class="foot">Themes are a fixed map from issuer name to bucket, listed in
+      <code>tools/build_flows.py</code>. A clustering would reshuffle names between
+      rebuilds and you could not tell a rotation from an algorithm change.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Where both groups went the same way</h2>
+      <div class="scroll"><table>
+      <thead><tr><th>Name</th><th class="num">{len(inst['covered'])} institutions</th>
+      <th class="num">{len(cong['all_members'])} in Congress</th><th class="v">Verdict</th></tr></thead>
+      <tbody>
+      {rows_agree()}
+      </tbody></table></div>
+      <p class="foot">Neither group can read the other's filing before it lands, so
+      agreement here is two independent decisions rather than one being copied.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Where they disagreed</h2>
+      <div class="scroll"><table>
+      <thead><tr><th>Name</th><th class="num">Institutions</th>
+      <th class="num">Congress</th><th class="v"></th></tr></thead>
+      <tbody>
+      {rows_split()}
+      </tbody></table></div>
+    </section>
+
+    <section class="panel">
+      <h2>What only one group traded</h2>
+      <div class="cols">
+        <div class="card"><h3>Institutions bought</h3><ul>{li(inst_only, 'inst')}</ul></div>
+        <div class="card"><h3>Institutions sold</h3><ul>{li(inst_out, 'inst')}</ul></div>
+        <div class="card"><h3>Congress bought</h3><ul>{li(cong_in, 'cong')}</ul></div>
+        <div class="card"><h3>Congress sold</h3><ul>{li(cong_out, 'cong')}</ul></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>What this is not</h2>
+      <div class="warn"><ul>
+      <li><b>{len(cong['all_members'])} members is not Congress</b>, and
+      {len(inst['covered'])} managers is not the market. Both are the subset that
+      filed comparable reports in this window.</li>
+      <li><b>Congressional amounts are bands</b>, not figures. Direction and count
+      are the only honest measures, so no dollar total is shown for that half.</li>
+      <li><b>Institutional figures are share-count changes</b> priced at the later
+      quarter, so a position that merely appreciated does not appear as a purchase.</li>
+      <li><b>Everything here was late by construction.</b> 13F lands 45 days after
+      the quarter; {cong['late']} of {len(cong['rows']):,} congressional transactions
+      ({cong['late'] / max(len(cong['rows']), 1):.0%}) were disclosed past the
+      45-day statutory deadline, the worst by {cong['worst_lag']} days.</li>
+      <li><b>Nothing here is advice</b>, and every position was public knowledge
+      before you read it.</li>
+      </ul></div>
+    </section>
+
+  </div>
+
+  <div class="bottom">
+    <b>The Late Tape</b> · SEC Form 13F, House STOCK Act periodic transaction reports
+    and Senate EFD, via <a href="https://github.com/RezaSoleymanifar/vintage">Vintage</a>
+    · reports obtained under the Ethics in Government Act, which restricts commercial use
+    · rebuild with <code>python tools/build_flows.py</code>
+  </div>
 </div>
 
-<div class="flowstrip">
-  <div><i>Gross bought</i><b class="up">{money(gross_in)}</b></div>
-  <div><i>Gross sold</i><b class="dn">{money(gross_out)}</b></div>
-  <div><i>Net</i><b class="{'up' if net > 0 else 'dn'}">{money(net)}</b></div>
-  <div><i>Names moved</i><b>{len(inst['flow']):,}</b></div>
-</div>
+<script>
+(function () {{
+  var panels = [].slice.call(document.querySelectorAll('.panel'));
+  var bar = document.getElementById('chips');
+  var titles = ['The claim', 'The net', 'They agreed', 'They split',
+                'One group only', 'What this is not'];
+  var at = 0;
 
-<h2>Which themes the money left, and where it went</h2>
-<table class="themes"><tbody>
-{rows_theme()}
-</tbody></table>
-<p class="foot">Themes are a fixed map from issuer name to bucket, listed in
-<code>tools/build_flows.py</code>. A clustering would reshuffle names between
-rebuilds and you could not tell a rotation from an algorithm change.</p>
+  var chips = titles.map(function (t, i) {{
+    var b = document.createElement('button');
+    b.className = 'chip' + (i === 0 ? ' on' : '');
+    b.textContent = t;
+    b.addEventListener('click', function () {{ show(i); }});
+    bar.appendChild(b);
+    return b;
+  }});
 
-<h2>Where both groups went the same way</h2>
-<table><thead><tr><th>Name</th><th class="num">{len(inst['covered'])} institutions</th>
-<th class="num">{len(cong['all_members'])} members of Congress</th><th class="v">Verdict</th></tr></thead>
-<tbody>
-{rows_agree()}
-</tbody></table>
+  function show(i) {{
+    at = (i + panels.length) % panels.length;
+    panels.forEach(function (p, k) {{ p.classList.toggle('on', k === at); }});
+    chips.forEach(function (c, k) {{ c.classList.toggle('on', k === at); }});
+  }}
 
-<h2>Where they disagreed</h2>
-<table><thead><tr><th>Name</th><th class="num">Institutions</th>
-<th class="num">Congress</th><th class="v"></th></tr></thead>
-<tbody>
-{rows_split()}
-</tbody></table>
-
-<h2>What only one group traded</h2>
-<div class="cols">
-  <div class="card"><h3>Institutions bought</h3><ul>{li(inst_only, 'inst')}</ul></div>
-  <div class="card"><h3>Institutions sold</h3><ul>{li(inst_out, 'inst')}</ul></div>
-  <div class="card"><h3>Congress bought</h3><ul>{li(cong_in, 'cong')}</ul></div>
-  <div class="card"><h3>Congress sold</h3><ul>{li(cong_out, 'cong')}</ul></div>
-</div>
-
-<h2>What this is not</h2>
-<div class="warn"><ul>
-<li><b>{len(cong['all_members'])} members is not Congress</b>, and
-{len(inst['covered'])} managers is not the market. Both are the subset that filed
-comparable reports in this window.</li>
-<li><b>Congressional amounts are bands</b>, not figures. Direction and count are
-the only honest measures, so no dollar total is shown for that half.</li>
-<li><b>Institutional figures are share-count changes</b> priced at the later
-quarter, so a position that merely appreciated does not appear as a purchase.</li>
-<li><b>Everything here was late by construction.</b> 13F lands 45 days after the
-quarter; {cong['late']} of {len(cong['rows']):,} congressional transactions
-({cong['late'] / max(len(cong['rows']), 1):.0%}) were disclosed past the 45-day
-statutory deadline, the worst by {cong['worst_lag']} days.</li>
-<li><b>Nothing here is advice</b>, and every position was public knowledge before
-you read it.</li>
-</ul></div>
-
-<footer>
-<b>The Late Tape</b> · built {today:%d %B %Y} from SEC Form 13F, House STOCK Act
-periodic transaction reports and Senate EFD, by
-<a href="https://github.com/RezaSoleymanifar/vintage">Vintage</a>.
-Reports obtained under the Ethics in Government Act, which restricts commercial use.
-Regenerate with <code>python tools/build_flows.py</code>.
-</footer>
-</div>
+  // Arrow keys, because a deck that only responds to clicking a pill is a
+  // slideshow nobody drives.
+  document.addEventListener('keydown', function (e) {{
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') show(at + 1);
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') show(at - 1);
+  }});
+}})();
+</script>
 """
 
 
