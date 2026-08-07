@@ -10,7 +10,7 @@ import os
 from typing import Any
 
 from .sources import (apewisdom, bea, bls, cboe, cftc, ecb, fred, french,
-                      sector, thirteenf, treasury)
+                      openap_ports, sector, thirteenf, treasury)
 
 # Field prefix -> source. This is the router.
 PREFIXES = {
@@ -18,6 +18,7 @@ PREFIXES = {
     "fred:": "fred",
     "french:": "french",
     "openap:": "openap",
+    "openapret:": "openap_ports",
     "ape:": "apewisdom",
     "crypto:": "crypto",
     "short:": "finra",
@@ -140,6 +141,15 @@ SOURCES = [
         "key_required": False,
     },
     {
+        "source": "open-source-asset-pricing-ports",
+        "covers": "the monthly long-short return each replicated predictor produced",
+        "field_form": "openapret:Mom12m",
+        "point_in_time": "no, the file is rebuilt on each release and old months can change",
+        "key_required": False,
+        "note": "What Chen & Zimmermann got, beside openap: which is what the paper "
+                "claimed. The series to calibrate an implementation against.",
+    },
+    {
         "source": "sec-edgar-sic",
         "covers": "the industry a filer files under: SIC code, SEC description, division",
         "field_form": "sector:sic, sector:name (needs an entity)",
@@ -219,7 +229,7 @@ def route(field: str) -> str | None:
 FETCH_ADAPTERS = {
     "sec-edgar-xbrl", "prices", "fred", "french", "openap", "apewisdom",
     "crypto", "finra", "ecb", "cboe", "delistings", "frames", "treasury",
-    "cftc", "thirteenf", "bls", "bea", "sector",
+    "cftc", "thirteenf", "bls", "bea", "sector", "openap_ports",
 }
 
 # route() returns the adapter that answers; SOURCES names the publisher. They
@@ -232,6 +242,7 @@ ADAPTER_SOURCE = {
     "fred": "fred",
     "french": "ken-french-data-library",
     "openap": "open-source-asset-pricing",
+    "openap_ports": "open-source-asset-pricing-ports",
     "apewisdom": "apewisdom",
     "crypto": "coinbase-exchange",
     "finra": "finra-short-volume",
@@ -299,6 +310,11 @@ PREFIX_SPECS: dict[str, dict[str, Any]] = {
     "crypto:": dict(verb="fetch", answers="crypto OHLCV from Coinbase",
                     needs_entity=True, entity_example="BTC-USD",
                     example_field="crypto:close", as_of="enforced"),
+    "openapret:": dict(verb="fetch",
+                       answers="the monthly long-short return the OSAP replication "
+                               "produced for a predictor",
+                       needs_entity=False, entity_example=None,
+                       example_field="openapret:Mom12m", as_of="none"),
     "sector:": dict(verb="fetch",
                     answers="the industry a company files under, SIC code and description",
                     needs_entity=True, entity_example="AAPL",

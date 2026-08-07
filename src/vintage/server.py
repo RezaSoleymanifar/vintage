@@ -20,6 +20,7 @@ from .engine import honesty
 from .http import SourceError
 from .sources import (apewisdom, bea, bls, cboe, cftc, coinbase, delistings,
                       ecb, edgar, finra, frames, fred, french, openap,
+                      openap_ports,
                       sector, thirteenf, treasury, yahoo)
 
 mcp = MCPServer(
@@ -318,6 +319,9 @@ async def fetch(
             warnings += frames.warnings_for(period, rows)
         elif source == "treasury":
             rows = await treasury.yields(field.split(":", 1)[1], start=start, end=end)
+        elif source == "openap_ports":
+            rows = await openap_ports.returns(field.split(":", 1)[1], limit=limit)
+            warnings += openap_ports.warnings_for()
         elif source == "sector":
             if not entity:
                 return _needs_entity(field, hint=["AAPL", "JPM", "XOM"])

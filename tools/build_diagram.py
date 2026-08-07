@@ -84,7 +84,7 @@ LANES = [
         "icon": "cap",
         "accent": VIOLET,
         "sources": ["ken-french-data-library", "open-source-asset-pricing",
-                    "apewisdom"],
+                    "open-source-asset-pricing-ports", "apewisdom"],
     },
 ]
 
@@ -110,6 +110,7 @@ SHORT = {
     "yahoo-finance": ("Yahoo Finance", "daily prices, decades deep"),
     "ken-french-data-library": ("Ken French", "the factor benchmarks"),
     "open-source-asset-pricing": ("Open Source AP", "331 published claims"),
+    "open-source-asset-pricing-ports": ("OSAP portfolios", "what the replication got"),
     "apewisdom": ("ApeWisdom", "Reddit mention ranks"),
 }
 
@@ -153,6 +154,8 @@ SOURCE_ICONS = {
     "ken-french-data-library": ("M10 2.6 18.4 6.6 10 10.6 1.6 6.6Z",
                                 "M4.8 8.2v4.6c0 1.8 2.3 3.2 5.2 3.2s5.2-1.4 5.2-3.2V8.2",
                                 "M18.4 6.6v4.8"),
+    "open-source-asset-pricing-ports": ("M3 17h14", "M4 12.5l3.4-5.2 3 4 3.4-7.2",
+                                       "M3.4 3.2v13.6"),
     "open-source-asset-pricing": ("M10 5.4C8.4 4 6.3 3.4 3.6 3.4v11c2.7 0 4.8.6 6.4 2"
                                   " 1.6-1.4 3.7-2 6.4-2v-11c-2.7 0-4.8.6-6.4 2Z",
                                   "M10 5.4v11"),
