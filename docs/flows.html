@@ -1,298 +1,266 @@
+<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>The Late Tape — Vintage</title>
-<meta name="description" content="The Late Tape: two independent groups of money, 13F institutions and members of Congress, compared on the names they both traded. Everything here was late by law before you read it.">
+<title>APE TAPE — VINTAGE</title>
+<meta name="description" content="Ape Tape: two independent groups of money, 13F institutions and members of Congress, on one screen. Everything here was late by law before you read it.">
 <style>
 :root{
-  --bg:#080b11; --panel:#0c121c; --line:#1c2735; --ink:#e9f1ee; --dim:#657f92;
-  --green:#35e08a; --red:#ff6b5e; --amber:#ffc46b;
+  --bg:#000; --ink:#e6e6e6; --amber:#ffa028; --amber-dim:#7a4d12;
+  --line:#241a08; --rule:#3a2a10; --up:#22e07a; --dn:#ff4d3d;
+  --grey:#6c6c6c;
   --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --fs:clamp(11px,1.62vh,15px);
 }
-*{box-sizing:border-box}
+*{box-sizing:border-box;border-radius:0!important}
 html,body{height:100%;overflow:hidden}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);
-  line-height:1.45;-webkit-font-smoothing:antialiased}
-.shell{height:100%;display:flex;flex-direction:column;
-  padding:clamp(10px,2vh,22px) clamp(12px,2.4vw,34px) clamp(8px,1.6vh,16px)}
+  font-size:var(--fs);line-height:1.35;-webkit-font-smoothing:antialiased;
+  letter-spacing:.01em}
+.term{height:100%;display:flex;flex-direction:column;padding:0 6px 0}
 
-.top{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
-  padding-bottom:clamp(6px,1.2vh,12px);border-bottom:1px solid var(--line)}
-.brand{font-size:clamp(12px,1.8vh,15px);letter-spacing:.3em;color:var(--green);margin:0}
-.tag{font-size:clamp(9px,1.3vh,12px);color:var(--dim)}
-.stamp{margin-left:auto;font-size:clamp(9px,1.3vh,12px);color:var(--dim)}
+/* ---------- command bar ---------- */
+.cmd{display:flex;align-items:center;gap:12px;padding:5px 6px;
+  border-bottom:1px solid var(--rule);white-space:nowrap;overflow:hidden}
+.lock{display:inline-flex;align-items:center;gap:7px;color:var(--amber);
+  text-decoration:none;padding:1px 9px 1px 0;border-right:1px solid var(--rule)}
+.lock .mk{width:1.55em;height:1.55em;display:block;flex:none}
+.wm{font-weight:700;letter-spacing:.2em;font-size:1.12em;line-height:1}
+.wm i{font-style:normal;color:var(--ink);letter-spacing:.2em}
+.lock:hover{color:#ffbe5e}
+.cmd .go{color:var(--bg);background:var(--amber);padding:1px 7px;font-weight:700}
+.cmd .q{color:var(--grey)}
+.cmd .rt{margin-left:auto;color:var(--amber-dim)}
+.cmd .rt b{color:var(--amber);font-weight:400}
 
-#chips{display:flex;flex-wrap:wrap;gap:6px;margin:clamp(8px,1.4vh,14px) 0}
-.chip{font-family:var(--mono);font-size:clamp(9px,1.4vh,12px);color:var(--dim);
-  cursor:pointer;background:transparent;border:1px solid var(--line);
-  border-radius:999px;padding:clamp(3px,.7vh,6px) clamp(8px,1.1vw,14px)}
-.chip:hover{color:var(--ink)}
-.chip.on{color:var(--bg);background:var(--green);border-color:var(--green);font-weight:700}
+/* ---------- function keys ---------- */
+.fn{display:flex;gap:1px;padding:3px 0 4px}
+.fn span{background:#120c03;border:1px solid var(--line);color:var(--amber);
+  padding:2px 9px;letter-spacing:.1em}
+.fn span b{color:var(--bg);background:var(--amber);padding:0 3px;margin-right:5px;
+  font-weight:700}
+.fn .spacer{flex:1;background:none;border:0}
 
-#track{position:relative;flex:1;min-height:0}
-.panel{position:absolute;inset:0;opacity:0;pointer-events:none;
-  transition:opacity .35s ease;overflow:hidden;display:flex;flex-direction:column}
-.panel.on{opacity:1;pointer-events:auto}
-h2{font-size:clamp(10px,1.4vh,12px);letter-spacing:.22em;text-transform:uppercase;
-  color:var(--dim);font-weight:400;margin:0 0 clamp(6px,1.2vh,12px)}
+/* ---------- headline band ---------- */
+.band{border:1px solid var(--rule);border-left:3px solid var(--amber);
+  padding:6px 10px;margin-bottom:4px;display:flex;align-items:baseline;
+  gap:16px;flex-wrap:wrap}
+.band .hl{font-size:clamp(12px,2.5vh,26px);letter-spacing:-.01em;color:var(--ink)}
+.band .hl em{font-style:normal;color:var(--amber)}
+.band .sb{color:var(--grey);margin-left:auto}
+.band .sb b{color:var(--ink);font-weight:400}
 
-h1{font-size:clamp(20px,4.6vh,44px);line-height:1.1;margin:0 0 clamp(6px,1.2vh,14px);
-  letter-spacing:-.02em}
-h1 em{font-style:normal;color:var(--green)}
-.sub{color:var(--ink);font-size:clamp(11px,1.8vh,16px);margin:0 0 clamp(8px,1.4vh,16px)}
-.lede{color:var(--dim);font-size:clamp(10px,1.5vh,13.5px);max-width:64ch;margin:0}
+/* ---------- grid ---------- */
+.grid{flex:1;min-height:0;display:grid;gap:4px;
+  grid-template-columns:1fr 1.2fr 1.02fr;grid-template-rows:1fr}
+.col{display:flex;flex-direction:column;gap:4px;min-height:0}
+.box{border:1px solid var(--rule);display:flex;flex-direction:column;
+  min-height:0;overflow:hidden}
+.box.grow{flex:1}
+.box.fit{flex:0 0 auto}
+.hd{background:#140d04;color:var(--amber);padding:2px 7px;letter-spacing:.16em;
+  border-bottom:1px solid var(--line);display:flex;gap:8px;white-space:nowrap}
+.hd s{text-decoration:none;color:var(--amber-dim);margin-left:auto}
+.pad{padding:3px 7px 4px;overflow:hidden;min-height:0}
 
-.grid{display:grid;gap:clamp(6px,1vh,11px);
-  grid-template-columns:repeat(auto-fit,minmax(clamp(130px,15vw,190px),1fr))}
-.box{background:var(--panel);border:1px solid var(--line);border-radius:10px;
-  padding:clamp(7px,1.2vh,14px) clamp(9px,1vw,16px)}
-.box i{font-style:normal;display:block;font-size:clamp(8px,1.1vh,10.5px);
-  letter-spacing:.15em;text-transform:uppercase;color:var(--dim);margin-bottom:5px}
-.box b{display:block;font-size:clamp(13px,2.4vh,22px);font-variant-numeric:tabular-nums}
-.box s{display:block;text-decoration:none;color:var(--dim);
-  font-size:clamp(8px,1.1vh,11px);margin-top:3px}
+table{width:100%;border-collapse:collapse;table-layout:fixed;
+  font-family:var(--mono);font-size:var(--fs)}
+th{color:var(--amber-dim);text-align:right;font-weight:400;letter-spacing:.1em;
+  padding:2px 5px;border-bottom:1px solid var(--line)}
+th.l{text-align:left}
+td{padding:2.5px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+tr+tr td{border-top:1px solid #120d05}
+td.k{color:var(--ink);letter-spacing:.02em}
+td.v{text-align:right;font-variant-numeric:tabular-nums;width:74px}
+td.m{text-align:right;color:var(--grey);width:26px}
+td.sig{text-align:right;width:40px;font-weight:700}
+.up{color:var(--up)} .dn{color:var(--dn)} .amb{color:var(--amber)}
+td.g{width:50%;letter-spacing:-.5px;text-align:center;
+  text-overflow:clip;overflow:visible}
+.gz{color:#1d1d1d} .gu{color:var(--up)} .gd{color:var(--dn)}
 
-.scroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden}
-table{width:100%;border-collapse:collapse;font-size:clamp(10px,1.5vh,13.5px)}
-th{text-align:left;font-weight:400;font-size:clamp(8px,1.1vh,10.5px);letter-spacing:.13em;
-  text-transform:uppercase;color:var(--dim);padding:0 8px 7px;border-bottom:1px solid var(--line);
-  position:sticky;top:0;background:var(--bg)}
-td{padding:clamp(6px,1.1vh,12px) 8px;border-bottom:1px solid var(--line);vertical-align:top}
-td.n{font-size:clamp(11px,1.7vh,15px)}
-td.n s,.num s,.v s{display:block;text-decoration:none;color:var(--dim);
-  font-size:clamp(8px,1.1vh,11px);margin-top:3px}
-.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;width:120px}
-.up{color:var(--green)} .dn{color:var(--red)}
-.v{text-align:right;width:70px} .v.split{color:var(--amber)}
-.none{color:var(--dim)}
-table.themes{table-layout:fixed}
-table.themes td.track2{width:30%}
-table.themes td.num{width:clamp(88px,9vw,124px)}
-table.themes td.n{overflow:hidden}
-.track2{padding:clamp(6px,1.1vh,12px) 16px}
-.rail{height:8px;border-radius:4px;background:rgba(28,39,53,.85);position:relative}
-.bar{position:absolute;top:0;height:8px;border-radius:4px;display:block}
-.rail.up .bar{left:50%;background:var(--green)}
-.rail.dn .bar{right:50%;background:var(--red)}
-.rail::after{content:"";position:absolute;left:50%;top:-4px;width:1px;height:16px;
-  background:var(--line)}
+/* ---------- stat cells ---------- */
+.cells{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}
+.cell{background:#0a0703;padding:4px 7px}
+.cell i{font-style:normal;display:block;color:var(--amber-dim);letter-spacing:.12em}
+.cell b{display:block;font-size:clamp(10px,1.75vh,17px);font-weight:400;
+  font-variant-numeric:tabular-nums;margin-top:1px}
+.cell s{display:block;text-decoration:none;color:var(--grey)}
 
-.cols{display:grid;gap:clamp(7px,1.1vh,14px);flex:1;min-height:0;
-  grid-template-columns:repeat(auto-fit,minmax(clamp(180px,20vw,260px),1fr))}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:11px;
-  padding:clamp(8px,1.2vh,15px) clamp(10px,1vw,17px);overflow-y:auto;min-height:0}
-.card h3{margin:0 0 8px;font-size:clamp(8px,1.1vh,10.5px);letter-spacing:.15em;
-  text-transform:uppercase;color:var(--dim);font-weight:400}
-ul{list-style:none;margin:0;padding:0}
-.card li{display:flex;justify-content:space-between;gap:10px;
-  padding:clamp(3px,.6vh,7px) 0;border-bottom:1px solid rgba(28,39,53,.6);
-  font-size:clamp(9px,1.3vh,12.5px)}
-.card li:last-child{border-bottom:0}
-.card li span{color:var(--dim);white-space:nowrap;font-size:clamp(8px,1.1vh,11px)}
+/* ---------- ticker ---------- */
+.tick{border-top:1px solid var(--rule);overflow:hidden;white-space:nowrap;
+  padding:3px 0;color:var(--amber-dim)}
+.tick div{display:inline-block;padding-left:100%;
+  animation:crawl 90s linear infinite}
+@keyframes crawl{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+@media(prefers-reduced-motion:reduce){.tick div{animation:none;padding-left:0}}
 
-.warn{background:var(--panel);border:1px solid var(--line);
-  border-left:3px solid var(--amber);border-radius:10px;
-  padding:clamp(10px,1.6vh,20px) clamp(14px,1.4vw,24px);overflow-y:auto}
-.warn ul{padding-left:18px;list-style:disc}
-.warn li{padding:clamp(3px,.7vh,7px) 0;color:var(--dim);
-  font-size:clamp(10px,1.5vh,13.5px)}
-.warn b{color:var(--ink)}
-.foot{color:var(--dim);font-size:clamp(9px,1.2vh,11.5px);margin:8px 0 0;max-width:76ch}
-.foot code,.foot b{color:var(--ink)}
-.bottom{padding-top:clamp(5px,1vh,10px);border-top:1px solid var(--line);
-  color:var(--dim);font-size:clamp(8px,1.2vh,11.5px);margin-top:clamp(6px,1vh,12px)}
-.bottom a{color:var(--green);text-decoration:none}
-@media(max-width:640px){
+@media(max-width:900px){
   html,body{overflow:auto}
-  .panel{position:static;opacity:1;pointer-events:auto;display:none}
-  .panel.on{display:flex}
-  #track{min-height:70vh}
+  .grid{grid-template-columns:1fr;grid-template-rows:none}
+  .box{max-height:none}
+  .fn{flex-wrap:wrap}
 }
 </style>
 
-<div class="shell">
-  <div class="top">
-    <p class="brand">THE LATE TAPE</p>
-    <span class="tag">everything here was public before you read it, and late by law</span>
-    <span class="stamp">built 07 Aug 2026</span>
+<div class="term">
+
+  <div class="cmd">
+    <a class="lock" href="https://github.com/RezaSoleymanifar/vintage">
+      <svg class="mk" viewBox="0 0 26 26" aria-hidden="true"><path d="M2 5 h22 v16 h-22 z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M7 17 V11" stroke="currentColor" stroke-width="2.4"/><path d="M13 19 V7" stroke="currentColor" stroke-width="2.4"/><path d="M19 17 V13" stroke="currentColor" stroke-width="2.4"/></svg><span class="wm">APE<i>TAPE</i></span></a>
+    <span class="go">GO</span>
+    <span class="q">FLOW &lt;EQUITY&gt; 13F/STOCK-ACT XCOMPARE</span>
+    <span class="rt">SRC <b>SEC · HOUSE CLERK · SENATE EFD</b> &nbsp;|&nbsp;
+      BUILD <b>07-Aug-2026</b> &nbsp;|&nbsp; <b>LATE BY LAW</b></span>
   </div>
 
-  <div id="chips"></div>
+  <div class="fn">
+    <span><b>F1</b>THEMES</span>
+    <span><b>F2</b>AGREED</span>
+    <span><b>F3</b>SPLIT</span>
+    <span><b>F4</b>SOLO</span>
+    <span><b>F5</b>CLOCKS</span>
+    <span><b>F6</b>CROWDED</span>
+    <span><b>F7</b>LATE</span>
+    <span class="spacer"></span>
+    <span><b>N</b>1,900 NAMES</span>
+    <span><b>M</b>22 MGRS</span>
+    <span><b>C</b>65 MEMBERS</span>
+  </div>
 
-  <div id="track">
+  <div class="band">
+    <span class="hl">OUT OF <em>BANKS &amp; PAYMENTS</em>
+      &nbsp;&nbsp;INTO <em>MEMORY &amp; STORAGE</em></span>
+    <span class="sb">NET <b class="up">+$133.7B</b>
+      &nbsp;·&nbsp; BOT <b class="up">+$298.6B</b>
+      &nbsp;·&nbsp; SLD <b class="dn">−$164.9B</b></span>
+  </div>
 
-    <section class="panel on">
-      <h1>Two groups of money.<br><em>Out of banks &amp; payments. Into memory &amp; storage.</em></h1>
-      <p class="sub">+$133.7B added on net. 19 of 22 managers moved Alphabet the same way.</p>
-      <p class="lede">Institutional managers file Form 13F once a quarter. Members of
-      Congress file a report every time they trade. Neither can see the other's
-      filing before it lands.</p>
-      <div class="grid" style="margin-top:auto">
-        <div class="box"><i>Institutions as of</i><b>31 Mar 2026</b>
-          <s>22 managers · filed 2026-05-15</s></div>
-        <div class="box"><i>Congress as of</i><b>2026-08-06</b>
-          <s>65 members · 1,800 transactions</s></div>
-        <div class="box"><i>Institutions next move</i><b>14 Aug 2026</b>
-          <s>7 days · Q2 2026 13F deadline</s></div>
-        <div class="box"><i>Congress moves</i><b>Continuously</b>
-          <s>median 24-day lag</s></div>
+  <div class="grid">
+
+    <div class="col">
+      <div class="box fit">
+        <div class="hd">F1 · THEME FLOW<s>NET SHARE-COUNT CHANGE, PRICED 2026-03-31</s></div>
+        <div class="pad"><table>
+          <tr><th class="l">THEME</th><th>&#8592; SOLD &nbsp; BOUGHT &#8594;</th>
+              <th>USD</th><th>MGR</th></tr>
+          <tr><td class="k">MEMORY &amp; STORAGE</td><td class="g up"><span class="gz"></span><span class="gu">████████████████</span></td><td class="v up">+$13.0B</td><td class="m">13</td></tr>
+<tr><td class="k">BANKS &amp; PAYMENTS</td><td class="g dn"><span class="gd">███████████████</span><span class="gz">·</span></td><td class="v dn">−$12.5B</td><td class="m">17</td></tr>
+<tr><td class="k">AI COMPUTE</td><td class="g up"><span class="gz">····</span><span class="gu">████████████</span></td><td class="v up">+$10.1B</td><td class="m">16</td></tr>
+<tr><td class="k">MEGACAP PLATFORMS</td><td class="g up"><span class="gz">·····</span><span class="gu">███████████</span></td><td class="v up">+$9.0B</td><td class="m">20</td></tr>
+<tr><td class="k">SEMI-CAP &amp; FOUNDRY</td><td class="g up"><span class="gz">······</span><span class="gu">██████████</span></td><td class="v up">+$7.8B</td><td class="m">17</td></tr>
+<tr><td class="k">ENERGY</td><td class="g dn"><span class="gd">████████</span><span class="gz">········</span></td><td class="v dn">−$6.2B</td><td class="m">10</td></tr>
+<tr><td class="k">INSURANCE</td><td class="g up"><span class="gz">············</span><span class="gu">████</span></td><td class="v up">+$3.6B</td><td class="m">11</td></tr>
+<tr><td class="k">CONSUMER STAPLES</td><td class="g dn"><span class="gd">█</span><span class="gz">···············</span></td><td class="v dn">−$1.1B</td><td class="m">14</td></tr>
+<tr><td class="k">HOUSING &amp; BUILDERS</td><td class="g up"><span class="gz">···············</span><span class="gu">█</span></td><td class="v up">+$0.2B</td><td class="m">10</td></tr>
+<tr><td class="k">HEALTHCARE</td><td class="g up"><span class="gz">···············</span><span class="gu">█</span></td><td class="v up">+$0.1B</td><td class="m">17</td></tr>
+        </table></div>
       </div>
-    </section>
-
-    <section class="panel">
-      <h2>The net</h2>
-      <div class="grid">
-        <div class="box"><i>Gross bought</i><b class="up">+$298.6B</b></div>
-        <div class="box"><i>Gross sold</i><b class="dn">−$164.9B</b></div>
-        <div class="box"><i>Net</i><b class="up">+$133.7B</b></div>
-        <div class="box"><i>Names moved</i><b>1,900</b></div>
+      <div class="box grow">
+        <div class="hd">F6 · CONGRESS, MOST MEMBERS TRADING<s>ONE NAME, MANY DESKS</s></div>
+        <div class="pad"><table>
+          <tr><th class="l">TICKER</th><th>BUY</th><th>SELL</th><th>NET</th><th>MBR</th></tr>
+          <tr><td class="k">MSFT</td><td class="v up">18</td><td class="v dn">14</td><td class="v up">+4</td><td class="m">15</td></tr>
+<tr><td class="k">AAPL</td><td class="v up">7</td><td class="v dn">16</td><td class="v dn">-9</td><td class="m">13</td></tr>
+<tr><td class="k">NVDA</td><td class="v up">7</td><td class="v dn">11</td><td class="v dn">-4</td><td class="m">11</td></tr>
+<tr><td class="k">ACN</td><td class="v up">4</td><td class="v dn">8</td><td class="v dn">-4</td><td class="m">8</td></tr>
+<tr><td class="k">ABT</td><td class="v up">4</td><td class="v dn">7</td><td class="v dn">-3</td><td class="m">8</td></tr>
+<tr><td class="k">HD</td><td class="v up">9</td><td class="v dn">4</td><td class="v up">+5</td><td class="m">7</td></tr>
+<tr><td class="k">GOOGL</td><td class="v up">2</td><td class="v dn">11</td><td class="v dn">-9</td><td class="m">7</td></tr>
+<tr><td class="k">INTC</td><td class="v up">5</td><td class="v dn">8</td><td class="v dn">-3</td><td class="m">7</td></tr>
+<tr><td class="k">AMZN</td><td class="v up">5</td><td class="v dn">6</td><td class="v dn">-1</td><td class="m">7</td></tr>
+<tr><td class="k">BRK.B</td><td class="v up">7</td><td class="v dn">7</td><td class="v dn">+0</td><td class="m">6</td></tr>
+<tr><td class="k">UNH</td><td class="v up">7</td><td class="v dn">4</td><td class="v up">+3</td><td class="m">6</td></tr>
+        </table></div>
       </div>
-      <h2 style="margin-top:clamp(10px,1.8vh,20px)">Which themes the money left, and where it went</h2>
-      <div class="scroll"><table class="themes">
-      <tbody>
-      <tr><td class="n">Memory &amp; storage<s>Micron Technology Inc, Sandisk Corp, Seagate Hdd Cayman, Seagate Technology Hld …</s></td><td class="track"><div class="rail up"><i class="bar up" style="width:50.0%"></i></div></td><td class="num up">+$13.0B<s>13 managers</s></td></tr>
-<tr><td class="n">Banks &amp; payments<s>Ally Finl Inc, Bank America Corp, Capital One Finl Corp, Citigroup Inc …</s></td><td class="track"><div class="rail dn"><i class="bar dn" style="width:48.1%"></i></div></td><td class="num dn">−$12.5B<s>17 managers</s></td></tr>
-<tr><td class="n">AI compute<s>Advanced Micro Devices, Broadcom Inc, Marvell    Technology , Nvidia Corporation …</s></td><td class="track"><div class="rail up"><i class="bar up" style="width:38.6%"></i></div></td><td class="num up">+$10.1B<s>16 managers</s></td></tr>
-<tr><td class="n">Megacap platforms<s>Alphabet Inc, Amazon Com Inc, Apple Inc, Meta Platforms Inc …</s></td><td class="track"><div class="rail up"><i class="bar up" style="width:34.7%"></i></div></td><td class="num up">+$9.0B<s>20 managers</s></td></tr>
-<tr><td class="n">Semi-cap &amp; foundry<s>Applied Matls Inc, Asml Hldg Nv, Kla Corp, Lam Research Corp …</s></td><td class="track"><div class="rail up"><i class="bar up" style="width:29.9%"></i></div></td><td class="num up">+$7.8B<s>17 managers</s></td></tr>
-<tr><td class="n">Energy<s>Chevron Corporation, Conocophillips, Exxon     Mobil      C, Hess Corp …</s></td><td class="track"><div class="rail dn"><i class="bar dn" style="width:23.7%"></i></div></td><td class="num dn">−$6.2B<s>10 managers</s></td></tr>
-<tr><td class="n">Insurance<s>Aon Plc, Chubb Ltd Switz, Marsh &amp; Mclennan Cos I, Progressive Corp …</s></td><td class="track"><div class="rail up"><i class="bar up" style="width:14.0%"></i></div></td><td class="num up">+$3.6B<s>11 managers</s></td></tr>
-<tr><td class="n">Consumer staples<s>Coca Cola Co, Coca Cola Cons Inc, Keurig Dr Pepper Inc, Kraft Heinz Co/T …</s></td><td class="track"><div class="rail dn"><i class="bar dn" style="width:4.3%"></i></div></td><td class="num dn">−$1.1B<s>14 managers</s></td></tr>
-<tr><td class="n">Housing &amp; builders<s>D R Horton Inc, Lennar Corp, Louisiana Pac Corp, Nvr Inc …</s></td><td class="track"><div class="rail up"><i class="bar up" style="width:0.6%"></i></div></td><td class="num up">+$0.2B<s>10 managers</s></td></tr>
-<tr><td class="n">Healthcare<s>Amgen Inc, Bristol-Myers Squibb C, Davita Inc, Eli Lilly &amp; Co …</s></td><td class="track"><div class="rail up"><i class="bar up" style="width:0.5%"></i></div></td><td class="num up">+$0.1B<s>17 managers</s></td></tr>
-      </tbody></table></div>
-      <p class="foot">Themes are a fixed map from issuer name to bucket, listed in
-      <code>tools/build_flows.py</code>. A clustering would reshuffle names between
-      rebuilds and you could not tell a rotation from an algorithm change.</p>
-    </section>
+    </div>
 
-    <section class="panel">
-      <h2>Where both groups went the same way</h2>
-      <div class="scroll"><table>
-      <thead><tr><th>Name</th><th class="num">22 institutions</th>
-      <th class="num">65 in Congress</th><th class="v">Verdict</th></tr></thead>
-      <tbody>
-      <tr><td class="n">Apple Inc</td><td class="num dn">−$12.4B<s>11 of 22 managers</s></td><td class="num dn">-9 net<s>13 members</s></td><td class="v dn">Sell</td></tr>
-<tr><td class="n">Micron Technology Inc</td><td class="num up">+$5.7B<s>12 of 22 managers</s></td><td class="num up">+2 net<s>6 members</s></td><td class="v up">Buy</td></tr>
-<tr><td class="n">Microsoft Corp</td><td class="num up">+$3.5B<s>17 of 22 managers</s></td><td class="num up">+4 net<s>15 members</s></td><td class="v up">Buy</td></tr>
-<tr><td class="n">Mastercard Incorporated</td><td class="num dn">−$1.4B<s>11 of 22 managers</s></td><td class="num dn">-5 net<s>3 members</s></td><td class="v dn">Sell</td></tr>
-<tr><td class="n">Tesla Inc</td><td class="num up">+$1.2B<s>13 of 22 managers</s></td><td class="num up">+3 net<s>2 members</s></td><td class="v up">Buy</td></tr>
-<tr><td class="n">Palantir Technologies Inc</td><td class="num dn">−$0.7B<s>9 of 22 managers</s></td><td class="num dn">-1 net<s>2 members</s></td><td class="v dn">Sell</td></tr>
-      </tbody></table></div>
-      <p class="foot">Neither group can read the other's filing before it lands, so
-      agreement here is two independent decisions rather than one being copied.</p>
-    </section>
-
-    <section class="panel">
-      <h2>Where they disagreed</h2>
-      <div class="scroll"><table>
-      <thead><tr><th>Name</th><th class="num">Institutions</th>
-      <th class="num">Congress</th><th class="v"></th></tr></thead>
-      <tbody>
-      <tr><td class="n">Alphabet Inc</td><td class="num up">+$16.6B<s>19 managers</s></td><td class="num dn">-6 net<s>11 members</s></td><td class="v split">Split</td></tr>
-<tr><td class="n">Nvidia Corporation</td><td class="num up">+$9.0B<s>15 managers</s></td><td class="num dn">-4 net<s>11 members</s></td><td class="v split">Split</td></tr>
-<tr><td class="n">Chevron Corporation</td><td class="num dn">−$5.1B<s>9 managers</s></td><td class="num up">+2 net<s>4 members</s></td><td class="v split">Split</td></tr>
-<tr><td class="n">Amazon Com Inc</td><td class="num up">+$3.6B<s>19 managers</s></td><td class="num dn">-1 net<s>7 members</s></td><td class="v split">Split</td></tr>
-<tr><td class="n">Meta Platforms Inc</td><td class="num dn">−$2.2B<s>17 managers</s></td><td class="num up">+2 net<s>5 members</s></td><td class="v split">Split</td></tr>
-<tr><td class="n">Advanced Micro Devices Inc</td><td class="num dn">−$2.0B<s>12 managers</s></td><td class="num up">+6 net<s>4 members</s></td><td class="v split">Split</td></tr>
-<tr><td class="n">Johnson &amp; Johnson</td><td class="num up">+$0.2B<s>7 managers</s></td><td class="num dn">-4 net<s>5 members</s></td><td class="v split">Split</td></tr>
-      </tbody></table></div>
-    </section>
-
-    <section class="panel">
-      <h2>What only one group traded</h2>
-      <div class="cols">
-        <div class="card"><h3>Institutions bought</h3><ul><li><b>Alphabet Inc</b><span>+$15.9B · 16 mgrs</span></li>
-<li><b>Nvidia Corporation</b><span>+$9.0B · 15 mgrs</span></li>
-<li><b>Ishares Tr</b><span>+$7.2B · 6 mgrs</span></li>
-<li><b>Micron Technology Inc</b><span>+$5.7B · 12 mgrs</span></li>
-<li><b>Spdr Series Trust</b><span>+$5.4B · 3 mgrs</span></li>
-<li><b>Amazon Com Inc</b><span>+$3.6B · 19 mgrs</span></li>
-<li><b>Microsoft Corp</b><span>+$3.5B · 17 mgrs</span></li>
-<li><b>Taiwan Semiconductor Manufac</b><span>+$3.4B · 16 mgrs</span></li></ul></div>
-        <div class="card"><h3>Institutions sold</h3><ul><li><b>Meta Platforms Inc</b><span>−$2.2B · 17 mgrs</span></li>
-<li><b>Schwab Charles Corp</b><span>−$2.3B · 9 mgrs</span></li>
-<li><b>Alibaba  Group        Hldg  </b><span>−$2.3B · 8 mgrs</span></li>
-<li><b>Flutter Entmt Plc</b><span>−$2.4B · 10 mgrs</span></li>
-<li><b>Intuit</b><span>−$3.5B · 10 mgrs</span></li>
-<li><b>Chevron Corporation</b><span>−$5.1B · 9 mgrs</span></li>
-<li><b>Bank America Corp</b><span>−$7.0B · 10 mgrs</span></li>
-<li><b>Apple Inc</b><span>−$12.4B · 11 mgrs</span></li></ul></div>
-        <div class="card"><h3>Congress bought</h3><ul><li><b>HUBB</b><span>+13 net · 2 members</span></li>
-<li><b>TDG</b><span>+12 net · 3 members</span></li>
-<li><b>T</b><span>+9 net · 5 members</span></li>
-<li><b>LTH</b><span>+9 net · 1 members</span></li>
-<li><b>LPLA</b><span>+8 net · 2 members</span></li>
-<li><b>ENTG</b><span>+8 net · 1 members</span></li>
-<li><b>SPCX</b><span>+7 net · 6 members</span></li>
-<li><b>BEP</b><span>+7 net · 1 members</span></li></ul></div>
-        <div class="card"><h3>Congress sold</h3><ul><li><b>TSCO</b><span>-13 net · 4 members</span></li>
-<li><b>SCI</b><span>-12 net · 1 members</span></li>
-<li><b>FLEX</b><span>-10 net · 1 members</span></li>
-<li><b>AAPL</b><span>-9 net · 13 members</span></li>
-<li><b>GOOGL</b><span>-9 net · 7 members</span></li>
-<li><b>WRB</b><span>-8 net · 1 members</span></li>
-<li><b>CPAY</b><span>-7 net · 1 members</span></li>
-<li><b>INTU</b><span>-6 net · 6 members</span></li></ul></div>
+    <div class="col">
+      <div class="box fit">
+        <div class="hd">F2 · BOTH GROUPS AGREED<s>6 NAMES</s></div>
+        <div class="pad"><table>
+          <tr><th class="l">NAME</th><th>INST</th><th>MGR</th>
+              <th>CONG</th><th>MBR</th><th>SIG</th></tr>
+          <tr><td class="k">APPLE INC</td><td class="v dn">−$12.4B</td><td class="m">11</td><td class="v dn">-9</td><td class="m">13</td><td class="sig dn">SELL</td></tr>
+<tr><td class="k">MICRON TECHNOLOGY INC</td><td class="v up">+$5.7B</td><td class="m">12</td><td class="v up">+2</td><td class="m">6</td><td class="sig up">BUY</td></tr>
+<tr><td class="k">MICROSOFT CORP</td><td class="v up">+$3.5B</td><td class="m">17</td><td class="v up">+4</td><td class="m">15</td><td class="sig up">BUY</td></tr>
+<tr><td class="k">MASTERCARD INCORPORATE</td><td class="v dn">−$1.4B</td><td class="m">11</td><td class="v dn">-5</td><td class="m">3</td><td class="sig dn">SELL</td></tr>
+<tr><td class="k">TESLA INC</td><td class="v up">+$1.2B</td><td class="m">13</td><td class="v up">+3</td><td class="m">2</td><td class="sig up">BUY</td></tr>
+<tr><td class="k">PALANTIR TECHNOLOGIES </td><td class="v dn">−$0.7B</td><td class="m">9</td><td class="v dn">-1</td><td class="m">2</td><td class="sig dn">SELL</td></tr>
+        </table></div>
       </div>
-    </section>
+      <div class="box fit">
+        <div class="hd">F3 · THEY SPLIT<s>7 NAMES</s></div>
+        <div class="pad"><table>
+          <tr><th class="l">NAME</th><th>INST</th><th>MGR</th>
+              <th>CONG</th><th>MBR</th><th>SIG</th></tr>
+          <tr><td class="k">ALPHABET INC</td><td class="v up">+$16.6B</td><td class="m">19</td><td class="v dn">-6</td><td class="m">11</td><td class="sig amb">SPLIT</td></tr>
+<tr><td class="k">NVIDIA CORPORATION</td><td class="v up">+$9.0B</td><td class="m">15</td><td class="v dn">-4</td><td class="m">11</td><td class="sig amb">SPLIT</td></tr>
+<tr><td class="k">CHEVRON CORPORATION</td><td class="v dn">−$5.1B</td><td class="m">9</td><td class="v up">+2</td><td class="m">4</td><td class="sig amb">SPLIT</td></tr>
+<tr><td class="k">AMAZON COM INC</td><td class="v up">+$3.6B</td><td class="m">19</td><td class="v dn">-1</td><td class="m">7</td><td class="sig amb">SPLIT</td></tr>
+<tr><td class="k">META PLATFORMS INC</td><td class="v dn">−$2.2B</td><td class="m">17</td><td class="v up">+2</td><td class="m">5</td><td class="sig amb">SPLIT</td></tr>
+<tr><td class="k">ADVANCED MICRO DEVICES</td><td class="v dn">−$2.0B</td><td class="m">12</td><td class="v up">+6</td><td class="m">4</td><td class="sig amb">SPLIT</td></tr>
+<tr><td class="k">JOHNSON &amp; JOHNSON</td><td class="v up">+$0.2B</td><td class="m">7</td><td class="v dn">-4</td><td class="m">5</td><td class="sig amb">SPLIT</td></tr>
+        </table></div>
+      </div>
+      <div class="box grow">
+        <div class="hd">F7 · PAST THE STATUTORY DEADLINE
+          <s>546 OF 1,800 · STOCK ACT ALLOWS 45D</s></div>
+        <div class="pad"><table>
+          <tr><th class="l">MEMBER</th><th class="l">TKR</th><th>LAG</th><th>TRADED</th></tr>
+          <tr><td class="k">THOMAS H TUBERVILLE</td><td class="k">AMAT</td><td class="v dn">880D</td><td class="m">24-03-08</td></tr>
+<tr><td class="k">THOMAS H TUBERVILLE</td><td class="k">AAPL</td><td class="v dn">876D</td><td class="m">24-03-12</td></tr>
+<tr><td class="k">THOMAS H TUBERVILLE</td><td class="k">ACN</td><td class="v dn">876D</td><td class="m">24-03-12</td></tr>
+<tr><td class="k">THOMAS H TUBERVILLE</td><td class="k">CSX</td><td class="v dn">876D</td><td class="m">24-03-12</td></tr>
+<tr><td class="k">THOMAS H TUBERVILLE</td><td class="k">JPM</td><td class="v dn">876D</td><td class="m">24-03-12</td></tr>
+<tr><td class="k">THOMAS H TUBERVILLE</td><td class="k">TXN</td><td class="v dn">876D</td><td class="m">24-03-12</td></tr>
+<tr><td class="k">THOMAS H TUBERVILLE</td><td class="k">QCOM</td><td class="v dn">875D</td><td class="m">24-03-13</td></tr>
+        </table></div>
+      </div>
+    </div>
 
-    <section class="panel">
-      <h2>What this is not</h2>
-      <div class="warn"><ul>
-      <li><b>65 members is not Congress</b>, and
-      22 managers is not the market. Both are the subset that
-      filed comparable reports in this window.</li>
-      <li><b>Congressional amounts are bands</b>, not figures. Direction and count
-      are the only honest measures, so no dollar total is shown for that half.</li>
-      <li><b>Institutional figures are share-count changes</b> priced at the later
-      quarter, so a position that merely appreciated does not appear as a purchase.</li>
-      <li><b>Everything here was late by construction.</b> 13F lands 45 days after
-      the quarter; 546 of 1,800 congressional transactions
-      (30%) were disclosed past the
-      45-day statutory deadline, the worst by 880 days.</li>
-      <li><b>Nothing here is advice</b>, and every position was public knowledge
-      before you read it.</li>
-      </ul></div>
-    </section>
+    <div class="col">
+      <div class="box">
+        <div class="hd">F5 · CLOCKS</div>
+        <div class="cells">
+          <div class="cell"><i>INST AS OF</i><b>31-Mar-26</b>
+            <s>FILED 2026-05-15</s></div>
+          <div class="cell"><i>CONG AS OF</i><b>08-06</b>
+            <s>1,800 TRANSACTIONS</s></div>
+          <div class="cell"><i>INST NEXT MOVE</i><b class="amb">14-Aug-26</b>
+            <s>7D · Q2 13F DUE</s></div>
+          <div class="cell"><i>CONG MOVES</i><b>CONTINUOUS</b>
+            <s>MEDIAN 24D LAG</s></div>
+        </div>
+      </div>
+      <div class="box grow">
+        <div class="hd">F4 · INSTITUTIONS ONLY<s>NOT TRADED BY CONGRESS</s></div>
+        <div class="pad"><table>
+          <tr><td class="k">ALPHABET INC</td><td class="v up">+$15.9B</td><td class="m">16</td></tr>
+<tr><td class="k">NVIDIA CORPORATIO</td><td class="v up">+$9.0B</td><td class="m">15</td></tr>
+<tr><td class="k">ISHARES TR</td><td class="v up">+$7.2B</td><td class="m">6</td></tr>
+<tr><td class="k">MICRON TECHNOLOGY</td><td class="v up">+$5.7B</td><td class="m">12</td></tr>
+          <tr><td class="k">META PLATFORMS IN</td><td class="v dn">−$2.2B</td><td class="m">17</td></tr>
+<tr><td class="k">SCHWAB CHARLES CO</td><td class="v dn">−$2.3B</td><td class="m">9</td></tr>
+<tr><td class="k">ALIBABA  GROUP   </td><td class="v dn">−$2.3B</td><td class="m">8</td></tr>
+<tr><td class="k">FLUTTER ENTMT PLC</td><td class="v dn">−$2.4B</td><td class="m">10</td></tr>
+        </table></div>
+      </div>
+      <div class="box grow">
+        <div class="hd">F4 · CONGRESS ONLY<s>NET TRANSACTION COUNT</s></div>
+        <div class="pad"><table>
+          <tr><td class="k">HUBB</td><td class="v up">+13</td><td class="m">2</td></tr>
+<tr><td class="k">TDG</td><td class="v up">+12</td><td class="m">3</td></tr>
+<tr><td class="k">T</td><td class="v up">+9</td><td class="m">5</td></tr>
+<tr><td class="k">LTH</td><td class="v up">+9</td><td class="m">1</td></tr>
+          <tr><td class="k">TSCO</td><td class="v dn">-13</td><td class="m">4</td></tr>
+<tr><td class="k">SCI</td><td class="v dn">-12</td><td class="m">1</td></tr>
+<tr><td class="k">FLEX</td><td class="v dn">-10</td><td class="m">1</td></tr>
+<tr><td class="k">AAPL</td><td class="v dn">-9</td><td class="m">13</td></tr>
+        </table></div>
+      </div>
+    </div>
 
   </div>
 
-  <div class="bottom">
-    <b>The Late Tape</b> · SEC Form 13F, House STOCK Act periodic transaction reports
-    and Senate EFD, via <a href="https://github.com/RezaSoleymanifar/vintage">Vintage</a>
-    · reports obtained under the Ethics in Government Act, which restricts commercial use
-    · rebuild with <code>python tools/build_flows.py</code>
-  </div>
+  <div class="tick"><div>AMOUNTS DISCLOSED BY CONGRESS ARE BANDS, NOT FIGURES — DIRECTION AND COUNT ARE THE ONLY HONEST MEASURES ▪ 65 MEMBERS IS NOT CONGRESS, 22 MANAGERS IS NOT THE MARKET ▪ INSTITUTIONAL FIGURES ARE SHARE-COUNT CHANGES PRICED AT THE LATER QUARTER, SO APPRECIATION IS NOT A PURCHASE ▪ 13F LANDS 45 DAYS AFTER THE QUARTER ▪ 546 OF 1,800 CONGRESSIONAL TRANSACTIONS (30%) WERE DISCLOSED PAST THE 45-DAY STATUTORY DEADLINE, WORST BY 880 DAYS ▪ NOTHING HERE IS ADVICE, AND EVERY POSITION WAS PUBLIC BEFORE YOU READ IT ▪ REPORTS OBTAINED UNDER THE ETHICS IN GOVERNMENT ACT, WHICH RESTRICTS COMMERCIAL USE ▪ AMOUNTS DISCLOSED BY CONGRESS ARE BANDS, NOT FIGURES — DIRECTION AND COUNT ARE THE ONLY HONEST MEASURES ▪ 65 MEMBERS IS NOT CONGRESS, 22 MANAGERS IS NOT THE MARKET ▪ INSTITUTIONAL FIGURES ARE SHARE-COUNT CHANGES PRICED AT THE LATER QUARTER, SO APPRECIATION IS NOT A PURCHASE ▪ 13F LANDS 45 DAYS AFTER THE QUARTER ▪ 546 OF 1,800 CONGRESSIONAL TRANSACTIONS (30%) WERE DISCLOSED PAST THE 45-DAY STATUTORY DEADLINE, WORST BY 880 DAYS ▪ NOTHING HERE IS ADVICE, AND EVERY POSITION WAS PUBLIC BEFORE YOU READ IT ▪ REPORTS OBTAINED UNDER THE ETHICS IN GOVERNMENT ACT, WHICH RESTRICTS COMMERCIAL USE ▪ </div></div>
 </div>
-
-<script>
-(function () {
-  var panels = [].slice.call(document.querySelectorAll('.panel'));
-  var bar = document.getElementById('chips');
-  var titles = ['The claim', 'The net', 'They agreed', 'They split',
-                'One group only', 'What this is not'];
-  var at = 0;
-
-  var chips = titles.map(function (t, i) {
-    var b = document.createElement('button');
-    b.className = 'chip' + (i === 0 ? ' on' : '');
-    b.textContent = t;
-    b.addEventListener('click', function () { show(i); });
-    bar.appendChild(b);
-    return b;
-  });
-
-  function show(i) {
-    at = (i + panels.length) % panels.length;
-    panels.forEach(function (p, k) { p.classList.toggle('on', k === at); });
-    chips.forEach(function (c, k) { c.classList.toggle('on', k === at); });
-  }
-
-  // Arrow keys, because a deck that only responds to clicking a pill is a
-  // slideshow nobody drives.
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'ArrowRight' || e.key === 'PageDown') show(at + 1);
-    if (e.key === 'ArrowLeft' || e.key === 'PageUp') show(at - 1);
-  });
-})();
-</script>

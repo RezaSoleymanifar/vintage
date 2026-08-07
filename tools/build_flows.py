@@ -1,4 +1,4 @@
-"""The Late Tape: where two independent groups of money actually moved.
+"""Ape Tape: where two independent groups of money actually moved.
 
 One page, one claim, two clocks. The institutional half comes from Form 13F and
 changes four times a year; the congressional half comes from STOCK Act periodic
@@ -314,305 +314,339 @@ def build(inst, cong, matched, today):
     cong_in = sorted(tickers, key=lambda t: (-cong_net(t), -len(cong["members"][t])))[:8]
     cong_out = sorted(tickers, key=lambda t: (cong_net(t), -len(cong["members"][t])))[:8]
 
-    def rows_agree():
-        return "\n".join(
-            f'<tr><td class="n">{esc(r["issuer"])}</td>'
-            f'<td class="num {"up" if r["dollars"] > 0 else "dn"}">{money(r["dollars"])}'
-            f'<s>{r["managers"]} of {len(inst["covered"])} managers</s></td>'
-            f'<td class="num {"up" if r["buys"] > r["sells"] else "dn"}">'
-            f'{r["buys"] - r["sells"]:+d} net<s>{r["members"]} members</s></td>'
-            f'<td class="v {"up" if r["verdict"] == "Buy" else "dn"}">{r["verdict"]}</td></tr>'
-            for r in agree)
-
-    def rows_split():
-        if not disagree:
-            return '<tr><td colspan="4" class="none">None. Both groups went the same way on every overlapping name.</td></tr>'
-        return "\n".join(
-            f'<tr><td class="n">{esc(r["issuer"])}</td>'
-            f'<td class="num {"up" if r["dollars"] > 0 else "dn"}">{money(r["dollars"])}'
-            f'<s>{r["managers"]} managers</s></td>'
-            f'<td class="num {"up" if r["buys"] > r["sells"] else "dn"}">'
-            f'{r["buys"] - r["sells"]:+d} net<s>{r["members"]} members</s></td>'
-            f'<td class="v split">Split</td></tr>'
-            for r in disagree)
+    def gauge(value, span, side):
+        """A centre-zero bar drawn in block characters, terminal style."""
+        cells = 16
+        filled = max(1, round(abs(value) / span * cells)) if span else 0
+        pad = "·" * (cells - filled)
+        blocks = "█" * filled
+        if side == "up":
+            return f'<span class="gz">{pad}</span><span class="gu">{blocks}</span>'
+        return f'<span class="gd">{blocks}</span><span class="gz">{pad}</span>'
 
     def rows_theme():
         span = max((abs(t["dollars"]) for t in theme_rows), default=1) or 1
         out = []
         for t in theme_rows:
-            # Halved: the rail is a diverging axis with zero at its midpoint, so
-            # the widest bar reaches one edge, not one and a half.
-            pct = abs(t["dollars"]) / span * 50
             side = "up" if t["dollars"] > 0 else "dn"
-            bar = (f'<i class="bar {side}" style="width:{pct:.1f}%"></i>')
             out.append(
-                f'<tr><td class="n">{esc(t["theme"])}'
-                f'<s>{esc(", ".join(n[:22] for n in t["names"][:4]))}'
-                f'{" …" if len(t["names"]) > 4 else ""}</s></td>'
-                f'<td class="track"><div class="rail {side}">{bar}</div></td>'
-                f'<td class="num {side}">{money(t["dollars"])}'
-                f'<s>{t["managers"]} managers</s></td></tr>')
+                f'<tr><td class="k">{esc(t["theme"].upper())}</td>'
+                f'<td class="g {side}">{gauge(t["dollars"], span, side)}</td>'
+                f'<td class="v {side}">{money(t["dollars"])}</td>'
+                f'<td class="m">{t["managers"]}</td></tr>')
         return "\n".join(out)
+
+    def rows_agree():
+        return "\n".join(
+            f'<tr><td class="k">{esc(r["issuer"].upper()[:22])}</td>'
+            f'<td class="v {"up" if r["dollars"] > 0 else "dn"}">{money(r["dollars"])}</td>'
+            f'<td class="m">{r["managers"]}</td>'
+            f'<td class="v {"up" if r["buys"] > r["sells"] else "dn"}">'
+            f'{r["buys"] - r["sells"]:+d}</td>'
+            f'<td class="m">{r["members"]}</td>'
+            f'<td class="sig {"up" if r["verdict"] == "Buy" else "dn"}">'
+            f'{"BUY" if r["verdict"] == "Buy" else "SELL"}</td></tr>'
+            for r in agree)
+
+    def rows_split():
+        if not disagree:
+            return '<tr><td class="k" colspan="6">NO DISAGREEMENT ON RECORD</td></tr>'
+        return "\n".join(
+            f'<tr><td class="k">{esc(r["issuer"].upper()[:22])}</td>'
+            f'<td class="v {"up" if r["dollars"] > 0 else "dn"}">{money(r["dollars"])}</td>'
+            f'<td class="m">{r["managers"]}</td>'
+            f'<td class="v {"up" if r["buys"] > r["sells"] else "dn"}">'
+            f'{r["buys"] - r["sells"]:+d}</td>'
+            f'<td class="m">{r["members"]}</td>'
+            f'<td class="sig amb">SPLIT</td></tr>'
+            for r in disagree)
 
     def li(items, kind):
         if kind == "inst":
             return "\n".join(
-                f'<li><b>{esc(n.title()[:28])}</b><span>{money(v)} · {h} mgrs</span></li>'
-                for n, v, h in items)
+                f'<tr><td class="k">{esc(n.upper()[:17])}</td>'
+                f'<td class="v {"up" if v > 0 else "dn"}">{money(v)}</td>'
+                f'<td class="m">{h}</td></tr>' for n, v, h in items)
         return "\n".join(
-            f'<li><b>{esc(t)}</b><span>{cong_net(t):+d} net · '
-            f'{len(cong["members"][t])} members</span></li>' for t in items)
+            f'<tr><td class="k">{esc(t)}</td>'
+            f'<td class="v {"up" if cong_net(t) > 0 else "dn"}">{cong_net(t):+d}</td>'
+            f'<td class="m">{len(cong["members"][t])}</td></tr>' for t in items)
 
-    return f"""<meta charset="utf-8">
+    # Two more cuts, because the first layout left half the middle column empty
+    # and empty space on a terminal reads as missing data rather than restraint.
+    widely = sorted(
+        (set(cong["buys"]) | set(cong["sells"])),
+        key=lambda k: (-len(cong["members"][k]), -(cong["buys"][k] + cong["sells"][k])),
+    )[:11]
+
+    def rows_widely():
+        return "\n".join(
+            f'<tr><td class="k">{esc(k)}</td>'
+            f'<td class="v up">{cong["buys"][k]}</td>'
+            f'<td class="v dn">{cong["sells"][k]}</td>'
+            f'<td class="v {"up" if cong_net(k) > 0 else "dn"}">{cong_net(k):+d}</td>'
+            f'<td class="m">{len(cong["members"][k])}</td></tr>' for k in widely)
+
+    late_rows = sorted(
+        (r for r in cong["rows"] if (r.get("disclosure_lag_days") or 0) > 45),
+        key=lambda r: -r["disclosure_lag_days"])[:7]
+
+    def rows_late():
+        if not late_rows:
+            return '<tr><td class="k" colspan="4">NO FILINGS PAST THE DEADLINE</td></tr>'
+        return "\n".join(
+            f'<tr><td class="k">{esc((r.get("member") or "").upper()[:22])}</td>'
+            f'<td class="k">{esc(r["entity"])}</td>'
+            f'<td class="v dn">{r["disclosure_lag_days"]}D</td>'
+            f'<td class="m">{esc(r["observed_at"][2:])}</td></tr>' for r in late_rows)
+
+    # The mark is a tape strip with three prints on it, the middle one long.
+    # It reads as ticker tape at 18px and as an "A" counter at 200px, which is
+    # what a lockup has to do. Drawn inline so it inherits currentColor and can
+    # never load late, half-styled, or not at all.
+    logo = (
+        '<svg class="mk" viewBox="0 0 26 26" aria-hidden="true">'
+        '<path d="M2 5 h22 v16 h-22 z" fill="none" stroke="currentColor"'
+        ' stroke-width="1.6"/>'
+        '<path d="M7 17 V11" stroke="currentColor" stroke-width="2.4"/>'
+        '<path d="M13 19 V7" stroke="currentColor" stroke-width="2.4"/>'
+        '<path d="M19 17 V13" stroke="currentColor" stroke-width="2.4"/>'
+        '</svg>')
+
+    crawl = (
+        f"AMOUNTS DISCLOSED BY CONGRESS ARE BANDS, NOT FIGURES — DIRECTION AND "
+        f"COUNT ARE THE ONLY HONEST MEASURES ▪ "
+        f"{len(cong['all_members'])} MEMBERS IS NOT CONGRESS, "
+        f"{len(inst['covered'])} MANAGERS IS NOT THE MARKET ▪ "
+        f"INSTITUTIONAL FIGURES ARE SHARE-COUNT CHANGES PRICED AT THE LATER "
+        f"QUARTER, SO APPRECIATION IS NOT A PURCHASE ▪ "
+        f"13F LANDS 45 DAYS AFTER THE QUARTER ▪ "
+        f"{cong['late']} OF {len(cong['rows']):,} CONGRESSIONAL TRANSACTIONS "
+        f"({cong['late'] / max(len(cong['rows']), 1):.0%}) WERE DISCLOSED PAST THE "
+        f"45-DAY STATUTORY DEADLINE, WORST BY {cong['worst_lag']} DAYS ▪ "
+        f"NOTHING HERE IS ADVICE, AND EVERY POSITION WAS PUBLIC BEFORE YOU READ IT ▪ "
+        f"REPORTS OBTAINED UNDER THE ETHICS IN GOVERNMENT ACT, WHICH RESTRICTS "
+        f"COMMERCIAL USE ▪ "
+    )
+
+    return f"""<!doctype html>
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>The Late Tape — Vintage</title>
-<meta name="description" content="The Late Tape: two independent groups of money, 13F institutions and members of Congress, compared on the names they both traded. Everything here was late by law before you read it.">
+<title>APE TAPE — VINTAGE</title>
+<meta name="description" content="Ape Tape: two independent groups of money, 13F institutions and members of Congress, on one screen. Everything here was late by law before you read it.">
 <style>
 :root{{
-  --bg:#080b11; --panel:#0c121c; --line:#1c2735; --ink:#e9f1ee; --dim:#657f92;
-  --green:#35e08a; --red:#ff6b5e; --amber:#ffc46b;
+  --bg:#000; --ink:#e6e6e6; --amber:#ffa028; --amber-dim:#7a4d12;
+  --line:#241a08; --rule:#3a2a10; --up:#22e07a; --dn:#ff4d3d;
+  --grey:#6c6c6c;
   --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --fs:clamp(11px,1.62vh,15px);
 }}
-*{{box-sizing:border-box}}
+*{{box-sizing:border-box;border-radius:0!important}}
 html,body{{height:100%;overflow:hidden}}
 body{{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);
-  line-height:1.45;-webkit-font-smoothing:antialiased}}
-.shell{{height:100%;display:flex;flex-direction:column;
-  padding:clamp(10px,2vh,22px) clamp(12px,2.4vw,34px) clamp(8px,1.6vh,16px)}}
+  font-size:var(--fs);line-height:1.35;-webkit-font-smoothing:antialiased;
+  letter-spacing:.01em}}
+.term{{height:100%;display:flex;flex-direction:column;padding:0 6px 0}}
 
-.top{{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
-  padding-bottom:clamp(6px,1.2vh,12px);border-bottom:1px solid var(--line)}}
-.brand{{font-size:clamp(12px,1.8vh,15px);letter-spacing:.3em;color:var(--green);margin:0}}
-.tag{{font-size:clamp(9px,1.3vh,12px);color:var(--dim)}}
-.stamp{{margin-left:auto;font-size:clamp(9px,1.3vh,12px);color:var(--dim)}}
+/* ---------- command bar ---------- */
+.cmd{{display:flex;align-items:center;gap:12px;padding:5px 6px;
+  border-bottom:1px solid var(--rule);white-space:nowrap;overflow:hidden}}
+.lock{{display:inline-flex;align-items:center;gap:7px;color:var(--amber);
+  text-decoration:none;padding:1px 9px 1px 0;border-right:1px solid var(--rule)}}
+.lock .mk{{width:1.55em;height:1.55em;display:block;flex:none}}
+.wm{{font-weight:700;letter-spacing:.2em;font-size:1.12em;line-height:1}}
+.wm i{{font-style:normal;color:var(--ink);letter-spacing:.2em}}
+.lock:hover{{color:#ffbe5e}}
+.cmd .go{{color:var(--bg);background:var(--amber);padding:1px 7px;font-weight:700}}
+.cmd .q{{color:var(--grey)}}
+.cmd .rt{{margin-left:auto;color:var(--amber-dim)}}
+.cmd .rt b{{color:var(--amber);font-weight:400}}
 
-#chips{{display:flex;flex-wrap:wrap;gap:6px;margin:clamp(8px,1.4vh,14px) 0}}
-.chip{{font-family:var(--mono);font-size:clamp(9px,1.4vh,12px);color:var(--dim);
-  cursor:pointer;background:transparent;border:1px solid var(--line);
-  border-radius:999px;padding:clamp(3px,.7vh,6px) clamp(8px,1.1vw,14px)}}
-.chip:hover{{color:var(--ink)}}
-.chip.on{{color:var(--bg);background:var(--green);border-color:var(--green);font-weight:700}}
+/* ---------- function keys ---------- */
+.fn{{display:flex;gap:1px;padding:3px 0 4px}}
+.fn span{{background:#120c03;border:1px solid var(--line);color:var(--amber);
+  padding:2px 9px;letter-spacing:.1em}}
+.fn span b{{color:var(--bg);background:var(--amber);padding:0 3px;margin-right:5px;
+  font-weight:700}}
+.fn .spacer{{flex:1;background:none;border:0}}
 
-#track{{position:relative;flex:1;min-height:0}}
-.panel{{position:absolute;inset:0;opacity:0;pointer-events:none;
-  transition:opacity .35s ease;overflow:hidden;display:flex;flex-direction:column}}
-.panel.on{{opacity:1;pointer-events:auto}}
-h2{{font-size:clamp(10px,1.4vh,12px);letter-spacing:.22em;text-transform:uppercase;
-  color:var(--dim);font-weight:400;margin:0 0 clamp(6px,1.2vh,12px)}}
+/* ---------- headline band ---------- */
+.band{{border:1px solid var(--rule);border-left:3px solid var(--amber);
+  padding:6px 10px;margin-bottom:4px;display:flex;align-items:baseline;
+  gap:16px;flex-wrap:wrap}}
+.band .hl{{font-size:clamp(12px,2.5vh,26px);letter-spacing:-.01em;color:var(--ink)}}
+.band .hl em{{font-style:normal;color:var(--amber)}}
+.band .sb{{color:var(--grey);margin-left:auto}}
+.band .sb b{{color:var(--ink);font-weight:400}}
 
-h1{{font-size:clamp(20px,4.6vh,44px);line-height:1.1;margin:0 0 clamp(6px,1.2vh,14px);
-  letter-spacing:-.02em}}
-h1 em{{font-style:normal;color:var(--green)}}
-.sub{{color:var(--ink);font-size:clamp(11px,1.8vh,16px);margin:0 0 clamp(8px,1.4vh,16px)}}
-.lede{{color:var(--dim);font-size:clamp(10px,1.5vh,13.5px);max-width:64ch;margin:0}}
+/* ---------- grid ---------- */
+.grid{{flex:1;min-height:0;display:grid;gap:4px;
+  grid-template-columns:1fr 1.2fr 1.02fr;grid-template-rows:1fr}}
+.col{{display:flex;flex-direction:column;gap:4px;min-height:0}}
+.box{{border:1px solid var(--rule);display:flex;flex-direction:column;
+  min-height:0;overflow:hidden}}
+.box.grow{{flex:1}}
+.box.fit{{flex:0 0 auto}}
+.hd{{background:#140d04;color:var(--amber);padding:2px 7px;letter-spacing:.16em;
+  border-bottom:1px solid var(--line);display:flex;gap:8px;white-space:nowrap}}
+.hd s{{text-decoration:none;color:var(--amber-dim);margin-left:auto}}
+.pad{{padding:3px 7px 4px;overflow:hidden;min-height:0}}
 
-.grid{{display:grid;gap:clamp(6px,1vh,11px);
-  grid-template-columns:repeat(auto-fit,minmax(clamp(130px,15vw,190px),1fr))}}
-.box{{background:var(--panel);border:1px solid var(--line);border-radius:10px;
-  padding:clamp(7px,1.2vh,14px) clamp(9px,1vw,16px)}}
-.box i{{font-style:normal;display:block;font-size:clamp(8px,1.1vh,10.5px);
-  letter-spacing:.15em;text-transform:uppercase;color:var(--dim);margin-bottom:5px}}
-.box b{{display:block;font-size:clamp(13px,2.4vh,22px);font-variant-numeric:tabular-nums}}
-.box s{{display:block;text-decoration:none;color:var(--dim);
-  font-size:clamp(8px,1.1vh,11px);margin-top:3px}}
+table{{width:100%;border-collapse:collapse;table-layout:fixed;
+  font-family:var(--mono);font-size:var(--fs)}}
+th{{color:var(--amber-dim);text-align:right;font-weight:400;letter-spacing:.1em;
+  padding:2px 5px;border-bottom:1px solid var(--line)}}
+th.l{{text-align:left}}
+td{{padding:2.5px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
+tr+tr td{{border-top:1px solid #120d05}}
+td.k{{color:var(--ink);letter-spacing:.02em}}
+td.v{{text-align:right;font-variant-numeric:tabular-nums;width:74px}}
+td.m{{text-align:right;color:var(--grey);width:26px}}
+td.sig{{text-align:right;width:40px;font-weight:700}}
+.up{{color:var(--up)}} .dn{{color:var(--dn)}} .amb{{color:var(--amber)}}
+td.g{{width:50%;letter-spacing:-.5px;text-align:center;
+  text-overflow:clip;overflow:visible}}
+.gz{{color:#1d1d1d}} .gu{{color:var(--up)}} .gd{{color:var(--dn)}}
 
-.scroll{{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden}}
-table{{width:100%;border-collapse:collapse;font-size:clamp(10px,1.5vh,13.5px)}}
-th{{text-align:left;font-weight:400;font-size:clamp(8px,1.1vh,10.5px);letter-spacing:.13em;
-  text-transform:uppercase;color:var(--dim);padding:0 8px 7px;border-bottom:1px solid var(--line);
-  position:sticky;top:0;background:var(--bg)}}
-td{{padding:clamp(6px,1.1vh,12px) 8px;border-bottom:1px solid var(--line);vertical-align:top}}
-td.n{{font-size:clamp(11px,1.7vh,15px)}}
-td.n s,.num s,.v s{{display:block;text-decoration:none;color:var(--dim);
-  font-size:clamp(8px,1.1vh,11px);margin-top:3px}}
-.num{{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;width:120px}}
-.up{{color:var(--green)}} .dn{{color:var(--red)}}
-.v{{text-align:right;width:70px}} .v.split{{color:var(--amber)}}
-.none{{color:var(--dim)}}
-table.themes{{table-layout:fixed}}
-table.themes td.track2{{width:30%}}
-table.themes td.num{{width:clamp(88px,9vw,124px)}}
-table.themes td.n{{overflow:hidden}}
-.track2{{padding:clamp(6px,1.1vh,12px) 16px}}
-.rail{{height:8px;border-radius:4px;background:rgba(28,39,53,.85);position:relative}}
-.bar{{position:absolute;top:0;height:8px;border-radius:4px;display:block}}
-.rail.up .bar{{left:50%;background:var(--green)}}
-.rail.dn .bar{{right:50%;background:var(--red)}}
-.rail::after{{content:"";position:absolute;left:50%;top:-4px;width:1px;height:16px;
-  background:var(--line)}}
+/* ---------- stat cells ---------- */
+.cells{{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}}
+.cell{{background:#0a0703;padding:4px 7px}}
+.cell i{{font-style:normal;display:block;color:var(--amber-dim);letter-spacing:.12em}}
+.cell b{{display:block;font-size:clamp(10px,1.75vh,17px);font-weight:400;
+  font-variant-numeric:tabular-nums;margin-top:1px}}
+.cell s{{display:block;text-decoration:none;color:var(--grey)}}
 
-.cols{{display:grid;gap:clamp(7px,1.1vh,14px);flex:1;min-height:0;
-  grid-template-columns:repeat(auto-fit,minmax(clamp(180px,20vw,260px),1fr))}}
-.card{{background:var(--panel);border:1px solid var(--line);border-radius:11px;
-  padding:clamp(8px,1.2vh,15px) clamp(10px,1vw,17px);overflow-y:auto;min-height:0}}
-.card h3{{margin:0 0 8px;font-size:clamp(8px,1.1vh,10.5px);letter-spacing:.15em;
-  text-transform:uppercase;color:var(--dim);font-weight:400}}
-ul{{list-style:none;margin:0;padding:0}}
-.card li{{display:flex;justify-content:space-between;gap:10px;
-  padding:clamp(3px,.6vh,7px) 0;border-bottom:1px solid rgba(28,39,53,.6);
-  font-size:clamp(9px,1.3vh,12.5px)}}
-.card li:last-child{{border-bottom:0}}
-.card li span{{color:var(--dim);white-space:nowrap;font-size:clamp(8px,1.1vh,11px)}}
+/* ---------- ticker ---------- */
+.tick{{border-top:1px solid var(--rule);overflow:hidden;white-space:nowrap;
+  padding:3px 0;color:var(--amber-dim)}}
+.tick div{{display:inline-block;padding-left:100%;
+  animation:crawl 90s linear infinite}}
+@keyframes crawl{{from{{transform:translateX(0)}}to{{transform:translateX(-100%)}}}}
+@media(prefers-reduced-motion:reduce){{.tick div{{animation:none;padding-left:0}}}}
 
-.warn{{background:var(--panel);border:1px solid var(--line);
-  border-left:3px solid var(--amber);border-radius:10px;
-  padding:clamp(10px,1.6vh,20px) clamp(14px,1.4vw,24px);overflow-y:auto}}
-.warn ul{{padding-left:18px;list-style:disc}}
-.warn li{{padding:clamp(3px,.7vh,7px) 0;color:var(--dim);
-  font-size:clamp(10px,1.5vh,13.5px)}}
-.warn b{{color:var(--ink)}}
-.foot{{color:var(--dim);font-size:clamp(9px,1.2vh,11.5px);margin:8px 0 0;max-width:76ch}}
-.foot code,.foot b{{color:var(--ink)}}
-.bottom{{padding-top:clamp(5px,1vh,10px);border-top:1px solid var(--line);
-  color:var(--dim);font-size:clamp(8px,1.2vh,11.5px);margin-top:clamp(6px,1vh,12px)}}
-.bottom a{{color:var(--green);text-decoration:none}}
-@media(max-width:640px){{
+@media(max-width:900px){{
   html,body{{overflow:auto}}
-  .panel{{position:static;opacity:1;pointer-events:auto;display:none}}
-  .panel.on{{display:flex}}
-  #track{{min-height:70vh}}
+  .grid{{grid-template-columns:1fr;grid-template-rows:none}}
+  .box{{max-height:none}}
+  .fn{{flex-wrap:wrap}}
 }}
 </style>
 
-<div class="shell">
-  <div class="top">
-    <p class="brand">THE LATE TAPE</p>
-    <span class="tag">everything here was public before you read it, and late by law</span>
-    <span class="stamp">built {today:%d %b %Y}</span>
+<div class="term">
+
+  <div class="cmd">
+    <a class="lock" href="https://github.com/RezaSoleymanifar/vintage">
+      {logo}<span class="wm">APE<i>TAPE</i></span></a>
+    <span class="go">GO</span>
+    <span class="q">FLOW &lt;EQUITY&gt; 13F/STOCK-ACT XCOMPARE</span>
+    <span class="rt">SRC <b>SEC · HOUSE CLERK · SENATE EFD</b> &nbsp;|&nbsp;
+      BUILD <b>{today:%d-%b-%Y}</b> &nbsp;|&nbsp; <b>LATE BY LAW</b></span>
   </div>
 
-  <div id="chips"></div>
+  <div class="fn">
+    <span><b>F1</b>THEMES</span>
+    <span><b>F2</b>AGREED</span>
+    <span><b>F3</b>SPLIT</span>
+    <span><b>F4</b>SOLO</span>
+    <span><b>F5</b>CLOCKS</span>
+    <span><b>F6</b>CROWDED</span>
+    <span><b>F7</b>LATE</span>
+    <span class="spacer"></span>
+    <span><b>N</b>{len(inst['flow']):,} NAMES</span>
+    <span><b>M</b>{len(inst['covered'])} MGRS</span>
+    <span><b>C</b>{len(cong['all_members'])} MEMBERS</span>
+  </div>
 
-  <div id="track">
+  <div class="band">
+    <span class="hl">OUT OF <em>{esc(out_of['theme'].upper() if out_of else '—')}</em>
+      &nbsp;&nbsp;INTO <em>{esc(into['theme'].upper() if into else '—')}</em></span>
+    <span class="sb">NET <b class="{'up' if net > 0 else 'dn'}">{money(net)}</b>
+      &nbsp;·&nbsp; BOT <b class="up">{money(gross_in)}</b>
+      &nbsp;·&nbsp; SLD <b class="dn">{money(gross_out)}</b></span>
+  </div>
 
-    <section class="panel on">
-      <h1>Two groups of money.<br><em>{esc(claim)}</em></h1>
-      <p class="sub">{esc(subclaim)}</p>
-      <p class="lede">Institutional managers file Form 13F once a quarter. Members of
-      Congress file a report every time they trade. Neither can see the other's
-      filing before it lands.</p>
-      <div class="grid" style="margin-top:auto">
-        <div class="box"><i>Institutions as of</i><b>{inst_asof:%d %b %Y}</b>
-          <s>{len(inst['covered'])} managers · filed {NOW_Q[:4]}-05-15</s></div>
-        <div class="box"><i>Congress as of</i><b>{esc(cong['latest_known'] or '—')}</b>
-          <s>{len(cong['all_members'])} members · {len(cong['rows']):,} transactions</s></div>
-        <div class="box"><i>Institutions next move</i><b>{next_due:%d %b %Y}</b>
-          <s>{days} days · Q2 2026 13F deadline</s></div>
-        <div class="box"><i>Congress moves</i><b>Continuously</b>
-          <s>median {cong['median_lag']}-day lag</s></div>
+  <div class="grid">
+
+    <div class="col">
+      <div class="box fit">
+        <div class="hd">F1 · THEME FLOW<s>NET SHARE-COUNT CHANGE, PRICED {NOW_Q}</s></div>
+        <div class="pad"><table>
+          <tr><th class="l">THEME</th><th>&#8592; SOLD &nbsp; BOUGHT &#8594;</th>
+              <th>USD</th><th>MGR</th></tr>
+          {rows_theme()}
+        </table></div>
       </div>
-    </section>
-
-    <section class="panel">
-      <h2>The net</h2>
-      <div class="grid">
-        <div class="box"><i>Gross bought</i><b class="up">{money(gross_in)}</b></div>
-        <div class="box"><i>Gross sold</i><b class="dn">{money(gross_out)}</b></div>
-        <div class="box"><i>Net</i><b class="{'up' if net > 0 else 'dn'}">{money(net)}</b></div>
-        <div class="box"><i>Names moved</i><b>{len(inst['flow']):,}</b></div>
+      <div class="box grow">
+        <div class="hd">F6 · CONGRESS, MOST MEMBERS TRADING<s>ONE NAME, MANY DESKS</s></div>
+        <div class="pad"><table>
+          <tr><th class="l">TICKER</th><th>BUY</th><th>SELL</th><th>NET</th><th>MBR</th></tr>
+          {rows_widely()}
+        </table></div>
       </div>
-      <h2 style="margin-top:clamp(10px,1.8vh,20px)">Which themes the money left, and where it went</h2>
-      <div class="scroll"><table class="themes">
-      <tbody>
-      {rows_theme()}
-      </tbody></table></div>
-      <p class="foot">Themes are a fixed map from issuer name to bucket, listed in
-      <code>tools/build_flows.py</code>. A clustering would reshuffle names between
-      rebuilds and you could not tell a rotation from an algorithm change.</p>
-    </section>
+    </div>
 
-    <section class="panel">
-      <h2>Where both groups went the same way</h2>
-      <div class="scroll"><table>
-      <thead><tr><th>Name</th><th class="num">{len(inst['covered'])} institutions</th>
-      <th class="num">{len(cong['all_members'])} in Congress</th><th class="v">Verdict</th></tr></thead>
-      <tbody>
-      {rows_agree()}
-      </tbody></table></div>
-      <p class="foot">Neither group can read the other's filing before it lands, so
-      agreement here is two independent decisions rather than one being copied.</p>
-    </section>
-
-    <section class="panel">
-      <h2>Where they disagreed</h2>
-      <div class="scroll"><table>
-      <thead><tr><th>Name</th><th class="num">Institutions</th>
-      <th class="num">Congress</th><th class="v"></th></tr></thead>
-      <tbody>
-      {rows_split()}
-      </tbody></table></div>
-    </section>
-
-    <section class="panel">
-      <h2>What only one group traded</h2>
-      <div class="cols">
-        <div class="card"><h3>Institutions bought</h3><ul>{li(inst_only, 'inst')}</ul></div>
-        <div class="card"><h3>Institutions sold</h3><ul>{li(inst_out, 'inst')}</ul></div>
-        <div class="card"><h3>Congress bought</h3><ul>{li(cong_in, 'cong')}</ul></div>
-        <div class="card"><h3>Congress sold</h3><ul>{li(cong_out, 'cong')}</ul></div>
+    <div class="col">
+      <div class="box fit">
+        <div class="hd">F2 · BOTH GROUPS AGREED<s>{len(agree)} NAMES</s></div>
+        <div class="pad"><table>
+          <tr><th class="l">NAME</th><th>INST</th><th>MGR</th>
+              <th>CONG</th><th>MBR</th><th>SIG</th></tr>
+          {rows_agree()}
+        </table></div>
       </div>
-    </section>
+      <div class="box fit">
+        <div class="hd">F3 · THEY SPLIT<s>{len(disagree)} NAMES</s></div>
+        <div class="pad"><table>
+          <tr><th class="l">NAME</th><th>INST</th><th>MGR</th>
+              <th>CONG</th><th>MBR</th><th>SIG</th></tr>
+          {rows_split()}
+        </table></div>
+      </div>
+      <div class="box grow">
+        <div class="hd">F7 · PAST THE STATUTORY DEADLINE
+          <s>{cong['late']} OF {len(cong['rows']):,} · STOCK ACT ALLOWS 45D</s></div>
+        <div class="pad"><table>
+          <tr><th class="l">MEMBER</th><th class="l">TKR</th><th>LAG</th><th>TRADED</th></tr>
+          {rows_late()}
+        </table></div>
+      </div>
+    </div>
 
-    <section class="panel">
-      <h2>What this is not</h2>
-      <div class="warn"><ul>
-      <li><b>{len(cong['all_members'])} members is not Congress</b>, and
-      {len(inst['covered'])} managers is not the market. Both are the subset that
-      filed comparable reports in this window.</li>
-      <li><b>Congressional amounts are bands</b>, not figures. Direction and count
-      are the only honest measures, so no dollar total is shown for that half.</li>
-      <li><b>Institutional figures are share-count changes</b> priced at the later
-      quarter, so a position that merely appreciated does not appear as a purchase.</li>
-      <li><b>Everything here was late by construction.</b> 13F lands 45 days after
-      the quarter; {cong['late']} of {len(cong['rows']):,} congressional transactions
-      ({cong['late'] / max(len(cong['rows']), 1):.0%}) were disclosed past the
-      45-day statutory deadline, the worst by {cong['worst_lag']} days.</li>
-      <li><b>Nothing here is advice</b>, and every position was public knowledge
-      before you read it.</li>
-      </ul></div>
-    </section>
+    <div class="col">
+      <div class="box">
+        <div class="hd">F5 · CLOCKS</div>
+        <div class="cells">
+          <div class="cell"><i>INST AS OF</i><b>{inst_asof:%d-%b-%y}</b>
+            <s>FILED {NOW_Q[:4]}-05-15</s></div>
+          <div class="cell"><i>CONG AS OF</i><b>{esc((cong['latest_known'] or '—')[5:])}</b>
+            <s>{len(cong['rows']):,} TRANSACTIONS</s></div>
+          <div class="cell"><i>INST NEXT MOVE</i><b class="amb">{next_due:%d-%b-%y}</b>
+            <s>{days}D · Q2 13F DUE</s></div>
+          <div class="cell"><i>CONG MOVES</i><b>CONTINUOUS</b>
+            <s>MEDIAN {cong['median_lag']}D LAG</s></div>
+        </div>
+      </div>
+      <div class="box grow">
+        <div class="hd">F4 · INSTITUTIONS ONLY<s>NOT TRADED BY CONGRESS</s></div>
+        <div class="pad"><table>
+          {li(inst_only[:4], 'inst')}
+          {li(inst_out[:4], 'inst')}
+        </table></div>
+      </div>
+      <div class="box grow">
+        <div class="hd">F4 · CONGRESS ONLY<s>NET TRANSACTION COUNT</s></div>
+        <div class="pad"><table>
+          {li(cong_in[:4], 'cong')}
+          {li(cong_out[:4], 'cong')}
+        </table></div>
+      </div>
+    </div>
 
   </div>
 
-  <div class="bottom">
-    <b>The Late Tape</b> · SEC Form 13F, House STOCK Act periodic transaction reports
-    and Senate EFD, via <a href="https://github.com/RezaSoleymanifar/vintage">Vintage</a>
-    · reports obtained under the Ethics in Government Act, which restricts commercial use
-    · rebuild with <code>python tools/build_flows.py</code>
-  </div>
+  <div class="tick"><div>{esc(crawl) * 2}</div></div>
 </div>
-
-<script>
-(function () {{
-  var panels = [].slice.call(document.querySelectorAll('.panel'));
-  var bar = document.getElementById('chips');
-  var titles = ['The claim', 'The net', 'They agreed', 'They split',
-                'One group only', 'What this is not'];
-  var at = 0;
-
-  var chips = titles.map(function (t, i) {{
-    var b = document.createElement('button');
-    b.className = 'chip' + (i === 0 ? ' on' : '');
-    b.textContent = t;
-    b.addEventListener('click', function () {{ show(i); }});
-    bar.appendChild(b);
-    return b;
-  }});
-
-  function show(i) {{
-    at = (i + panels.length) % panels.length;
-    panels.forEach(function (p, k) {{ p.classList.toggle('on', k === at); }});
-    chips.forEach(function (c, k) {{ c.classList.toggle('on', k === at); }});
-  }}
-
-  // Arrow keys, because a deck that only responds to clicking a pill is a
-  // slideshow nobody drives.
-  document.addEventListener('keydown', function (e) {{
-    if (e.key === 'ArrowRight' || e.key === 'PageDown') show(at + 1);
-    if (e.key === 'ArrowLeft' || e.key === 'PageUp') show(at - 1);
-  }});
-}})();
-</script>
 """
 
 
