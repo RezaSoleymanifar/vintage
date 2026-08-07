@@ -1776,7 +1776,7 @@ def arch_src() -> str:
 
 def build_tiles() -> str:
     return "\n      ".join(
-        f'<div class="tile">{icon(g, 16)}<b>{n}</b><span>{w}</span></div>'
+        f'<div class="tile">{icon(g, 32)}<b>{n}</b><span>{w}</span></div>'
         for g, n, w in TILES)
 
 
@@ -1892,7 +1892,7 @@ a:hover{text-decoration:underline}
   border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .tile{background:var(--panel);padding:clamp(6px,1.1vh,11px) 6px;display:grid;
   justify-items:center;gap:2px;text-align:center}
-.tile .ic{color:var(--green);opacity:.85}
+.tile .ic{color:var(--green);opacity:.9;stroke-width:1.5}
 .tile b{color:var(--ink);font-size:clamp(13px,2vh,18px);line-height:1.1;font-weight:700}
 /* what the engine guarantees, one property per badge */
 .badges{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
@@ -1986,12 +1986,12 @@ a:hover{text-decoration:underline}
 
 /* ----------------------------------------------------------------- stage */
 .stage{position:relative;display:flex;flex-direction:column;min-width:0;min-height:0;
-  padding:clamp(16px,2.6vh,30px) clamp(16px,2.2vw,34px)}
+  padding:clamp(16px,2.6vh,30px) 0 0 clamp(16px,2.2vw,34px)}
 /* Eleven chips will not wrap onto one row at any width worth designing for, and
    two rows of chips steal height the panels need. One strip that scrolls
    sideways keeps the bar exactly one line tall however many sections there are;
    the active chip is scrolled into view rather than hunted for. */
-.chips{display:flex;flex-wrap:nowrap;gap:7px;margin-bottom:clamp(10px,1.6vh,18px);
+.chips{padding-right:clamp(16px,2.2vw,34px);display:flex;flex-wrap:nowrap;gap:7px;margin-bottom:clamp(10px,1.6vh,18px);
   flex:none;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;
   scroll-behavior:smooth;padding-bottom:2px}
 .chips::-webkit-scrollbar{display:none}
@@ -2078,33 +2078,29 @@ a:hover{text-decoration:underline}
   76%{transform:translateX(100%)}100%{transform:translateX(100%)}}
 @media (prefers-reduced-motion:reduce){.cmd.hot::after{display:none}}
 
-.panels{position:relative;flex:1;min-height:0}
+.panels{position:relative;flex:1;min-height:0;overflow:hidden}
 /* Slides travel in the direction you asked for: the incoming panel enters from
    the side you are moving towards and the outgoing one leaves the other way, so
    the deck reads as one strip rather than a stack of cross-fades. --x is set per
    panel by show(), which is what carries the direction. */
-.panel{position:absolute;inset:0;opacity:0;visibility:hidden;
-  display:flex;flex-direction:column;min-height:0;will-change:transform,opacity}
+/* One roll. Every panel sits side by side on a single track and the track slides;
+   nothing fades in or out on its own. That is what makes it read as a continuous
+   strip passing across the page rather than a stack of slides swapping places. */
+.panel{flex:0 0 100%;max-width:100%;min-width:0;height:100%;
+  display:flex;flex-direction:column;opacity:.18;
+  transition:opacity .5s cubic-bezier(.22,.61,.36,1);
+  padding-right:clamp(16px,2.2vw,34px)}
 /* Keyframes rather than a transition: a transition needs the start state to have
    been rendered, and these panels start at visibility:hidden, so the browser was
    skipping straight to the end. An animation has no such requirement. */
-.panel.is-on{opacity:1;visibility:visible;
-  animation:slidein .5s cubic-bezier(.22,.61,.36,1) forwards}
-@keyframes slidein{
-  from{opacity:0;transform:translate3d(var(--x,26px),0,0)}
-  to{opacity:1;transform:translate3d(0,0,0)}}
-@keyframes slideout{
-  from{opacity:1;transform:translate3d(0,0,0)}
-  to{opacity:0;transform:translate3d(var(--x,-26px),0,0)}}
-/* Both halves of the move have to be painted or the browser skips the
-   transition: an element at visibility:hidden has no rendered start state, so it
-   jumps straight to the end. `.enter` puts the incoming panel on screen at its
-   offset for one frame first, and `.out` keeps the outgoing one painted while it
-   leaves. */
-.panel.out{visibility:visible;opacity:0;
-  animation:slideout .5s cubic-bezier(.22,.61,.36,1) forwards}
+.panel.is-on{opacity:1}
+.track{display:flex;height:100%;width:100%;will-change:transform;
+  transform:translate3d(calc(var(--i,0) * -100%),0,0);
+  transition:transform .62s cubic-bezier(.22,.61,.36,1)}}
+
 @media (prefers-reduced-motion:reduce){
-  .panel.is-on,.panel.out{animation:none}
+  .track{transition:none}
+  .panel{opacity:1}
 }
 .ptitle{font-size:clamp(13px,1.95vh,18px);font-weight:700;margin:0 0 4px}
 .pnote{color:var(--dim);font-size:clamp(10px,1.4vh,12.5px);line-height:1.5;
@@ -2271,6 +2267,7 @@ __ONECSS__
   <main class="stage">
     <div class="chips" id="chips"></div>
     <div class="panels" id="panels">
+      <div class="track" id="track">
 
       <section class="panel arch is-on" data-dwell="14">
         <h2 class="ptitle">The whole thing, on one page.</h2>
@@ -2360,6 +2357,7 @@ __ONECSS__
         </div>
       </section>
 
+      </div>
     </div>
   </main>
 </div>
@@ -2368,6 +2366,7 @@ __ONECSS__
 (function () {
   var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
   var chipbar = document.getElementById('chips');
+  var track = document.getElementById('track');
   var titles = ['The map', 'The schema', 'What you get',
                 'Point-in-time', 'The engine', 'The experiment', 'The forums',
                 'Install'];
@@ -2399,29 +2398,9 @@ __ONECSS__
   function show(i) {
     // Wrapping from the last slide to the first still reads as "forward", so the
     // loop does not lurch backwards once per cycle.
-    var last = panels.length - 1;
-    var dir = (i === 0 && at === last) ? 1
-            : (i === last && at === 0) ? -1
-            : (i > at ? 1 : -1);
-    var shift = 26;
     at = i;
-    panels.forEach(function (p, n) {
-      if (n === i) {
-        p.classList.remove('out');
-        p.style.setProperty('--x', (dir * shift) + 'px');
-        // Restart the animation even when the same class is re-applied, which
-        // is what makes a repeated jump to the same slide still animate.
-        p.classList.remove('is-on');
-        void p.offsetWidth;
-        p.classList.add('is-on');
-      } else if (p.classList.contains('is-on')) {
-        p.classList.remove('is-on');
-        p.style.setProperty('--x', (-dir * shift) + 'px');
-        p.classList.add('out');
-      } else {
-        p.classList.remove('out');
-      }
-    });
+    panels.forEach(function (p, n) { p.classList.toggle('is-on', n === i); });
+    track.style.setProperty('--i', i);
     document.querySelector('.shell').classList.remove('wide');
     var dwell = (parseFloat(panels[i].dataset.dwell) || 9) * 1000;
     chips.forEach(function (c) {

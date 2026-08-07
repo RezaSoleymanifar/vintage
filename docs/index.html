@@ -72,7 +72,7 @@ a:hover{text-decoration:underline}
   border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .tile{background:var(--panel);padding:clamp(6px,1.1vh,11px) 6px;display:grid;
   justify-items:center;gap:2px;text-align:center}
-.tile .ic{color:var(--green);opacity:.85}
+.tile .ic{color:var(--green);opacity:.9;stroke-width:1.5}
 .tile b{color:var(--ink);font-size:clamp(13px,2vh,18px);line-height:1.1;font-weight:700}
 /* what the engine guarantees, one property per badge */
 .badges{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
@@ -166,12 +166,12 @@ a:hover{text-decoration:underline}
 
 /* ----------------------------------------------------------------- stage */
 .stage{position:relative;display:flex;flex-direction:column;min-width:0;min-height:0;
-  padding:clamp(16px,2.6vh,30px) clamp(16px,2.2vw,34px)}
+  padding:clamp(16px,2.6vh,30px) 0 0 clamp(16px,2.2vw,34px)}
 /* Eleven chips will not wrap onto one row at any width worth designing for, and
    two rows of chips steal height the panels need. One strip that scrolls
    sideways keeps the bar exactly one line tall however many sections there are;
    the active chip is scrolled into view rather than hunted for. */
-.chips{display:flex;flex-wrap:nowrap;gap:7px;margin-bottom:clamp(10px,1.6vh,18px);
+.chips{padding-right:clamp(16px,2.2vw,34px);display:flex;flex-wrap:nowrap;gap:7px;margin-bottom:clamp(10px,1.6vh,18px);
   flex:none;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;
   scroll-behavior:smooth;padding-bottom:2px}
 .chips::-webkit-scrollbar{display:none}
@@ -258,33 +258,29 @@ a:hover{text-decoration:underline}
   76%{transform:translateX(100%)}100%{transform:translateX(100%)}}
 @media (prefers-reduced-motion:reduce){.cmd.hot::after{display:none}}
 
-.panels{position:relative;flex:1;min-height:0}
+.panels{position:relative;flex:1;min-height:0;overflow:hidden}
 /* Slides travel in the direction you asked for: the incoming panel enters from
    the side you are moving towards and the outgoing one leaves the other way, so
    the deck reads as one strip rather than a stack of cross-fades. --x is set per
    panel by show(), which is what carries the direction. */
-.panel{position:absolute;inset:0;opacity:0;visibility:hidden;
-  display:flex;flex-direction:column;min-height:0;will-change:transform,opacity}
+/* One roll. Every panel sits side by side on a single track and the track slides;
+   nothing fades in or out on its own. That is what makes it read as a continuous
+   strip passing across the page rather than a stack of slides swapping places. */
+.panel{flex:0 0 100%;max-width:100%;min-width:0;height:100%;
+  display:flex;flex-direction:column;opacity:.18;
+  transition:opacity .5s cubic-bezier(.22,.61,.36,1);
+  padding-right:clamp(16px,2.2vw,34px)}
 /* Keyframes rather than a transition: a transition needs the start state to have
    been rendered, and these panels start at visibility:hidden, so the browser was
    skipping straight to the end. An animation has no such requirement. */
-.panel.is-on{opacity:1;visibility:visible;
-  animation:slidein .5s cubic-bezier(.22,.61,.36,1) forwards}
-@keyframes slidein{
-  from{opacity:0;transform:translate3d(var(--x,26px),0,0)}
-  to{opacity:1;transform:translate3d(0,0,0)}}
-@keyframes slideout{
-  from{opacity:1;transform:translate3d(0,0,0)}
-  to{opacity:0;transform:translate3d(var(--x,-26px),0,0)}}
-/* Both halves of the move have to be painted or the browser skips the
-   transition: an element at visibility:hidden has no rendered start state, so it
-   jumps straight to the end. `.enter` puts the incoming panel on screen at its
-   offset for one frame first, and `.out` keeps the outgoing one painted while it
-   leaves. */
-.panel.out{visibility:visible;opacity:0;
-  animation:slideout .5s cubic-bezier(.22,.61,.36,1) forwards}
+.panel.is-on{opacity:1}
+.track{display:flex;height:100%;width:100%;will-change:transform;
+  transform:translate3d(calc(var(--i,0) * -100%),0,0);
+  transition:transform .62s cubic-bezier(.22,.61,.36,1)}}
+
 @media (prefers-reduced-motion:reduce){
-  .panel.is-on,.panel.out{animation:none}
+  .track{transition:none}
+  .panel{opacity:1}
 }
 .ptitle{font-size:clamp(13px,1.95vh,18px);font-weight:700;margin:0 0 4px}
 .pnote{color:var(--dim);font-size:clamp(10px,1.4vh,12.5px);line-height:1.5;
@@ -647,14 +643,14 @@ a:hover{text-decoration:underline}
     <div class="cmd hot"><code>claude mcp add vintage -s user -- uvx vintage-mcp</code><button class="copy" aria-label="Copy">copy</button></div>
 
     <div class="tiles">
-      <div class="tile"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.4l3.4 2"/></svg><b>100</b><span>years, Jul 1926 on</span></div>
-      <div class="tile"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 7.5 12 12l9-4.5Z"/><path d="M3 12.5 12 17l9-4.5"/><path d="M3 17 12 21.5 21 17"/></svg><b>19</b><span>primary sources</span></div>
-      <div class="tile"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.5" cy="7" r="1.8"/><circle cx="12" cy="4.8" r="1.8"/><circle cx="18.5" cy="8.5" r="1.8"/><circle cx="7" cy="16.5" r="1.8"/><circle cx="16" cy="18" r="1.8"/><circle cx="11.5" cy="11.5" r="1.8"/></svg><b>6</b><span>asset classes</span></div>
-      <div class="tile"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5h17"/><path d="M12 3 3.5 7.5h17Z"/><path d="M6.5 10.5v7"/><path d="M11 10.5v7"/><path d="M15.5 10.5v7"/><path d="M20 10.5v7"/></svg><b>10,398</b><span>tickers mapped</span></div>
-      <div class="tile"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20V4"/><path d="M3 20h18"/><path d="M6 15.5 10 10l3.5 3.5L20 6"/></svg><b>800k+</b><span>macro series</span></div>
-      <div class="tile"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M6.5 9.5 9.5 12l-3 2.5"/><path d="M12.5 15h5"/></svg><b>24</b><span>field prefixes</span></div>
-      <div class="tile"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8 18.5 16 5.5"/></svg><b>331</b><span>published claims</span></div>
-      <div class="tile"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5 12 14l3.5-3.5L21 16"/><path d="M21 11v5h-5"/></svg><b>36,830</b><span>delistings on record</span></div>
+      <div class="tile"><svg class="ic" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.4l3.4 2"/></svg><b>100</b><span>years, Jul 1926 on</span></div>
+      <div class="tile"><svg class="ic" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 7.5 12 12l9-4.5Z"/><path d="M3 12.5 12 17l9-4.5"/><path d="M3 17 12 21.5 21 17"/></svg><b>19</b><span>primary sources</span></div>
+      <div class="tile"><svg class="ic" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.5" cy="7" r="1.8"/><circle cx="12" cy="4.8" r="1.8"/><circle cx="18.5" cy="8.5" r="1.8"/><circle cx="7" cy="16.5" r="1.8"/><circle cx="16" cy="18" r="1.8"/><circle cx="11.5" cy="11.5" r="1.8"/></svg><b>6</b><span>asset classes</span></div>
+      <div class="tile"><svg class="ic" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5h17"/><path d="M12 3 3.5 7.5h17Z"/><path d="M6.5 10.5v7"/><path d="M11 10.5v7"/><path d="M15.5 10.5v7"/><path d="M20 10.5v7"/></svg><b>10,398</b><span>tickers mapped</span></div>
+      <div class="tile"><svg class="ic" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20V4"/><path d="M3 20h18"/><path d="M6 15.5 10 10l3.5 3.5L20 6"/></svg><b>800k+</b><span>macro series</span></div>
+      <div class="tile"><svg class="ic" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M6.5 9.5 9.5 12l-3 2.5"/><path d="M12.5 15h5"/></svg><b>24</b><span>field prefixes</span></div>
+      <div class="tile"><svg class="ic" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8 18.5 16 5.5"/></svg><b>331</b><span>published claims</span></div>
+      <div class="tile"><svg class="ic" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5 12 14l3.5-3.5L21 16"/><path d="M21 11v5h-5"/></svg><b>36,830</b><span>delistings on record</span></div>
     </div>
 
     <p class="bline">Pipe processed web market data straight into local AI agents, on demand.</p><p class="blab eng">Data quality, by construction</p><div class="badges"><span class="badge" style="--d:-0.00s"><svg class="ic" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v17"/><path d="M4 7.5h5"/><path d="M4 12h5"/><path d="M4 16.5h5"/><path d="M15.5 9.5h4.5"/><path d="M15.5 14.5h4.5"/></svg><b>point-in-time</b></span><span class="badge" style="--d:-0.42s"><svg class="ic" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M6.5 9.5 9.5 12l-3 2.5"/><path d="M12.5 15h5"/></svg><b>no look-ahead</b></span><span class="badge" style="--d:-0.84s"><svg class="ic" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M11 14.5h2"/></svg><b>restatements</b></span><span class="badge" style="--d:-1.26s"><svg class="ic" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.3 2.9 7.6 7 9.5 4.1-1.9 7-5.2 7-9.5V6Z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg><b>survivorship</b></span></div>
@@ -670,6 +666,7 @@ a:hover{text-decoration:underline}
   <main class="stage">
     <div class="chips" id="chips"></div>
     <div class="panels" id="panels">
+      <div class="track" id="track">
 
       <section class="panel arch is-on" data-dwell="14">
         <h2 class="ptitle">The whole thing, on one page.</h2>
@@ -1147,7 +1144,7 @@ a:hover{text-decoration:underline}
         <h2 class="ptitle">What the forums are saying, right now.</h2>
         <div class="facts"><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5a2 2 0 0 1-2 2H8l-4.5 4V5.5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2Z"/><path d="M8 8.5h8"/><path d="M8 12h5"/></svg>fetched while this page was built</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.4l3.4 2"/></svg>stamped with the minute we read it</span><span class="fact"><svg class="ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5 12 14l3.5-3.5L21 16"/><path d="M21 11v5h-5"/></svg>no history upstream, so we keep one</span></div>
         <div class="fill">
-          <table class="forum"><thead><tr><th></th><th>ticker</th><th>name</th><th class="n">mentions</th><th class="n">24h change</th><th class="n">upvotes</th></tr></thead><tbody><tr><td class="rk">1</td><td class="tk">HTZ</td><td class="nm">Hertz</td><td class="n">1,399</td><td class="n up">+1,385</td><td class="n dimc">7,720</td></tr><tr><td class="rk">2</td><td class="tk">SPY</td><td class="nm">SPDR S&amp;P 500 ETF Trust</td><td class="n">414</td><td class="n down">-300</td><td class="n dimc">1,017</td></tr><tr><td class="rk">3</td><td class="tk">SPCX</td><td class="nm">SpaceX</td><td class="n">396</td><td class="n down">-50</td><td class="n dimc">1,503</td></tr><tr><td class="rk">4</td><td class="tk">SNDK</td><td class="nm">Sandisk</td><td class="n">285</td><td class="n down">-739</td><td class="n dimc">898</td></tr><tr><td class="rk">5</td><td class="tk">MU</td><td class="nm">Micron Technology</td><td class="n">222</td><td class="n down">-138</td><td class="n dimc">499</td></tr><tr><td class="rk">6</td><td class="tk">NVDA</td><td class="nm">NVIDIA</td><td class="n">153</td><td class="n down">-72</td><td class="n dimc">503</td></tr><tr><td class="rk">7</td><td class="tk">QQQ</td><td class="nm">Invesco QQQ ETF</td><td class="n">138</td><td class="n down">-22</td><td class="n dimc">315</td></tr><tr><td class="rk">8</td><td class="tk">MSFT</td><td class="nm">Microsoft</td><td class="n">116</td><td class="n up">+29</td><td class="n dimc">495</td></tr></tbody></table><p class="stamp">read from ApeWisdom at 2026-08-07 01:55 UTC &middot; <code>known_at</code> is that moment, not the moment the posts were written</p>
+          <table class="forum"><thead><tr><th></th><th>ticker</th><th>name</th><th class="n">mentions</th><th class="n">24h change</th><th class="n">upvotes</th></tr></thead><tbody><tr><td class="rk">1</td><td class="tk">HTZ</td><td class="nm">Hertz</td><td class="n">1,432</td><td class="n up">+1,417</td><td class="n dimc">8,006</td></tr><tr><td class="rk">2</td><td class="tk">SPY</td><td class="nm">SPDR S&amp;P 500 ETF Trust</td><td class="n">413</td><td class="n down">-298</td><td class="n dimc">1,049</td></tr><tr><td class="rk">3</td><td class="tk">SPCX</td><td class="nm">SpaceX</td><td class="n">398</td><td class="n down">-46</td><td class="n dimc">1,579</td></tr><tr><td class="rk">4</td><td class="tk">SNDK</td><td class="nm">Sandisk</td><td class="n">274</td><td class="n down">-755</td><td class="n dimc">861</td></tr><tr><td class="rk">5</td><td class="tk">MU</td><td class="nm">Micron Technology</td><td class="n">223</td><td class="n down">-139</td><td class="n dimc">496</td></tr><tr><td class="rk">6</td><td class="tk">NVDA</td><td class="nm">NVIDIA</td><td class="n">152</td><td class="n down">-70</td><td class="n dimc">287</td></tr><tr><td class="rk">7</td><td class="tk">QQQ</td><td class="nm">Invesco QQQ ETF</td><td class="n">138</td><td class="n down">-23</td><td class="n dimc">330</td></tr><tr><td class="rk">8</td><td class="tk">MSFT</td><td class="nm">Microsoft</td><td class="n">116</td><td class="n up">+34</td><td class="n dimc">511</td></tr></tbody></table><p class="stamp">read from ApeWisdom at 2026-08-07 02:47 UTC &middot; <code>known_at</code> is that moment, not the moment the posts were written</p>
         </div>
       </section>
 
@@ -1192,6 +1189,7 @@ a:hover{text-decoration:underline}
         </div>
       </section>
 
+      </div>
     </div>
   </main>
 </div>
@@ -1200,6 +1198,7 @@ a:hover{text-decoration:underline}
 (function () {
   var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
   var chipbar = document.getElementById('chips');
+  var track = document.getElementById('track');
   var titles = ['The map', 'The schema', 'What you get',
                 'Point-in-time', 'The engine', 'The experiment', 'The forums',
                 'Install'];
@@ -1231,29 +1230,9 @@ a:hover{text-decoration:underline}
   function show(i) {
     // Wrapping from the last slide to the first still reads as "forward", so the
     // loop does not lurch backwards once per cycle.
-    var last = panels.length - 1;
-    var dir = (i === 0 && at === last) ? 1
-            : (i === last && at === 0) ? -1
-            : (i > at ? 1 : -1);
-    var shift = 26;
     at = i;
-    panels.forEach(function (p, n) {
-      if (n === i) {
-        p.classList.remove('out');
-        p.style.setProperty('--x', (dir * shift) + 'px');
-        // Restart the animation even when the same class is re-applied, which
-        // is what makes a repeated jump to the same slide still animate.
-        p.classList.remove('is-on');
-        void p.offsetWidth;
-        p.classList.add('is-on');
-      } else if (p.classList.contains('is-on')) {
-        p.classList.remove('is-on');
-        p.style.setProperty('--x', (-dir * shift) + 'px');
-        p.classList.add('out');
-      } else {
-        p.classList.remove('out');
-      }
-    });
+    panels.forEach(function (p, n) { p.classList.toggle('is-on', n === i); });
+    track.style.setProperty('--i', i);
     document.querySelector('.shell').classList.remove('wide');
     var dwell = (parseFloat(panels[i].dataset.dwell) || 9) * 1000;
     chips.forEach(function (c) {
